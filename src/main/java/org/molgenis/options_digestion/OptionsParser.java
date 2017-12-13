@@ -7,7 +7,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * Abstract class to be used for options parsing. Also contains argument validation.
+ * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
+ * to actual files).
  */
 public abstract class OptionsParser {
     /**

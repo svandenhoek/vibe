@@ -26,10 +26,11 @@ public class CommandLineOptionsParser extends OptionsParser {
      * Digests the command line options and allows retrieval of useful parameters using getters.
      * @param args {@link String}{@code []}
      * @throws ParseException see {@link #parseCommandLine(String[])}
+     * @throws MissingOptionException see {@link #parseCommandLine(String[])}
      * @throws InvalidPathException see {@link #digestCommandLine()}
      * @throws IOException see {@link #digestCommandLine()}
      */
-    public CommandLineOptionsParser(String[] args) throws ParseException, InvalidPathException, IOException {
+    public CommandLineOptionsParser(String[] args) throws ParseException, MissingOptionException, InvalidPathException, IOException {
         requireNonNull(args);
 
         createOptions();
@@ -88,12 +89,13 @@ public class CommandLineOptionsParser extends OptionsParser {
      *
      * @param args {@link String}{@code []}
      * @throws ParseException see {@link DefaultParser#parse(Options, String[])}
+     * @throws MissingOptionException if not all required arguments are present
      */
-    private void parseCommandLine(String[] args) throws ParseException {
+    private void parseCommandLine(String[] args) throws ParseException, MissingOptionException {
         // Creates parser.
         CommandLineParser parser = new DefaultParser();
 
-        // Execute the parsing.
+        // Execute the parsing. Throws a MissingOptionException if not all required options are present.
         commandLine = parser.parse(options, args);
     }
 

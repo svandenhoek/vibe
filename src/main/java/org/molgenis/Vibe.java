@@ -1,10 +1,10 @@
 package org.molgenis;
 
+import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.ParseException;
 import org.molgenis.options_digestion.CommandLineOptionsParser;
 import org.molgenis.options_digestion.OptionsParser;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
 
@@ -29,6 +29,8 @@ public class Vibe {
             } catch (Exception e) {
                 e.printStackTrace();
             }
+        } catch (MissingOptionException e) {
+            System.err.println(e.getLocalizedMessage());
         } catch (ParseException e) {
             e.printStackTrace();
         } catch (InvalidPathException e) {
