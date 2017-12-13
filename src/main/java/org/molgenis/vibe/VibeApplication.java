@@ -15,13 +15,13 @@ import java.util.Iterator;
 /**
  * The main application class.
  */
-public class Vibe {
+public class VibeApplication {
     /**
      * The main method for when used as a standalone application.
      * @param args {@link String}{@code []}
      */
     public static void main(String[] args) {
-        Vibe app = new Vibe();
+        VibeApplication app = new VibeApplication();
 
         try {
             CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
