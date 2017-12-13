@@ -1,4 +1,4 @@
-package org.molgenis.options_digestion;
+package org.molgenis.vibe.options_digestion;
 
 import static java.util.Objects.requireNonNull;
 

@@ -1,12 +1,12 @@
-package org.molgenis;
+package org.molgenis.vibe;
 
 import org.apache.commons.cli.MissingOptionException;
 import org.apache.commons.cli.ParseException;
 import org.molgenis.data.Entity;
 import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
 import org.molgenis.data.vcf.VcfRepository;
-import org.molgenis.options_digestion.CommandLineOptionsParser;
-import org.molgenis.options_digestion.OptionsParser;
+import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
+import org.molgenis.vibe.options_digestion.OptionsParser;
 
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
