@@ -1,5 +1,7 @@
 package org.molgenis.vibe.options_digestion;
 
+import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
@@ -15,6 +17,11 @@ public abstract class OptionsParser {
      * The DisGeNET RDF data dump (retrievable from http://rdf.disgenet.org/download/).
      */
     private Path disgenetDump;
+
+    /**
+     * The DisGeNET RDF data dump version.
+     */
+    private DisgenetRdfVersion disgenetRdfVersion;
 
     /**
      * The rVCF file that needs to be digested.
@@ -34,7 +41,6 @@ public abstract class OptionsParser {
         setDisgenetDump(Paths.get(disgenetDump));
     }
 
-
     /**
      * @param disgenetDump {@link Path}
      * @throws IOException if {@code disgenetDump} is not a readable file.
@@ -45,6 +51,31 @@ public abstract class OptionsParser {
         } else {
             throw new IOException(disgenetDump.getFileName() + " is not a readable file.");
         }
+    }
+
+    public DisgenetRdfVersion getDisgenetRdfVersion() {
+        return disgenetRdfVersion;
+    }
+
+    /**
+     * @param disgenetRdfVersion {@link String}
+     * @throws InvalidStringFormatException see {@link DisgenetRdfVersion#retrieveVersion(String)}
+     * @see DisgenetRdfVersion#retrieveVersion(String)
+     */
+    void setDisgenetRdfVersion(String disgenetRdfVersion) throws InvalidStringFormatException {
+        this.disgenetRdfVersion = DisgenetRdfVersion.retrieveVersion(disgenetRdfVersion);
+    }
+
+    /**
+     * @param disgenetRdfVersion {@code int}
+     * @see DisgenetRdfVersion#retrieveVersion(int)
+     */
+    void setDisgenetRdfVersion(int disgenetRdfVersion) {
+        this.disgenetRdfVersion = DisgenetRdfVersion.retrieveVersion(disgenetRdfVersion);
+    }
+
+    void setDisgenetRdfVersion(DisgenetRdfVersion disgenetRdfVersion) {
+        this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
     public Path getRvcfData() {

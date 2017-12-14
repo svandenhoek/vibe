@@ -115,5 +115,8 @@ public class CommandLineOptionsParser extends OptionsParser {
         if(commandLine.hasOption("d")) {
             setDisgenetDump(commandLine.getOptionValue("d"));
         }
+        if(commandLine.hasOption("dv")) {
+            setDisgenetRdfVersion(commandLine.getOptionValue("dv"));
+        }
     }
 }
