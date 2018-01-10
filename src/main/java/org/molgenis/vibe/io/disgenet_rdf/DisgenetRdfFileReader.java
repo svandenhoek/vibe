@@ -2,7 +2,7 @@ package org.molgenis.vibe.io.disgenet_rdf;
 
 import org.apache.jena.query.ResultSet;
 
-abstract class DisgenetRdfFileReader extends RdfFileReader {
+public class DisgenetRdfFileReader extends RdfFileReader {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
     // 18 lines (for debugging SPARQL queries)
     private final String prefixes = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
@@ -24,8 +24,14 @@ abstract class DisgenetRdfFileReader extends RdfFileReader {
             "PREFIX pav: <http://http://http://purl.org/pav/> \n"+
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
+    /**
+     * Adds all possible DisGeNET SPARQL prefixes before actual SPAQRL query before running {@link RdfFileReader#useQuery(String)}.
+     * @param queryString {@link String}
+     * @return {@link ResultSet}
+     * @see RdfFileReader#useQuery(String)
+     */
     @Override
-    protected ResultSet useQuery(String queryString) {
+    public ResultSet useQuery(String queryString) {
         return super.useQuery(prefixes + queryString);
     }
 }
