@@ -23,7 +23,6 @@ abstract class RdfFileReader {
      * @param files {@link String}{@code []}
      */
     public void readFiles(String[] files) {
-        //TODO create test code to validate whether this works correctly (is based on https://jena.apache.org/documentation/io/rdf-input.html#example-2-using-the-rdfdatamgr)
         // Reads in first file.
         if(files.length > 0) {
             model = RDFDataMgr.loadModel(files[0]);
