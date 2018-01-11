@@ -3,7 +3,9 @@ package org.molgenis.vibe;
 public enum TestFile {
     GDA1_RDF("gda_SIO_001347.ttl"),
     GENE_RDF("gene.ttl"),
-    DISEASE_RDF("disease-disease.ttl");
+    DISEASE_RDF("disease-disease.ttl"),
+    PHENOTYPE_RDF("phenotype.ttl"),
+    PDA_RDF("pda.ttl");
 
     /**
      * ClassLoader object to view test resource files. Test files can be retrieved using {@code getResource()}, where an

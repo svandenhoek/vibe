@@ -9,3 +9,9 @@ tar -zxvf src/test/resources/gene.ttl.tar.gz -C src/test/resources/
 
 wget -v -nc http://rdf.disgenet.org/download/v5.0.0/disease.ttl.tar.gz -P src/test/resources &&
 tar -zxvf src/test/resources/disease.ttl.tar.gz -C src/test/resources/
+
+wget -v -nc http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz -P src/test/resources &&
+tar -zxvf src/test/resources/pda.ttl.tar.gz -C src/test/resources/
+
+wget -v -nc http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz -P src/test/resources &&
+tar -zxvf src/test/resources/phenotype.ttl.tar.gz -C src/test/resources/
