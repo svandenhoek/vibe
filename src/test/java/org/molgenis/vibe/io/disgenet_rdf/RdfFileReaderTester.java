@@ -3,6 +3,7 @@ package org.molgenis.vibe.io.disgenet_rdf;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
+import org.molgenis.vibe.TestFile;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -19,19 +20,19 @@ import org.testng.annotations.Test;
  * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
-public class RdfFileReaderTester extends Tester{
+public class RdfFileReaderTester {
     private RdfFileReader reader1;
     private RdfFileReader reader2;
 
     @BeforeClass
     public void initialize() {
-        String reader1File = getClassLoader().getResource("gda_SIO_001347.ttl").getFile();
+        String reader1File = TestFile.GDA1_RDF.getFilePath();
         reader1 = new DisgenetRdfFileReader();
         reader1.readFile(reader1File);
 
-        String[] reader2Files = new String[]{getClassLoader().getResource("gda_SIO_001347.ttl").getFile(),
-                getClassLoader().getResource("gene.ttl").getFile(),
-                getClassLoader().getResource("disease-disease.ttl").getFile()};
+        String[] reader2Files = new String[]{TestFile.GDA1_RDF.getFilePath(),
+                TestFile.GENE_RDF.getFilePath(),
+                TestFile.DISEASE_RDF.getFilePath()};
         reader2 = new DisgenetRdfFileReader();
         reader2.readFiles(reader2Files);
     }

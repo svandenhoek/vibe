@@ -1,15 +1,16 @@
 package org.molgenis.vibe.io.disgenet_rdf;
 
+import org.molgenis.vibe.TestFile;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Test;
 
-public class DisgenetGdaFileReaderTester extends Tester {
+public class DisgenetGdaFileReaderTester {
     private DisgenetGdaFileReader reader;
 
     @BeforeTest
     public void initialize() {
         reader = new DisgenetGdaFileReader();
-        reader.read(getClassLoader().getResource("gda_SIO_001347.ttl").getFile());
+        reader.read(TestFile.GDA1_RDF.getFilePath());
     }
 
     @Test()
