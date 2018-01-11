@@ -30,3 +30,6 @@ target/
 # Ignores Intellij IDEA files.
 .IDEA/
 *.iml
+
+# Test resources which should be downloaded externally
+src/test/resources/*.ttl*
