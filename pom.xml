@@ -62,6 +62,16 @@
                     </execution>
                 </executions>
             </plugin>
+
+            <!-- Sets parameters for unit testing -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.20.1</version>
+                <configuration>
+                    <argLine>-Xmx256m</argLine>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
