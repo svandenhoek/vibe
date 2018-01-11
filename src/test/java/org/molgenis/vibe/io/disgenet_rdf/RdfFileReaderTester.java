@@ -7,6 +7,18 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+/**
+ * Tests the {@link RdfFileReader} (based on Apache Jena for RDF file reading/querying).
+ *
+ * IMPORTANT: Run TestNGPreprocessing.sh before using TestNG!
+ *
+ * Note that these tests use data from DisGeNET for validation. These files are not provided (though a bash download
+ * script is present in the GitHub repository). For validation purposes some data (such as gene-disease association IDs)
+ * are present within this test class. However, this was kept as minimal as possible while still being able to actually
+ * test the functioning of the code and only reflects what is EXPECTED to be found within the DisGeNET dataset when using
+ * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
+ * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
+ */
 public class RdfFileReaderTester extends Tester{
     private RdfFileReader reader1;
     private RdfFileReader reader2;
