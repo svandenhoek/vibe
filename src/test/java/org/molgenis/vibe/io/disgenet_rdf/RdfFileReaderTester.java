@@ -60,7 +60,22 @@ public class RdfFileReaderTester {
         Assert.assertEquals(results.hasNext(), true, "no match found");
         QuerySolution result = results.next();
         Assert.assertEquals(results.hasNext(), false, "more than 1 match found");
-        Assert.assertEquals(result.get("id").toString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
+        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
+    }
+
+    @Test
+    public void testSingleFileWithLimit() {
+        ResultSet results = reader1.useQuery("SELECT ?id \n" +
+                "WHERE { ?gda dcterms:identifier ?id } \n" +
+                "LIMIT 3");
+
+        int counter = 0;
+        while(results.hasNext()) {
+            counter += 1;
+            results.next();
+        }
+
+        Assert.assertEquals(counter, 3);
     }
 
     @Test
@@ -91,11 +106,11 @@ public class RdfFileReaderTester {
         QuerySolution result = results.next();
         Assert.assertEquals(results.hasNext(), false, "more than 1 match found");
 
-        Assert.assertEquals(result.get("id").toString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
+        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
         Assert.assertEquals(result.get("gene").toString(), "http://identifiers.org/ncbigene/6607");
-        Assert.assertEquals(result.get("geneTitle").toString(), "survival of motor neuron 2, centromeric@en");
+        Assert.assertEquals(result.get("geneTitle").asLiteral().getString(), "survival of motor neuron 2, centromeric");
         Assert.assertEquals(result.get("disease").toString(), "http://linkedlifedata.com/resource/umls/id/C0043116");
-        Assert.assertEquals(result.get("diseaseTitle").toString(), "HMN (Hereditary Motor Neuropathy) Proximal Type I@en");
+        Assert.assertEquals(result.get("diseaseTitle").asLiteral().getString(), "HMN (Hereditary Motor Neuropathy) Proximal Type I");
     }
 
     @Test
@@ -113,10 +128,10 @@ public class RdfFileReaderTester {
         QuerySolution result = results.next();
         Assert.assertEquals(results.hasNext(), false, "more than 1 match found");
 
-        Assert.assertEquals(result.get("id").toString(), "disgenet:DGNbbaeeb8e8b5fa93f23ca212dd9c281ca");
-        Assert.assertEquals(result.get("gene").toString(), "http://identifiers.org/ncbigene/4157");
-        Assert.assertEquals(result.get("geneTitle").toString(), "melanocortin 1 receptor@en");
-        Assert.assertEquals(result.get("disease").toString(), "http://linkedlifedata.com/resource/umls/id/C0268495");
-        Assert.assertEquals(result.get("diseaseTitle").toString(), "Oculocutaneous albinism type 2@en");
+        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNbbaeeb8e8b5fa93f23ca212dd9c281ca");
+        Assert.assertEquals(result.get("gene").asResource().getURI(), "http://identifiers.org/ncbigene/4157");
+        Assert.assertEquals(result.get("geneTitle").asLiteral().getString(), "melanocortin 1 receptor");
+        Assert.assertEquals(result.get("disease").asResource().getURI(), "http://linkedlifedata.com/resource/umls/id/C0268495");
+        Assert.assertEquals(result.get("diseaseTitle").asLiteral().getString(), "Oculocutaneous albinism type 2");
     }
 }
