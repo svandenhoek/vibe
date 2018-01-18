@@ -1,15 +1,17 @@
-package org.molgenis.vibe.io.disgenet_rdf;
+package org.molgenis.vibe.io;
 
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.rdf_querying.DisgenetQueryRunner;
+import org.molgenis.vibe.rdf_querying.SparqlQueryRunner;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 /**
- * Tests the {@link RdfFileReader} (based on Apache Jena for RDF file reading/querying).
+ * Tests the {@link SparqlQueryRunner} (based on Apache Jena for RDF file reading/querying).
  *
  * IMPORTANT: Run TestNGPreprocessing.sh before using TestNG!
  *
@@ -20,32 +22,33 @@ import org.testng.annotations.Test;
  * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
-public class RdfFileReaderTester {
-    private RdfFileReader reader1;
-    private RdfFileReader reader2;
+public class SparqlQueryRunnerTester {
+    private SparqlQueryRunner runner1;
+    private SparqlQueryRunner runner2;
+    private final String prefixes = DisgenetQueryRunner.getPrefixes();
 
     @BeforeClass
     public void initialize() {
-        String reader1File = TestFile.GDA1_RDF.getFilePath();
-        reader1 = new DisgenetRdfFileReader();
-        reader1.readFile(reader1File);
-
-        String[] reader2Files = new String[]{TestFile.GDA1_RDF.getFilePath(),
+        String fileSet1 = TestFile.GDA1_RDF.getFilePath();
+        String[] fileSet2 = new String[]{TestFile.GDA1_RDF.getFilePath(),
                 TestFile.GENE_RDF.getFilePath(),
                 TestFile.DISEASE_DISEASE_RDF.getFilePath()};
-        reader2 = new DisgenetRdfFileReader();
-        reader2.readFiles(reader2Files);
+
+        ModelReader reader = new ModelReader();
+        runner1 = new DisgenetQueryRunner(reader.readFile(fileSet1).getModel());
+        reader.clear();
+        runner2 = new DisgenetQueryRunner(reader.readFiles(fileSet2).getModel());
     }
 
     @Test(expectedExceptions = QueryParseException.class)
     public void testInvalidQuery() {
-        ResultSet results = reader1.useQuery("SELECT ?id \n" +
+        runner1.runQuery(prefixes + "SELECT ?id \n" +
                 "WHERE { brandNetelKaasMetEenDruppeltjeMunt?! }");
     }
 
     @Test
     public void testEmptyResults() {
-        ResultSet results = reader1.useQuery("SELECT ?gda ?id ?title \n" +
+        ResultSet results = runner1.runQuery(prefixes + "SELECT ?gda ?id ?title \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id ; \n" +
                 "dcterms:title ?title }");
 
@@ -54,7 +57,7 @@ public class RdfFileReaderTester {
 
     @Test
     public void testSingleFile() {
-        ResultSet results = reader1.useQuery("SELECT ?id \n" +
+        ResultSet results = runner1.runQuery(prefixes + "SELECT ?id \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id }");
 
         Assert.assertEquals(results.hasNext(), true, "no match found");
@@ -65,7 +68,7 @@ public class RdfFileReaderTester {
 
     @Test
     public void testSingleFileWithLimit() {
-        ResultSet results = reader1.useQuery("SELECT ?id \n" +
+        ResultSet results = runner1.runQuery(prefixes + "SELECT ?id \n" +
                 "WHERE { ?gda dcterms:identifier ?id } \n" +
                 "LIMIT 3");
 
@@ -80,7 +83,7 @@ public class RdfFileReaderTester {
 
     @Test
     public void testSingleFileWithMultiFileQuery() {
-        ResultSet results = reader1.useQuery("SELECT ?id ?gene ?geneTitle ?diseaseTitle \n" +
+        ResultSet results = runner1.runQuery(prefixes + "SELECT ?id ?gene ?geneTitle ?diseaseTitle \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
                 "?gene rdf:type ncit:C16612 ;" +
@@ -94,7 +97,7 @@ public class RdfFileReaderTester {
     @Test
     public void testMultiFile1() {
         // sio:SIO_000628 <http://identifiers.org/ncbigene/6607> , <http://linkedlifedata.com/resource/umls/id/C0043116> .
-        ResultSet results = reader2.useQuery("SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
+        ResultSet results = runner2.runQuery(prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
                 "?gene rdf:type ncit:C16612 ;" +
@@ -116,7 +119,7 @@ public class RdfFileReaderTester {
     @Test
     public void testMultiFile2() {
         // sio:SIO_000628 <http://linkedlifedata.com/resource/umls/id/C0268495> , <http://identifiers.org/ncbigene/4157> .
-        ResultSet results = reader2.useQuery("SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
+        ResultSet results = runner2.runQuery(prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNbbaeeb8e8b5fa93f23ca212dd9c281ca> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
                 "?gene rdf:type ncit:C16612 ;" +
