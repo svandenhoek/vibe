@@ -32,4 +32,5 @@ target/
 *.iml
 
 # Test resources which should be downloaded externally
-src/test/resources/*.ttl*
+src/test/resources/*.ttl
+src/test/resources/*.owl
