@@ -132,9 +132,7 @@ public class SparqlQueryRunnerTester {
 
         Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
         Assert.assertEquals(result.get("gene").toString(), "http://identifiers.org/ncbigene/6607");
-        Assert.assertEquals(result.get("geneTitle").asLiteral().getString(), "survival of motor neuron 2, centromeric");
         Assert.assertEquals(result.get("disease").toString(), "http://linkedlifedata.com/resource/umls/id/C0043116");
-        Assert.assertEquals(result.get("diseaseTitle").asLiteral().getString(), "HMN (Hereditary Motor Neuropathy) Proximal Type I");
     }
 
     @Test
@@ -154,8 +152,6 @@ public class SparqlQueryRunnerTester {
 
         Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNbbaeeb8e8b5fa93f23ca212dd9c281ca");
         Assert.assertEquals(result.get("gene").asResource().getURI(), "http://identifiers.org/ncbigene/4157");
-        Assert.assertEquals(result.get("geneTitle").asLiteral().getString(), "melanocortin 1 receptor");
         Assert.assertEquals(result.get("disease").asResource().getURI(), "http://linkedlifedata.com/resource/umls/id/C0268495");
-        Assert.assertEquals(result.get("diseaseTitle").asLiteral().getString(), "Oculocutaneous albinism type 2");
     }
 }
