@@ -2,19 +2,34 @@ package org.molgenis.vibe.io.disgenet_rdf;
 
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.apache.jena.rdf.model.ModelFactory;
+import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
 abstract class RdfFileReader {
-    private Model model;
+    private Model model = null;
 
     /**
      * Generates a {@link Model} for {@link #useQuery(String)} based on a single RDF file.
      * @param file {@link String}{@code []}
      */
-    public void readFile(String file) {
-        Model model = ModelFactory.createDefaultModel() ;
-        this.model = model.read(file);
+    public RdfFileReader readFile(String file) {
+        if(model == null) {
+            model = RDFDataMgr.loadModel(file);
+        } else  {
+            RDFDataMgr.read(model, file);
+        }
+
+        return this;
+    }
+
+    public RdfFileReader readFile(String file, Lang fileType) {
+        if(model == null) {
+            model = RDFDataMgr.loadModel(file, fileType);
+        } else  {
+            RDFDataMgr.read(model, file, fileType);
+        }
+
+        return this;
     }
 
     /**
@@ -22,15 +37,29 @@ abstract class RdfFileReader {
      * {@link Model}.
      * @param files {@link String}{@code []}
      */
-    public void readFiles(String[] files) {
-        // Reads in first file.
-        if(files.length > 0) {
-            model = RDFDataMgr.loadModel(files[0]);
-        }
+    public RdfFileReader readFiles(String[] files) {
+        readFile(files[0]);
+
         for(int i = 1; i < files.length;i++) {
-            // Adds other files to already created model.
             RDFDataMgr.read(model, files[i]);
         }
+
+        return this;
+    }
+
+    public RdfFileReader readFiles(String[] files, Lang fileType) {
+        readFile(files[0], fileType);
+
+        for(int i = 1; i < files.length;i++) {
+            RDFDataMgr.read(model, files[i], fileType);
+        }
+
+        return this;
+    }
+
+    public RdfFileReader clear() {
+        model = null;
+        return this;
     }
 
     /**

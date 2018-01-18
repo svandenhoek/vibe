@@ -32,7 +32,7 @@ public class RdfFileReaderTester {
 
         String[] reader2Files = new String[]{TestFile.GDA1_RDF.getFilePath(),
                 TestFile.GENE_RDF.getFilePath(),
-                TestFile.DISEASE_RDF.getFilePath()};
+                TestFile.DISEASE_DISEASE_RDF.getFilePath()};
         reader2 = new DisgenetRdfFileReader();
         reader2.readFiles(reader2Files);
     }
