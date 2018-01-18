@@ -38,7 +38,14 @@ public class DisgenetQueryRunnerTester {
 //    }
 
     @Test
-    public void hpoGenes() {
+    public void hpoGenesUnknownHpo() {
+        ResultSet results = runner.getHpoGenes("hp:1234567");
+
+        Assert.assertEquals(results.hasNext(), false, "match found while HPO not in file");
+    }
+
+    @Test
+    public void hpoGenesHpoInFile() {
         ResultSet results = runner.getHpoGenes("hp:0009811");
 
         int counter = 0;
