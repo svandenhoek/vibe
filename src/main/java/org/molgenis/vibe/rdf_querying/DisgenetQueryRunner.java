@@ -35,32 +35,32 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-//        private static final String[]hpoGenes = {"SELECT ?gda ?sio ?geneTitle ?disease \n" +
-//            "WHERE { ?sio rdfs:subClassOf* sio:SIO_000983 . \n" +
-//                "?gda rdf:type ?sio ; \n" +
-//                "sio:SIO_000628 ?gene , ?disease . \n" +
-//                "?gene rdf:type ncit:C16612 ; \n" +
-//                "dcterms:title ?geneTitle . \n" +
-//                "?disease rdf:type ncit:C7057 }",};
+//    private static final String[]hpoGenes = {"SELECT ?gda ?sio ?geneTitle ?disease \n" +
+//        "WHERE { ?sio rdfs:subClassOf* sio:SIO_000983 . \n" +
+//            "?gda rdf:type ?sio ; \n" +
+//            "sio:SIO_000628 ?gene , ?disease . \n" +
+//            "?gene rdf:type ncit:C16612 ; \n" +
+//            "dcterms:title ?geneTitle . \n" +
+//            "?disease rdf:type ncit:C7057 }",};
+//
+//    private static final String[]hpoGenes = {"SELECT ?pda ?hpoId ?disease \n" +
+//    "WHERE { ?pda rdf:type sio:SIO_000897 ; \n" +
+//            "sio:SIO_000628 ?hpo, ?disease ." +
+//            "?hpo rdf:type sio:SIO_010056 ;" +
+//            "dcterms:identifier ?hpoId ." +
+//            "?disease rdf:type ncit:C7057 }",};
 
-//            private static final String[]hpoGenes = {"SELECT ?pda ?hpoId ?disease \n" +
-//            "WHERE { ?pda rdf:type sio:SIO_000897 ; \n" +
-//                    "sio:SIO_000628 ?hpo, ?disease ." +
-//                    "?hpo rdf:type sio:SIO_010056 ;" +
-//                    "dcterms:identifier ?hpoId ." +
-//                    "?disease rdf:type ncit:C7057 }",};
-
-            private static final String[]hpoGenes = {"SELECT ?gda ?type ?pda ?geneTitle ?hpo \n" +
-                    "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
-                    "?gda rdf:type ?type ; \n" +
-                    "sio:SIO_000628 ?gene , ?disease . \n" +
-                    "?gene rdf:type ncit:C16612 ; \n" +
-                    "dcterms:title ?geneTitle . \n" +
-                    "?disease rdf:type ncit:C7057 . \n" +
-                    "?pda rdf:type sio:SIO_000897 ;" +
-                    "sio:SIO_000628 ?hpo , ?disease ." +
-                    "?hpo rdf:type sio:SIO_010056 ;" +
-                    "dcterms:identifier \"", "\"^^xsd:string }"};
+    private static final String[]hpoGenes = {"SELECT ?gda ?type ?pda ?geneTitle ?hpo \n" +
+            "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
+            "?gda rdf:type ?type ; \n" +
+            "sio:SIO_000628 ?gene , ?disease . \n" +
+            "?gene rdf:type ncit:C16612 ; \n" +
+            "dcterms:title ?geneTitle . \n" +
+            "?disease rdf:type ncit:C7057 . \n" +
+            "?pda rdf:type sio:SIO_000897 ;" +
+            "sio:SIO_000628 ?hpo , ?disease ." +
+            "?hpo rdf:type sio:SIO_010056 ;" +
+            "dcterms:identifier \"", "\"^^xsd:string }"};
 
     public DisgenetQueryRunner(Model model) {
         super(model);
