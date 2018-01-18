@@ -11,7 +11,22 @@ import java.util.regex.Pattern;
  * themselves.
  */
 public enum DisgenetRdfVersion {
-    V5, UNSUPPORTED;
+    V5(new String[]{"disease-disease.ttl", "disease-group.ttl", "disease-phenotype.ttl", "gda_SIO_001119.ttl",
+            "gda_SIO_001120.ttl", "gda_SIO_001121.ttl", "gda_SIO_001122.ttl", "gda_SIO_001123.ttl", "gda_SIO_001124.ttl",
+            "gda_SIO_001342.ttl", "gda_SIO_001343.ttl", "gda_SIO_001344.ttl", "gda_SIO_001345.ttl", "gda_SIO_001346.ttl",
+            "gda_SIO_001347.ttl", "gda_SIO_001348.ttl", "gda_SIO_001349.ttl", "gene.ttl", "pda.ttl", "phenotype.ttl",
+            "sio-release.owl"}),
+    UNSUPPORTED(null);
+
+    String[] requiredFiles;
+
+    DisgenetRdfVersion(String[] requiredFiles) {
+        this.requiredFiles = requiredFiles;
+    }
+
+    public String[] getFilesToRead() {
+        return requiredFiles;
+    }
 
     /**
      * Retrieves the {@link DisgenetRdfVersion} based on a {@link String}. If version is not supported, returns
