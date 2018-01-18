@@ -1,14 +1,16 @@
-package org.molgenis.vibe.io;
+package org.molgenis.vibe.rdf_querying;
 
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
-import org.molgenis.vibe.rdf_querying.DisgenetQueryRunner;
-import org.molgenis.vibe.rdf_querying.SparqlQueryRunner;
+import org.molgenis.vibe.io.ModelReader;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
+
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Tests the {@link SparqlQueryRunner} (based on Apache Jena for RDF file reading/querying).
@@ -56,7 +58,7 @@ public class SparqlQueryRunnerTester {
     }
 
     @Test
-    public void testSingleFile() {
+    public void testSingleFileGdaId() {
         ResultSet results = runner1.runQuery(prefixes + "SELECT ?id \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id }");
 
@@ -64,6 +66,25 @@ public class SparqlQueryRunnerTester {
         QuerySolution result = results.next();
         Assert.assertEquals(results.hasNext(), false, "more than 1 match found");
         Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
+    }
+
+    @Test
+    public void testSingleFileGdaReference() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://identifiers.org/ncbigene/6607");
+        expectedReferences.add("http://linkedlifedata.com/resource/umls/id/C0043116");
+        Set<String> actualReferences = new HashSet<>();
+
+        ResultSet results = runner1.runQuery(prefixes + "SELECT ?value \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> sio:SIO_000628 ?value }");
+
+        int i = 0;
+        while(results.hasNext()) {
+            QuerySolution result = results.next();
+            actualReferences.add(result.get("value").toString());
+        }
+
+        Assert.assertEquals(actualReferences, expectedReferences, "");
     }
 
     @Test
