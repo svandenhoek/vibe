@@ -26,17 +26,41 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
     // Returns: gene-disease disgenet ID, gene name, disease name
-    private static final String gdaGeneDisease = prefixes + "SELECT ?id ?geneTitle ?diseaseTitle \n" +
-            "WHERE { ?gda dcterms:identifier ?id ; \n" +
+    private static final String gdaGeneDisease = "SELECT ?gda ?type ?geneTitle ?diseaseTitle \n" +
+            "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
+            "?gda rdf:type ?type ; \n" +
             "sio:SIO_000628 ?gene , ?disease . \n" +
             "?gene rdf:type ncit:C16612 ; \n" +
-            "dcterms:title ?geneTitle . \n" +
+            "dcterms:title ?geneTitle ." +
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-//    private static final String[]hpoGenes = {"SELECT ?geneTitle \n" +
-//            "WHERE { }"};
+//        private static final String[]hpoGenes = {"SELECT ?gda ?sio ?geneTitle ?disease \n" +
+//            "WHERE { ?sio rdfs:subClassOf* sio:SIO_000983 . \n" +
+//                "?gda rdf:type ?sio ; \n" +
+//                "sio:SIO_000628 ?gene , ?disease . \n" +
+//                "?gene rdf:type ncit:C16612 ; \n" +
+//                "dcterms:title ?geneTitle . \n" +
+//                "?disease rdf:type ncit:C7057 }",};
 
+//            private static final String[]hpoGenes = {"SELECT ?pda ?hpoId ?disease \n" +
+//            "WHERE { ?pda rdf:type sio:SIO_000897 ; \n" +
+//                    "sio:SIO_000628 ?hpo, ?disease ." +
+//                    "?hpo rdf:type sio:SIO_010056 ;" +
+//                    "dcterms:identifier ?hpoId ." +
+//                    "?disease rdf:type ncit:C7057 }",};
+
+            private static final String[]hpoGenes = {"SELECT ?gda ?type ?pda ?geneTitle ?hpoId \n" +
+                    "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
+                    "?gda rdf:type ?type ; \n" +
+                    "sio:SIO_000628 ?gene , ?disease . \n" +
+                    "?gene rdf:type ncit:C16612 ; \n" +
+                    "dcterms:title ?geneTitle . \n" +
+                    "?disease rdf:type ncit:C7057 . \n" +
+                    "?pda rdf:type sio:SIO_000897 ;" +
+                    "sio:SIO_000628 ?hpo , ?disease ." +
+                    "?hpo rdf:type sio:SIO_010056 ;" +
+                    "dcterms:identifier ?hpoId }",};
 
     public DisgenetQueryRunner(Model model) {
         super(model);
@@ -47,18 +71,18 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
     }
 
     public ResultSet getGdaGeneDisease() {
-        return runQuery(gdaGeneDisease);
+        return runQuery(prefixes + gdaGeneDisease);
     }
 
     public ResultSet getGdaGeneDisease(int limit) {
-        return runQuery(addLimit(gdaGeneDisease, limit));
+        return runQuery(addLimit(prefixes + gdaGeneDisease, limit));
     }
 
-//    public static String getHpoGenes(String hpoTerm) {
-//        return hpoGenes[0] + hpoTerm + hpoGenes[1];
-//    }
-//
-//    public static String getHpoGenes(String hpoTerm, int limit) {
-//        return addLimit(getHpoGenes(hpoTerm), limit);
+    public ResultSet getHpoGenes(String hpoTerm) {
+        return runQuery(prefixes + hpoGenes[0]);// + hpoTerm + hpoGenes[1]);
+    }
+
+//    public ResultSet getHpoGenes(String hpoTerm, int limit) {
+//        return runQuery(addLimit(prefixes + hpoGenes[0] + hpoTerm + hpoGenes[1], limit));
 //    }
 }
