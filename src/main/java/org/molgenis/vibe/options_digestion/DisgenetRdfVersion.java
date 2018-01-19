@@ -2,6 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
+import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -26,6 +27,19 @@ public enum DisgenetRdfVersion {
 
     public String[] getRequiredFiles() {
         return requiredFiles;
+    }
+
+    /**
+     * Generates an array that contains the full {@link Path}{@code s} of the required files based on the given {@code dir}.
+     * @param dir the directory that should contain all the required files
+     * @return an array containing the expected {@link Path}{@code s} to all required files
+     */
+    public Path[] getRequiredFilePaths(Path dir) {
+        Path[] filePaths = new Path[requiredFiles.length];
+        for(int i = 0; i < requiredFiles.length;i++) {
+            filePaths[i] = dir.resolve(requiredFiles[i]);
+        }
+        return filePaths;
     }
 
     /**

@@ -12,10 +12,15 @@ import java.nio.file.Path;
  * Command line options parser.
  */
 public class CommandLineOptionsParser extends OptionsParser {
+    static {
+        options = new Options();
+        createOptions();
+    }
+
     /**
      * Variable for generating & digesting the command line options.
      */
-    private Options options = new Options();
+    private static Options options;
 
     /**
      * Variable for digesting the command line.
@@ -33,33 +38,48 @@ public class CommandLineOptionsParser extends OptionsParser {
     public CommandLineOptionsParser(String[] args) throws ParseException, MissingOptionException, InvalidPathException, IOException {
         requireNonNull(args);
 
-        createOptions();
         parseCommandLine(args);
         digestCommandLine();
+        if(!super.checkConfig()) {
+            throw new IOException("The given user-input (such as settings or file locations) does not adhere the run mode.");
+        }
     }
 
     /**
      * Generates the possible command line arguments.
      */
-    private void createOptions() {
+    private static void createOptions() {
         options.addOption(Option.builder("h")
                 .longOpt("help")
                 .desc("Show help message.")
                 .build());
 
-        options.addOption(Option.builder("r")
-                .longOpt("rvcf")
-                .desc("The rVCF file that needs to be processed.")
+        options.addOption(Option.builder("m")
+                .longOpt("mode")
+                .desc("The mode the application should run.\n1: Give an HPO code to retrieve genes matched to it.")
                 .hasArg()
-                .argName("FILE")
+                .argName("NUMBER")
                 .build());
+
+        options.addOption(Option.builder("p")
+                .longOpt("phenotype")
+                .desc("An HPO id. Can be either the number only or with the 'hp:' prefix.")
+                .hasArg()
+                .argName("HPO ID")
+                .build());
+
+//        options.addOption(Option.builder("r")
+//                .longOpt("rvcf")
+//                .desc("The rVCF file that needs to be processed.")
+//                .hasArg()
+//                .argName("FILE")
+//                .build());
 
         options.addOption(Option.builder("d")
                 .longOpt("disgenet")
                 .desc("The directory containing the files for creating a DisGeNET RDF model.")
                 .hasArg()
-                .argName("FILE")
-                .required()
+                .argName("DIR")
                 .build());
 
         options.addOption(Option.builder("dv")
@@ -73,14 +93,14 @@ public class CommandLineOptionsParser extends OptionsParser {
     /**
      * Prints the help message to stdout.
      */
-    public void printHelpMessage()
+    public static void printHelpMessage()
     {
-        String cmdSyntax = "java jar ViveApplication.jar [-h] -r <FILE> -d <FILE>";
+        String cmdSyntax = "java -jar ViveApplication.jar [-h] -d <DIR> [-dv <VERSION>] -p <HPO ID>";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
         HelpFormatter formatter = new HelpFormatter();
-        formatter.printHelp(80, cmdSyntax, helpHeader, this.options, helpFooter, false);
+        formatter.printHelp(80, cmdSyntax, helpHeader, options, helpFooter, false);
     }
 
     /**
@@ -101,23 +121,39 @@ public class CommandLineOptionsParser extends OptionsParser {
     /**
      * Digests the parsed command line arguments.
      *
-     * @throws InvalidPathException see {@link #setDisgenetDataDir(String)} or {@link #setRvcfData(String)}
-     * @throws IOException see {@link #setDisgenetDataDir(Path)} or {@link #setRvcfData(Path)}
+     * @throws InvalidPathException if user-input which should be a file/directory could not be converted to {@link Path}
+     * @throws IOException if invalid user-input was given (often due to unreadable/missing files)
+     * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
      */
-    private void digestCommandLine() throws InvalidPathException, IOException {
-        if(commandLine.hasOption("h")) {
-            printHelpMessage();
+    private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException {
+//        if(commandLine.hasOption("r")) {
+//            setRvcfData(commandLine.getOptionValue("r"));
+//        }
+
+        if(commandLine.hasOption("p")) {
+            setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IOException)
         }
-        if(commandLine.hasOption("r")) {
-            setRvcfData(commandLine.getOptionValue("r"));
-        }
+
         if(commandLine.hasOption("d")) {
-            setDisgenetDataDir(commandLine.getOptionValue("d"));
+            setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
+
             if(commandLine.hasOption("dv")) {
-                setDisgenetRdfVersion(commandLine.getOptionValue("dv"));
+                setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
             } else {
-                setDisgenetRdfVersion(DisgenetRdfVersion.V5);
+                setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
             }
+        }
+
+        // If explicit run mode was given, this is chosen. This also overwrites guessed run modes based on given user-input.
+        // Note that the help option overrides the run mode.
+        if(commandLine.hasOption("m")) {
+            setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
+        }
+
+        // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
+        // is shown before the application quits.
+        if(commandLine.hasOption("h")) {
+            setRunMode(RunMode.NONE);
         }
     }
 }

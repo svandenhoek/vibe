@@ -6,7 +6,9 @@ public enum TestFile {
     DISEASE_DISEASE_RDF("disease-disease.ttl"),
     PHENOTYPE_RDF("phenotype.ttl"),
     PDA_RDF("pda.ttl"),
-    ONTOLOGY("sio-release.owl");
+    ONTOLOGY("sio-release.owl"),
+    REQUIRED_FILES_FULL("required_files_full"),
+    REQUIRED_FILES_MISSING("required_files_missing");
 
     /**
      * ClassLoader object to view test resource files. Test files can be retrieved using {@code getResource()}, where an

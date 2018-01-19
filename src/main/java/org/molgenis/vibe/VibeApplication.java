@@ -1,15 +1,12 @@
 package org.molgenis.vibe;
 
-import org.apache.commons.cli.MissingOptionException;
-import org.apache.commons.cli.ParseException;
 import org.molgenis.data.Entity;
 import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
 import org.molgenis.data.vcf.VcfRepository;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.options_digestion.OptionsParser;
+import org.molgenis.vibe.options_digestion.RunMode;
 
-import java.io.IOException;
-import java.nio.file.InvalidPathException;
 import java.util.Iterator;
 
 /**
@@ -25,22 +22,19 @@ public class VibeApplication {
 
         try {
             CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
-
-            try {
-                app.run(appOptions);
-            } catch (IOException e) {
-                e.printStackTrace();
-            } catch (Exception e) {
-                e.printStackTrace();
+            // If RunMode is NONE, shows help message and quits application.
+            if(appOptions.getRunMode() == RunMode.NONE) {
+                CommandLineOptionsParser.printHelpMessage();
+            } else { // Any other RunMode will continue application.
+                try {
+                    app.run(appOptions);
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
-        } catch (MissingOptionException e) {
+        } catch (Exception e) {
             System.err.println(e.getLocalizedMessage());
-        } catch (ParseException e) {
-            e.printStackTrace();
-        } catch (InvalidPathException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+            CommandLineOptionsParser.printHelpMessage();
         }
     }
 
