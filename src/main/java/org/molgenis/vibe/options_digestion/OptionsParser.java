@@ -14,12 +14,13 @@ import java.nio.file.Paths;
  */
 public abstract class OptionsParser {
     /**
-     * The DisGeNET RDF data dump (retrievable from http://rdf.disgenet.org/download/).
+     * Path to the directory storing all required files for creating a SPARQL searchable DisGeNET model
+     * (retrievable from http://rdf.disgenet.org/download/ and http://semanticscience.org/ontology/sio.owl).
      */
-    private Path disgenetDump;
+    private Path disgenetDataDir;
 
     /**
-     * The DisGeNET RDF data dump version.
+     * The DisGeNET RDF version.
      */
     private DisgenetRdfVersion disgenetRdfVersion;
 
@@ -28,28 +29,30 @@ public abstract class OptionsParser {
      */
     private Path rvcfData;
 
-    public Path getDisgenetDump() {
-        return disgenetDump;
+    public Path getDisgenetDataDir() {
+        return disgenetDataDir;
     }
 
     /**
-     * @param disgenetDump {@link String}
+     * @param disgenetDataDir a {@link String} containing the path to the directory containing the data required to
+     *                       create a model from the DisGeNET data
      * @throws InvalidPathException if {@link Paths#get(String, String...)}} fails to convert a {@link String} to {@link Path}
-     * @throws IOException see {@link #setDisgenetDump(Path)}
+     * @throws IOException see {@link #setDisgenetDataDir(Path)}
      */
-    void setDisgenetDump(String disgenetDump) throws InvalidPathException, IOException {
-        setDisgenetDump(Paths.get(disgenetDump));
+    void setDisgenetDataDir (String disgenetDataDir) throws InvalidPathException, IOException {
+        setDisgenetDataDir(Paths.get(disgenetDataDir));
     }
 
     /**
-     * @param disgenetDump {@link Path}
-     * @throws IOException if {@code disgenetDump} is not a readable file.
+     * @param disgenetDataDir a {@link Path} containing the path to the directory containing the data required to
+     *                       create a model from the DisGeNET data
+     * @throws IOException if {@code disgenetDump} is not a readable file
      */
-    void setDisgenetDump(Path disgenetDump) throws IOException {
-        if(checkIfPathIsReadableFile(disgenetDump)) {
-            this.disgenetDump = disgenetDump;
+    void setDisgenetDataDir(Path disgenetDataDir) throws IOException {
+        if(checkIfPathIsReadableFile(disgenetDataDir)) {
+            this.disgenetDataDir = disgenetDataDir;
         } else {
-            throw new IOException(disgenetDump.getFileName() + " is not a readable file.");
+            throw new IOException(disgenetDataDir.getFileName() + " is not a readable file.");
         }
     }
 
@@ -58,7 +61,7 @@ public abstract class OptionsParser {
     }
 
     /**
-     * @param disgenetRdfVersion {@link String}
+     * @param disgenetRdfVersion a {@link String} defining the DisGeNET RDF version
      * @throws InvalidStringFormatException see {@link DisgenetRdfVersion#retrieveVersion(String)}
      * @see DisgenetRdfVersion#retrieveVersion(String)
      */
@@ -67,13 +70,16 @@ public abstract class OptionsParser {
     }
 
     /**
-     * @param disgenetRdfVersion {@code int}
+     * @param disgenetRdfVersion an {@code int} defining the DisGeNET RDF version
      * @see DisgenetRdfVersion#retrieveVersion(int)
      */
     void setDisgenetRdfVersion(int disgenetRdfVersion) {
         this.disgenetRdfVersion = DisgenetRdfVersion.retrieveVersion(disgenetRdfVersion);
     }
 
+    /**
+     * @param disgenetRdfVersion a {@link DisgenetRdfVersion}
+     */
     void setDisgenetRdfVersion(DisgenetRdfVersion disgenetRdfVersion) {
         this.disgenetRdfVersion = disgenetRdfVersion;
     }
@@ -93,7 +99,7 @@ public abstract class OptionsParser {
 
     /**
      * @param rvcfData {@link Path}
-     * @throws IOException if {@code rvcfData} is not a readable file.
+     * @throws IOException if {@code rvcfData} is not a readable file
      */
     void setRvcfData(Path rvcfData) throws IOException {
         if(checkIfPathIsReadableFile(rvcfData)) {

@@ -24,16 +24,16 @@ public enum DisgenetRdfVersion {
         this.requiredFiles = requiredFiles;
     }
 
-    public String[] getFilesToRead() {
+    public String[] getRequiredFiles() {
         return requiredFiles;
     }
 
     /**
      * Retrieves the {@link DisgenetRdfVersion} based on a {@link String}. If version is not supported, returns
      * {@link DisgenetRdfVersion#UNSUPPORTED}. However, if {@code versionNumber} does not even adhere to the expected
-     * version number format, a {@link InvalidStringFormatException} is thrown instead.
-     * @param versionNumber {@link String}
-     * @return {@link DisgenetRdfVersion}
+     * version number format, an {@link InvalidStringFormatException} is thrown instead.
+     * @param versionNumber {@link String} from which the version number should be retrieved
+     * @return an {@link DisgenetRdfVersion} enum of the specific version
      * @throws InvalidStringFormatException if {@code versionNumber} does not adhere to the regex "^[v|V]?([0-9]+).*$"
      */
     public static DisgenetRdfVersion retrieveVersion(String versionNumber) throws InvalidStringFormatException {
@@ -48,8 +48,8 @@ public enum DisgenetRdfVersion {
     /**
      * Retrieves the {@link DisgenetRdfVersion} based on a {@code int}. If version is not supported, returns
      * {@link DisgenetRdfVersion#UNSUPPORTED}.
-     * @param versionNumber {@code int}
-     * @return {@link DisgenetRdfVersion}
+     * @param versionNumber a number as {@code int} describing the version
+     * @return an {@link DisgenetRdfVersion} enum of the specific version
      */
     public static DisgenetRdfVersion retrieveVersion(int versionNumber) {
         switch(versionNumber) {

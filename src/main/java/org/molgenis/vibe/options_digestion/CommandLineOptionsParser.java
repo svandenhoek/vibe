@@ -57,7 +57,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         options.addOption(Option.builder("d")
                 .longOpt("disgenet")
-                .desc("The disgenet dump file.")
+                .desc("The directory containing the files for creating a DisGeNET RDF model.")
                 .hasArg()
                 .argName("FILE")
                 .required()
@@ -102,8 +102,8 @@ public class CommandLineOptionsParser extends OptionsParser {
     /**
      * Digests the parsed command line arguments.
      *
-     * @throws InvalidPathException see {@link #setDisgenetDump(String)} or {@link #setRvcfData(String)}
-     * @throws IOException see {@link #setDisgenetDump(Path)} or {@link #setRvcfData(Path)}
+     * @throws InvalidPathException see {@link #setDisgenetDataDir(String)} or {@link #setRvcfData(String)}
+     * @throws IOException see {@link #setDisgenetDataDir(Path)} or {@link #setRvcfData(Path)}
      */
     private void digestCommandLine() throws InvalidPathException, IOException {
         if(commandLine.hasOption("h")) {
@@ -113,7 +113,7 @@ public class CommandLineOptionsParser extends OptionsParser {
             setRvcfData(commandLine.getOptionValue("r"));
         }
         if(commandLine.hasOption("d")) {
-            setDisgenetDump(commandLine.getOptionValue("d"));
+            setDisgenetDataDir(commandLine.getOptionValue("d"));
             if(commandLine.hasOption("dv")) {
                 setDisgenetRdfVersion(commandLine.getOptionValue("dv"));
             } else {
