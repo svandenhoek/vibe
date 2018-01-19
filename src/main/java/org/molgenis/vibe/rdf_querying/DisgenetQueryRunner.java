@@ -6,7 +6,7 @@ import org.apache.jena.rdf.model.Model;
 public final class DisgenetQueryRunner extends SparqlQueryRunner {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
     // 18 lines (for debugging SPARQL queries)
-    private static final String prefixes = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
+    private static final String PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"+
             "PREFIX owl: <http://www.w3.org/2002/07/owl#> \n"+
             "PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> \n"+
@@ -26,7 +26,7 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
     // Returns: gene-disease disgenet ID, gene name, disease name
-    private static final String gdaGeneDisease = "SELECT ?gda ?type ?geneTitle ?diseaseTitle \n" +
+    private static final String GDA_GENE_DISEASE = "SELECT ?gda ?type ?geneTitle ?diseaseTitle \n" +
             "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
             "?gda rdf:type ?type ; \n" +
             "sio:SIO_000628 ?gene , ?disease . \n" +
@@ -50,7 +50,7 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
 //            "dcterms:identifier ?hpoId ." +
 //            "?disease rdf:type ncit:C7057 }",};
 
-    private static final String[]hpoGenes = {"SELECT ?gda ?type ?pda ?geneTitle ?hpo \n" +
+    private static final String[] HPO_GENES = {"SELECT ?gda ?type ?pda ?geneTitle ?hpo \n" +
             "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
             "?gda rdf:type ?type ; \n" +
             "sio:SIO_000628 ?gene , ?disease . \n" +
@@ -67,22 +67,22 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
     }
 
     public static String getPrefixes() {
-        return prefixes;
+        return PREFIXES;
     }
 
     public ResultSet getGdaGeneDisease() {
-        return runQuery(prefixes + gdaGeneDisease);
+        return runQuery(PREFIXES + GDA_GENE_DISEASE);
     }
 
     public ResultSet getGdaGeneDisease(int limit) {
-        return runQuery(addLimit(prefixes + gdaGeneDisease, limit));
+        return runQuery(addLimit(PREFIXES + GDA_GENE_DISEASE, limit));
     }
 
     public ResultSet getHpoGenes(String hpoTerm) {
-        return runQuery(prefixes + hpoGenes[0] + hpoTerm + hpoGenes[1]);
+        return runQuery(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1]);
     }
 
     public ResultSet getHpoGenes(String hpoTerm, int limit) {
-        return runQuery(addLimit(prefixes + hpoGenes[0] + hpoTerm + hpoGenes[1], limit));
+        return runQuery(addLimit(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1], limit));
     }
 }
