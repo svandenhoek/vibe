@@ -24,7 +24,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
     /**
      * Digests the command line options and allows retrieval of useful parameters using getters.
-     * @param args {@link String}{@code []}
+     * @param args the arguments to be digested
      * @throws ParseException see {@link #parseCommandLine(String[])}
      * @throws MissingOptionException see {@link #parseCommandLine(String[])}
      * @throws InvalidPathException see {@link #digestCommandLine()}
@@ -87,7 +87,7 @@ public class CommandLineOptionsParser extends OptionsParser {
     /**
      * Parses the command line with the possible arguments.
      *
-     * @param args {@link String}{@code []}
+     * @param args the arguments to be digested
      * @throws ParseException see {@link DefaultParser#parse(Options, String[])}
      * @throws MissingOptionException if not all required arguments are present
      */
@@ -114,9 +114,11 @@ public class CommandLineOptionsParser extends OptionsParser {
         }
         if(commandLine.hasOption("d")) {
             setDisgenetDump(commandLine.getOptionValue("d"));
-        }
-        if(commandLine.hasOption("dv")) {
-            setDisgenetRdfVersion(commandLine.getOptionValue("dv"));
+            if(commandLine.hasOption("dv")) {
+                setDisgenetRdfVersion(commandLine.getOptionValue("dv"));
+            } else {
+                setDisgenetRdfVersion(DisgenetRdfVersion.V5);
+            }
         }
     }
 }
