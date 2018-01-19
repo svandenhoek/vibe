@@ -52,7 +52,6 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("The rVCF file that needs to be processed.")
                 .hasArg()
                 .argName("FILE")
-                .required()
                 .build());
 
         options.addOption(Option.builder("d")
