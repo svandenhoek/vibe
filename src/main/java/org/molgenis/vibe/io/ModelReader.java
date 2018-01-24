@@ -23,7 +23,7 @@ public class ModelReader {
      * @param file location of RDF file
      * @return {@code this}, for method chaining
      */
-    public ModelReader readFile(String file) {
+    public ModelReader read(String file) {
         if(model == null) {
             model = RDFDataMgr.loadModel(file);
         } else  {
@@ -40,7 +40,7 @@ public class ModelReader {
      * @param fileType RDF file syntax (<a href="https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax">list of Jena supported syntaxes</a>)
      * @return {@code this}, for method chaining
      */
-    public ModelReader readFile(String file, Lang fileType) {
+    public ModelReader read(String file, Lang fileType) {
         if(model == null) {
             model = RDFDataMgr.loadModel(file, fileType);
         } else  {
@@ -63,8 +63,8 @@ public class ModelReader {
      * @param files location of RDF files
      * @return {@code this}, for method chaining
      */
-    public ModelReader readFiles(String[] files) {
-        readFile(files[0]);
+    public ModelReader read(String[] files) {
+        read(files[0]);
 
         for(int i = 1; i < files.length;i++) {
             RDFDataMgr.read(model, files[i]);
@@ -80,8 +80,8 @@ public class ModelReader {
      * @param fileType RDF file syntax (<a href="https://jena.apache.org/documentation/io/rdf-input.html#determining-the-rdf-syntax">list of Jena supported syntaxes</a>)
      * @return {@code this}, for method chaining
      */
-    public ModelReader readFiles(String[] files, Lang fileType) {
-        readFile(files[0], fileType);
+    public ModelReader read(String[] files, Lang fileType) {
+        read(files[0], fileType);
 
         for(int i = 1; i < files.length;i++) {
             RDFDataMgr.read(model, files[i], fileType);
