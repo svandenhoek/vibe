@@ -4,6 +4,9 @@ import org.apache.jena.rdf.model.Model;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
+import java.nio.file.Path;
+import java.util.Arrays;
+
 /**
  * Creates an (Ontology) {@link Model} from RDF files.
  */
@@ -15,6 +18,26 @@ public class ModelReader {
 
     public Model getModel() {
         return model;
+    }
+
+    public ModelReader read(Path file) {
+        return read(file.toString());
+    }
+
+    public ModelReader read(Path file, Lang fileType) {
+        return read(file.toString(), fileType);
+    }
+
+    public ModelReader read(Path[] files) {
+        return read(pathsToStrings(files));
+    }
+
+    public ModelReader read(Path[] files, Lang fileType) {
+        return read(pathsToStrings(files), fileType);
+    }
+
+    private String[] pathsToStrings(Path[] files) {
+        return Arrays.stream(files).map(Path::toString).toArray(String[]::new);
     }
 
     /**
@@ -49,13 +72,6 @@ public class ModelReader {
 
         return this;
     }
-
-    /**
-     * If no {@link Model} is loaded, generates one from the given {@code files}. Otherwise, adds the {@code files} to the
-     * existing model.
-     * {@link Model}.
-     * @param files {@link String}{@code []}
-     */
 
     /**
      * If no {@link Model} is loaded, generates one from the given {@code files}. Otherwise, adds the {@code files} to the

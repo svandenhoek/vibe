@@ -37,9 +37,9 @@ public class SparqlQueryRunnerTester {
                 TestFile.DISEASE_DISEASE_RDF.getFilePath()};
 
         ModelReader reader = new ModelReader();
-        runner1 = new DisgenetQueryRunner(reader.readFile(fileSet1).getModel());
+        runner1 = new DisgenetQueryRunner(reader.read(fileSet1).getModel());
         reader.clear();
-        runner2 = new DisgenetQueryRunner(reader.readFiles(fileSet2).getModel());
+        runner2 = new DisgenetQueryRunner(reader.read(fileSet2).getModel());
     }
 
     @Test(expectedExceptions = QueryParseException.class)

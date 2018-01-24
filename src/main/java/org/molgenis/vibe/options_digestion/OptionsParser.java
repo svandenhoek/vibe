@@ -210,7 +210,8 @@ public abstract class OptionsParser {
             case NONE:
                 return true;
             case GET_GENES_WITH_SINGLE_HPO:
-                if(disgenetDataDir != null && disgenetRdfVersion != null && disgenetDataFiles != null) {
+                if(disgenetDataDir != null && disgenetRdfVersion != null && disgenetDataFiles != null &&
+                        hpoTerms != null & hpoTerms.length == 1) {
                     return true;
                 }
             default:

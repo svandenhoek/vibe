@@ -4,6 +4,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
 import org.molgenis.vibe.io.ModelReader;
+import org.molgenis.vibe.io.ResultSetPrinter;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -21,7 +22,7 @@ public class DisgenetQueryRunnerTester {
                 TestFile.ONTOLOGY.getFilePath()};
 
         ModelReader reader = new ModelReader();
-        runner = new DisgenetQueryRunner(reader.readFiles(fileSet).getModel());
+        runner = new DisgenetQueryRunner(reader.read(fileSet).getModel());
     }
 
 
@@ -49,11 +50,17 @@ public class DisgenetQueryRunnerTester {
         ResultSet results = runner.getHpoGenes("hp:0009811");
 
         int counter = 0;
+
+        if(results.hasNext()) {
+            counter += 1;
+            ResultSetPrinter.print(results.next(), true);
+        }
+
         while(results.hasNext()) {
             counter += 1;
             QuerySolution result = results.next();
             if(counter <=10) {
-                ResultSetPrinter.print(result);
+                ResultSetPrinter.print(result, false);
             }
         }
         // Expected can be counted in file using regex: ^<http://rdf.disgenet.org/resource/gda/ (note that 2 GDAs do not have a phenotype stored)

@@ -1,13 +1,14 @@
 package org.molgenis.vibe;
 
+import org.apache.jena.query.ResultSet;
 import org.molgenis.data.Entity;
 import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
-import org.molgenis.data.vcf.VcfRepository;
+import org.molgenis.vibe.io.ModelReader;
+import org.molgenis.vibe.io.ResultSetPrinter;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.options_digestion.RunMode;
-
-import java.util.Iterator;
+import org.molgenis.vibe.rdf_querying.DisgenetQueryRunner;
 
 /**
  * The main application class.
@@ -43,15 +44,23 @@ public class VibeApplication {
      * @param appOptions {@link OptionsParser}
      * @throws Exception if {@link VcfEntity#VcfEntity(Entity)} fails
      */
-    public void run(OptionsParser appOptions) throws Exception {
-        // Reads in rVCF for further usage.
-        VcfRepository vcf = new VcfRepository(appOptions.getRvcfData().toFile(), "rvcf");
+    public void run(OptionsParser appOptions) {
+        ModelReader modelReader = new ModelReader().read(appOptions.getDisgenetDataFiles());
+        DisgenetQueryRunner queryRunner = new DisgenetQueryRunner(modelReader.getModel());
 
-        // Example of iterating through VcfRepository:
-        Iterator<Entity> vcfIterator = vcf.iterator();
-        while(vcfIterator.hasNext())
-        {
-            VcfEntity record = new VcfEntity(vcfIterator.next());
+        if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
+            ResultSet results = queryRunner.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId());
+            ResultSetPrinter.print(results, true);
         }
+
+//        // Reads in rVCF for further usage.
+//        VcfRepository vcf = new VcfRepository(appOptions.getRvcfData().toFile(), "rvcf");
+//
+//        // Example of iterating through VcfRepository:
+//        Iterator<Entity> vcfIterator = vcf.iterator();
+//        while(vcfIterator.hasNext())
+//        {
+//            VcfEntity record = new VcfEntity(vcfIterator.next());
+//        }
     }
 }
