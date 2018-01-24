@@ -6,6 +6,7 @@ import org.apache.jena.riot.RDFDataMgr;
 
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 /**
  * Creates an (Ontology) {@link Model} from RDF files.
@@ -80,10 +81,12 @@ public class ModelReader {
      * @return {@code this}, for method chaining
      */
     public ModelReader read(String[] files) {
-        read(files[0]);
+        if(files.length > 0) {
+            read(files[0]);
 
-        for(int i = 1; i < files.length;i++) {
-            RDFDataMgr.read(model, files[i]);
+            for (int i = 1; i < files.length; i++) {
+                RDFDataMgr.read(model, files[i]);
+            }
         }
 
         return this;
@@ -97,10 +100,12 @@ public class ModelReader {
      * @return {@code this}, for method chaining
      */
     public ModelReader read(String[] files, Lang fileType) {
-        read(files[0], fileType);
+        if(files.length > 0) {
+            read(files[0], fileType);
 
-        for(int i = 1; i < files.length;i++) {
-            RDFDataMgr.read(model, files[i], fileType);
+            for (int i = 1; i < files.length; i++) {
+                RDFDataMgr.read(model, files[i], fileType);
+            }
         }
 
         return this;
