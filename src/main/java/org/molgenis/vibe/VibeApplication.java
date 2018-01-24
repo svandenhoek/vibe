@@ -3,6 +3,7 @@ package org.molgenis.vibe;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.data.Entity;
 import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
+import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.ResultSetPrinter;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
@@ -45,7 +46,7 @@ public class VibeApplication {
      * @throws Exception if {@link VcfEntity#VcfEntity(Entity)} fails
      */
     public void run(OptionsParser appOptions) {
-        ModelReader modelReader = new ModelReader().read(appOptions.getDisgenetDataFiles());
+        ModelReader modelReader = new ModelFilesReader(appOptions.getDisgenetDataFilesAsStrings());
         DisgenetQueryRunner queryRunner = new DisgenetQueryRunner(modelReader.getModel());
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {

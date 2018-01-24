@@ -9,6 +9,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -127,6 +128,10 @@ public abstract class OptionsParser {
 
     public Path[] getDisgenetDataFiles() {
         return disgenetDataFiles;
+    }
+
+    public String[] getDisgenetDataFilesAsStrings() {
+        return Arrays.stream(getDisgenetDataFiles()).map(Path::toString).toArray(String[]::new);
     }
 
     private void setDisgenetDataFiles(Path disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws IOException {

@@ -4,8 +4,10 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
@@ -25,6 +27,8 @@ import java.util.Set;
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
 public class SparqlQueryRunnerTester {
+    private ModelReader reader1;
+    private ModelReader reader2;
     private SparqlQueryRunner runner1;
     private SparqlQueryRunner runner2;
     private final String prefixes = DisgenetQueryRunner.getPrefixes();
@@ -36,10 +40,16 @@ public class SparqlQueryRunnerTester {
                 TestFile.GENE_RDF.getFilePath(),
                 TestFile.DISEASE_DISEASE_RDF.getFilePath()};
 
-        ModelReader reader = new ModelReader();
-        runner1 = new DisgenetQueryRunner(reader.read(fileSet1).getModel());
-        reader.clear();
-        runner2 = new DisgenetQueryRunner(reader.read(fileSet2).getModel());
+        reader1 = new ModelFilesReader(fileSet1);
+        runner1 = new DisgenetQueryRunner(reader1.getModel());
+        reader2 = new ModelFilesReader(fileSet2);
+        runner2 = new DisgenetQueryRunner(reader2.getModel());
+    }
+
+    @AfterClass
+    public void close() {
+        reader1.close();
+        reader2.close();
     }
 
     @Test(expectedExceptions = QueryParseException.class)

@@ -3,13 +3,16 @@ package org.molgenis.vibe.rdf_querying;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.ResultSetPrinter;
 import org.testng.Assert;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class DisgenetQueryRunnerTester {
+    private ModelReader reader;
     private DisgenetQueryRunner runner;
 
     @BeforeClass
@@ -21,11 +24,14 @@ public class DisgenetQueryRunnerTester {
                 TestFile.PDA_RDF.getFilePath(),
                 TestFile.ONTOLOGY.getFilePath()};
 
-        ModelReader reader = new ModelReader();
-        runner = new DisgenetQueryRunner(reader.read(fileSet).getModel());
+        reader = new ModelFilesReader(fileSet);
+        runner = new DisgenetQueryRunner(reader.getModel());
     }
 
-
+    @AfterClass
+    public void close() {
+        reader.close();
+    }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidLimit() {
