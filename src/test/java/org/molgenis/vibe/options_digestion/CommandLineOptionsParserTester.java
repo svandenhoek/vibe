@@ -25,6 +25,17 @@ public class CommandLineOptionsParserTester {
         Assert.assertEquals(appOptions.getRunMode(), RunMode.NONE);
     }
 
+    @Test
+    public void getGenesWIthSingleHpoId() throws IOException, ParseException {
+        String[] args = new String[]{"-m", "1", "-d", TestFile.TDB.getFilePath(), "-p", "hp:1234567"};
+        CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
+
+        Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFile.TDB.getFilePath());
+        Assert.assertEquals(appOptions.getHpoTerms().length, 1);
+        Assert.assertEquals(appOptions.getHpoTerms()[0].getFormattedId(), "hp:1234567");
+    }
+
 //    @Test
 //    public void allFilesPresent() throws IOException, ParseException {
 //        String[] args = new String[]{"-d", TestFile.DIR_REQUIRED_FILES_FULL.getFilePath()};
