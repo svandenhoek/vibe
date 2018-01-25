@@ -9,9 +9,7 @@ import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
@@ -30,16 +28,18 @@ public abstract class OptionsParser {
      */
     private Path disgenetDataDir;
 
+    private RdfStorageFormat rdfStorageFormat = RdfStorageFormat.TDB; // individual files model creation not supported
+
     /**
      * The DisGeNET RDF version.
      */
     private DisgenetRdfVersion disgenetRdfVersion;
 
-    /**
-     * All files required to create a SPARQL searchable DisGeNET model based on the {@code disgenetDataDir} and the files
-     * defined by the specific {@code disgenetRdfVersion}.
-     */
-    private Path[] disgenetDataFiles;
+//    /**
+//     * All files required to create a SPARQL searchable DisGeNET model based on the {@code disgenetDataDir} and the files
+//     * defined by the specific {@code disgenetRdfVersion}.
+//     */
+//    private Path[] disgenetDataFiles;
 
     /**
      * The HPO terms to be used within the application.
@@ -62,13 +62,13 @@ public abstract class OptionsParser {
     protected void setDisgenet(String disgenetDataDir, String disgenetRdfVersion) throws InvalidPathException, IOException {
         setDisgenetDataDir(disgenetDataDir);
         setDisgenetRdfVersion(disgenetRdfVersion);
-        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
+//        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
     }
 
     protected void setDisgenet(String disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws InvalidPathException, IOException {
         setDisgenetDataDir(disgenetDataDir);
         setDisgenetRdfVersion(disgenetRdfVersion);
-        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
+//        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
     }
 
     public Path getDisgenetDataDir() {
@@ -98,6 +98,14 @@ public abstract class OptionsParser {
         }
     }
 
+    public RdfStorageFormat getRdfStorageFormat() {
+        return rdfStorageFormat;
+    }
+
+//    protected void setRdfStorageFormat(RdfStorageFormat rdfStorageFormat) {
+//        this.rdfStorageFormat = rdfStorageFormat;
+//    }
+
     public DisgenetRdfVersion getDisgenetRdfVersion() {
         return disgenetRdfVersion;
     }
@@ -126,25 +134,25 @@ public abstract class OptionsParser {
         this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
-    public Path[] getDisgenetDataFiles() {
-        return disgenetDataFiles;
-    }
+//    public Path[] getDisgenetDataFiles() {
+//        return disgenetDataFiles;
+//    }
 
-    public String[] getDisgenetDataFilesAsStrings() {
-        return Arrays.stream(getDisgenetDataFiles()).map(Path::toString).toArray(String[]::new);
-    }
+//    public String[] getDisgenetDataFilesAsStrings() {
+//        return Arrays.stream(getDisgenetDataFiles()).map(Path::toString).toArray(String[]::new);
+//    }
 
-    private void setDisgenetDataFiles(Path disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws IOException {
-        Path[] paths = disgenetRdfVersion.getRequiredFilePaths(disgenetDataDir);
-        List<Path> invalidPaths = getInvalidPaths(paths);
-        if(invalidPaths.size() == 0) {
-            this.disgenetDataFiles = paths;
-        } else {
-            String listString = invalidPaths.stream().map(Path::getFileName).map(Path::toString)
-                    .collect(Collectors.joining(", "));
-            throw new IOException(listString + " are not readable/missing.");
-        }
-    }
+//    private void setDisgenetDataFiles(Path disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws IOException {
+//        Path[] paths = disgenetRdfVersion.getRequiredFilePaths(disgenetDataDir);
+//        List<Path> invalidPaths = getInvalidPaths(paths);
+//        if(invalidPaths.size() == 0) {
+//            this.disgenetDataFiles = paths;
+//        } else {
+//            String listString = invalidPaths.stream().map(Path::getFileName).map(Path::toString)
+//                    .collect(Collectors.joining(", "));
+//            throw new IOException(listString + " are not readable/missing.");
+//        }
+//    }
 
     public Path getRvcfData() {
         return rvcfData;
@@ -215,8 +223,7 @@ public abstract class OptionsParser {
             case NONE:
                 return true;
             case GET_GENES_WITH_SINGLE_HPO:
-                if(disgenetDataDir != null && disgenetRdfVersion != null && disgenetDataFiles != null &&
-                        hpoTerms != null & hpoTerms.length == 1) {
+                if(disgenetDataDir != null && disgenetRdfVersion != null && hpoTerms != null & hpoTerms.length == 1) {
                     return true;
                 }
             default:

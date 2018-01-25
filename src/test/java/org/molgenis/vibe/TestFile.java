@@ -1,12 +1,13 @@
 package org.molgenis.vibe;
 
 public enum TestFile {
-    GDA1_RDF("gda.ttl"),
-    GENE_RDF("gene.ttl"),
-    DISEASE_DISEASE_RDF("disease-disease.ttl"),
-    PHENOTYPE_RDF("phenotype.ttl"),
-    PDA_RDF("pda.ttl"),
-    ONTOLOGY("sio-release.owl"),
+    GDA1_RDF("disgenet/gda.ttl"),
+    GENE_RDF("disgenet/gene.ttl"),
+    DISEASE_DISEASE_RDF("disgenet/disease-disease.ttl"),
+    PHENOTYPE_RDF("disgenet/phenotype.ttl"),
+    PDA_RDF("disgenet/pda.ttl"),
+    ONTOLOGY("disgenet/sio-release.owl"),
+    TDB("disgenet_tdb"),
     DIR_REQUIRED_FILES_FULL("required_files_full"),
     DIR_REQUIRED_FILES_MISSING("required_files_missing");
 

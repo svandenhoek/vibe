@@ -10,6 +10,10 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 public abstract class ResultSetPrinter {
+    public static void print(ResultSet resultSet) {
+        print(resultSet, true);
+    }
+
     public static void print(ResultSet resultSet, boolean header) {
         // For the first QuerySolution, prints the header if requested.
         if(resultSet.hasNext()) {
@@ -20,6 +24,10 @@ public abstract class ResultSetPrinter {
         while(resultSet.hasNext()) {
             printSolution(resultSet.next());
         }
+    }
+
+    public static void print(QuerySolution querySolution) {
+        print(querySolution, false);
     }
 
     public static void print(QuerySolution querySolution, boolean header) {
