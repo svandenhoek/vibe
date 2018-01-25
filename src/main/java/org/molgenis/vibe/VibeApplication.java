@@ -1,6 +1,7 @@
 package org.molgenis.vibe;
 
 import org.apache.jena.query.ResultSet;
+import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.data.Entity;
 import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
 import org.molgenis.vibe.io.ModelReader;
@@ -9,7 +10,7 @@ import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.options_digestion.RunMode;
-import org.molgenis.vibe.rdf_querying.DisgenetQueryRunner;
+import org.molgenis.vibe.rdf_querying.DisgenetQueryGenerator;
 
 /**
  * The main application class.
@@ -46,14 +47,17 @@ public class VibeApplication {
      * @throws Exception if {@link VcfEntity#VcfEntity(Entity)} fails
      */
     public void run(OptionsParser appOptions) {
-        appOptions.printVerbose("loading DisGeNET dataset");
+        appOptions.printVerbose("Preparing DisGeNET dataset");
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
-        DisgenetQueryRunner queryRunner = new DisgenetQueryRunner(modelReader.getModel());
+        DisgenetQueryGenerator queryGenerator = new DisgenetQueryGenerator(modelReader.getModel());
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
-            appOptions.printVerbose("running query for " + appOptions.getHpoTerms()[0].getFormattedId());
-            ResultSet results = queryRunner.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId());
-            ResultSetPrinter.print(results, true);
+//            appOptions.printVerbose("Generating query for " + appOptions.getHpoTerms()[0].getFormattedId());
+//            ResultSet results = queryRunner.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId());
+//            ResultSet results = queryGenerator.getGdaGeneDisease(20);
+//            appOptions.printVerbose("Digesting query output for " + appOptions.getHpoTerms()[0].getFormattedId());
+//            ResultSetPrinter.print(results, true);
+//            ResultSetFormatter.out(System.out, results) ;
         }
 
 //        // Reads in rVCF for further usage.

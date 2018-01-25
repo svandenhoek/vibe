@@ -3,7 +3,7 @@ package org.molgenis.vibe.rdf_querying;
 import org.apache.jena.query.ResultSet;
 import org.apache.jena.rdf.model.Model;
 
-public final class DisgenetQueryRunner extends SparqlQueryRunner {
+public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
     // 18 lines (for debugging SPARQL queries)
     private static final String PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
@@ -62,7 +62,7 @@ public final class DisgenetQueryRunner extends SparqlQueryRunner {
             "?hpo rdf:type sio:SIO_010056 ;" +
             "dcterms:identifier \"", "\"^^xsd:string }"};
 
-    public DisgenetQueryRunner(Model model) {
+    public DisgenetQueryGenerator(Model model) {
         super(model);
     }
 

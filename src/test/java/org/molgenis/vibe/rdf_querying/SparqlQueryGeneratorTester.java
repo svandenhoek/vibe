@@ -15,7 +15,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 /**
- * Tests the {@link SparqlQueryRunner} (based on Apache Jena for RDF file reading/querying).
+ * Tests the {@link SparqlQueryGenerator} (based on Apache Jena for RDF file reading/querying).
  *
  * IMPORTANT: Run TestNGPreprocessing.sh before using TestNG!
  *
@@ -26,12 +26,12 @@ import java.util.Set;
  * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
-public class SparqlQueryRunnerTester {
+public class SparqlQueryGeneratorTester {
     private ModelReader reader1;
     private ModelReader reader2;
-    private SparqlQueryRunner runner1;
-    private SparqlQueryRunner runner2;
-    private final String prefixes = DisgenetQueryRunner.getPrefixes();
+    private SparqlQueryGenerator runner1;
+    private SparqlQueryGenerator runner2;
+    private final String prefixes = DisgenetQueryGenerator.getPrefixes();
 
     @BeforeClass
     public void initialize() {
@@ -41,9 +41,9 @@ public class SparqlQueryRunnerTester {
                 TestFile.DISEASE_DISEASE_RDF.getFilePath()};
 
         reader1 = new ModelFilesReader(fileSet1);
-        runner1 = new DisgenetQueryRunner(reader1.getModel());
+        runner1 = new DisgenetQueryGenerator(reader1.getModel());
         reader2 = new ModelFilesReader(fileSet2);
-        runner2 = new DisgenetQueryRunner(reader2.getModel());
+        runner2 = new DisgenetQueryGenerator(reader2.getModel());
     }
 
     @AfterClass

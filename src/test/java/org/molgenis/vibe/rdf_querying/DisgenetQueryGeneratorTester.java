@@ -11,9 +11,9 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-public class DisgenetQueryRunnerTester {
+public class DisgenetQueryGeneratorTester {
     private ModelReader reader;
-    private DisgenetQueryRunner runner;
+    private DisgenetQueryGenerator runner;
 
     @BeforeClass
     public void initialize() {
@@ -25,7 +25,7 @@ public class DisgenetQueryRunnerTester {
                 TestFile.ONTOLOGY.getFilePath()};
 
         reader = new ModelFilesReader(fileSet);
-        runner = new DisgenetQueryRunner(reader.getModel());
+        runner = new DisgenetQueryGenerator(reader.getModel());
     }
 
     @AfterClass
