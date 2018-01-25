@@ -54,6 +54,11 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("Show help message.")
                 .build());
 
+        options.addOption(Option.builder("v")
+                .longOpt("verbose")
+                .desc("Shows text indicating the processes that are being done.")
+                .build());
+
         options.addOption(Option.builder("m")
                 .longOpt("mode")
                 .desc("The mode the application should run.\n1: Give an HPO code to retrieve genes matched to it.")
@@ -126,6 +131,10 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
      */
     private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException {
+        if(commandLine.hasOption("v")) {
+            setVerbose(true);
+        }
+
 //        if(commandLine.hasOption("r")) {
 //            setRvcfData(commandLine.getOptionValue("r"));
 //        }
@@ -135,8 +144,6 @@ public class CommandLineOptionsParser extends OptionsParser {
         }
 
         if(commandLine.hasOption("d")) {
-            setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
-
             if(commandLine.hasOption("dv")) {
                 setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
             } else {
@@ -144,7 +151,7 @@ public class CommandLineOptionsParser extends OptionsParser {
             }
         }
 
-        // If explicit run mode was given, this is chosen. This also overwrites guessed run modes based on given user-input.
+        // If explicit run mode was given, this is chosen. This also overrides guessed run modes based on given user-input.
         // Note that the help option overrides the run mode.
         if(commandLine.hasOption("m")) {
             setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException

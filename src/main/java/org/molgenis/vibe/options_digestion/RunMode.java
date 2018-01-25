@@ -1,7 +1,16 @@
 package org.molgenis.vibe.options_digestion;
 
 public enum RunMode {
-    NONE, GET_GENES_WITH_SINGLE_HPO;
+    NONE("none"), GET_GENES_WITH_SINGLE_HPO("get genes matching a single HPO id");
+
+    private String description;
+
+    public String getDescription() {
+        return description;
+    }
+
+    RunMode(String description) {
+    }
 
     /**
      *

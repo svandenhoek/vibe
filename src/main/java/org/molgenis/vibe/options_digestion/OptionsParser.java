@@ -17,6 +17,8 @@ import java.util.List;
  */
 public abstract class OptionsParser {
 
+    private boolean verbose = false;
+
     /**
      * Defines the exact operation to be done by the application. Default is set to {@link RunMode#NONE}.
      */
@@ -51,11 +53,26 @@ public abstract class OptionsParser {
      */
     private Path rvcfData;
 
+    public boolean isVerbose() {
+        return verbose;
+    }
+
+    protected void setVerbose(boolean verbose) {
+        this.verbose = verbose;
+    }
+
+    public void printVerbose(String text) {
+        if(verbose) {
+            System.out.println(text);
+        }
+    }
+
     public RunMode getRunMode() {
         return runMode;
     }
 
     protected void setRunMode(RunMode runMode) {
+        printVerbose("run mode: " + runMode.getDescription());
         this.runMode = runMode;
     }
 
