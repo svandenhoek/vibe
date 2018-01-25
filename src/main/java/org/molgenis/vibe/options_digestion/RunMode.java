@@ -10,6 +10,7 @@ public enum RunMode {
     }
 
     RunMode(String description) {
+        this.description = description;
     }
 
     /**

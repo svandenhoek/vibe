@@ -25,21 +25,22 @@ public class Hpo {
     }
 
     public String getFormattedId() {
-        return PREFIX + Integer.toString(id);
+        String idString = Integer.toString(id);
+        return PREFIX + ("0000000" + idString).substring(idString.length());
     }
 
     /**
      * Converts a {@link String} defining the HPO id into the actual {@code int} containing the ID only.
      * @param hpoTerm a {@link String} containing the HPO id (with prefix)
      * @return an {@code int} with the HPO id without prefix (if present)
-     * @throws InvalidStringFormatException if {@code hpoTerm} did not adhere to the regex: ^(hp:)?([0-9]+)$
+     * @throws InvalidStringFormatException if {@code hpoTerm} did not adhere to the regex: ^(hp:)?([0-9]{7})$
      */
     private int retrieveIdNumbers(String hpoTerm) throws InvalidStringFormatException {
-        Matcher m = Pattern.compile("^(hp:)?([0-9]+)$").matcher(hpoTerm);
+        Matcher m = Pattern.compile("^(hp:)?([0-9]{7})$").matcher(hpoTerm);
         if(m.matches()) {
             return Integer.parseInt(m.group(2));
         } else {
-            throw new InvalidStringFormatException(hpoTerm + " does not adhere the required format: ^(hp:)?([0-9]+)$");
+            throw new InvalidStringFormatException(hpoTerm + " does not adhere the required format: ^(hp:)?([0-9]{7})$");
         }
     }
 }
