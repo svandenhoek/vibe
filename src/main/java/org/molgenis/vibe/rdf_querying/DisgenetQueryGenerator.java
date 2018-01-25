@@ -1,8 +1,5 @@
 package org.molgenis.vibe.rdf_querying;
 
-import org.apache.jena.query.ResultSet;
-import org.apache.jena.rdf.model.Model;
-
 public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
     // 18 lines (for debugging SPARQL queries)
@@ -35,54 +32,35 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-//    private static final String[]hpoGenes = {"SELECT ?gda ?sio ?geneTitle ?disease \n" +
-//        "WHERE { ?sio rdfs:subClassOf* sio:SIO_000983 . \n" +
-//            "?gda rdf:type ?sio ; \n" +
-//            "sio:SIO_000628 ?gene , ?disease . \n" +
-//            "?gene rdf:type ncit:C16612 ; \n" +
-//            "dcterms:title ?geneTitle . \n" +
-//            "?disease rdf:type ncit:C7057 }",};
-//
-//    private static final String[]hpoGenes = {"SELECT ?pda ?hpoId ?disease \n" +
-//    "WHERE { ?pda rdf:type sio:SIO_000897 ; \n" +
-//            "sio:SIO_000628 ?hpo, ?disease ." +
-//            "?hpo rdf:type sio:SIO_010056 ;" +
-//            "dcterms:identifier ?hpoId ." +
-//            "?disease rdf:type ncit:C7057 }",};
-
-    private static final String[] HPO_GENES = {"SELECT ?gda ?type ?pda ?geneTitle ?hpo \n" +
-            "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
-            "?gda rdf:type ?type ; \n" +
-            "sio:SIO_000628 ?gene , ?disease . \n" +
-            "?gene rdf:type ncit:C16612 ; \n" +
-            "dcterms:title ?geneTitle . \n" +
+    private static final String[] HPO_GENES = {"SELECT ?hpo ?disease ?gene ?geneTitle \n" +
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+            "dcterms:identifier \"", "\"^^xsd:string . \n" +
+            "?pda rdf:type sio:SIO_000897 ; \n" +
+            "sio:SIO_000628 ?hpo , ?disease . \n" +
             "?disease rdf:type ncit:C7057 . \n" +
-            "?pda rdf:type sio:SIO_000897 ;" +
-            "sio:SIO_000628 ?hpo , ?disease ." +
-            "?hpo rdf:type sio:SIO_010056 ;" +
-            "dcterms:identifier \"", "\"^^xsd:string }"};
-
-    public DisgenetQueryGenerator(Model model) {
-        super(model);
-    }
+            "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
+            "rdf:type ?type . \n" +
+            "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
+            "?gene rdf:type ncit:C16612 ; \n" +
+            "dcterms:title ?geneTitle . }"};
 
     public static String getPrefixes() {
         return PREFIXES;
     }
 
-    public ResultSet getGdaGeneDisease() {
-        return runQuery(PREFIXES + GDA_GENE_DISEASE);
+    public static String getGdaGeneDisease() {
+        return PREFIXES + GDA_GENE_DISEASE;
     }
 
-    public ResultSet getGdaGeneDisease(int limit) {
-        return runQuery(addLimit(PREFIXES + GDA_GENE_DISEASE, limit));
+    public static String getGdaGeneDisease(int limit) {
+        return addLimit(PREFIXES + GDA_GENE_DISEASE, limit);
     }
 
-    public ResultSet getHpoGenes(String hpoTerm) {
-        return runQuery(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1]);
+    public static String getHpoGenes(String hpoTerm) {
+        return PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1];
     }
 
-    public ResultSet getHpoGenes(String hpoTerm, int limit) {
-        return runQuery(addLimit(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1], limit));
+    public static String getHpoGenes(String hpoTerm, int limit) {
+        return addLimit(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1], limit);
     }
 }
