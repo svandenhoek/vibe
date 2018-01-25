@@ -46,12 +46,12 @@ public class VibeApplication {
      * @throws Exception if {@link VcfEntity#VcfEntity(Entity)} fails
      */
     public void run(OptionsParser appOptions) {
-        appOptions.printVerbose("Loading DisGeNET dataset...");
+        appOptions.printVerbose("loading DisGeNET dataset");
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
         DisgenetQueryRunner queryRunner = new DisgenetQueryRunner(modelReader.getModel());
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
-            appOptions.printVerbose("Running query...");
+            appOptions.printVerbose("running query for " + appOptions.getHpoTerms()[0].getFormattedId());
             ResultSet results = queryRunner.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId());
             ResultSetPrinter.print(results, true);
         }
