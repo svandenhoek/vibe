@@ -6,10 +6,7 @@ import org.molgenis.vibe.TestFile;
 import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -49,8 +46,8 @@ public class SparqlQueryGeneratorTester {
         reader2.close();
     }
 
-    @AfterTest(alwaysRun = true)
-    public void afterTest() {
+    @AfterMethod(alwaysRun = true)
+    public void afterMethod() {
         runner.close();
     }
 

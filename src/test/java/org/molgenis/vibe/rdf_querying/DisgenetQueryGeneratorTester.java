@@ -6,10 +6,7 @@ import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.ResultSetPrinter;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.AfterTest;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
+import org.testng.annotations.*;
 
 public class DisgenetQueryGeneratorTester {
     private ModelReader reader;
@@ -33,8 +30,8 @@ public class DisgenetQueryGeneratorTester {
         reader.close();
     }
 
-    @AfterTest(alwaysRun = true)
-    public void afterTest() {
+    @AfterMethod(alwaysRun = true)
+    public void afterMethod() {
         runner.close();
     }
 
