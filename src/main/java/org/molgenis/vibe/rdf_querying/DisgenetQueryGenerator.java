@@ -33,22 +33,31 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-    private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneTitle ?gdaSourceTitle \n" +
+    private static final String[] HPO_GENES = {"SELECT ?gda ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSourceTitle ?gdaSourceTitle \n" +
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
             "dcterms:identifier \"", "\"^^xsd:string . \n" +
             "?pda rdf:type sio:SIO_000897 ; \n" +
-            "sio:SIO_000628 ?hpo , ?disease . \n" +
+            "sio:SIO_000628 ?hpo , ?disease ; \n" +
+            "sio:SIO_000253 ?pdaSource . \n" +
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle . \n" +
+            "?pdaSource rdf:type dctypes:Dataset ; \n" +
+            "dcterms:title ?pdaSourceTitle . \n" +
             "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
             "rdf:type ?type ; \n" +
+            "sio:SIO_000216 ?gdaScore ; \n" +
             "sio:SIO_000253 ?gdaSource . \n" +
-            "?gdaSource rdf:type dctypes:Dataset ;" +
-            "dcterms:title ?gdaSourceTitle ." +
             "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
             "?gene rdf:type ncit:C16612 ; \n" +
             "dcterms:identifier ?geneId ; \n" +
-            "dcterms:title ?geneTitle . }"};
+            "sio:SIO_000205 ?geneSymbol . \n" +
+            "?geneSymbol rdf:type ncit:C43568 ; \n" +
+            "dcterms:title ?geneSymbolTitle . \n" +
+            "?gdaScore rdf:type ncit:C25338 ; \n" +
+            "sio:SIO_000300 ?gdaScoreNumber . \n" +
+            "?gdaSource rdf:type dctypes:Dataset ; \n" +
+            "dcterms:title ?gdaSourceTitle . \n" +
+            "}"};
 
     public static String getPrefixes() {
         return PREFIXES;
