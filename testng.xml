@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
 
-<suite name="AllTests">
-    <test name="automatic validation" enabled="true">
+<suite name="TestSuite">
+    <test name="ValidationTests" enabled="true">
         <groups>
             <run>
                 <exclude name="benchmarking" />
@@ -15,7 +15,7 @@
         </packages>
     </test>
 
-    <test name="benchmarking" enabled="false">
+    <test name="Benchmarking" enabled="false">
         <groups>
             <run>
                 <include name="benchmarking" />
@@ -27,7 +27,7 @@
         </packages>
     </test>
 
-    <test name="output examples (non-tests)" enabled="true">
+    <test name="OutputExamplesWithoutTesting" enabled="true">
         <groups>
             <run>
                 <include name="noTest" />
