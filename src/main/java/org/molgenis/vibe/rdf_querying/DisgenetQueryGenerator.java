@@ -2,6 +2,7 @@ package org.molgenis.vibe.rdf_querying;
 
 public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
+    // Some namespaces contained 1 or more additional "http://". These were removed.
     // 18 lines (for debugging SPARQL queries)
     private static final String PREFIXES = "PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> \n"+
             "PREFIX rdfs: <http://www.w3.org/2000/01/rdf-schema#> \n"+
@@ -16,10 +17,10 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "PREFIX up: <http://purl.uniprot.org/core/> \n"+
             "PREFIX dcat: <http://www.w3.org/ns/dcat#> \n"+
             "PREFIX dctypes: <http://purl.org/dc/dcmitype/> \n"+
-            "PREFIX wi: <http://http://purl.org/ontology/wi/core#> \n"+
-            "PREFIX eco: <http://http://purl.obolibrary.org/obo/eco.owl#> \n"+
-            "PREFIX prov: <http://http://http://www.w3.org/ns/prov#> \n"+
-            "PREFIX pav: <http://http://http://purl.org/pav/> \n"+
+            "PREFIX wi: <http://purl.org/ontology/wi/core#> \n"+
+            "PREFIX eco: <http://purl.obolibrary.org/obo/eco.owl#> \n"+
+            "PREFIX prov: <http://www.w3.org/ns/prov#> \n"+
+            "PREFIX pav: <http://purl.org/pav/> \n"+
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
     // Returns: gene-disease disgenet ID, gene name, disease name
