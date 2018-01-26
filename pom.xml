@@ -85,11 +85,11 @@
     </repositories>
 
     <dependencies>
-        <dependency>
-            <groupId>com.github.svandenhoek</groupId>
-            <artifactId>gavin-plus</artifactId>
-            <version>7cfa07601d</version>
-        </dependency>
+        <!--<dependency>-->
+            <!--<groupId>com.github.svandenhoek</groupId>-->
+            <!--<artifactId>gavin-plus</artifactId>-->
+            <!--<version>7cfa07601d</version>-->
+        <!--</dependency>-->
 
         <dependency>
             <groupId>org.apache.jena</groupId>
