@@ -1,8 +1,6 @@
 package org.molgenis.vibe;
 
 import org.apache.jena.query.ResultSetFormatter;
-import org.molgenis.data.Entity;
-import org.molgenis.data.annotation.makervcf.structs.VcfEntity;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
@@ -43,7 +41,6 @@ public class VibeApplication {
     /**
      * The actual processing parts of the application.
      * @param appOptions {@link OptionsParser}
-     * @throws Exception if {@link VcfEntity#VcfEntity(Entity)} fails
      */
     public void run(OptionsParser appOptions) {
         appOptions.printVerbose("Preparing DisGeNET dataset");
@@ -55,22 +52,6 @@ public class VibeApplication {
                     DisgenetQueryGenerator.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId()));
             ResultSetFormatter.out(System.out, query.getResultSet());
             query.close();
-
-//            ResultSet results = queryRunner.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId());
-//            ResultSet results = queryGenerator.getGdaGeneDisease(20);
-//            appOptions.printVerbose("Digesting query output for " + appOptions.getHpoTerms()[0].getFormattedId());
-//            ResultSetPrinter.print(results, true);
-//            ResultSetFormatter.out(System.out, results) ;
         }
-
-//        // Reads in rVCF for further usage.
-//        VcfRepository vcf = new VcfRepository(appOptions.getRvcfData().toFile(), "rvcf");
-//
-//        // Example of iterating through VcfRepository:
-//        Iterator<Entity> vcfIterator = vcf.iterator();
-//        while(vcfIterator.hasNext())
-//        {
-//            VcfEntity record = new VcfEntity(vcfIterator.next());
-//        }
     }
 }

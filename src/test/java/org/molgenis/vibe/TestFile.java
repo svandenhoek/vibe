@@ -7,7 +7,7 @@ public enum TestFile {
     PHENOTYPE_RDF("disgenet_mini/phenotype.ttl"),
     PDA_RDF("disgenet_mini/pda.ttl"),
     ONTOLOGY("disgenet_mini/sio-release.owl"),
-    TDB("disgenet_mini_tdb"),
+    TDB_MINI("disgenet_mini_tdb"),
     TDB_FULL("disgenet_full_tdb"),
     DIR_REQUIRED_FILES_FULL("required_files_full"),
     DIR_REQUIRED_FILES_MISSING("required_files_missing");

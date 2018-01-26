@@ -24,7 +24,7 @@ public class ModelReadersTester {
                 TestFile.ONTOLOGY.getFilePath()});
         modelFileModel = modelFileReader.getModel();
 
-        tripleStoreReader = new TripleStoreDbReader(TestFile.TDB.getFilePath());
+        tripleStoreReader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
         tripleStoreModel = tripleStoreReader.getModel();
     }
 

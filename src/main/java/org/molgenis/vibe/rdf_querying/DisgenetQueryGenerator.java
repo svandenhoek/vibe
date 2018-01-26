@@ -33,7 +33,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-    private static final String[] HPO_GENES = {"SELECT ?gda ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSourceTitle ?gdaSourceTitle \n" +
+    private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSource ?gdaSource ?gdaSourceLevelLabel ?pubmed \n" +
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
             "dcterms:identifier \"", "\"^^xsd:string . \n" +
             "?pda rdf:type sio:SIO_000897 ; \n" +
@@ -41,8 +41,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "sio:SIO_000253 ?pdaSource . \n" +
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle . \n" +
-            "?pdaSource rdf:type dctypes:Dataset ; \n" +
-            "dcterms:title ?pdaSourceTitle . \n" +
+            "?pdaSource rdf:type dctypes:Dataset . \n" + // dcterms:title sometimes has multiple hits
             "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
             "rdf:type ?type ; \n" +
             "sio:SIO_000216 ?gdaScore ; \n" +
@@ -55,8 +54,10 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "dcterms:title ?geneSymbolTitle . \n" +
             "?gdaScore rdf:type ncit:C25338 ; \n" +
             "sio:SIO_000300 ?gdaScoreNumber . \n" +
-            "?gdaSource rdf:type dctypes:Dataset ; \n" +
-            "dcterms:title ?gdaSourceTitle . \n" +
+            "?gdaSource rdf:type dctypes:Dataset ; \n" + // dcterms:title sometimes has multiple hits
+            "wi:evidence ?gdaSourceLevel . \n" +
+            "?gdaSourceLevel rdfs:label ?gdaSourceLevelLabel . \n" +
+            "OPTIONAL { ?gda sio:SIO_000772 ?pubmed }" +
             "}"};
 
     public static String getPrefixes() {

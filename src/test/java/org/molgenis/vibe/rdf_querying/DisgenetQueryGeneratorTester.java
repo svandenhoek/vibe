@@ -1,28 +1,20 @@
 package org.molgenis.vibe.rdf_querying;
 
-import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFile;
-import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.io.ResultSetPrinter;
+import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
 public class DisgenetQueryGeneratorTester {
     private ModelReader reader;
 
-    private QueryRunner runner;
+    private QueryRunnerRewindable runner;
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        String[] fileSet = new String[]{TestFile.GDA1_RDF.getFilePath(),
-                TestFile.GENE_RDF.getFilePath(),
-                TestFile.DISEASE_DISEASE_RDF.getFilePath(),
-                TestFile.PHENOTYPE_RDF.getFilePath(),
-                TestFile.PDA_RDF.getFilePath(),
-                TestFile.ONTOLOGY.getFilePath()};
-
-        reader = new ModelFilesReader(fileSet);
+        reader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
     }
 
     @AfterClass(alwaysRun = true)
@@ -48,30 +40,26 @@ public class DisgenetQueryGeneratorTester {
 
     @Test
     public void hpoGenesUnknownHpo() {
-        runner = new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
+        runner = new QueryRunnerRewindable(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
 
         Assert.assertEquals(runner.hasNext(), false, "match found while HPO not in file");
     }
 
     @Test
     public void hpoGenesHpoInFile() {
-        runner = new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
+        runner = new QueryRunnerRewindable(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
+
 
         int counter = 0;
-
-        if(runner.hasNext()) {
-            counter += 1;
-            ResultSetPrinter.print(runner.next(), true);
-        }
-
         while(runner.hasNext()) {
             counter += 1;
-            QuerySolution result = runner.next();
-            if(counter <=10) {
-                ResultSetPrinter.print(result, false);
-            }
+            runner.next();
         }
+
+        runner.reset();
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+
         // Expected can be counted in file using regex: ^<http://rdf.disgenet.org/resource/gda/ (note that 2 GDAs do not have a phenotype stored)
-        Assert.assertEquals(counter, 91);
+        Assert.assertEquals(counter, 12);
     }
 }

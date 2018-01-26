@@ -32,11 +32,11 @@ public class CommandLineOptionsParserTester {
 
     @Test
     public void getGenesWIthSingleHpoId() throws IOException, ParseException {
-        String[] args = new String[]{"-m", "1", "-d", TestFile.TDB.getFilePath(), "-p", "hp:1234567"};
+        String[] args = new String[]{"-m", "1", "-d", TestFile.TDB_MINI.getFilePath(), "-p", "hp:1234567"};
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
         Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_WITH_SINGLE_HPO);
-        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFile.TDB.getFilePath());
+        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFile.TDB_MINI.getFilePath());
         Assert.assertEquals(appOptions.getHpoTerms().length, 1);
         Assert.assertEquals(appOptions.getHpoTerms()[0].getFormattedId(), "hp:1234567");
     }
