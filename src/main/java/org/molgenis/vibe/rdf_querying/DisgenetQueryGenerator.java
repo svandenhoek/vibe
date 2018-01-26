@@ -33,16 +33,21 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:title ?diseaseTitle }";
 
-    private static final String[] HPO_GENES = {"SELECT ?hpo ?disease ?gene ?geneTitle \n" +
+    private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneTitle ?gdaSourceTitle \n" +
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
             "dcterms:identifier \"", "\"^^xsd:string . \n" +
             "?pda rdf:type sio:SIO_000897 ; \n" +
             "sio:SIO_000628 ?hpo , ?disease . \n" +
-            "?disease rdf:type ncit:C7057 . \n" +
+            "?disease rdf:type ncit:C7057 ; \n" +
+            "dcterms:title ?diseaseTitle . \n" +
             "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
-            "rdf:type ?type . \n" +
+            "rdf:type ?type ; \n" +
+            "sio:SIO_000253 ?gdaSource . \n" +
+            "?gdaSource rdf:type dctypes:Dataset ;" +
+            "dcterms:title ?gdaSourceTitle ." +
             "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
             "?gene rdf:type ncit:C16612 ; \n" +
+            "dcterms:identifier ?geneId ; \n" +
             "dcterms:title ?geneTitle . }"};
 
     public static String getPrefixes() {
