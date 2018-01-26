@@ -14,8 +14,8 @@ public class ModelReadersTester {
     private Model modelFileModel;
     private Model tripleStoreModel;
 
-    @BeforeClass
-    public void initialize() {
+    @BeforeClass(alwaysRun = true)
+    public void beforeClass() {
         modelFileReader = new ModelFilesReader(new String[]{TestFile.GDA1_RDF.getFilePath(),
                 TestFile.GENE_RDF.getFilePath(),
                 TestFile.DISEASE_DISEASE_RDF.getFilePath(),
@@ -28,8 +28,8 @@ public class ModelReadersTester {
         tripleStoreModel = tripleStoreReader.getModel();
     }
 
-    @AfterClass
-    public void close() {
+    @AfterClass(alwaysRun = true)
+    public void afterClass() {
         modelFileReader.close();
         tripleStoreReader.close();
     }

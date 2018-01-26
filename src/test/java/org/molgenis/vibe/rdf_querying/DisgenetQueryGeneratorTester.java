@@ -1,22 +1,23 @@
 package org.molgenis.vibe.rdf_querying;
 
 import org.apache.jena.query.QuerySolution;
-import org.apache.jena.query.ResultSet;
 import org.molgenis.vibe.TestFile;
 import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.ResultSetPrinter;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
+import org.testng.annotations.AfterTest;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 public class DisgenetQueryGeneratorTester {
     private ModelReader reader;
-    private DisgenetQueryGenerator runner;
 
-    @BeforeClass
-    public void initialize() {
+    private QueryRunner runner;
+
+    @BeforeClass(alwaysRun = true)
+    public void beforeClass() {
         String[] fileSet = new String[]{TestFile.GDA1_RDF.getFilePath(),
                 TestFile.GENE_RDF.getFilePath(),
                 TestFile.DISEASE_DISEASE_RDF.getFilePath(),
@@ -25,17 +26,21 @@ public class DisgenetQueryGeneratorTester {
                 TestFile.ONTOLOGY.getFilePath()};
 
         reader = new ModelFilesReader(fileSet);
-        runner = new DisgenetQueryGenerator(reader.getModel());
     }
 
-    @AfterClass
-    public void close() {
+    @AfterClass(alwaysRun = true)
+    public void afterClass() {
         reader.close();
+    }
+
+    @AfterTest(alwaysRun = true)
+    public void afterTest() {
+        runner.close();
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void invalidLimit() {
-        runner.getGdaGeneDisease(0);
+        new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getGdaGeneDisease(0));
     }
 
 //    @Test
@@ -46,25 +51,25 @@ public class DisgenetQueryGeneratorTester {
 
     @Test
     public void hpoGenesUnknownHpo() {
-        ResultSet results = runner.getHpoGenes("hp:1234567");
+        runner = new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
 
-        Assert.assertEquals(results.hasNext(), false, "match found while HPO not in file");
+        Assert.assertEquals(runner.hasNext(), false, "match found while HPO not in file");
     }
 
     @Test
     public void hpoGenesHpoInFile() {
-        ResultSet results = runner.getHpoGenes("hp:0009811");
+        runner = new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
 
         int counter = 0;
 
-        if(results.hasNext()) {
+        if(runner.hasNext()) {
             counter += 1;
-            ResultSetPrinter.print(results.next(), true);
+            ResultSetPrinter.print(runner.next(), true);
         }
 
-        while(results.hasNext()) {
+        while(runner.hasNext()) {
             counter += 1;
-            QuerySolution result = results.next();
+            QuerySolution result = runner.next();
             if(counter <=10) {
                 ResultSetPrinter.print(result, false);
             }

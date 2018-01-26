@@ -25,6 +25,11 @@ public class CommandLineOptionsParserTester {
         Assert.assertEquals(appOptions.getRunMode(), RunMode.NONE);
     }
 
+    @Test(groups = {"noTest"})
+    public void showHelpMessage() {
+        CommandLineOptionsParser.printHelpMessage();
+    }
+
     @Test
     public void getGenesWIthSingleHpoId() throws IOException, ParseException {
         String[] args = new String[]{"-m", "1", "-d", TestFile.TDB.getFilePath(), "-p", "hp:1234567"};
