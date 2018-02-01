@@ -12,35 +12,8 @@ import java.util.regex.Pattern;
  * themselves.
  */
 public enum DisgenetRdfVersion {
-    V5(new String[]{"disease-disease.ttl", "disease-group.ttl", "disease-phenotype.ttl", "gda_SIO_001119.ttl",
-            "gda_SIO_001120.ttl", "gda_SIO_001121.ttl", "gda_SIO_001122.ttl", "gda_SIO_001123.ttl", "gda_SIO_001124.ttl",
-            "gda_SIO_001342.ttl", "gda_SIO_001343.ttl", "gda_SIO_001344.ttl", "gda_SIO_001345.ttl", "gda_SIO_001346.ttl",
-            "gda_SIO_001347.ttl", "gda_SIO_001348.ttl", "gda_SIO_001349.ttl", "gene.ttl", "pda.ttl", "phenotype.ttl",
-            "sio-release.owl"}),
-    UNSUPPORTED(null);
-
-    String[] requiredFiles;
-
-    DisgenetRdfVersion(String[] requiredFiles) {
-        this.requiredFiles = requiredFiles;
-    }
-
-    public String[] getRequiredFiles() {
-        return requiredFiles;
-    }
-
-    /**
-     * Generates an array that contains the full {@link Path}{@code s} of the required files based on the given {@code dir}.
-     * @param dir the directory that should contain all the required files
-     * @return an array containing the expected {@link Path}{@code s} to all required files
-     */
-    public Path[] getRequiredFilePaths(Path dir) {
-        Path[] filePaths = new Path[requiredFiles.length];
-        for(int i = 0; i < requiredFiles.length;i++) {
-            filePaths[i] = dir.resolve(requiredFiles[i]);
-        }
-        return filePaths;
-    }
+    V5,
+    UNSUPPORTED;
 
     /**
      * Retrieves the {@link DisgenetRdfVersion} based on a {@link String}. If version is not supported, returns

@@ -73,13 +73,6 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .argName("HPO ID")
                 .build());
 
-//        options.addOption(Option.builder("r")
-//                .longOpt("rvcf")
-//                .desc("The rVCF file that needs to be processed.")
-//                .hasArg()
-//                .argName("FILE")
-//                .build());
-
         options.addOption(Option.builder("d")
                 .longOpt("disgenet")
                 .desc("The directory containing the files for creating a DisGeNET RDF model.")
@@ -100,7 +93,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] -d <DIR> [-dv <VERSION>] -p <HPO ID>";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] -d <DIR> -p <HPO ID>";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -134,10 +127,6 @@ public class CommandLineOptionsParser extends OptionsParser {
         if(commandLine.hasOption("v")) {
             setVerbose(true);
         }
-
-//        if(commandLine.hasOption("r")) {
-//            setRvcfData(commandLine.getOptionValue("r"));
-//        }
 
         if(commandLine.hasOption("p")) {
             setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IOException)

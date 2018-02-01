@@ -17,6 +17,9 @@ import java.util.List;
  */
 public abstract class OptionsParser {
 
+    /**
+     * Wether the app should run in verbose modus (extra print statements).
+     */
     private boolean verbose = false;
 
     /**
@@ -30,6 +33,9 @@ public abstract class OptionsParser {
      */
     private Path disgenetDataDir;
 
+    /**
+     * The format of how the data is stored.
+     */
     private RdfStorageFormat rdfStorageFormat = RdfStorageFormat.TDB; // individual files model creation not supported
 
     /**
@@ -37,21 +43,10 @@ public abstract class OptionsParser {
      */
     private DisgenetRdfVersion disgenetRdfVersion;
 
-//    /**
-//     * All files required to create a SPARQL searchable DisGeNET model based on the {@code disgenetDataDir} and the files
-//     * defined by the specific {@code disgenetRdfVersion}.
-//     */
-//    private Path[] disgenetDataFiles;
-
     /**
      * The HPO terms to be used within the application.
      */
     private Hpo[] hpoTerms;
-
-    /**
-     * The rVCF file that needs to be digested.
-     */
-    private Path rvcfData;
 
     public boolean isVerbose() {
         return verbose;
@@ -79,13 +74,11 @@ public abstract class OptionsParser {
     protected void setDisgenet(String disgenetDataDir, String disgenetRdfVersion) throws InvalidPathException, IOException {
         setDisgenetDataDir(disgenetDataDir);
         setDisgenetRdfVersion(disgenetRdfVersion);
-//        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
     }
 
     protected void setDisgenet(String disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws InvalidPathException, IOException {
         setDisgenetDataDir(disgenetDataDir);
         setDisgenetRdfVersion(disgenetRdfVersion);
-//        setDisgenetDataFiles(this.disgenetDataDir, this.disgenetRdfVersion);
     }
 
     public Path getDisgenetDataDir() {
@@ -151,57 +144,11 @@ public abstract class OptionsParser {
         this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
-//    public Path[] getDisgenetDataFiles() {
-//        return disgenetDataFiles;
-//    }
-
-//    public String[] getDisgenetDataFilesAsStrings() {
-//        return Arrays.stream(getDisgenetDataFiles()).map(Path::toString).toArray(String[]::new);
-//    }
-
-//    private void setDisgenetDataFiles(Path disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws IOException {
-//        Path[] paths = disgenetRdfVersion.getRequiredFilePaths(disgenetDataDir);
-//        List<Path> invalidPaths = getInvalidPaths(paths);
-//        if(invalidPaths.size() == 0) {
-//            this.disgenetDataFiles = paths;
-//        } else {
-//            String listString = invalidPaths.stream().map(Path::getFileName).map(Path::toString)
-//                    .collect(Collectors.joining(", "));
-//            throw new IOException(listString + " are not readable/missing.");
-//        }
-//    }
-
-    public Path getRvcfData() {
-        return rvcfData;
-    }
-
-    /**
-     * @param rvcfData {@link String}
-     * @throws InvalidPathException if {@link Paths#get(String, String...)}} fails to convert a {@link String} to {@link Path}
-     * @throws IOException see {@link #setRvcfData(Path)}
-     */
-    protected void setRvcfData(String rvcfData) throws InvalidPathException, IOException {
-        setRvcfData(Paths.get(rvcfData));
-    }
-
-    /**
-     * @param rvcfData {@link Path}
-     * @throws IOException if {@code rvcfData} is not a readable file
-     */
-    protected void setRvcfData(Path rvcfData) throws IOException {
-        if(checkIfPathIsReadableFile(rvcfData)) {
-            this.rvcfData = rvcfData;
-        } else {
-            throw new IOException(rvcfData.getFileName() + " is not a readable file.");
-        }
-    }
-
     public Hpo[] getHpoTerms() {
         return hpoTerms;
     }
 
     /**
-     *
      * @param hpoTerms {@link String}{@code []}
      * @throws InvalidStringFormatException if any of the {@code hpoTerms} failed to be converted into a {@link Hpo} using
      * {@link Hpo#Hpo(String)}
@@ -215,32 +162,19 @@ public abstract class OptionsParser {
     }
 
     /**
-     * Given an array containing {@link Path}{@code s}, returns a {@link List} containing any {@link Path}{@code s} that
-     * return false according to {@link #checkIfPathIsReadableFile(Path)}. If all files adhere to this, returns an empty
-     * {@link List}.
-     * @param paths an array with {@link Path}{@code s} that should be checked whether they adhere to {@link #checkIfPathIsReadableFile(Path)}
-     * @return a list with all {@link Path}{@code s} not adhering to {@link #checkIfPathIsDir(Path)} (empty if all files adhere to this)
-     */
-    private List<Path> getInvalidPaths(Path[] paths) {
-        List<Path> invalidPaths = new ArrayList<>();
-        for(int i=0; i < paths.length; i++) {
-            if( !checkIfPathIsReadableFile(paths[i]) ) {
-                invalidPaths.add(paths[i]);
-            }
-        }
-        return invalidPaths;
-    }
-
-    /**
      * Checks whether the set variables adhere to the selected {@link RunMode}.
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
     protected boolean checkConfig() {
+        if(runMode == RunMode.NONE) {
+            return true;
+        }
+        if(disgenetDataDir == null || disgenetRdfVersion == null) {
+            return false;
+        }
         switch (runMode) {
-            case NONE:
-                return true;
             case GET_GENES_WITH_SINGLE_HPO:
-                if(disgenetDataDir != null && disgenetRdfVersion != null && hpoTerms != null & hpoTerms.length == 1) {
+                if(hpoTerms != null & hpoTerms.length == 1) {
                     return true;
                 }
             default:

@@ -6,9 +6,18 @@ import org.apache.jena.rdf.model.Model;
 
 import java.util.Iterator;
 
+/**
+ * Is able to run a SPARQL query on a {@link Model}.
+ */
 public class QueryRunner implements Closeable, Iterator {
+    /**
+     * Object storing the query and model for query execution.
+     */
     private QueryExecution qexec;
 
+    /**
+     * Object for iterating over the query output (usually querying is done during the actual iteration over the results).
+     */
     private ResultSet results;
 
     public QueryRunner(Model model, String queryString) {

@@ -1,5 +1,8 @@
 package org.molgenis.vibe.rdf_querying;
 
+/**
+ * Generates SPARQL queries specific for the DisGeNET RDF dataset.
+ */
 public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
     // See: http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries -> DisGeNET NAMESPACES
     // Some namespaces contained 1 or more additional "http://". These were removed.

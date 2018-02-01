@@ -7,12 +7,18 @@ import org.apache.jena.tdb.TDBFactory;
 
 import java.nio.file.Path;
 
+/**
+ * Creates an (Ontology) {@link Model} from a TDB database.
+ */
 public class TripleStoreDbReader implements ModelReader {
     /**
      * The model that is created from the RDF files.
      */
     private Model model;
 
+    /**
+     * The TDB dataset.
+     */
     private Dataset dataset;
 
     @Override
