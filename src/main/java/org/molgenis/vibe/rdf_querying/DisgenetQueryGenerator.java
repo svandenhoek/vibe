@@ -37,30 +37,30 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "dcterms:title ?diseaseTitle }";
 
     private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSource ?gdaSource ?gdaSourceLevelLabel ?pubmed \n" +
-            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-            "dcterms:identifier \"", "\"^^xsd:string . \n" +
-            "?pda rdf:type sio:SIO_000897 ; \n" +
-            "sio:SIO_000628 ?hpo , ?disease ; \n" +
-            "sio:SIO_000253 ?pdaSource . \n" +
-            "?disease rdf:type ncit:C7057 ; \n" +
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // SIO_010056 -> phenotype
+            "dcterms:identifier \"", "\"^^xsd:string . \n" + // HPO term is inserted here!!!
+            "?pda rdf:type sio:SIO_000897 ; \n" + // SIO_000897 -> association
+            "sio:SIO_000628 ?hpo , ?disease ; \n" + // SIO_000628 -> refers to
+            "sio:SIO_000253 ?pdaSource . \n" + // SIO_000253 -> has source
+            "?disease rdf:type ncit:C7057 ; \n" + // ncit:C7057 -> Disease
             "dcterms:title ?diseaseTitle . \n" +
             "?pdaSource rdf:type dctypes:Dataset . \n" + // dcterms:title sometimes has multiple hits
-            "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
+            "?gda sio:SIO_000628 ?disease, ?gene ; \n" + // SIO_000628 -> refers to
             "rdf:type ?type ; \n" +
-            "sio:SIO_000216 ?gdaScore ; \n" +
-            "sio:SIO_000253 ?gdaSource . \n" +
-            "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
-            "?gene rdf:type ncit:C16612 ; \n" +
+            "sio:SIO_000216 ?gdaScore ; \n" + // SIO_000216 -> has measurement value
+            "sio:SIO_000253 ?gdaSource . \n" + // SIO_000253 -> has source
+            "?type rdfs:subClassOf* sio:SIO_000983 . \n" + // SIO_000983 -> gene-disease association
+            "?gene rdf:type ncit:C16612 ; \n" + // ncit:C16612 -> Gene
             "dcterms:identifier ?geneId ; \n" +
-            "sio:SIO_000205 ?geneSymbol . \n" +
-            "?geneSymbol rdf:type ncit:C43568 ; \n" +
+            "sio:SIO_000205 ?geneSymbol . \n" + // SIO_000205 -> is represented by
+            "?geneSymbol rdf:type ncit:C43568 ; \n" + // ncit:C43568 -> Gene Symbol
             "dcterms:title ?geneSymbolTitle . \n" +
-            "?gdaScore rdf:type ncit:C25338 ; \n" +
-            "sio:SIO_000300 ?gdaScoreNumber . \n" +
+            "?gdaScore rdf:type ncit:C25338 ; \n" + // ncit:C25338 -> Score
+            "sio:SIO_000300 ?gdaScoreNumber . \n" + // SIO_000300 -> has value
             "?gdaSource rdf:type dctypes:Dataset ; \n" + // dcterms:title sometimes has multiple hits
             "wi:evidence ?gdaSourceLevel . \n" +
             "?gdaSourceLevel rdfs:label ?gdaSourceLevelLabel . \n" +
-            "OPTIONAL { ?gda sio:SIO_000772 ?pubmed }" +
+            "OPTIONAL { ?gda sio:SIO_000772 ?pubmed }" + // SIO_000772 -> has evidence
             "}"};
 
     public static String getPrefixes() {
