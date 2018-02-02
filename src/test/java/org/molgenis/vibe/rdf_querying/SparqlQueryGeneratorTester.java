@@ -222,7 +222,9 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
     }
 
-    @Test // Bug? {0,} acts as {1,} instead of *
+    // Bug? {0,} acts as {1,} instead of *
+    // Usage of SparqlRange should evade problems caused by this.
+    @Test
     public void testHpoSubClassOfAllStartingFromSelf() {
         Set<String> expectedReferences = new HashSet<>();
         expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
