@@ -3,8 +3,8 @@ package org.molgenis.vibe.rdf_querying;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.TestFile;
-import org.molgenis.vibe.io.ModelFilesReader;
 import org.molgenis.vibe.io.ModelReader;
+import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -24,26 +24,18 @@ import java.util.Set;
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
 public class SparqlQueryGeneratorTester {
-    private ModelReader reader1;
-    private ModelReader reader2;
-    private QueryRunner runner;
+    private ModelReader reader;
+    private QueryRunnerRewindable runner;
     private final String prefixes = DisgenetQueryGenerator.getPrefixes();
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        String fileSet1 = TestFile.GDA1_RDF.getFilePath();
-        String[] fileSet2 = new String[]{TestFile.GDA1_RDF.getFilePath(),
-                TestFile.GENE_RDF.getFilePath(),
-                TestFile.DISEASE_DISEASE_RDF.getFilePath()};
-
-        reader1 = new ModelFilesReader(fileSet1);
-        reader2 = new ModelFilesReader(fileSet2);
+        reader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
     }
 
     @AfterClass(alwaysRun = true)
     public void afterClass() {
-        reader1.close();
-        reader2.close();
+        reader.close();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -53,13 +45,13 @@ public class SparqlQueryGeneratorTester {
 
     @Test(expectedExceptions = QueryParseException.class)
     public void testInvalidQuery() {
-        new QueryRunner(reader1.getModel(), prefixes + "SELECT ?id \n" +
+        new QueryRunner(reader.getModel(), prefixes + "SELECT ?id \n" +
                 "WHERE { brandNetelKaasMetEenDruppeltjeMunt?! }");
     }
 
     @Test
     public void testEmptyResults() {
-        runner = new QueryRunner(reader1.getModel(), prefixes + "SELECT ?gda ?id ?title \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?gda ?id ?title \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id ; \n" +
                 "dcterms:title ?title }");
 
@@ -67,8 +59,8 @@ public class SparqlQueryGeneratorTester {
     }
 
     @Test
-    public void testSingleFileGdaId() {
-        runner = new QueryRunner(reader1.getModel(), prefixes + "SELECT ?id \n" +
+    public void testSingleGdaId() {
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id }");
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
@@ -78,27 +70,26 @@ public class SparqlQueryGeneratorTester {
     }
 
     @Test
-    public void testSingleFileGdaReference() {
+    public void testSingleGdaIdReferences() {
         Set<String> expectedReferences = new HashSet<>();
         expectedReferences.add("http://identifiers.org/ncbigene/6607");
         expectedReferences.add("http://linkedlifedata.com/resource/umls/id/C0043116");
         Set<String> actualReferences = new HashSet<>();
 
-        runner = new QueryRunner(reader1.getModel(), prefixes + "SELECT ?value \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?value \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> sio:SIO_000628 ?value }");
 
-        int i = 0;
         while(runner.hasNext()) {
             QuerySolution result = runner.next();
             actualReferences.add(result.get("value").toString());
         }
 
-        Assert.assertEquals(actualReferences, expectedReferences, "");
+        Assert.assertEquals(actualReferences, expectedReferences);
     }
 
     @Test
-    public void testSingleFileWithLimit() {
-        runner = new QueryRunner(reader1.getModel(), prefixes +  "SELECT ?id \n" +
+    public void testLimit() {
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes +  "SELECT ?id \n" +
                 "WHERE { ?gda dcterms:identifier ?id } \n" +
                 "LIMIT 3");
 
@@ -112,28 +103,16 @@ public class SparqlQueryGeneratorTester {
     }
 
     @Test
-    public void testSingleFileWithMultiFileQuery() {
-        runner = new QueryRunner(reader1.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?diseaseTitle \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id ; \n" +
-                "sio:SIO_000628 ?gene , ?disease . \n" +
-                "?gene rdf:type ncit:C16612 ;" +
-                "dcterms:title ?geneTitle ." +
-                "?disease rdf:type ncit:C7057 ;" +
-                "dcterms:title ?diseaseTitle }");
-
-        Assert.assertEquals(runner.hasNext(), false, "gene/disease ncit code are not present in gda file but somehow a match was found");
-    }
-
-    @Test
-    public void testMultiFile1() {
+    public void testGdaGeneDiseaseQuery1() {
         // sio:SIO_000628 <http://identifiers.org/ncbigene/6607> , <http://linkedlifedata.com/resource/umls/id/C0043116> .
-        runner = new QueryRunner(reader2.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
-                "?gene rdf:type ncit:C16612 ;" +
-                "dcterms:title ?geneTitle ." +
-                "?disease rdf:type ncit:C7057 ;" +
-                "dcterms:title ?diseaseTitle }");
+                "?gene rdf:type ncit:C16612 ; \n" +
+                "dcterms:title ?geneTitle . \n" +
+                "?disease rdf:type ncit:C7057 ; \n" +
+                "dcterms:title ?diseaseTitle . \n" +
+                "}");
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
         QuerySolution result = runner.next();
@@ -145,15 +124,16 @@ public class SparqlQueryGeneratorTester {
     }
 
     @Test
-    public void testMultiFile2() {
+    public void testGdaGeneDiseaseQuery2() {
         // sio:SIO_000628 <http://linkedlifedata.com/resource/umls/id/C0268495> , <http://identifiers.org/ncbigene/4157> .
-        runner = new QueryRunner(reader2.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNbbaeeb8e8b5fa93f23ca212dd9c281ca> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
-                "?gene rdf:type ncit:C16612 ;" +
-                "dcterms:title ?geneTitle ." +
-                "?disease rdf:type ncit:C7057 ;" +
-                "dcterms:title ?diseaseTitle }");
+                "?gene rdf:type ncit:C16612 ; \n" +
+                "dcterms:title ?geneTitle . \n" +
+                "?disease rdf:type ncit:C7057 ; \n" +
+                "dcterms:title ?diseaseTitle . \n" +
+                "}");
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
         QuerySolution result = runner.next();
