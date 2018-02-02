@@ -21,7 +21,7 @@ public class QueryRunner implements Closeable, Iterator {
     private ResultSet results;
 
     public QueryRunner(Model model, String queryString) {
-        Query query = QueryFactory.create(queryString);
+        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ); // Syntax.syntaxARQ needed for complex syntax: https://jena.apache.org/documentation/query/property_paths.html
         qexec = QueryExecutionFactory.create(query, model);
         results = qexec.execSelect();
     }
