@@ -143,4 +143,92 @@ public class SparqlQueryGeneratorTester {
         Assert.assertEquals(result.get("gene").asResource().getURI(), "http://identifiers.org/ncbigene/4157");
         Assert.assertEquals(result.get("disease").asResource().getURI(), "http://linkedlifedata.com/resource/umls/id/C0268495");
     }
+
+    @Test
+    public void testHpoSubClassOfInclusive() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf* <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    @Test
+    public void testHpoSubClassOfExclusive() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf+ <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    @Test
+    public void testHpoSubClassOfNoGrandChilds() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf? <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    @Test
+    public void testHpoSubClassOfOnlyGrandChildren() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    @Test
+    public void testHpoSubClassOfOnlyChildren2Deep() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    private void assertRunnerHpoOutputWithExpectedResults(QueryRunner runner, Set<String> expectedReferences) {
+        Set<String> actualReferences = new HashSet<>();
+        while(runner.hasNext()) {
+            QuerySolution result = runner.next();
+            actualReferences.add(result.get("hpo").toString());
+        }
+
+        Assert.assertEquals(actualReferences, expectedReferences);
+    }
 }
