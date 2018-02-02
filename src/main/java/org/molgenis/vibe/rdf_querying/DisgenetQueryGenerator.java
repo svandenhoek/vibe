@@ -29,19 +29,32 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
     private static final String[] IRI_FOR_HPO = {"SELECT ?hpo \n", // SELECT is [0]
-            // [1]
-            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
             "dcterms:identifier \"", "\"^^xsd:string . \n" + // HPO term is inserted between [1] and [2]
             "}"
     };
 
     private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo \n", // SELECT is [0]
-            // [1]
-            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-            "rdfs:subClassOf", " ?hpoParent . \n" + //  child range is inserted between [1] and [2]
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
+            "rdfs:subClassOf", " ?hpoParent . \n" + // child range is inserted between [1] and [2]
             "{ SELECT (?hpo as ?hpoParent) \n" +
-            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n" + // HPO term is inserted between [2] and [3]
-            "}"
+            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n", // HPO term is inserted between [2] and [3]
+            "}" // [4]
+    };
+
+    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?disease ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
+            HPO_CHILDREN_FOR_IRI[1], // child range is inserted between [1] and [2]
+            HPO_CHILDREN_FOR_IRI[2], // HPO term is inserted between [2] and [3]
+            HPO_CHILDREN_FOR_IRI[3] +
+            "?pda rdf:type sio:SIO_000897 ; \n" +
+            "sio:SIO_000628 ?hpo , ?disease ; \n" +
+            "sio:SIO_000253 ?pdaSource . \n" +
+            "?disease rdf:type ncit:C7057 ; \n" + // ncit:C7057 -> Disease
+            "dcterms:title ?diseaseTitle . \n" +
+            "?pdaSource rdf:type dctypes:Dataset ; \n" + // dcterms:title sometimes has multiple hits
+            "wi:evidence ?pdaSourceLevel . \n" +
+            "?pdaSourceLevel rdfs:label ?pdaSourceLevelLabel . \n",
+            "}" // [4]
     };
 
     private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSource ?gdaSource ?gdaSourceLevelLabel ?pubmed \n" +
@@ -81,7 +94,13 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
     }
 
     public static String getHpoChildren(Hpo hpo, SparqlRange range) {
-        return PREFIXES + HPO_CHILDREN_FOR_IRI[0] + HPO_CHILDREN_FOR_IRI[1] + range.toString() + HPO_CHILDREN_FOR_IRI[2] + hpo.getFormattedId() + HPO_CHILDREN_FOR_IRI[3];
+        return PREFIXES + HPO_CHILDREN_FOR_IRI[0] + HPO_CHILDREN_FOR_IRI[1] + range.toString() + HPO_CHILDREN_FOR_IRI[2] +
+                hpo.getFormattedId() + HPO_CHILDREN_FOR_IRI[3] + HPO_CHILDREN_FOR_IRI[4];
+    }
+
+    public static String getPdas(Hpo hpo, SparqlRange range) {
+        return PREFIXES + PDA_FOR_HPO_CHILDREN[0] + PDA_FOR_HPO_CHILDREN[1] + range.toString() + PDA_FOR_HPO_CHILDREN[2] +
+                hpo.getFormattedId() + PDA_FOR_HPO_CHILDREN[3] + PDA_FOR_HPO_CHILDREN[4];
     }
 
 //    public static String getPhenotypeDiseaseAssociations(String hpoTerm) {

@@ -51,9 +51,8 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test
     public void testEmptyResults() {
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?gda ?id ?title \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id ; \n" +
-                "dcterms:title ?title }");
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id . }");
 
         Assert.assertEquals(runner.hasNext(), false);
     }
@@ -61,215 +60,185 @@ public class SparqlQueryGeneratorTester extends QueryTester {
     @Test
     public void testSingleGdaId() {
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id }");
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id }");
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
         QuerySolution result = runner.next();
         Assert.assertEquals(runner.hasNext(), false, "more than 1 match found");
-        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
+        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNa4eb0beb985996e1956b22097c0ad0de");
     }
 
     @Test
     public void testSingleGdaIdReferences() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://identifiers.org/ncbigene/6607");
-        expectedReferences.add("http://linkedlifedata.com/resource/umls/id/C0043116");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://identifiers.org/ncbigene/1289");
+        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
         Set<String> actualReferences = new HashSet<>();
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?value \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> sio:SIO_000628 ?value }");
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> sio:SIO_000628 ?value }");
 
         while(runner.hasNext()) {
             QuerySolution result = runner.next();
             actualReferences.add(result.get("value").toString());
         }
 
-        Assert.assertEquals(actualReferences, expectedReferences);
+        Assert.assertEquals(actualReferences, expectedOutput);
     }
 
     @Test
     public void testLimit() {
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes +  "SELECT ?id \n" +
-                "WHERE { ?gda dcterms:identifier ?id } \n" +
-                "LIMIT 3");
+                "WHERE { ?gda rdf:type sio:SIO_001121 } \n" +
+                "LIMIT 2");
 
-        int counter = 0;
-        while(runner.hasNext()) {
-            counter += 1;
-            runner.next();
-        }
-
-        Assert.assertEquals(counter, 3);
+        assertQueryResultCountWithExpectedResult(runner, 2); // test file contains 3
     }
 
     @Test
-    public void testGdaGeneDiseaseQuery1() {
-        // sio:SIO_000628 <http://identifiers.org/ncbigene/6607> , <http://linkedlifedata.com/resource/umls/id/C0043116> .
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNe8f5323c9341d6534c17879604dc6bbb> dcterms:identifier ?id ; \n" +
+    public void testGdaGeneDiseaseQuery() {
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?disease \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
-                "?gene rdf:type ncit:C16612 ; \n" +
-                "dcterms:title ?geneTitle . \n" +
-                "?disease rdf:type ncit:C7057 ; \n" +
-                "dcterms:title ?diseaseTitle . \n" +
+                "?gene rdf:type ncit:C16612 . \n" +
+                "?disease rdf:type ncit:C7057 . \n" +
                 "}");
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
         QuerySolution result = runner.next();
         Assert.assertEquals(runner.hasNext(), false, "more than 1 match found");
 
-        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNe8f5323c9341d6534c17879604dc6bbb");
-        Assert.assertEquals(result.get("gene").toString(), "http://identifiers.org/ncbigene/6607");
-        Assert.assertEquals(result.get("disease").toString(), "http://linkedlifedata.com/resource/umls/id/C0043116");
-    }
-
-    @Test
-    public void testGdaGeneDiseaseQuery2() {
-        // sio:SIO_000628 <http://linkedlifedata.com/resource/umls/id/C0268495> , <http://identifiers.org/ncbigene/4157> .
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?geneTitle ?disease ?diseaseTitle \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNbbaeeb8e8b5fa93f23ca212dd9c281ca> dcterms:identifier ?id ; \n" +
-                "sio:SIO_000628 ?gene , ?disease . \n" +
-                "?gene rdf:type ncit:C16612 ; \n" +
-                "dcterms:title ?geneTitle . \n" +
-                "?disease rdf:type ncit:C7057 ; \n" +
-                "dcterms:title ?diseaseTitle . \n" +
-                "}");
-
-        Assert.assertEquals(runner.hasNext(), true, "no match found");
-        QuerySolution result = runner.next();
-        Assert.assertEquals(runner.hasNext(), false, "more than 1 match found");
-
-        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNbbaeeb8e8b5fa93f23ca212dd9c281ca");
-        Assert.assertEquals(result.get("gene").asResource().getURI(), "http://identifiers.org/ncbigene/4157");
-        Assert.assertEquals(result.get("disease").asResource().getURI(), "http://linkedlifedata.com/resource/umls/id/C0268495");
+        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNa4eb0beb985996e1956b22097c0ad0de");
+        Assert.assertEquals(result.get("gene").toString(), "http://identifiers.org/ncbigene/1289");
+        Assert.assertEquals(result.get("disease").toString(), "http://linkedlifedata.com/resource/umls/id/C0039516");
     }
 
     @Test
     public void testHpoSubClassOfInclusive() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf* <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfExclusive() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf+ <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfNoGrandChilds() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf? <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfOnlyGrandChildren() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfOnlyChildren2Deep() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     // Bug? {0,} acts as {1,} instead of *
     // Usage of SparqlRange should evade problems caused by this.
     @Test
     public void testHpoSubClassOfAllStartingFromSelf() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfAllStartingFromChild() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 
 
 
     @Test
     public void testHpoSubClassOfOnlyChildren2DeepExcplicitStart() {
-        Set<String> expectedReferences = new HashSet<>();
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
 
-        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
     }
 }
