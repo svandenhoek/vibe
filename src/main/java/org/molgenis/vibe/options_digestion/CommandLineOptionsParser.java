@@ -93,7 +93,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] -d <DIR> -p <HPO ID>";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID>";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
