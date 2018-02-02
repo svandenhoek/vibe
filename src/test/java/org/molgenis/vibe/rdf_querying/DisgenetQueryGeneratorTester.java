@@ -2,24 +2,32 @@ package org.molgenis.vibe.rdf_querying;
 
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.formats.Hpo;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
-public class DisgenetQueryGeneratorTester {
-    private ModelReader reader;
+import java.util.HashSet;
+import java.util.Set;
+
+public class DisgenetQueryGeneratorTester extends QueryTester {
+    private ModelReader readerMini;
+    private ModelReader readerFull;
 
     private QueryRunnerRewindable runner;
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
+        readerMini = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
+        readerFull = new TripleStoreDbReader(TestFile.TDB_FULL.getFilePath());
     }
 
     @AfterClass(alwaysRun = true)
     public void afterClass() {
-        reader.close();
+        readerMini.close();
+        readerFull.close();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -27,27 +35,40 @@ public class DisgenetQueryGeneratorTester {
         runner.close();
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
-    public void invalidLimit() {
-        new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getGdaGeneDisease(0));
+    @Test
+    public void testIriForHpo() throws InvalidStringFormatException {
+        runner = new QueryRunnerRewindable(readerMini.getModel(), DisgenetQueryGenerator.getIriForHpo(new Hpo("hp:0009811")));
+
+        Assert.assertEquals(runner.hasNext(), true);
+        Assert.assertEquals(runner.next().get("hpo").toString(), "http://purl.obolibrary.org/obo/HP_0009811");
+        Assert.assertEquals(runner.hasNext(), false);
     }
 
-//    @Test
-//    public void geneDiseaseAssociation() {
-//        ResultSet results = runner.getGdaGeneDisease(10);
-//        ResultSetPrinter.print(results);
-//    }
+    @Test
+    public void testHpoChildren() throws InvalidStringFormatException {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        String query = DisgenetQueryGenerator.getHpoChildren(new Hpo("hp:0009811"), new SparqlRange(0, true));
+        System.out.println(query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
 
     @Test
-    public void hpoGenesUnknownHpo() {
-        runner = new QueryRunnerRewindable(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
+    public void hpoGenesUnknownHpoMini() {
+        runner = new QueryRunnerRewindable(readerMini.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
 
         Assert.assertEquals(runner.hasNext(), false, "match found while HPO not in file");
     }
 
     @Test
-    public void hpoGenesHpoInFile() {
-        runner = new QueryRunnerRewindable(reader.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
+    public void hpoGenesHpoInFileMini() {
+        runner = new QueryRunnerRewindable(readerMini.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
 
 
         int counter = 0;

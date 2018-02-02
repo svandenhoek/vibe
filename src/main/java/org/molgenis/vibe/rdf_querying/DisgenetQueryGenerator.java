@@ -1,5 +1,7 @@
 package org.molgenis.vibe.rdf_querying;
 
+import org.molgenis.vibe.formats.Hpo;
+
 /**
  * Generates SPARQL queries specific for the DisGeNET RDF dataset.
  */
@@ -26,15 +28,21 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "PREFIX pav: <http://purl.org/pav/> \n"+
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
-    // Returns: gene-disease disgenet ID, gene name, disease name
-    private static final String GDA_GENE_DISEASE = "SELECT ?gda ?type ?geneTitle ?diseaseTitle \n" +
-            "WHERE { ?type rdfs:subClassOf* sio:SIO_000983 . \n" +
-            "?gda rdf:type ?type ; \n" +
-            "sio:SIO_000628 ?gene , ?disease . \n" +
-            "?gene rdf:type ncit:C16612 ; \n" +
-            "dcterms:title ?geneTitle ." +
-            "?disease rdf:type ncit:C7057 ; \n" +
-            "dcterms:title ?diseaseTitle }";
+    private static final String[] IRI_FOR_HPO = {"SELECT ?hpo \n", // SELECT is [0]
+            // [1]
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+            "dcterms:identifier \"", "\"^^xsd:string . \n" + // HPO term is inserted between [1] and [2]
+            "}"
+    };
+
+    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo \n", // SELECT is [0]
+            // [1]
+            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+            "rdfs:subClassOf", " ?hpoParent . \n" + //  child range is inserted between [1] and [2]
+            "{ SELECT (?hpo as ?hpoParent) \n" +
+            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n" + // HPO term is inserted between [2] and [3]
+            "}"
+    };
 
     private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSource ?gdaSource ?gdaSourceLevelLabel ?pubmed \n" +
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // SIO_010056 -> phenotype
@@ -61,19 +69,24 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "wi:evidence ?gdaSourceLevel . \n" +
             "?gdaSourceLevel rdfs:label ?gdaSourceLevelLabel . \n" +
             "OPTIONAL { ?gda sio:SIO_000772 ?pubmed }" + // SIO_000772 -> has evidence
-            "}"};
+            "}"
+    };
 
     public static String getPrefixes() {
         return PREFIXES;
     }
 
-    public static String getGdaGeneDisease() {
-        return PREFIXES + GDA_GENE_DISEASE;
+    public static String getIriForHpo(Hpo hpo) {
+        return PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + hpo.getFormattedId() + IRI_FOR_HPO[2];
     }
 
-    public static String getGdaGeneDisease(int limit) {
-        return addLimit(PREFIXES + GDA_GENE_DISEASE, limit);
+    public static String getHpoChildren(Hpo hpo, SparqlRange range) {
+        return PREFIXES + HPO_CHILDREN_FOR_IRI[0] + HPO_CHILDREN_FOR_IRI[1] + range.toString() + HPO_CHILDREN_FOR_IRI[2] + hpo.getFormattedId() + HPO_CHILDREN_FOR_IRI[3];
     }
+
+//    public static String getPhenotypeDiseaseAssociations(String hpoTerm) {
+//        return PREFIXES + RETRIEVE_PDA_FOR_HPO[0] + RETRIEVE_PDA_FOR_HPO[1];
+//    }
 
     public static String getHpoGenes(String hpoTerm) {
         return PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1];

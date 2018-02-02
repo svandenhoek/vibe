@@ -23,7 +23,7 @@ import java.util.Set;
  * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
-public class SparqlQueryGeneratorTester {
+public class SparqlQueryGeneratorTester extends QueryTester {
     private ModelReader reader;
     private QueryRunnerRewindable runner;
     private final String prefixes = DisgenetQueryGenerator.getPrefixes();
@@ -222,13 +222,52 @@ public class SparqlQueryGeneratorTester {
         assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
     }
 
-    private void assertRunnerHpoOutputWithExpectedResults(QueryRunner runner, Set<String> expectedReferences) {
-        Set<String> actualReferences = new HashSet<>();
-        while(runner.hasNext()) {
-            QuerySolution result = runner.next();
-            actualReferences.add(result.get("hpo").toString());
-        }
+    @Test // Bug? {0,} acts as {1,} instead of *
+    public void testHpoSubClassOfAllStartingFromSelf() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        Assert.assertEquals(actualReferences, expectedReferences);
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+    @Test
+    public void testHpoSubClassOfAllStartingFromChild() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
+    }
+
+
+
+    @Test
+    public void testHpoSubClassOfOnlyChildren2DeepExcplicitStart() {
+        Set<String> expectedReferences = new HashSet<>();
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0009811");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002967");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedReferences.add("http://purl.obolibrary.org/obo/HP_0001377");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+
+        assertRunnerHpoOutputWithExpectedResults(runner, expectedReferences);
     }
 }
