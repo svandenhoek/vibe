@@ -84,6 +84,23 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
     }
 
     @Test
+    public void testHpoChildrenTill2LevelsDeepDifferentParent() throws InvalidStringFormatException {
+        Set<String> expectedOutput = new HashSet<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001376");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+
+        String query = DisgenetQueryGenerator.getHpoChildren(new Hpo("hp:0001376"), new SparqlRange(2, false));
+        System.out.println(query);
+
+        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+
+        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+    }
+
+    @Test
     public void testPdasSelfOnly() throws InvalidStringFormatException {
         Set<String> expectedOutput = new HashSet<>();
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
