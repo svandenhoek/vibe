@@ -121,6 +121,7 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         Set<String> expectedOutput = new HashSet<>();
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0152084");
+        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0175704");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1834674");
 
 
@@ -139,6 +140,7 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         Set<String> expectedOutput = new HashSet<>();
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0152084");
+        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0175704");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1834674");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0410538");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1850318");
