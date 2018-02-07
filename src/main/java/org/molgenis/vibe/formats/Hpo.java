@@ -2,6 +2,7 @@ package org.molgenis.vibe.formats;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
+import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -50,5 +51,18 @@ public class Hpo {
         } else {
             throw new InvalidStringFormatException(hpoTerm + " does not adhere the required format: ^(hp:)?([0-9]{7})$");
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Hpo hpo = (Hpo) o;
+        return id == hpo.id;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }
