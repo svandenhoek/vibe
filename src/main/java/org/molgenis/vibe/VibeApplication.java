@@ -1,13 +1,11 @@
 package org.molgenis.vibe;
 
-import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.options_digestion.RunMode;
-import org.molgenis.vibe.rdf_querying.DisgenetQueryGenerator;
-import org.molgenis.vibe.rdf_querying.QueryRunner;
+import org.molgenis.vibe.rdf_processing.GenesForHpoRetriever;
 
 /**
  * The main application class.
@@ -48,10 +46,8 @@ public class VibeApplication {
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
             appOptions.printVerbose("Generating query for " + appOptions.getHpoTerms()[0].getFormattedId());
-            QueryRunner query = new QueryRunner(modelReader.getModel(),
-                    DisgenetQueryGenerator.getHpoGenes(appOptions.getHpoTerms()[0].getFormattedId()));
-            ResultSetFormatter.out(System.out, query.getResultSet());
-            query.close();
+            GenesForHpoRetriever genesForHpo = new GenesForHpoRetriever(appOptions, modelReader);
+            genesForHpo.run();
         }
     }
 }
