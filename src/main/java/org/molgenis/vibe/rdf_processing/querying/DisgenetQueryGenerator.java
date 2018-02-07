@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 import org.molgenis.vibe.formats.Hpo;
 
@@ -34,15 +34,16 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "}"
     };
 
-    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo \n", // SELECT is [0]
+    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo ?hpoId \n", // SELECT is [0]
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
-            "rdfs:subClassOf", " ?hpoParent . \n" + // child range is inserted between [1] and [2]
+            "rdfs:subClassOf", " ?hpoParent ; \n" +
+            "dcterms:identifier ?hpoId . \n" + // child range is inserted between [1] and [2]
             "{ SELECT (?hpo as ?hpoParent) \n" +
             IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n", // HPO term is inserted between [2] and [3]
             "}" // [4]
     };
 
-    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?disease ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
+    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?hpoId ?disease ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
             HPO_CHILDREN_FOR_IRI[1], // child range is inserted between [1] and [2]
             HPO_CHILDREN_FOR_IRI[2], // HPO term is inserted between [2] and [3]
             HPO_CHILDREN_FOR_IRI[3] +

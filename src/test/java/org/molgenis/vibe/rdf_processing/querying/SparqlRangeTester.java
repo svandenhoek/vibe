@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

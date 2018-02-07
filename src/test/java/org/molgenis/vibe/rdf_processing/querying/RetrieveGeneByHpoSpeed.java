@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;

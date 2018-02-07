@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFactory;

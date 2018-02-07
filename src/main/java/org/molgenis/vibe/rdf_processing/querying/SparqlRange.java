@@ -1,14 +1,14 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 public class SparqlRange {
 
     private String rangeString;
 
-    SparqlRange(int value) {
+    public SparqlRange(int value) {
         this.rangeString = "{" + value + "}";
     }
 
-    SparqlRange(int value, boolean isStart) {
+    public SparqlRange(int value, boolean isStart) {
         if(isStart) {
             this.rangeString = "{" + Integer.toString(value) + ",}";
         } else {
@@ -17,7 +17,7 @@ public class SparqlRange {
         convertRangeStringToDefaultCharacterIfPossible();
     }
 
-    SparqlRange(int start, int end) {
+    public SparqlRange(int start, int end) {
         if(start == end) {
             this.rangeString = "{" + start + "}";
         } else if (start > end) {

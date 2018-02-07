@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_querying;
+package org.molgenis.vibe.rdf_processing.querying;
 
 /**
  * Contains general functions that can be useful for creating SPARQL queries.
