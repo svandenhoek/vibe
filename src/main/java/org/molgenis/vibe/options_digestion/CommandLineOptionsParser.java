@@ -59,12 +59,12 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("Shows text indicating the processes that are being done.")
                 .build());
 
-        options.addOption(Option.builder("m")
-                .longOpt("mode")
-                .desc("The mode the application should run.\n1: Give an HPO code to retrieve genes matched to it.")
-                .hasArg()
-                .argName("NUMBER")
-                .build());
+//        options.addOption(Option.builder("m")
+//                .longOpt("mode")
+//                .desc("The mode the application should run.\n1: Give an HPO code to retrieve genes matched to it.")
+//                .hasArg()
+//                .argName("NUMBER")
+//                .build());
 
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
@@ -142,9 +142,12 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         // If explicit run mode was given, this is chosen. This also overrides guessed run modes based on given user-input.
         // Note that the help option overrides the run mode.
-        if(commandLine.hasOption("m")) {
-            setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
-        }
+//        if(commandLine.hasOption("m")) {
+//            setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
+//        }
+
+        // Sets default RunMode (as only 1 available).
+        setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
 
         // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
         // is shown before the application quits.
