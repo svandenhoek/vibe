@@ -3,6 +3,7 @@ package org.molgenis.vibe.options_digestion;
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
+import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.io.IOException;
 import java.nio.file.InvalidPathException;
@@ -122,14 +123,15 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws InvalidPathException if user-input which should be a file/directory could not be converted to {@link Path}
      * @throws IOException if invalid user-input was given (often due to unreadable/missing files)
      * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
+     * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
-    private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException {
+    private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
         if(commandLine.hasOption("v")) {
             setVerbose(true);
         }
 
         if(commandLine.hasOption("p")) {
-            setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IOException)
+            setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
 
         if(commandLine.hasOption("d")) {

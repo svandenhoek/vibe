@@ -1,10 +1,8 @@
 package org.molgenis.vibe.exceptions;
 
-import java.io.IOException;
-
-public class InvalidStringFormatException extends IOException {
+public class InvalidStringFormatException extends IllegalArgumentException {
     /**
-     * Constructs an {@code IOException} with {@code null}
+     * Constructs an {@code InvalidStringFormatException} with {@code null}
      * as its error detail message.
      */
     public InvalidStringFormatException() {
