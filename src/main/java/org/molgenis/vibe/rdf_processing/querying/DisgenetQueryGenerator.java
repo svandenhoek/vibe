@@ -43,7 +43,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "}" // [4]
     };
 
-    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?hpoId ?disease ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
+    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?hpoId ?disease ?diseaseTitle ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
             HPO_CHILDREN_FOR_IRI[1], // child range is inserted between [1] and [2]
             HPO_CHILDREN_FOR_IRI[2], // HPO term is inserted between [2] and [3]
             HPO_CHILDREN_FOR_IRI[3] +

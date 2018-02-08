@@ -7,6 +7,8 @@ import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.options_digestion.RunMode;
 import org.molgenis.vibe.rdf_processing.GenesForHpoRetriever;
 
+import java.io.IOException;
+
 /**
  * The main application class.
  */
@@ -26,6 +28,8 @@ public class VibeApplication {
             } else { // Any other RunMode will continue application.
                 try {
                     app.run(appOptions);
+                } catch (IOException e) {
+                    System.err.println(e.getLocalizedMessage());
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -40,7 +44,7 @@ public class VibeApplication {
      * The actual processing parts of the application.
      * @param appOptions {@link OptionsParser}
      */
-    public void run(OptionsParser appOptions) {
+    public void run(OptionsParser appOptions) throws IOException {
         appOptions.printVerbose("Preparing DisGeNET dataset");
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 

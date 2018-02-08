@@ -2,16 +2,34 @@ package org.molgenis.vibe.formats;
 
 import static java.util.Objects.requireNonNull;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
+import java.util.*;
 
 public class GeneDiseaseCombination {
     private Gene gene;
     private Disease disease;
     private double score;
-    private HashMap<Source, Integer> sourcesCount;
-    private HashMap<Source, ArrayList<String>> sourcesEvidence;
+    private Map<Source, Integer> sourcesCount = new HashMap<>();
+    private Map<Source, List<String>> sourcesEvidence = new HashMap<>();
+
+    public Gene getGene() {
+        return gene;
+    }
+
+    public Disease getDisease() {
+        return disease;
+    }
+
+    public double getScore() {
+        return score;
+    }
+
+    public Map<Source, Integer> getSourcesCount() {
+        return Collections.unmodifiableMap(sourcesCount);
+    }
+
+    public Map<Source, List<String>> getSourcesEvidence() {
+        return Collections.unmodifiableMap(sourcesEvidence);
+    }
 
     public GeneDiseaseCombination(Gene gene, Disease disease, double score) {
         this.gene = requireNonNull(gene);
@@ -20,11 +38,34 @@ public class GeneDiseaseCombination {
     }
 
     public void add(Source source, String evidence) {
-        //TODO: continue working on function
+        add(source);
+
+        List<String> evidenceList = sourcesEvidence.get(source);
+        if(evidenceList == null) {
+            evidenceList = new ArrayList<>();
+            sourcesEvidence.put(source, evidenceList);
+        }
+        evidenceList.add(evidence);
     }
 
     public void add(Source source) {
-        //TODO: continue working on function
+        Integer count = sourcesCount.get(source);
+        if(count == null) {
+            sourcesCount.put(source, 1);
+        } else {
+            sourcesCount.put(source, count + 1);
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "GeneDiseaseCombination{" +
+                "gene=" + gene +
+                ", disease=" + disease +
+                ", score=" + score +
+                ", sourcesCount=" + sourcesCount +
+                ", sourcesEvidence=" + sourcesEvidence +
+                '}';
     }
 
     @Override

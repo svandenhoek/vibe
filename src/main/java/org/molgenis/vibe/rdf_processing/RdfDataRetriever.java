@@ -5,6 +5,8 @@ import static java.util.Objects.requireNonNull;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
 
+import java.io.IOException;
+
 public abstract class RdfDataRetriever {
     private OptionsParser appOptions;
     private ModelReader modelReader;
@@ -22,5 +24,5 @@ public abstract class RdfDataRetriever {
         this.modelReader = requireNonNull(modelReader);
     }
 
-    public abstract void run();
+    public abstract void run() throws IOException;
 }

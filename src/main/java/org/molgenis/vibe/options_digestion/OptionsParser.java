@@ -2,6 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.rdf_processing.querying.SparqlRange;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,6 +48,8 @@ public abstract class OptionsParser {
      * The HPO terms to be used within the application.
      */
     private Hpo[] hpoTerms;
+
+    private SparqlRange sparqlRange = new SparqlRange(0);
 
     public boolean isVerbose() {
         return verbose;
@@ -159,6 +162,14 @@ public abstract class OptionsParser {
             hpos[i] = new Hpo(hpoTerms[i]);
         }
         this.hpoTerms = hpos;
+    }
+
+    public SparqlRange getSparqlRange() {
+        return sparqlRange;
+    }
+
+    public void setSparqlRange(SparqlRange sparqlRange) {
+        this.sparqlRange = sparqlRange;
     }
 
     /**
