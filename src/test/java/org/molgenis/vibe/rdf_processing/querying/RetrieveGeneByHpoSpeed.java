@@ -3,7 +3,7 @@ package org.molgenis.vibe.rdf_processing.querying;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
 import org.apache.jena.query.ResultSetFormatter;
-import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.annotations.AfterClass;
@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class RetrieveGeneByHpoSpeed {
-    private static final String database = TestFile.TDB_FULL.getFilePath();
+    private static final String database = TestFilesDir.TDB_FULL.getDir();
     private static final int testRepeats = 3;
 
     ModelReader reader;

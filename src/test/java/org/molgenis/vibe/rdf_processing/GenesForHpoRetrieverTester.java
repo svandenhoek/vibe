@@ -1,9 +1,8 @@
 package org.molgenis.vibe.rdf_processing;
 
-import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.Disease;
-import org.molgenis.vibe.formats.Hpo;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
@@ -21,7 +20,7 @@ public class GenesForHpoRetrieverTester {
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
+        reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
 
     }
 

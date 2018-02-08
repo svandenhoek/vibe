@@ -1,7 +1,7 @@
 package org.molgenis.vibe.rdf_processing.querying;
 
 import org.apache.jena.query.ResultSetFormatter;
-import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Hpo;
 import org.molgenis.vibe.io.ModelReader;
@@ -20,8 +20,8 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        readerMini = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
-        readerFull = new TripleStoreDbReader(TestFile.TDB_FULL.getFilePath());
+        readerMini = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
+        readerFull = new TripleStoreDbReader(TestFilesDir.TDB_FULL.getDir());
     }
 
     @AfterClass(alwaysRun = true)

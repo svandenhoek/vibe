@@ -7,6 +7,18 @@
             <run>
                 <exclude name="benchmarking" />
                 <exclude name="noTest" />
+                <exclude name="dependencyBug" />
+            </run>
+        </groups>
+        <packages>
+            <package name="org.molgenis.vibe.*" />
+        </packages>
+    </test>
+
+    <test name="FailedTestsCausedByDependency" enabled="true">
+        <groups>
+            <run>
+                <include name="dependencyBug" />
             </run>
         </groups>
         <packages>

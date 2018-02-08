@@ -2,7 +2,7 @@ package org.molgenis.vibe.rdf_processing.querying;
 
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
-import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.Assert;
@@ -30,7 +30,7 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
+        reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
     }
 
     @AfterClass(alwaysRun = true)
@@ -193,7 +193,7 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     // Bug? {0,} acts as {1,} instead of *
     // Usage of SparqlRange should evade problems caused by this.
-    @Test
+    @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromSelf() {
         Set<String> expectedOutput = new HashSet<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");

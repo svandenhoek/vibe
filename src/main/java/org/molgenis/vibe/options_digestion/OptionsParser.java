@@ -177,7 +177,7 @@ public abstract class OptionsParser {
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
     protected boolean checkConfig() {
-        if(runMode == RunMode.NONE) {
+        if(runMode.equals(RunMode.NONE)) {
             return true;
         }
         if(disgenetDataDir == null || disgenetRdfVersion == null) {

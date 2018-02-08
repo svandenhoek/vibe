@@ -1,7 +1,8 @@
 package org.molgenis.vibe.options_digestion;
 
 import org.apache.commons.cli.ParseException;
-import org.molgenis.vibe.TestFile;
+import org.apache.commons.cli.UnrecognizedOptionException;
+import org.molgenis.vibe.TestFilesDir;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -12,9 +13,13 @@ public class CommandLineOptionsParserTester {
     @Test
     public void noArguments() throws IOException, ParseException {
         String[] args = new String[]{};
-        CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
+        new CommandLineOptionsParser(args);
+    }
 
-        Assert.assertEquals(appOptions.getRunMode(), RunMode.NONE);
+    @Test(expectedExceptions = UnrecognizedOptionException.class)
+    public void unknownArgument() throws IOException, ParseException {
+        String[] args = new String[]{"--zyxi"};
+        new CommandLineOptionsParser(args);
     }
 
     @Test
@@ -32,11 +37,11 @@ public class CommandLineOptionsParserTester {
 
     @Test
     public void getGenesWIthSingleHpoId() throws IOException, ParseException {
-        String[] args = new String[]{"-m", "1", "-d", TestFile.TDB_MINI.getFilePath(), "-p", "hp:1234567"};
+        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567"};
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
         Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_WITH_SINGLE_HPO);
-        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFile.TDB_MINI.getFilePath());
+        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFilesDir.TDB_MINI.getDir());
         Assert.assertEquals(appOptions.getHpoTerms().length, 1);
         Assert.assertEquals(appOptions.getHpoTerms()[0].getFormattedId(), "hp:1234567");
     }

@@ -32,11 +32,10 @@ public class CommandLineOptionsParser extends OptionsParser {
      * Digests the command line options and allows retrieval of useful parameters using getters.
      * @param args the arguments to be digested
      * @throws ParseException see {@link #parseCommandLine(String[])}
-     * @throws MissingOptionException see {@link #parseCommandLine(String[])}
      * @throws InvalidPathException see {@link #digestCommandLine()}
      * @throws IOException see {@link #digestCommandLine()}
      */
-    public CommandLineOptionsParser(String[] args) throws ParseException, MissingOptionException, InvalidPathException, IOException {
+    public CommandLineOptionsParser(String[] args) throws ParseException, InvalidPathException, IOException {
         requireNonNull(args);
 
         parseCommandLine(args);
@@ -109,7 +108,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws ParseException see {@link DefaultParser#parse(Options, String[])}
      * @throws MissingOptionException if not all required arguments are present
      */
-    private void parseCommandLine(String[] args) throws ParseException, MissingOptionException {
+    private void parseCommandLine(String[] args) throws ParseException {
         // Creates parser.
         CommandLineParser parser = new DefaultParser();
 
@@ -131,6 +130,9 @@ public class CommandLineOptionsParser extends OptionsParser {
         }
 
         if(commandLine.hasOption("p")) {
+            // Sets run mode.
+            setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
+            // Digests HPO term(s).
             setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
 
@@ -147,9 +149,6 @@ public class CommandLineOptionsParser extends OptionsParser {
 //        if(commandLine.hasOption("m")) {
 //            setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
 //        }
-
-        // Sets default RunMode (as only 1 available).
-        setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
 
         // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
         // is shown before the application quits.

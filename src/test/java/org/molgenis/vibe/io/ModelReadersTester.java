@@ -1,7 +1,7 @@
 package org.molgenis.vibe.io;
 
 import org.apache.jena.rdf.model.Model;
-import org.molgenis.vibe.TestFile;
+import org.molgenis.vibe.TestFilesDir;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -16,15 +16,10 @@ public class ModelReadersTester {
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
-        modelFileReader = new ModelFilesReader(new String[]{TestFile.GDA1_RDF.getFilePath(),
-                TestFile.GENE_RDF.getFilePath(),
-                TestFile.DISEASE_DISEASE_RDF.getFilePath(),
-                TestFile.PHENOTYPE_RDF.getFilePath(),
-                TestFile.PDA_RDF.getFilePath(),
-                TestFile.ONTOLOGY.getFilePath()});
+        modelFileReader = new ModelFilesReader(TestFilesDir.TTL.getFiles());
         modelFileModel = modelFileReader.getModel();
 
-        tripleStoreReader = new TripleStoreDbReader(TestFile.TDB_MINI.getFilePath());
+        tripleStoreReader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
         tripleStoreModel = tripleStoreReader.getModel();
     }
 
