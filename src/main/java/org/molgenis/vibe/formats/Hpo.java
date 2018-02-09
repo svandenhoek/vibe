@@ -36,14 +36,14 @@ public class Hpo {
      * Validates and retrieves the ID without prefix from a {@link String} describing an HPO id.
      * @param hpoTerm a {@link String} containing the HPO id (with prefix)
      * @return an {@code int} with the HPO id without prefix (if present)
-     * @throws InvalidStringFormatException if {@code hpoTerm} does not adhere to the regex: ^(hp:)?([0-9]{7})$
+     * @throws InvalidStringFormatException if {@code hpoTerm} does not adhere to the regex: ^((hp|HP):)?([0-9]{7})$
      */
     private String retrieveIdNumbers(String hpoTerm) throws InvalidStringFormatException {
-        Matcher m = Pattern.compile("^(hp:)?([0-9]{7})$").matcher(hpoTerm);
+        Matcher m = Pattern.compile("^((hp|HP):)?([0-9]{7})$").matcher(hpoTerm);
         if(m.matches()) {
-            return m.group(2);
+            return m.group(3);
         } else {
-            throw new InvalidStringFormatException(hpoTerm + " does not adhere the required format: ^(hp:)?([0-9]{7})$");
+            throw new InvalidStringFormatException(hpoTerm + " does not adhere the required format: ^((hp|HP):)?([0-9]{7})$");
         }
     }
 
