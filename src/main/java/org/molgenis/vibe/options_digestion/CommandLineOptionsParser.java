@@ -68,7 +68,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
-                .desc("An HPO id. Can be either the number only or with the 'hp:' prefix.")
+                .desc("An HPO id. Can be either the number only or with the 'hp:'/'HP:' prefix.")
                 .hasArg()
                 .argName("HPO ID")
                 .build());
@@ -147,7 +147,7 @@ public class CommandLineOptionsParser extends OptionsParser {
         // If explicit run mode was given, this is chosen. This also overrides guessed run modes based on given user-input.
         // Note that the help option overrides the run mode.
 //        if(commandLine.hasOption("m")) {
-//            setRunMode(RunMode.getMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
+//            setRunMode(RunMode.retrieveMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
 //        }
 
         // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
