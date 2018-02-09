@@ -22,8 +22,8 @@ public enum RunMode {
      * @return the {@link RunMode} belonging to the given number {@code i}
      * @throws NumberFormatException see {@link Integer#parseInt(String)}
      */
-    public static RunMode getMode(String i) throws NumberFormatException {
-        return getMode(Integer.parseInt(i));
+    public static RunMode retrieve(String i) throws NumberFormatException {
+        return retrieve(Integer.parseInt(i));
     }
 
     /**
@@ -31,7 +31,7 @@ public enum RunMode {
      * @param i an {@code int} defining the {@link RunMode}
      * @return the {@link RunMode} belonging to the given number {@code i}
      */
-    public static RunMode getMode(int i) {
+    public static RunMode retrieve(int i) {
         switch (i) {
             case 1:
                 return GET_GENES_WITH_SINGLE_HPO;
