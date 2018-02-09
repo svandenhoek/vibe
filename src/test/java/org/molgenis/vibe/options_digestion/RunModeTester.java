@@ -7,26 +7,26 @@ public class RunModeTester {
 
     @Test
     public void setRunModeWithKnownInt() {
-        Assert.assertEquals(RunMode.getMode(1), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(RunMode.retrieve(1), RunMode.GET_GENES_WITH_SINGLE_HPO);
     }
 
     @Test
     public void setRunModeWithUnknownInt() {
-        Assert.assertEquals(RunMode.getMode(-1), RunMode.NONE);
+        Assert.assertEquals(RunMode.retrieve(-1), RunMode.NONE);
     }
 
     @Test
     public void setRunModeWithKnownString() {
-        Assert.assertEquals(RunMode.getMode("1"), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(RunMode.retrieve("1"), RunMode.GET_GENES_WITH_SINGLE_HPO);
     }
 
     @Test
     public void setRunModeWithUnknownString() {
-        Assert.assertEquals(RunMode.getMode("-1"), RunMode.NONE);
+        Assert.assertEquals(RunMode.retrieve("-1"), RunMode.NONE);
     }
 
     @Test(expectedExceptions = NumberFormatException.class)
     public void setRunModeWithInvalidString() {
-        RunMode.getMode("kaas");
+        RunMode.retrieve("kaas");
     }
 }
