@@ -38,7 +38,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "}"
     };
 
-    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo ?hpoId \n", // SELECT is [0]
+    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpo ?hpoId \n", // SELECT is [0], DISTINCT forces unique results only
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
             "rdfs:subClassOf", " ?hpoParent ; \n" + // child range is inserted between [1] and [2]
             "dcterms:identifier ?hpoId . \n" +
@@ -47,6 +47,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "}" // [4]
     };
 
+    //todo: Need rewrite to use DISTINCT HPO children only.
     private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?hpoId ?disease ?diseaseTitle ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
             HPO_CHILDREN_FOR_IRI[1], // child range is inserted between [1] and [2]
             HPO_CHILDREN_FOR_IRI[2], // HPO term is inserted between [2] and [3]
@@ -59,6 +60,7 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "}" // [4]
     };
 
+    //todo: Finish query.
     private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?geneId ?geneSymbolTitle ?gdaScore ?gdaSource ?evidence \n", // SELECT is [0]
             "WHERE { ?gda sio:SIO_000628 ?disease, ?gene ; \n" + // [1], SIO_000628 -> refers to
             "rdf:type ?type ; \n" +

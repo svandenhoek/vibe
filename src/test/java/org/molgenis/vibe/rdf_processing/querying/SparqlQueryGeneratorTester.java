@@ -212,18 +212,18 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     /**
      * When adding more information such as the dcterms:identifier for an HPO, duplicates are removed again.
-     * These results seem similar to {@link #testHpoSubClassOfInclusive}, though there no DISTINCT/extra information retrieval
-     * was needed for removal of duplicates.
+     * These results seem similar to {@link #testHpoSubClassOfInclusive}, though there no DISTINCT was needed for
+     * removal of duplicates.
      * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
      * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
      */
-    @Test
+    @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval() {
         List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo ?hpoId \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> ; \n" +
                 "dcterms:identifier ?hpoId . \n" +
