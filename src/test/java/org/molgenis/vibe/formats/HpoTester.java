@@ -7,30 +7,30 @@ import org.testng.annotations.Test;
 public class HpoTester {
     @Test
     public void useValidHpoIdWithPrefix() throws InvalidStringFormatException {
-        Hpo hpo = new Hpo("hp:1234567");
-        Assert.assertEquals(hpo.getId(), 1234567);
-        Assert.assertEquals(hpo.getFormattedId(), "hp:1234567");
+        Hpo hpo = new Hpo("hp:0012345");
+        Assert.assertEquals(hpo.getId(), "0012345");
+        Assert.assertEquals(hpo.getFormattedId(), "hp:0012345");
     }
 
     @Test
     public void useValidHpoIdWithoutPrefix() throws InvalidStringFormatException {
-        Hpo hpo = new Hpo("1234567");
-        Assert.assertEquals(hpo.getId(), 1234567);
-        Assert.assertEquals(hpo.getFormattedId(), "hp:1234567");
+        Hpo hpo = new Hpo("0012345");
+        Assert.assertEquals(hpo.getId(), "0012345");
+        Assert.assertEquals(hpo.getFormattedId(), "hp:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidHpoIdWithInvalidPrefix() throws InvalidStringFormatException {
-        Hpo hpo = new Hpo("hpo:1234567");
+        Hpo hpo = new Hpo("hpo:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useTooShortHpoIdWithPrefix() throws InvalidStringFormatException {
-        Hpo hpo = new Hpo("hp:12345");
+        Hpo hpo = new Hpo("hp:0012");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useTooShortHpoIdWithoutPrefix() throws InvalidStringFormatException {
-        Hpo hpo = new Hpo("12345");
+        Hpo hpo = new Hpo("0012");
     }
 }
