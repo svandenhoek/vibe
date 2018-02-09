@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public class GeneDiseaseCombinationTester {
-    private Gene gene = new Gene();
+    private Gene gene = new Gene("http://gene.test", 0, "myDisease", "ASDF");
     private Disease disease = new Disease("http://disease.test", "myDisease") {
 
     };

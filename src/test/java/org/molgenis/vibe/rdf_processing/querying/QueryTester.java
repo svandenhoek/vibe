@@ -3,17 +3,21 @@ package org.molgenis.vibe.rdf_processing.querying;
 import org.apache.jena.query.QuerySolution;
 import org.testng.Assert;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class QueryTester {
-    void assertRunnerHpoOutputWithExpectedResults(QueryRunner runner, String field, Set<String> expectedOutput) {
-        Set<String> actualOutput = new HashSet<>();
+    void assertSingleFieldFromRunnerOutput(QueryRunner runner, String field, List<String> expectedOutput) {
+        List<String> actualOutput = new ArrayList<>();
         while(runner.hasNext()) {
             QuerySolution result = runner.next();
             actualOutput.add(result.get(field).toString());
         }
 
+        // Sorts collections for better comparison.
+        Collections.sort(actualOutput);
+        Collections.sort(expectedOutput);
+
+        // Checks if output is as expected.
         Assert.assertEquals(actualOutput, expectedOutput);
     }
 

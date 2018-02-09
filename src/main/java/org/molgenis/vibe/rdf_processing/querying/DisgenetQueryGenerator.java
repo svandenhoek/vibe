@@ -1,6 +1,10 @@
 package org.molgenis.vibe.rdf_processing.querying;
 
+import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.formats.Hpo;
+
+import java.util.Iterator;
+import java.util.Set;
 
 /**
  * Generates SPARQL queries specific for the DisGeNET RDF dataset.
@@ -36,10 +40,10 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
 
     private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT ?hpo ?hpoId \n", // SELECT is [0]
             "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
-            "rdfs:subClassOf", " ?hpoParent ; \n" +
-            "dcterms:identifier ?hpoId . \n" + // child range is inserted between [1] and [2]
-            "{ SELECT (?hpo as ?hpoParent) \n" +
-            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n", // HPO term is inserted between [2] and [3]
+            "rdfs:subClassOf", " ?hpoParent ; \n" + // child range is inserted between [1] and [2]
+            "dcterms:identifier ?hpoId . \n" +
+            "{ SELECT (?hpo as ?hpoParent) \n" + // subquery for retrieving the single parent HPO
+            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n", // HPO parent is inserted between [2] and [3]
             "}" // [4]
     };
 
@@ -51,11 +55,26 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "sio:SIO_000628 ?hpo , ?disease ; \n" +
             "sio:SIO_000253 ?pdaSource . \n" +
             "?disease rdf:type ncit:C7057 ; \n" + // ncit:C7057 -> Disease
-            "dcterms:title ?diseaseTitle . \n" +
-            "?pdaSource rdf:type dctypes:Dataset ; \n" + // dcterms:title sometimes has multiple hits
-            "wi:evidence ?pdaSourceLevel . \n" +
-            "?pdaSourceLevel rdfs:label ?pdaSourceLevelLabel . \n",
+            "dcterms:title ?diseaseTitle . \n",
             "}" // [4]
+    };
+
+    private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?geneId ?geneSymbolTitle ?gdaScore ?gdaSource ?evidence \n", // SELECT is [0]
+            "WHERE { ?gda sio:SIO_000628 ?disease, ?gene ; \n" + // [1], SIO_000628 -> refers to
+            "rdf:type ?type ; \n" +
+            "sio:SIO_000216 ?gdaScore ; \n" + // SIO_000216 -> has measurement value
+            "sio:SIO_000253 ?gdaSource . \n" + // SIO_000253 -> has source
+            "?type rdfs:subClassOf* ", " . \n" + // association type between [1] and [2] (use default: SIO_000983 -> gene-disease association)
+            "?gene rdf:type ncit:C16612 ; \n" + // ncit:C16612 -> Gene
+            "dcterms:identifier ?geneId ; \n" +
+            "sio:SIO_000205 ?geneSymbol . \n" + // SIO_000205 -> is represented by
+            "?geneSymbol rdf:type ncit:C43568 ; \n" + // ncit:C43568 -> Gene Symbol
+            "dcterms:title ?geneSymbolTitle . \n" +
+            "?gdaScore rdf:type ncit:C25338 ; \n" + // ncit:C25338 -> Score
+            "sio:SIO_000300 ?gdaScoreNumber . \n" + // SIO_000300 -> has value
+            "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" + // SIO_000772 -> has evidence
+            "VALUES ?disease ", " \n" + // list of diseases between [2] and [3]"
+            "}"
     };
 
     private static final String[] HPO_GENES = {"SELECT ?diseaseTitle ?geneId ?geneSymbolTitle ?gdaScoreNumber ?pdaSource ?gdaSource ?gdaSourceLevelLabel ?pubmed \n" +
@@ -104,6 +123,11 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
                 hpo.getFormattedId() + PDA_FOR_HPO_CHILDREN[3] + PDA_FOR_HPO_CHILDREN[4];
     }
 
+    public static String getGdas(Set<Disease> diseases, DisgenetAssociationType disgenetAssociationType) {
+        return PREFIXES + GDA_FOR_DISEASES[0] + GDA_FOR_DISEASES[1] + disgenetAssociationType.getFormattedId() +
+                GDA_FOR_DISEASES[2] + createValuesStringForDiseases(diseases) + GDA_FOR_DISEASES[3];
+    }
+
 //    public static String getPhenotypeDiseaseAssociations(String hpoTerm) {
 //        return PREFIXES + RETRIEVE_PDA_FOR_HPO[0] + RETRIEVE_PDA_FOR_HPO[1];
 //    }
@@ -114,5 +138,20 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
 
     public static String getHpoGenes(String hpoTerm, int limit) {
         return addLimit(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1], limit);
+    }
+
+    private static String createValuesStringForDiseases(Set<Disease> diseases) {
+        if(diseases.size() < 1) {
+            throw new IllegalArgumentException("diseases Set should at least contain 1 item.");
+        }
+        Iterator<Disease> diseaseIter = diseases.iterator();
+
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("{ \"").append(diseaseIter.next().getUri());
+
+        while (diseaseIter.hasNext()) {
+            strBuilder.append("\" \"").append(diseaseIter.next().getUri());
+        }
+        return strBuilder.append("\" }").toString();
     }
 }

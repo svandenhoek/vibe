@@ -1,15 +1,19 @@
 package org.molgenis.vibe.rdf_processing.querying;
 
+import org.apache.commons.lang3.ArrayUtils;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
+import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * Tests the {@link SparqlQueryGenerator} (based on Apache Jena for RDF file reading/querying).
@@ -53,7 +57,8 @@ public class SparqlQueryGeneratorTester extends QueryTester {
     public void testEmptyResults() {
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id . }");
-
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
         Assert.assertEquals(runner.hasNext(), false);
     }
 
@@ -61,38 +66,33 @@ public class SparqlQueryGeneratorTester extends QueryTester {
     public void testSingleGdaId() {
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id }");
-
-        Assert.assertEquals(runner.hasNext(), true, "no match found");
-        QuerySolution result = runner.next();
-        Assert.assertEquals(runner.hasNext(), false, "more than 1 match found");
-        Assert.assertEquals(result.get("id").asLiteral().getString(), "disgenet:DGNa4eb0beb985996e1956b22097c0ad0de");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "id", Arrays.asList("disgenet:DGNa4eb0beb985996e1956b22097c0ad0de"));
     }
 
     @Test
     public void testSingleGdaIdReferences() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://identifiers.org/ncbigene/1289");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
-        Set<String> actualReferences = new HashSet<>();
+        List<String> actualOutput = new ArrayList<>();
 
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?value \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> sio:SIO_000628 ?value }");
-
-        while(runner.hasNext()) {
-            QuerySolution result = runner.next();
-            actualReferences.add(result.get("value").toString());
-        }
-
-        Assert.assertEquals(actualReferences, expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "value", expectedOutput);
     }
 
     @Test
     public void testLimit() {
         runner = new QueryRunnerRewindable(reader.getModel(), prefixes +  "SELECT ?id \n" +
                 "WHERE { ?gda rdf:type sio:SIO_001121 } \n" +
-                "LIMIT 2");
-
-        assertQueryResultCountWithExpectedResult(runner, 2); // test file contains 3
+                "LIMIT 3");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertQueryResultCountWithExpectedResult(runner, 3); // test file contains 9
     }
 
     @Test
@@ -103,6 +103,8 @@ public class SparqlQueryGeneratorTester extends QueryTester {
                 "?gene rdf:type ncit:C16612 . \n" +
                 "?disease rdf:type ncit:C7057 . \n" +
                 "}");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
 
         Assert.assertEquals(runner.hasNext(), true, "no match found");
         QuerySolution result = runner.next();
@@ -115,130 +117,197 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test
     public void testHpoSubClassOfInclusive() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf* <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfExclusive() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf+ <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfNoGrandChilds() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf? <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
-    @Test
-    public void testHpoSubClassOfOnlyGrandChildren() {
-        Set<String> expectedOutput = new HashSet<>();
+    /**
+     * If no DISTINCT is added or no more information retrieved, HP_0005060 is returned twice.
+     * Note that it is a child from HP_0002996 through both HP_0001377 and HP_0006376.
+     * Nevertheless, when using * instead of a custom range, it is only returned once without the need for DISTINCT
+     * (see {@link #testHpoSubClassOfInclusive}).
+     *
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     */
+    @Test(groups = {"dependencyBug"})
+    public void testHpoSubClassOfOnlyGrandChildrenWithoutDistinct() {
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+    }
 
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+    /**
+     * With added DISTINCT {@link #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()} does not return duplicates.
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     */
+    @Test(groups = {"dependencyBug"})
+    public void testHpoSubClassOfOnlyGrandChildrenWithDistinct() {
+        List<String> expectedOutput = new ArrayList<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT DISTINCT ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+                "}");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+    }
+
+    /**
+     * When adding more information such as the dcterms:identifier for an HPO, duplicates are removed again.
+     * These results seem similar to {@link #testHpoSubClassOfInclusive}, though there no DISTINCT/extra information retrieval
+     * was needed for removal of duplicates.
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
+     */
+    @Test
+    public void testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval() {
+        List<String> expectedOutput = new ArrayList<>();
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
+
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
+                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> ; \n" +
+                "dcterms:identifier ?hpoId . \n" +
+                "}");
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
     @Test
     public void testHpoSubClassOfOnlyChildren2Deep() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
-    // Bug? {0,} acts as {1,} instead of *
-    // Usage of SparqlRange should evade problems caused by this.
+    /**
+     * Bug? {0,} acts as {1,} instead of *
+     * Usage of {@link SparqlRange} should evade problems caused by this.
+     */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromSelf() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
-    @Test
+    /**
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
+     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     */
+    @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromChild() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
-
-
 
     @Test
     public void testHpoSubClassOfOnlyChildren2DeepExcplicitStart() {
-        Set<String> expectedOutput = new HashSet<>();
+        List<String> expectedOutput = new ArrayList<>();
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT  ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
                 "}");
-
-        assertRunnerHpoOutputWithExpectedResults(runner, "hpo", expectedOutput);
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 }
