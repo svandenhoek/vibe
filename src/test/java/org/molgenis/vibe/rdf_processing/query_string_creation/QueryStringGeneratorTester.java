@@ -3,6 +3,7 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
+import org.apache.jena.query.Syntax;
 import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
@@ -185,7 +186,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -205,7 +206,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT DISTINCT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -228,7 +229,7 @@ public class QueryStringGeneratorTester extends QueryTester {
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> ; \n" +
                 "dcterms:identifier ?hpoId . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -245,7 +246,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -267,7 +268,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -289,7 +290,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -306,7 +307,7 @@ public class QueryStringGeneratorTester extends QueryTester {
         runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}"));
+                "}", Syntax.syntaxARQ));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
