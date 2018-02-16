@@ -9,8 +9,6 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
