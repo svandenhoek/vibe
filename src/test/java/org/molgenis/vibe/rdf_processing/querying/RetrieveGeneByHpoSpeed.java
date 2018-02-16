@@ -6,6 +6,8 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
+import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
@@ -44,7 +46,7 @@ public class RetrieveGeneByHpoSpeed {
                 "sio:SIO_000628 ?hpo , ?disease ." +
                 "?hpo rdf:type sio:SIO_010056 ;" +
                 "dcterms:identifier \"hp:0009811\"^^xsd:string }";
-        String[] times = runQuery(DisgenetQueryGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
         System.out.println("gda times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -61,7 +63,7 @@ public class RetrieveGeneByHpoSpeed {
                 "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
                 "?gene rdf:type ncit:C7057 ; " +
                 "dcterms:title ?geneTitle .}";
-        String[] times = runQuery(DisgenetQueryGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
         System.out.println("pda times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -78,7 +80,7 @@ public class RetrieveGeneByHpoSpeed {
                 "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
                 "?gene rdf:type ncit:C7057 ; \n" +
                 "dcterms:title ?geneTitle .}";
-        String[] times = runQuery(DisgenetQueryGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
         System.out.println("hpo times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -105,7 +107,7 @@ public class RetrieveGeneByHpoSpeed {
                 "sio:SIO_000205 ?geneSymbol . \n" +
                 "?geneSymbol rdf:type ncit:C43568 ; \n" +
                 "dcterms:title ?geneSymbolTitle . }";
-        String[] times = runQuery(DisgenetQueryGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
         System.out.println("hpo V2 initial times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -133,7 +135,7 @@ public class RetrieveGeneByHpoSpeed {
                 "?gdaSource rdf:type dctypes:Dataset ; \n" +
                 "dcterms:title ?gdaSourceTitle . \n" +
                 "}";
-        String[] times = runQuery(DisgenetQueryGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
         System.out.println("hpo V2 reordered times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -141,7 +143,7 @@ public class RetrieveGeneByHpoSpeed {
         String[] times = new String[testRepeats];
         for(int i = 0; i<testRepeats;i++) {
             Stopwatch timer = Stopwatch.createStarted();
-            QueryRunner runner = new QueryRunner(reader.getModel(), DisgenetQueryGenerator.getPrefixes() + queryString);
+            QueryRunner runner = new QueryRunner(reader.getModel(), new QueryString(DisgenetQueryStringGenerator.getPrefixes() + queryString));
             ResultSetFormatter.out(ByteStreams.nullOutputStream(), runner.getResultSet());
             times[i] = timer.stop().toString();
             runner.close();

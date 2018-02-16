@@ -1,9 +1,9 @@
-package org.molgenis.vibe.rdf_processing.querying;
+package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 /**
  * Contains general functions that can be useful for creating SPARQL queries.
  */
-public abstract class SparqlQueryGenerator {
+public abstract class QueryStringGenerator {
     /**
      * Adds a limit to the items returned by a SPARQL query.
      * @param query the query to add a limit to

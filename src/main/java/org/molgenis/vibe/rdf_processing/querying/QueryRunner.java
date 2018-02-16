@@ -3,6 +3,7 @@ package org.molgenis.vibe.rdf_processing.querying;
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
+import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
 
 import java.util.Iterator;
 
@@ -20,8 +21,8 @@ public class QueryRunner implements Closeable, Iterator {
      */
     private ResultSet results;
 
-    public QueryRunner(Model model, String queryString) {
-        Query query = QueryFactory.create(queryString, Syntax.syntaxARQ); // Syntax.syntaxARQ needed for complex syntax: https://jena.apache.org/documentation/query/property_paths.html
+    public QueryRunner(Model model, QueryString queryString) {
+        Query query = QueryFactory.create(queryString.getQuery(), queryString.getSyntax());
         qexec = QueryExecutionFactory.create(query, model);
         results = qexec.execSelect();
     }

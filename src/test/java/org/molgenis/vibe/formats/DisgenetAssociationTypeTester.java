@@ -1,7 +1,7 @@
 package org.molgenis.vibe.formats;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.rdf_processing.querying.DisgenetAssociationType;
+import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetAssociationType;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

@@ -6,7 +6,7 @@ import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
-import org.molgenis.vibe.rdf_processing.querying.SparqlRange;
+import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -35,7 +35,7 @@ public class GenesForHpoRetrieverTester {
             // Instance initializer.
             {
                 setHpoTerms(new String[]{"hp:0001376"});
-                setSparqlRange(new SparqlRange(1, false));
+                setQueryStringPathRange(new QueryStringPathRange(1, false));
             }
         };
 

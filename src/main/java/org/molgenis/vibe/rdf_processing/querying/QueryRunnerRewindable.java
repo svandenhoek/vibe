@@ -4,6 +4,7 @@ import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFactory;
 import org.apache.jena.query.ResultSetRewindable;
 import org.apache.jena.rdf.model.Model;
+import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
 
 /**
  * Is able to run a SPARQL query on a {@link Model} and iterate over the results multiple times.
@@ -15,7 +16,7 @@ public class QueryRunnerRewindable extends QueryRunner {
      */
     private ResultSetRewindable resultSetRewindable;
 
-    public QueryRunnerRewindable(Model model, String queryString) {
+    public QueryRunnerRewindable(Model model, QueryString queryString) {
         super(model, queryString);
         resultSetRewindable = ResultSetFactory.copyResults(super.getResultSet());
     }

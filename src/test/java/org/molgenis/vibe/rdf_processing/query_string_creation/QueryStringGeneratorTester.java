@@ -1,13 +1,14 @@
-package org.molgenis.vibe.rdf_processing.querying;
+package org.molgenis.vibe.rdf_processing.query_string_creation;
 
-import org.apache.commons.lang3.ArrayUtils;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFilesDir;
-import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.rdf_processing.QueryTester;
+import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
+import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -16,7 +17,7 @@ import java.util.Arrays;
 import java.util.List;
 
 /**
- * Tests the {@link SparqlQueryGenerator} (based on Apache Jena for RDF file reading/querying).
+ * Tests the {@link QueryStringGenerator} (based on Apache Jena for RDF file reading/querying).
  *
  * IMPORTANT: Run TestNGPreprocessing.sh before using TestNG!
  *
@@ -27,10 +28,10 @@ import java.util.List;
  * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
  * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
  */
-public class SparqlQueryGeneratorTester extends QueryTester {
+public class QueryStringGeneratorTester extends QueryTester {
     private ModelReader reader;
     private QueryRunnerRewindable runner;
-    private final String prefixes = DisgenetQueryGenerator.getPrefixes();
+    private final String prefixes = DisgenetQueryStringGenerator.getPrefixes();
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
@@ -49,14 +50,14 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test(expectedExceptions = QueryParseException.class)
     public void testInvalidQuery() {
-        new QueryRunner(reader.getModel(), prefixes + "SELECT ?id \n" +
-                "WHERE { brandNetelKaasMetEenDruppeltjeMunt?! }");
+        new QueryRunner(reader.getModel(), new QueryString(prefixes + "SELECT ?id \n" +
+                "WHERE { brandNetelKaasMetEenDruppeltjeMunt?! }"));
     }
 
     @Test
     public void testEmptyResults() {
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id . }");
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?id \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/0> dcterms:identifier ?id . }"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         Assert.assertEquals(runner.hasNext(), false);
@@ -64,8 +65,8 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test
     public void testSingleGdaId() {
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id }");
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?id \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id }"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "id", Arrays.asList("disgenet:DGNa4eb0beb985996e1956b22097c0ad0de"));
@@ -78,8 +79,8 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
         List<String> actualOutput = new ArrayList<>();
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?value \n" +
-                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> sio:SIO_000628 ?value }");
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?value \n" +
+                "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> sio:SIO_000628 ?value }"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "value", expectedOutput);
@@ -87,9 +88,9 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test
     public void testLimit() {
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes +  "SELECT ?id \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes +  "SELECT ?id \n" +
                 "WHERE { ?gda rdf:type sio:SIO_001121 } \n" +
-                "LIMIT 3");
+                "LIMIT 3"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertQueryResultCountWithExpectedResult(runner, 3); // test file contains 9
@@ -97,12 +98,12 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     @Test
     public void testGdaGeneDiseaseQuery() {
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?id ?gene ?disease \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?id ?gene ?disease \n" +
                 "WHERE { <http://rdf.disgenet.org/resource/gda/DGNa4eb0beb985996e1956b22097c0ad0de> dcterms:identifier ?id ; \n" +
                 "sio:SIO_000628 ?gene , ?disease . \n" +
                 "?gene rdf:type ncit:C16612 . \n" +
                 "?disease rdf:type ncit:C7057 . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
@@ -124,10 +125,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf* <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -141,10 +142,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf+ <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -157,10 +158,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf? <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -181,10 +182,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -201,10 +202,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT DISTINCT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT DISTINCT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -223,11 +224,11 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo ?hpoId \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo ?hpoId \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> ; \n" +
                 "dcterms:identifier ?hpoId . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -241,10 +242,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -252,7 +253,7 @@ public class SparqlQueryGeneratorTester extends QueryTester {
 
     /**
      * Bug? {0,} acts as {1,} instead of *
-     * Usage of {@link SparqlRange} should evade problems caused by this.
+     * Usage of {@link QueryStringPathRange} should evade problems caused by this.
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromSelf() {
@@ -263,10 +264,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -285,10 +286,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
@@ -302,10 +303,10 @@ public class SparqlQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), prefixes + "SELECT ?hpo \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
                 "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
                 "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}");
+                "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);

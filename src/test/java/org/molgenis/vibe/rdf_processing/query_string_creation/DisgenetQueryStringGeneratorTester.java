@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_processing.querying;
+package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
@@ -8,13 +8,15 @@ import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.formats.Hpo;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.rdf_processing.QueryTester;
+import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.net.URI;
 import java.util.*;
 
-public class DisgenetQueryGeneratorTester extends QueryTester {
+public class DisgenetQueryStringGeneratorTester extends QueryTester {
     private static final String delimiter = " - ";
 
     private ModelReader readerMini;
@@ -44,9 +46,9 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         Set<Hpo> hpos = new HashSet<>();
         hpos.add(new Hpo("hp:0009811"));
 
-        String query = DisgenetQueryGenerator.getIriForHpo(hpos);
-        System.out.println(query);
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(hpos);
+        System.out.println(queryString.getQuery());
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
 
         Assert.assertEquals(runner.hasNext(), true);
         Assert.assertEquals(runner.next().get("hpo").toString(), "http://purl.obolibrary.org/obo/HP_0009811");
@@ -67,10 +69,10 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
 
-        String query = DisgenetQueryGenerator.getIriForHpo(hpos);
-        System.out.println(query);
+        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(hpos);
+        System.out.println(queryString.getQuery());
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
@@ -89,60 +91,61 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
         expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
 
-        String query = DisgenetQueryGenerator.getHpoChildren(hpos, new SparqlRange(0, true));
-        System.out.println(query);
+        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(hpos,
+                new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE));
+        System.out.println(queryString.getQuery());
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
         assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
     }
 
-    @Test
-    public void testHpoChildrenTill2LevelsDeep() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
-
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-
-        String query = DisgenetQueryGenerator.getHpoChildren(hpos, new SparqlRange(2, false));
-        System.out.println(query);
-
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * @see SparqlQueryGeneratorTester#testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
-     * @throws InvalidStringFormatException
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoChildrenTill2LevelsDeepDifferentParent() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
-
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001376");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-
-        String query = DisgenetQueryGenerator.getHpoChildren(hpos, new SparqlRange(2, false));
-        System.out.println(query);
-
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
+//    @Test
+//    public void testHpoChildrenTill2LevelsDeep() throws InvalidStringFormatException {
+//        Set<Hpo> hpos = new HashSet<>();
+//        hpos.add(new Hpo("hp:0009811"));
+//
+//        List<String> expectedOutput = new ArrayList<>();
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+//
+//        String query = DisgenetQueryStringGenerator.getHpoChildren(hpos, new QueryStringPathRange(2, false));
+//        System.out.println(query);
+//
+//        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+//        ResultSetFormatter.out(System.out, runner.getResultSet());
+//        runner.reset();
+//
+//        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+//    }
+//
+//    /**
+//     * @see QueryStringGeneratorTester#testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
+//     * @throws InvalidStringFormatException
+//     */
+//    @Test(groups = {"dependencyBug"})
+//    public void testHpoChildrenTill2LevelsDeepDifferentParent() throws InvalidStringFormatException {
+//        Set<Hpo> hpos = new HashSet<>();
+//        hpos.add(new Hpo("hp:0009811"));
+//
+//        List<String> expectedOutput = new ArrayList<>();
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001376");
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
+//        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
+//
+//        String query = DisgenetQueryStringGenerator.getHpoChildren(hpos, new QueryStringPathRange(2, false));
+//        System.out.println(query);
+//
+//        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+//        ResultSetFormatter.out(System.out, runner.getResultSet());
+//        runner.reset();
+//
+//        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+//    }
 
     @Test
     public void testPdasSingleHpo() throws InvalidStringFormatException {
@@ -153,10 +156,10 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0039516");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0152084");
 
-        String query = DisgenetQueryGenerator.getPdas(hpos);
-        System.out.println(query);
+        QueryString queryString = DisgenetQueryStringGenerator.getPdas(hpos);
+        System.out.println(queryString.getQuery());
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
@@ -176,10 +179,10 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0175704");
         expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1834674");
 
-        String query = DisgenetQueryGenerator.getPdas(hpos);
-        System.out.println(query);
+        QueryString queryString = DisgenetQueryStringGenerator.getPdas(hpos);
+        System.out.println(queryString.getQuery());
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
@@ -195,7 +198,7 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
 //        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1834674");
 //
 //
-//        String query = DisgenetQueryGenerator.getPdas(new Hpo("hp:0009811"), new SparqlRange(1, false));
+//        String query = DisgenetQueryStringGenerator.getPdas(new Hpo("hp:0009811"), new QueryStringPathRange(1, false));
 //        System.out.println(query);
 //
 //        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
@@ -215,7 +218,7 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
 //        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C0410538");
 //        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1850318");
 //
-//        String query = DisgenetQueryGenerator.getPdas(new Hpo("hp:0009811"), new SparqlRange(0, true));
+//        String query = DisgenetQueryStringGenerator.getPdas(new Hpo("hp:0009811"), new QueryStringPathRange(0, true));
 //        System.out.println(query);
 //
 //        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
@@ -224,13 +227,6 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
 //
 //        assertSingleFieldFromRunnerOutput(runner, "disease", expectedOutput);
 //    }
-
-    @Test
-    public void hpoGenesUnknownHpoMini() {
-        runner = new QueryRunnerRewindable(readerMini.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:1234567"));
-
-        Assert.assertEquals(runner.hasNext(), false, "match found while HPO not in file");
-    }
 
     @Test
     public void geneDiseaseCombinationsForSingleDisease() {
@@ -242,10 +238,10 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         expectedOutput.add(String.join(delimiter, disease.getUri().toString(), "http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/UNIPROT", "http://identifiers.org/pubmed/15466004"));
         expectedOutput.add(String.join(delimiter, disease.getUri().toString(), "http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/CTD_human"));
 
-        String query = DisgenetQueryGenerator.getGdas(inputDiseases, DisgenetAssociationType.GENE_DISEASE);
-        System.out.println(query);
+        QueryString queryString = DisgenetQueryStringGenerator.getGdas(inputDiseases, DisgenetAssociationType.GENE_DISEASE);
+        System.out.println(queryString.getQuery());
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), query);
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
 
@@ -279,15 +275,4 @@ public class DisgenetQueryGeneratorTester extends QueryTester {
         }
         return strBuilder.toString();
     }
-
-//
-//    @Test
-//    public void hpoGenesHpoInFileMini() {
-//        runner = new QueryRunnerRewindable(readerMini.getModel(), DisgenetQueryGenerator.getHpoGenes("hp:0009811"));
-//        ResultSetFormatter.out(System.out, runner.getResultSet());
-//        runner.reset();
-//
-//        // Expected can be counted in file using regex: ^<http://rdf.disgenet.org/resource/gda/ (note that 2 GDAs do not have a phenotype stored)
-//        assertQueryResultCountWithExpectedResult(runner, 12);
-//    }
 }

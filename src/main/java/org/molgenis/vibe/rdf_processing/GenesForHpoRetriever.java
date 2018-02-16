@@ -8,7 +8,7 @@ import org.molgenis.vibe.formats.GeneDiseaseCombination;
 import org.molgenis.vibe.formats.Hpo;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
-import org.molgenis.vibe.rdf_processing.querying.DisgenetQueryGenerator;
+import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
 import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 
 import java.util.HashSet;
@@ -37,12 +37,12 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
 
     private void retrieveHpos() throws CorruptDatabaseException {
 //        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-//                DisgenetQueryGenerator.getIriForHpo();
+//                DisgenetQueryStringGenerator.getIriForHpo();
     }
 
     private void retrieveDiseases() throws CorruptDatabaseException {
 //        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-//                DisgenetQueryGenerator.getPdas(, getAppOptions().getSparqlRange()));
+//                DisgenetQueryStringGenerator.getPdas(hpos));
 //
 //        while(query.hasNext()) {
 //            QuerySolution result = query.next();

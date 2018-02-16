@@ -2,7 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Hpo;
-import org.molgenis.vibe.rdf_processing.querying.SparqlRange;
+import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -47,7 +47,7 @@ public abstract class OptionsParser {
      */
     private Hpo[] hpoTerms;
 
-    private SparqlRange sparqlRange = new SparqlRange(0);
+    private QueryStringPathRange queryStringPathRange = new QueryStringPathRange(0);
 
     public boolean isVerbose() {
         return verbose;
@@ -162,12 +162,12 @@ public abstract class OptionsParser {
         this.hpoTerms = hpos;
     }
 
-    public SparqlRange getSparqlRange() {
-        return sparqlRange;
+    public QueryStringPathRange getQueryStringPathRange() {
+        return queryStringPathRange;
     }
 
-    public void setSparqlRange(SparqlRange sparqlRange) {
-        this.sparqlRange = sparqlRange;
+    public void setQueryStringPathRange(QueryStringPathRange queryStringPathRange) {
+        this.queryStringPathRange = queryStringPathRange;
     }
 
     /**
