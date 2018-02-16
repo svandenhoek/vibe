@@ -1,7 +1,10 @@
 package org.molgenis.vibe.formats;
 
+import static java.util.Objects.requireNonNull;
+
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
+import java.net.URI;
 import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,8 +12,10 @@ import java.util.regex.Pattern;
 /**
  * Defines a HPO term.
  */
-public class Hpo {
+public class Hpo implements ResourceUri {
     private static final String PREFIX = "hp:";
+
+    private URI uri;
 
     /**
      * The numbers representing the ID.
@@ -19,6 +24,19 @@ public class Hpo {
 
     public Hpo(String id) throws InvalidStringFormatException {
         this.id = retrieveIdNumbers(id);
+    }
+
+    public Hpo(URI uri, String id) {
+        this.id = retrieveIdNumbers(id);
+        this.uri = requireNonNull(uri);
+    }
+
+    public URI getUri() {
+        return uri;
+    }
+
+    public void setUri(URI uri) {
+        this.uri = uri;
     }
 
     public String getId() {

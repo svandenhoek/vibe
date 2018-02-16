@@ -2,6 +2,7 @@ package org.molgenis.vibe.rdf_processing.querying;
 
 import org.molgenis.vibe.formats.Disease;
 import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.formats.ResourceUri;
 
 import java.util.Iterator;
 import java.util.Set;
@@ -32,36 +33,64 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
             "PREFIX pav: <http://purl.org/pav/> \n"+
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
-    private static final String[] IRI_FOR_HPO = {"SELECT ?hpo \n", // SELECT is [0]
-            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
-            "dcterms:identifier \"", "\"^^xsd:string . \n" + // HPO term is inserted between [1] and [2]
+    /**
+     * <p>Retrieves the IRI belonging to a HPO id ({@code hp:<numbers>})</p>
+     *
+     * [0]: "SELECT ... WHERE { "
+     * <br />between [1] and [2]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
+     * <br />[3]: closing "}" belonging to [0]
+     */
+    private static final String[] IRI_FOR_HPO = {"SELECT DISTINCT ?hpo ?hpoId \n" + // DISTINCT forces unique results only
+            "WHERE { \n", // [0] -> [1]
+            "?hpo rdf:type sio:SIO_010056 ; \n" +
+            "dcterms:identifier ?hpoId . \n" +
+            "VALUES ?hpoId ", " . \n", // [1] -> [2] -> [3]
             "}"
     };
 
-    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpo ?hpoId \n", // SELECT is [0], DISTINCT forces unique results only
-            "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" + // [1]
-            "rdfs:subClassOf", " ?hpoParent ; \n" + // child range is inserted between [1] and [2]
+    /**
+     * <p>Retrieves the children (based on a specified range) belonging to an HPO IRI.</p>
+     *
+     * [0]: "SELECT ... WHERE { "
+     * <br />between [1] and [2]: child range
+     * <br />between [2] and [3]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
+     * <br />[4]: closing "}" belonging to [0]
+     */
+    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpoParent ?hpo ?hpoId \n" + // DISTINCT forces unique results only
+            "WHERE { \n", // [0] -> [1]
+            "?hpo rdf:type sio:SIO_010056 ; \n" +
+            "rdfs:subClassOf", " ?hpoParent ; \n" + // [1] -> [2]
             "dcterms:identifier ?hpoId . \n" +
-            "{ SELECT (?hpo as ?hpoParent) \n" + // subquery for retrieving the single parent HPO
-            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + " } \n", // HPO parent is inserted between [2] and [3]
-            "}" // [4]
+            "{ \n" +
+            "SELECT DISTINCT (?hpo as ?hpoParent) \n" + // subquery for retrieving URI(s) based on HPO id(s)
+            "WHERE { \n" +
+            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + // [2] -> [3]
+            "} \n" +
+            "} \n", // [3] -> [4]
+            "} \n"
     };
 
-    //todo: Need rewrite to use DISTINCT HPO children only.
-    private static final String[] PDA_FOR_HPO_CHILDREN = {"SELECT ?hpo ?hpoId ?disease ?diseaseTitle ?pdaSource ?pdaSourceLevelLabel \n", // SELECT is [0]
-            HPO_CHILDREN_FOR_IRI[1], // child range is inserted between [1] and [2]
-            HPO_CHILDREN_FOR_IRI[2], // HPO term is inserted between [2] and [3]
-            HPO_CHILDREN_FOR_IRI[3] +
+    /**
+     * <p>Retrieves the phenotype-disease associations given based on a VALUES list containing the HPO terms.</p>
+     *
+     * [0]: "SELECT ... WHERE { "
+     * <br />between [1] and [2]: the HPO terms to filter on (see {@link #createValuesStringForUris(Set)}
+     * <br />[3]: closing "}" belonging to [0]
+     */
+    private static final String[] PDA_FOR_MULTIPLE_HPO = {"SELECT ?hpo ?disease ?diseaseTitle ?pdaSource \n" +
+            "WHERE { \n", // [0] -> [1]
+            "?hpo rdf:type sio:SIO_010056 . \n" +
+            "VALUES ?hpo ", " \n" + // [1] -> [2]
             "?pda rdf:type sio:SIO_000897 ; \n" +
             "sio:SIO_000628 ?hpo , ?disease ; \n" +
             "sio:SIO_000253 ?pdaSource . \n" +
-            "?disease rdf:type ncit:C7057 ; \n" + // ncit:C7057 -> Disease
-            "dcterms:title ?diseaseTitle . \n",
-            "}" // [4]
+            "?disease rdf:type ncit:C7057 ; \n" +
+            "dcterms:title ?diseaseTitle . \n", // [2] -> [3]
+            "}"
     };
 
     //todo: Finish query.
-    private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?geneId ?geneSymbolTitle ?gdaScore ?gdaSource ?evidence \n", // SELECT is [0]
+    private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?gene ?geneId ?geneSymbolTitle ?gdaScoreNumber ?gdaSource ?evidence \n", // SELECT is [0]
             "WHERE { ?gda sio:SIO_000628 ?disease, ?gene ; \n" + // [1], SIO_000628 -> refers to
             "rdf:type ?type ; \n" +
             "sio:SIO_000216 ?gdaScore ; \n" + // SIO_000216 -> has measurement value
@@ -111,23 +140,23 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
         return PREFIXES;
     }
 
-    public static String getIriForHpo(Hpo hpo) {
-        return PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + hpo.getFormattedId() + IRI_FOR_HPO[2];
+    public static String getIriForHpo(Set<Hpo> hpos) {
+        return PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + createValuesStringFromHpoIds(hpos) + IRI_FOR_HPO[2] + IRI_FOR_HPO[3];
     }
 
-    public static String getHpoChildren(Hpo hpo, SparqlRange range) {
+    public static String getHpoChildren(Set<Hpo> hpos, SparqlRange range) {
         return PREFIXES + HPO_CHILDREN_FOR_IRI[0] + HPO_CHILDREN_FOR_IRI[1] + range.toString() + HPO_CHILDREN_FOR_IRI[2] +
-                hpo.getFormattedId() + HPO_CHILDREN_FOR_IRI[3] + HPO_CHILDREN_FOR_IRI[4];
+                createValuesStringFromHpoIds(hpos) + HPO_CHILDREN_FOR_IRI[3] + HPO_CHILDREN_FOR_IRI[4];
     }
 
-    public static String getPdas(Hpo hpo, SparqlRange range) {
-        return PREFIXES + PDA_FOR_HPO_CHILDREN[0] + PDA_FOR_HPO_CHILDREN[1] + range.toString() + PDA_FOR_HPO_CHILDREN[2] +
-                hpo.getFormattedId() + PDA_FOR_HPO_CHILDREN[3] + PDA_FOR_HPO_CHILDREN[4];
+    public static String getPdas(Set<Hpo> hpo) {
+        return PREFIXES + PDA_FOR_MULTIPLE_HPO[0] + PDA_FOR_MULTIPLE_HPO[1] + createValuesStringForUris(hpo) +
+                PDA_FOR_MULTIPLE_HPO[2] + PDA_FOR_MULTIPLE_HPO[3];
     }
 
     public static String getGdas(Set<Disease> diseases, DisgenetAssociationType disgenetAssociationType) {
         return PREFIXES + GDA_FOR_DISEASES[0] + GDA_FOR_DISEASES[1] + disgenetAssociationType.getFormattedId() +
-                GDA_FOR_DISEASES[2] + createValuesStringForDiseases(diseases) + GDA_FOR_DISEASES[3];
+                GDA_FOR_DISEASES[2] + createValuesStringForUris(diseases) + GDA_FOR_DISEASES[3];
     }
 
 //    public static String getPhenotypeDiseaseAssociations(String hpoTerm) {
@@ -142,18 +171,33 @@ public final class DisgenetQueryGenerator extends SparqlQueryGenerator {
         return addLimit(PREFIXES + HPO_GENES[0] + hpoTerm + HPO_GENES[1], limit);
     }
 
-    private static String createValuesStringForDiseases(Set<Disease> diseases) {
-        if(diseases.size() < 1) {
-            throw new IllegalArgumentException("diseases Set should at least contain 1 item.");
+    private static String createValuesStringForUris(Set<? extends ResourceUri> resourceUris) {
+        if(resourceUris.size() < 1) {
+            throw new IllegalArgumentException("Set should at least contain 1 item.");
         }
-        Iterator<Disease> diseaseIter = diseases.iterator();
+        Iterator<? extends ResourceUri> resourceUriIterator = resourceUris.iterator();
 
         StringBuilder strBuilder = new StringBuilder();
-        strBuilder.append("{ \"").append(diseaseIter.next().getUri());
+        strBuilder.append("{ <").append(resourceUriIterator.next().getUri());
 
-        while (diseaseIter.hasNext()) {
-            strBuilder.append("\" \"").append(diseaseIter.next().getUri());
+        while (resourceUriIterator.hasNext()) {
+            strBuilder.append("> <").append(resourceUriIterator.next().getUri());
         }
-        return strBuilder.append("\" }").toString();
+        return strBuilder.append("> }").toString();
+    }
+
+    private static String createValuesStringFromHpoIds(Set<Hpo> hpos) {
+        if(hpos.size() < 1) {
+            throw new IllegalArgumentException("Set should at least contain 1 item.");
+        }
+        Iterator<Hpo> resourceUriIterator = hpos.iterator();
+
+        StringBuilder strBuilder = new StringBuilder();
+        strBuilder.append("{ \"").append(resourceUriIterator.next().getFormattedId());
+
+        while (resourceUriIterator.hasNext()) {
+            strBuilder.append("\"^^xsd:string \"").append(resourceUriIterator.next().getFormattedId());
+        }
+        return strBuilder.append("\"^^xsd:string }").toString();
     }
 }

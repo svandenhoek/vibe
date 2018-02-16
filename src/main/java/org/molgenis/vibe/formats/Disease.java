@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import java.net.URI;
 import java.util.Objects;
 
-public class Disease {
+public class Disease implements ResourceUri {
     private URI uri;
 
     private String name;
