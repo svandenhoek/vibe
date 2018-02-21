@@ -169,13 +169,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     /**
-     * If no DISTINCT is added or no more information retrieved, HP_0005060 is returned twice.
-     * Note that it is a child from HP_0002996 through both HP_0001377 and HP_0006376.
-     * Nevertheless, when using * instead of a custom range, it is only returned once without the need for DISTINCT
-     * (see {@link #testHpoSubClassOfInclusive}).
-     *
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     * @see #testHpoSubClassOfAllStartingFromSelf()
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfOnlyGrandChildrenWithoutDistinct() {
@@ -193,9 +187,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     /**
-     * With added DISTINCT {@link #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()} does not return duplicates.
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     * @see #testHpoSubClassOfAllStartingFromSelf()
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfOnlyGrandChildrenWithDistinct() {
@@ -213,11 +205,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     /**
-     * When adding more information such as the dcterms:identifier for an HPO, duplicates are removed again.
-     * These results seem similar to {@link #testHpoSubClassOfInclusive}, though there no DISTINCT was needed for
-     * removal of duplicates.
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
+     * @see #testHpoSubClassOfAllStartingFromSelf()
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval() {
@@ -253,8 +241,13 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     /**
-     * Bug? {0,} acts as {1,} instead of *
-     * Usage of {@link QueryStringPathRange} should evade problems caused by this.
+     * {0,} acts as {1,} instead of * (HP_0009811 is not included in the output).
+     *
+     * If no DISTINCT is added, HP_0005060 is returned twice.
+     * Note that it is a child from HP_0002996 through both HP_0001377 and HP_0006376.
+     * Nevertheless, when using * instead of a custom range, it is only returned once without the need for DISTINCT.
+     *
+     * @see #testHpoSubClassOfInclusive()
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromSelf() {
@@ -275,9 +268,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     /**
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithoutDistinct()
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithDistinct()
-     * @see #testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval()
+     * @see #testHpoSubClassOfAllStartingFromSelf()
      */
     @Test(groups = {"dependencyBug"})
     public void testHpoSubClassOfAllStartingFromChild() {
