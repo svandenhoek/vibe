@@ -8,19 +8,16 @@ public enum TestFilesDir {
     TTL("disgenet_mini") {
         @Override
         public String[] getFiles() {
-            String[] fileNames = super.getFiles();
-            List<String> filteredFileNames = new ArrayList<>();
-            for(int i = 0; i < fileNames.length; i++) {
-                String fileName = fileNames[i];
-                if(fileName.endsWith(".ttl") || fileName.endsWith(".owl")) {
-                    filteredFileNames.add(fileName);
-                }
-            }
-
-            return filteredFileNames.toArray(new String[filteredFileNames.size()]);
-//            return Arrays.stream(super.getFiles()).filter(x -> x.endsWith(".ttl") || x.endsWith(".owl")).toArray(String[]::new);
+            return filterFileArray(super.getFiles(), ".ttl", ".owl");
         }
     },
+    TTL_NO_ONTOLOGY("disgenet_mini") {
+        @Override
+        public String[] getFiles() {
+            return filterFileArray(super.getFiles(), ".ttl");
+        }
+    },
+    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology"),
     TDB_MINI("disgenet_mini_tdb"),
     TDB_FULL("disgenet_full_tdb");
 
@@ -54,5 +51,20 @@ public enum TestFilesDir {
             fileNames[i] = getDir() + "/" + fileNames[i];
         }
         return fileNames;
+    }
+
+    private static String[] filterFileArray(String[] fileNames, String... fileTypeFilter) {
+        List<String> filteredFileNames = new ArrayList<>();
+
+        for(int i = 0; i < fileNames.length; i++) {
+            String fileName = fileNames[i];
+            for(int j = 0; j < fileTypeFilter.length; j++) {
+                if( fileName.endsWith(fileTypeFilter[j]) ) {
+                    filteredFileNames.add(fileName);
+                }
+            }
+        }
+
+        return filteredFileNames.toArray(new String[filteredFileNames.size()]);
     }
 }

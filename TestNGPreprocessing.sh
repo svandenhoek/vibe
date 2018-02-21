@@ -66,6 +66,9 @@ function digestCommandLine {
 }
 
 function runTestPreperations {
+    # Generates TDB dataset from mini DisGeNET dataset without ontology data.
+    tdbloader2 --loc ./src/test/resources/disgenet_mini_tdb_no_ontology "$DISGENET_MINI"/*.ttl
+
     # Generates TDB dataset from mini DisGeNET dataset.
     tdbloader2 --loc ./src/test/resources/disgenet_mini_tdb "$DISGENET_MINI"/*.ttl "$DISGENET_MINI"/*.owl
 
