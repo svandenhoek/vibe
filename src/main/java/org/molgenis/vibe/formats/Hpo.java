@@ -15,32 +15,43 @@ import java.util.regex.Pattern;
 public class Hpo implements ResourceUri {
     private static final String PREFIX = "hp:";
 
-    private URI uri;
-
     /**
-     * The numbers representing the ID.
+     * The Human Phenotype Ontology id.
      */
     private String id;
 
-    public Hpo(String id) throws InvalidStringFormatException {
-        this.id = retrieveIdNumbers(id);
+    /**
+     * The {@link URI} that refers to this HPO within the RDF database.
+     */
+    private URI uri;
+
+    public String getId() {
+        return id;
     }
 
-    public Hpo(URI uri, String id) {
-        this.id = retrieveIdNumbers(id);
-        this.uri = requireNonNull(uri);
-    }
-
+    @Override
     public URI getUri() {
         return uri;
     }
 
-    public void setUri(URI uri) {
-        this.uri = uri;
+    /**
+     * Simple constructor allowing for easy comparison of collections.
+     * @param id
+     * @throws InvalidStringFormatException
+     */
+    public Hpo(String id) throws InvalidStringFormatException {
+        this.id = retrieveIdNumbers(id);
     }
 
-    public String getId() {
-        return id;
+    /**
+     * A constructor for describing an HPO.
+     * @param id
+     * @param uri
+     * @throws InvalidStringFormatException
+     */
+    public Hpo(String id, URI uri) throws InvalidStringFormatException {
+        this.id = retrieveIdNumbers(id);
+        this.uri = requireNonNull(uri);
     }
 
     /**
@@ -66,11 +77,19 @@ public class Hpo implements ResourceUri {
     }
 
     @Override
+    public String toString() {
+        return "Hpo{" +
+                "id='" + id + '\'' +
+                ", uri=" + uri +
+                '}';
+    }
+
+    @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Hpo hpo = (Hpo) o;
-        return id == hpo.id;
+        return Objects.equals(id, hpo.id);
     }
 
     @Override
