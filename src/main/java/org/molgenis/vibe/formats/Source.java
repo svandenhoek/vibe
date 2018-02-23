@@ -78,19 +78,19 @@ public class Source {
         LITERATURE("literature", "source_evidence_literature");
 
         private String readableString;
-        private String disgenetVoidString;
+        private String disgenetVoidUri;
 
-        Level(String readableString, String disgenetVoidString) {
+        Level(String readableString, String disgenetVoidUriEnd) {
             this.readableString = readableString;
-            this.disgenetVoidString = disgenetVoidString;
+            this.disgenetVoidUri = disgenetVoidUriEnd;
         }
 
         public static Level retrieveLevelByDisgenetVoidString(String levelString) throws InvalidStringFormatException {
             levelString = levelString.toLowerCase();
 
             for(Level level : Level.values()) {
-                if(level.readableString.equals(levelString) ||
-                        level.disgenetVoidString.equals(levelString)) {
+                if(levelString.equals(level.readableString) ||
+                        levelString.endsWith(level.disgenetVoidUri)) {
                     return level;
                 }
             }

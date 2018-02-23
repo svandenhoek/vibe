@@ -2,7 +2,6 @@ package org.molgenis.vibe.rdf_processing;
 
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.exceptions.CorruptDatabaseException;
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
@@ -46,9 +45,8 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
         retrieveDiseases();
         retrieveGeneDiseaseAssociations();
     }
-
-    //TODO: finish source retrieval.
-    private void retrieveSources() throws CorruptDatabaseException {
+    
+    private void retrieveSources() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getSources());
 
@@ -56,15 +54,13 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
             QuerySolution result = query.next();
 
             URI sourceUri = URI.create(result.get("source").asResource().getURI());
-            try {
-//                sources.put(sourceUri,
-//                        new Source(result.get("sourceTitle").asLiteral().getString(),
-//                                result.get("sourceLevel").asLiteral().getString(), sourceUri));
-            } catch (InvalidStringFormatException e) {
-                throw new CorruptDatabaseException(e.getLocalizedMessage());
-            }
-
+            sources.put(sourceUri,
+                    new Source(result.get("sourceTitle").asLiteral().getString(),
+                            result.get("sourceLevel").asResource().getURI(),
+                            sourceUri)
+            );
         }
+        query.close();
     }
 
     private void retrieveHpos() throws CorruptDatabaseException {
@@ -83,7 +79,7 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
         }
     }
 
-    private void retrieveHpoChildren() throws CorruptDatabaseException {
+    private void retrieveHpoChildren() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getHpoChildren(hpos, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE)));
 
@@ -100,7 +96,7 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
         ));
     }
 
-    private void retrieveDiseases() throws CorruptDatabaseException {
+    private void retrieveDiseases() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getPdas(hpos));
 
@@ -109,11 +105,9 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
             URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
 
             diseases.put(diseaseUri,
-                    new Disease(
-                            result.get("diseaseId").asLiteral().getString(),
+                    new Disease(result.get("diseaseId").asLiteral().getString(),
                             result.get("diseaseTitle").asLiteral().getString(),
-                            diseaseUri
-                    )
+                            diseaseUri)
             );
         }
         query.close();
@@ -163,12 +157,15 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
                 storedGdc = gdc;
             }
 
-            //TODO: pre-load possible sources.
-            //TODO: add ++ to counters/add evidence.
+            // Retrieves source belonging to match. If this causes an error, this might indicate a corrupt database (as
+            // retrieveSources() should retrieve all possible sources available).
+            Source source = sources.get(URI.create(result.get("gdaSource").asResource().getURI()));
+
+            // Adds source to gene-disease combination (with evidence if available).
             if(result.get("evidence") != null) {
-//                storedGdc.add(source, evidence);
+                storedGdc.add(source, URI.create(result.get("evidence").asResource().getURI()));
             } else {
-//                storedGdc.add(source);
+                storedGdc.add(source);
             }
 
             gdcsForSingleGene.put(storedGdc, storedGdc);

@@ -39,14 +39,18 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <p>The {@code GROUP BY} will group the results per source, where MAX(sourceTitleGr) will use the longest title. Other items need to be grouped
      * as well (even if not needed) because otherwise a "{@code Non-group key variable in SELECT}" error is thrown.</p>
      */
-    private static final String SOURCES = "SELECT DISTINCT ?source (MAX(?sourceTitle) AS ?sourceTitleMax) (MAX(?sourceLevel) AS ?sourceLevelMax) \n" + // DISTINCT forces unique results only
+    private static final String SOURCES = "SELECT DISTINCT ?source ?sourceTitle ?sourceLevel \n" + // DISTINCT forces unique results only
+            "WHERE { \n" +
+            "?source wi:evidence ?sourceLevel . \n" +
+            "{" +
+            "SELECT ?source (MAX(?sourceTitleGrouped) AS ?sourceTitle) \n" + // some sources have multiple titles, MAX picks longest title only
             "WHERE { \n" +
             "?source rdf:type dctypes:Dataset ; \n" +
-            "dcterms:title ?sourceTitle ; \n" +
-            "wi:evidence ?sourceLevel . \n" +
-            "?sourceLevel rdfs:comment ?sourceLevelComment " +
-            "}" +
-            "GROUP BY ?source";
+            "dcterms:title ?sourceTitleGrouped . \n" +
+            "} \n" +
+            "GROUP BY ?source \n" +
+            "} \n" +
+            "} \n";
 
     /**
      * <p>Retrieves the IRI belonging to a HPO id ({@code hp:<numbers>})</p>
