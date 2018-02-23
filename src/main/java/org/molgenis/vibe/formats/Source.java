@@ -1,5 +1,7 @@
 package org.molgenis.vibe.formats;
 
+import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+
 import java.net.URI;
 import java.util.Objects;
 
@@ -23,9 +25,36 @@ public class Source {
         return uri;
     }
 
+    /**
+     * Simple constructor allowing for easy comparison of collections.
+     * @param name
+     */
+    public Source(String name) {
+        this.name = requireNonNull(name);
+    }
+
+    /**
+     * A constructor for describing a source with an {@link URI} id from an RDF database.
+     * @param name
+     * @param level
+     * @param uri
+     */
     public Source(String name, Level level, URI uri) {
         this.name = requireNonNull(name);
         this.level = requireNonNull(level);
+        this.uri = requireNonNull(uri);
+    }
+
+    /**
+     * A constructor for describing a source with an {@link URI} id from an RDF database.
+     * @param name
+     * @param level
+     * @param uri
+     * @throws InvalidStringFormatException if {@code level} could not be converted into an appropriate {@link Level}
+     */
+    public Source(String name, String level, URI uri) throws InvalidStringFormatException {
+        this.name = requireNonNull(name);
+        this.level = Level.retrieveLevelByDisgenetVoidString(level);
         this.uri = requireNonNull(uri);
     }
 
@@ -44,6 +73,28 @@ public class Source {
     }
 
     public enum Level {
-        CURATED, MODEL, LITERATURE;
+        CURATED("curated", "source_evidence_curated"),
+        MODEL("model", "source_evidence_predicted"),
+        LITERATURE("literature", "source_evidence_literature");
+
+        private String readableString;
+        private String disgenetVoidString;
+
+        Level(String readableString, String disgenetVoidString) {
+            this.readableString = readableString;
+            this.disgenetVoidString = disgenetVoidString;
+        }
+
+        public static Level retrieveLevelByDisgenetVoidString(String levelString) throws InvalidStringFormatException {
+            levelString = levelString.toLowerCase();
+
+            for(Level level : Level.values()) {
+                if(level.readableString.equals(levelString) ||
+                        level.disgenetVoidString.equals(levelString)) {
+                    return level;
+                }
+            }
+            throw new InvalidStringFormatException("Could not generate a Source.Level from given String");
+        }
     }
 }

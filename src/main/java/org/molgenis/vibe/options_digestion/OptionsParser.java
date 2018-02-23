@@ -9,6 +9,8 @@ import java.nio.file.Files;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
@@ -43,9 +45,9 @@ public abstract class OptionsParser {
     private DisgenetRdfVersion disgenetRdfVersion;
 
     /**
-     * The HPO terms to be used within the application.
+     * The HPO(s) to be used within the application.
      */
-    private Hpo[] hpoTerms;
+    private Set<Hpo> hpos = new HashSet<>();
 
     private QueryStringPathRange queryStringPathRange = new QueryStringPathRange(0);
 
@@ -145,21 +147,42 @@ public abstract class OptionsParser {
         this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
-    public Hpo[] getHpoTerms() {
-        return hpoTerms;
+    public Set<Hpo> getHpos() {
+        return hpos;
     }
 
     /**
-     * @param hpoTerms {@link String}{@code []}
-     * @throws InvalidStringFormatException if any of the {@code hpoTerms} failed to be converted into a {@link Hpo} using
+     * @param hpoStrings {@link String}{@code []}
+     * @throws InvalidStringFormatException if any of the {@code hpoStrings} failed to be converted into a {@link Hpo} using
      * {@link Hpo#Hpo(String)}
      */
-    protected void setHpoTerms(String[] hpoTerms) throws InvalidStringFormatException {
-        Hpo[] hpos = new Hpo[hpoTerms.length];
-        for(int i=0; i < hpoTerms.length; i++) {
-            hpos[i] = new Hpo(hpoTerms[i]);
+    protected void setHpos(String[] hpoStrings) throws InvalidStringFormatException {
+        this.hpos = new HashSet<>();
+        addHpos(hpoStrings);
+    }
+
+    /**
+     * @param hpoStrings {@link String}{@code []}
+     * @throws InvalidStringFormatException if any of the {@code hpoStrings} failed to be converted into a {@link Hpo} using
+     * {@link Hpo#Hpo(String)}
+     */
+    protected void addHpos(String[] hpoStrings) throws InvalidStringFormatException {
+        for(int i=0; i < hpoStrings.length; i++) {
+            addHpo(hpoStrings[i]);
         }
-        this.hpoTerms = hpos;
+    }
+
+    /**
+     * @param hpoString {@link String}
+     * @throws InvalidStringFormatException if the {@code hpoStrings} failed to be converted into a {@link Hpo} using
+     * {@link Hpo#Hpo(String)}
+     */
+    protected void addHpo(String hpoString) throws InvalidStringFormatException {
+        addHpo(new Hpo(hpoString));
+    }
+
+    protected void addHpo(Hpo hpo) {
+        hpos.add(hpo);
     }
 
     public QueryStringPathRange getQueryStringPathRange() {
@@ -183,7 +206,7 @@ public abstract class OptionsParser {
         }
         switch (runMode) {
             case GET_GENES_WITH_SINGLE_HPO:
-                if(hpoTerms != null & hpoTerms.length == 1) {
+                if(hpos != null & hpos.size() == 1) {
                     return true;
                 }
             default:

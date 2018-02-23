@@ -49,7 +49,7 @@ public class VibeApplication {
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
-            appOptions.printVerbose("Generating query for " + appOptions.getHpoTerms()[0].getFormattedId());
+//            appOptions.printVerbose("Generating query for " + appOptions.getHpos());
             GenesForHpoRetriever genesForHpo = new GenesForHpoRetriever(appOptions, modelReader);
             genesForHpo.run();
         }

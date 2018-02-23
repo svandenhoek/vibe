@@ -3,6 +3,7 @@ package org.molgenis.vibe.rdf_processing;
 import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.Disease;
+import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.OptionsParser;
@@ -34,21 +35,28 @@ public class GenesForHpoRetrieverTester {
         OptionsParser options = new OptionsParser() {
             // Instance initializer.
             {
-                setHpoTerms(new String[]{"hp:0001376"});
+                setHpos(new String[]{"hp:0001377"});
                 setQueryStringPathRange(new QueryStringPathRange(1, false));
             }
         };
 
         retriever = new GenesForHpoRetriever(options, reader);
 
-        Set<Disease> expectedOutput = new HashSet<>();
-        expectedOutput.addAll(Arrays.asList(
-                new Disease("http://linkedlifedata.com/resource/umls/id/C0015773", "Felty Syndrome"),
-                new Disease("http://linkedlifedata.com/resource/umls/id/C1853733", "HEMOCHROMATOSIS, TYPE 4"),
-                new Disease("http://linkedlifedata.com/resource/umls/id/C1834674", "Bethlem myopathy")
+        Set<Disease> expectedOutputDiseases = new HashSet<>();
+        expectedOutputDiseases.addAll(Arrays.asList(
+                new Disease("umls:C0410538"),
+                new Disease("umls:C1850318")
+        ));
+
+        Set<Gene> expectedOutputGenes = new HashSet<>();
+        expectedOutputGenes.addAll(Arrays.asList(
+                new Gene(1311),
+                new Gene(10082),
+                new Gene(960)
         ));
 
         retriever.run();
-        Assert.assertEquals(retriever.getDiseases(), expectedOutput);
+        Assert.assertEquals(retriever.getDiseases(), expectedOutputDiseases);
+        Assert.assertEquals(retriever.getGenes(), expectedOutputGenes);
     }
 }

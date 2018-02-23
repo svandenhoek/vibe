@@ -70,6 +70,16 @@ public class GeneDiseaseCombination {
         return Collections.unmodifiableList(sourcesEvidence.get(source));
     }
 
+    /**
+     * Simple constructor allowing for easy comparison of collections.
+     * @param gene
+     * @param disease
+     */
+    public GeneDiseaseCombination(Gene gene, Disease disease) {
+        this.gene = gene;
+        this.disease = disease;
+    }
+
     public GeneDiseaseCombination(Gene gene, Disease disease, double disgenetScore) {
         this.gene = requireNonNull(gene);
         this.disease = requireNonNull(disease);

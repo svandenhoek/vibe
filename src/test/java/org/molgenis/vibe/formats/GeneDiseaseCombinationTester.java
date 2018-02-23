@@ -4,17 +4,18 @@ import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.net.URI;
 import java.util.Arrays;
 import java.util.List;
 
 public class GeneDiseaseCombinationTester {
-    private Gene gene = new Gene("http://gene.test", 0, "myDisease", "ASDF");
-    private Disease disease = new Disease("http://disease.test", "myDisease") {
+    private Gene gene = new Gene(0);
+    private Disease disease = new Disease("umls:C01234567") {
 
     };
     private double score = 0.123456789;
-    private Source source1 = new Source("ORPHANET", Source.Level.CURATED);
-    private Source source2 = new Source("BEFREE", Source.Level.LITERATURE);
+    private Source source1 = new Source("ORPHANET");
+    private Source source2 = new Source("BEFREE");
 
     private GeneDiseaseCombination geneDiseaseCombo;
 
@@ -36,25 +37,25 @@ public class GeneDiseaseCombinationTester {
 
     @Test
     public void addingMultipleSourcesWithEvidence() {
-        List<String> source1Evidence = Arrays.asList("pubmedId1", "pubmedId2");
-        List<String> source2Evidence = Arrays.asList("pubmedId3", "pubmedId4");
+        List<URI> source1Evidence = Arrays.asList(URI.create("http://pubmed1.id"), URI.create("http://pubmed2.id"));
+        List<URI> source2Evidence = Arrays.asList(URI.create("http://pubmed3.id"), URI.create("http://pubmed4.id"));
 
-        geneDiseaseCombo.add(source2, source2Evidence.get(0));
         geneDiseaseCombo.add(source1, source1Evidence.get(0));
         geneDiseaseCombo.add(source1, source1Evidence.get(1));
+        geneDiseaseCombo.add(source2, source2Evidence.get(0));
         geneDiseaseCombo.add(source2, source2Evidence.get(1));
 
         Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), new Integer(2));
         Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), new Integer(2));
 
-        Assert.assertEquals(geneDiseaseCombo.getSourcesEvidence().get(source1), source1Evidence);
-        Assert.assertEquals(geneDiseaseCombo.getSourcesEvidence().get(source2), source2Evidence);
+        Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), source1Evidence);
+        Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source2), source2Evidence);
     }
 
     @Test
     public void addingMultipleSourcesWithAndWithoutEvidence() {
-        List<String> source1Evidence = Arrays.asList("pubmedId1");
-        List<String> source2Evidence = Arrays.asList("pubmedId2", "pubmedId3");
+        List<URI> source1Evidence = Arrays.asList(URI.create("http://pubmed1.id"));
+        List<URI> source2Evidence = Arrays.asList(URI.create("http://pubmed2.id"), URI.create("http://pubmed3.id"));
 
         geneDiseaseCombo.add(source2);
         geneDiseaseCombo.add(source1);
@@ -67,7 +68,7 @@ public class GeneDiseaseCombinationTester {
         Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), new Integer(3));
         Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), new Integer(4));
 
-        Assert.assertEquals(geneDiseaseCombo.getSourcesEvidence().get(source1), source1Evidence);
-        Assert.assertEquals(geneDiseaseCombo.getSourcesEvidence().get(source2), source2Evidence);
+        Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), source1Evidence);
+        Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source2), source2Evidence);
     }
 }

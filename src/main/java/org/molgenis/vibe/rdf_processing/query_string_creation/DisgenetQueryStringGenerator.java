@@ -34,6 +34,21 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "PREFIX obo: <http://purl.obolibrary.org/obo/> \n";
 
     /**
+     * <p>Retrieves all the source IRIs with their longest available title (MAX) and their source level (MAX, though 1 only should exist)</p>
+     *
+     * <p>The {@code GROUP BY} will group the results per source, where MAX(sourceTitleGr) will use the longest title. Other items need to be grouped
+     * as well (even if not needed) because otherwise a "{@code Non-group key variable in SELECT}" error is thrown.</p>
+     */
+    private static final String SOURCES = "SELECT DISTINCT ?source (MAX(?sourceTitle) AS ?sourceTitleMax) (MAX(?sourceLevel) AS ?sourceLevelMax) \n" + // DISTINCT forces unique results only
+            "WHERE { \n" +
+            "?source rdf:type dctypes:Dataset ; \n" +
+            "dcterms:title ?sourceTitle ; \n" +
+            "wi:evidence ?sourceLevel . \n" +
+            "?sourceLevel rdfs:comment ?sourceLevelComment " +
+            "}" +
+            "GROUP BY ?source";
+
+    /**
      * <p>Retrieves the IRI belonging to a HPO id ({@code hp:<numbers>})</p>
      *
      * [0]: "SELECT ... WHERE { "
@@ -77,7 +92,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [1] and [2]: the HPO terms to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />[3]: closing "}" belonging to [0]
      */
-    private static final String[] PDA_FOR_MULTIPLE_HPO = {"SELECT ?hpo ?disease ?diseaseTitle ?pdaSource \n" +
+    private static final String[] PDA_FOR_MULTIPLE_HPO = {"SELECT ?hpo ?disease ?diseaseId ?diseaseTitle ?pdaSource \n" +
             "WHERE { \n", // [0] -> [1]
             "?hpo rdf:type sio:SIO_010056 . \n" +
             "VALUES ?hpo ", " \n" + // [1] -> [2]
@@ -85,12 +100,13 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "sio:SIO_000628 ?hpo , ?disease ; \n" +
             "sio:SIO_000253 ?pdaSource . \n" +
             "?disease rdf:type ncit:C7057 ; \n" +
+            "dcterms:identifier ?diseaseId ; \n" +
             "dcterms:title ?diseaseTitle . \n", // [2] -> [3]
             "}"
     };
 
     //todo: Finish query.
-    private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?gene ?geneId ?geneSymbolTitle ?gdaScoreNumber ?gdaSource ?evidence \n", // SELECT is [0]
+    private static final String[] GDA_FOR_DISEASES = {"SELECT ?disease ?gene ?geneId ?geneTitle ?geneSymbolTitle ?gdaScoreNumber ?gdaSource ?evidence \n", // SELECT is [0]
             "WHERE { ?gda sio:SIO_000628 ?disease, ?gene ; \n" + // [1], SIO_000628 -> refers to
             "rdf:type ?type ; \n" +
             "sio:SIO_000216 ?gdaScore ; \n" + // SIO_000216 -> has measurement value
@@ -98,6 +114,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "?type rdfs:subClassOf* ", " . \n" + // association type between [1] and [2] (use default: SIO_000983 -> gene-disease association)
             "?gene rdf:type ncit:C16612 ; \n" + // ncit:C16612 -> Gene
             "dcterms:identifier ?geneId ; \n" +
+            "dcterms:title ?geneTitle ; \n" +
             "sio:SIO_000205 ?geneSymbol . \n" + // SIO_000205 -> is represented by
             "?geneSymbol rdf:type ncit:C43568 ; \n" + // ncit:C43568 -> Gene Symbol
             "dcterms:title ?geneSymbolTitle . \n" +
@@ -112,13 +129,13 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
         return PREFIXES;
     }
 
+    public static QueryString getSources() {
+        return new QueryString(PREFIXES + SOURCES);
+    }
+
     public static QueryString getIriForHpo(Set<Hpo> hpos) {
         return new QueryString(PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + createValuesStringFromHpoIds(hpos) +
                 IRI_FOR_HPO[2] + IRI_FOR_HPO[3]);
-    }
-
-    public static QueryString getHpoChildren(Set<Hpo> hpos) {
-        return getHpoChildren(hpos, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE));
     }
 
     public static QueryString getHpoChildren(Set<Hpo> hpos, QueryStringPathRange range) {

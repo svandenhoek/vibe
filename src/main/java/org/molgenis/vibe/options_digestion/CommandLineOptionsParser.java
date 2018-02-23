@@ -133,7 +133,7 @@ public class CommandLineOptionsParser extends OptionsParser {
             // Sets run mode.
             setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
             // Digests HPO term(s).
-            setHpoTerms(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+            setHpos(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
 
         if(commandLine.hasOption("d")) {

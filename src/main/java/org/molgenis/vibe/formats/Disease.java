@@ -1,19 +1,23 @@
 package org.molgenis.vibe.formats;
 
+import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
 import java.util.Objects;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
- * A disease. Note that equality is based on the UMLS id only (as multiple objects with the same id but a different
- * name should be regarded as invalid and not as multiple DIFFERENT diseases).
+ * A disease. Note that equality is based on the id only.
  */
 public class Disease implements ResourceUri {
+    private static final String PREFIX = "umls";
     /**
-     * The Unified Medical Language System id.
+     * The disease id.
      */
-    private String umls;
+    private String id;
 
     /**
      * The disease name.
@@ -25,8 +29,12 @@ public class Disease implements ResourceUri {
      */
     private URI uri;
 
-    public String getUmls() {
-        return umls;
+    public String getId() {
+        return id;
+    }
+
+    public String getFormattedId() {
+        return PREFIX + ":" + id;
     }
 
     public String getName() {
@@ -40,28 +48,44 @@ public class Disease implements ResourceUri {
 
     /**
      * Simple constructor allowing for easy comparison of collections.
-     * @param umls
+     * @param id
      */
-    public Disease(String umls) {
-        this.umls = umls;
+    public Disease(String id) {
+        this.id = id;
     }
 
     /**
      * A constructor for describing a disease with an {@link URI} id from an RDF database.
-     * @param umls
+     * @param id
      * @param name
      * @param uri
+     * @throws InvalidStringFormatException see {@link #retrieveIdNumbers(String)}
      */
-    public Disease(String umls, String name, URI uri) {
-        this.umls = requireNonNull(umls);
+    public Disease(String id, String name, URI uri) throws InvalidStringFormatException {
+        this.id = retrieveIdNumbers(id);
         this.name = requireNonNull(name);
         this.uri = requireNonNull(uri);
+    }
+
+    /**
+     * Validates and retrieves the ID without prefix from a {@link String} describing a disease id.
+     * @param id a {@link String} containing the disease id with prefix
+     * @return an {@code int} with the disease id without prefix (if present)
+     * @throws InvalidStringFormatException if {@code id} does not adhere to the regex: ^((umls|UMLS):)?C([0-9]+)$
+     */
+    private String retrieveIdNumbers(String id) throws InvalidStringFormatException {
+        Matcher m = Pattern.compile("^((umls|UMLS):)?C([0-9]+)$").matcher(id);
+        if(m.matches()) {
+            return m.group(3);
+        } else {
+            throw new InvalidStringFormatException(id + " does not adhere the required format: ^((umls|UMLS):)?C([0-9]+)$");
+        }
     }
 
     @Override
     public String toString() {
         return "Disease{" +
-                "umls='" + umls + '\'' +
+                "id='" + id + '\'' +
                 ", name='" + name + '\'' +
                 ", uri=" + uri +
                 '}';
@@ -72,11 +96,11 @@ public class Disease implements ResourceUri {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Disease disease = (Disease) o;
-        return Objects.equals(umls, disease.umls);
+        return Objects.equals(id, disease.id);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(umls);
+        return Objects.hash(id);
     }
 }

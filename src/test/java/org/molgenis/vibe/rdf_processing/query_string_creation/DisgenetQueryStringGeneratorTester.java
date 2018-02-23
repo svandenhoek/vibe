@@ -1,6 +1,5 @@
 package org.molgenis.vibe.rdf_processing.query_string_creation;
 
-import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
@@ -10,6 +9,7 @@ import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.QueryTester;
 import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
+import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.net.URI;
@@ -57,6 +57,26 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
         }
 
         assertRunnerOutput(runner, fieldOrder, expectedOutput);
+    }
+
+    @Test
+    public void testSourcesUnique() {
+        QueryString queryString = DisgenetQueryStringGenerator.getSources();
+        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
+
+        Set<String> sources = new HashSet<>();
+
+        ResultSetFormatter.out(System.out, runner.getResultSet());
+        runner.reset();
+
+        while(runner.hasNext()) {
+            String source = runner.next().get("source").asResource().getURI();
+            if(sources.contains(source)) {
+                Assert.fail("a source URI was found more than once");
+            }
+            sources.add(source);
+        }
+
     }
 
     @Test
@@ -142,7 +162,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testPdasSingleHpo() throws InvalidStringFormatException {
         Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo(URI.create("http://purl.obolibrary.org/obo/HP_0009811"), "hp:0009811"));
+        hpos.add(new Hpo("hp:0009811", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
 
         String[] fieldOrder = {"disease", "diseaseTitle", "pdaSource"};
 
@@ -158,9 +178,9 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testPdasMultipleHpo() throws InvalidStringFormatException {
         Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo(URI.create("http://purl.obolibrary.org/obo/HP_0009811"), "hp:0009811"));
-        hpos.add(new Hpo(URI.create("http://purl.obolibrary.org/obo/HP_0002967"), "hp:0002967"));
-        hpos.add(new Hpo(URI.create("http://purl.obolibrary.org/obo/HP_0002996"), "hp:0002966"));
+        hpos.add(new Hpo("hp:0009811", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        hpos.add(new Hpo("hp:0002967", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
+        hpos.add(new Hpo("hp:0002966", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
 
         String[] fieldOrder = {"hpo", "disease"};
 
@@ -178,7 +198,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void geneDiseaseCombinationsForSingleDisease() {
         Set<Disease> inputDiseases = new HashSet<>();
-        inputDiseases.add(new Disease("http://linkedlifedata.com/resource/umls/id/C1853733", "HEMOCHROMATOSIS, TYPE 4"));
+        inputDiseases.add(new Disease("umls:C1853733", "HEMOCHROMATOSIS, TYPE 4", URI.create("http://linkedlifedata.com/resource/umls/id/C1853733")));
 
         String[] fieldOrder = {"gene", "geneId", "geneSymbolTitle", "gdaScoreNumber", "gdaSource", "evidence"};
 
@@ -194,8 +214,8 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void geneDiseaseCombinationsForMultipleDiseases() {
         Set<Disease> inputDiseases = new HashSet<>();
-        inputDiseases.add(new Disease("http://linkedlifedata.com/resource/umls/id/C1853733", "HEMOCHROMATOSIS, TYPE 4"));
-        inputDiseases.add(new Disease("http://linkedlifedata.com/resource/umls/id/C0015773", "Felty Syndrome"));
+        inputDiseases.add(new Disease("umls:C1853733", "HEMOCHROMATOSIS, TYPE 4", URI.create("http://linkedlifedata.com/resource/umls/id/C1853733")));
+        inputDiseases.add(new Disease("umls:C0015773", "Felty Syndrome", URI.create("http://linkedlifedata.com/resource/umls/id/C0015773")));
 
         String[] fieldOrder = {"disease", "gene", "geneId", "geneSymbolTitle", "gdaScoreNumber", "gdaSource", "evidence"};
 

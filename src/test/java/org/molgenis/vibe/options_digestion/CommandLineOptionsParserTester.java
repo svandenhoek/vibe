@@ -3,6 +3,7 @@ package org.molgenis.vibe.options_digestion;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.formats.Hpo;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -42,8 +43,8 @@ public class CommandLineOptionsParserTester {
 
         Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_WITH_SINGLE_HPO);
         Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFilesDir.TDB_MINI.getDir());
-        Assert.assertEquals(appOptions.getHpoTerms().length, 1);
-        Assert.assertEquals(appOptions.getHpoTerms()[0].getFormattedId(), "hp:1234567");
+        Assert.assertEquals(appOptions.getHpos().size(), 1);
+        Assert.assertTrue(appOptions.getHpos().contains(new Hpo("hp:1234567")));
     }
 
 //    @Test

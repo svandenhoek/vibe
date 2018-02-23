@@ -13,7 +13,7 @@ import java.util.regex.Pattern;
  * Defines a HPO term.
  */
 public class Hpo implements ResourceUri {
-    private static final String PREFIX = "hp:";
+    private static final String PREFIX = "hp";
 
     /**
      * The Human Phenotype Ontology id.
@@ -27,6 +27,13 @@ public class Hpo implements ResourceUri {
 
     public String getId() {
         return id;
+    }
+
+    /**
+     * @return a {@link String} containing the ID with "hp:" prefix.
+     */
+    public String getFormattedId() {
+        return PREFIX + ":" + id;
     }
 
     @Override
@@ -52,13 +59,6 @@ public class Hpo implements ResourceUri {
     public Hpo(String id, URI uri) throws InvalidStringFormatException {
         this.id = retrieveIdNumbers(id);
         this.uri = requireNonNull(uri);
-    }
-
-    /**
-     * @return a {@link String} containing the ID with "hp:" prefix.
-     */
-    public String getFormattedId() {
-        return PREFIX + id;
     }
 
     /**
