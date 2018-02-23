@@ -8,17 +8,7 @@ import java.util.*;
 /**
  * A combination between a gene and a disease.
  */
-public class GeneDiseaseCombination {
-    /**
-     * The gene.
-     */
-    private Gene gene;
-
-    /**
-     * The disease.
-     */
-    private Disease disease;
-
+public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Disease> {
     /**
      * The score belonging to the gene-disease combination from the DisGeNET database.
      */
@@ -35,11 +25,11 @@ public class GeneDiseaseCombination {
     private Map<Source, List<URI>> sourcesEvidence = new HashMap<>();
 
     public Gene getGene() {
-        return gene;
+        return getT1();
     }
 
     public Disease getDisease() {
-        return disease;
+        return getT2();
     }
 
     public double getDisgenetScore() {
@@ -76,13 +66,11 @@ public class GeneDiseaseCombination {
      * @param disease
      */
     public GeneDiseaseCombination(Gene gene, Disease disease) {
-        this.gene = gene;
-        this.disease = disease;
+        super(gene, disease);
     }
 
     public GeneDiseaseCombination(Gene gene, Disease disease, double disgenetScore) {
-        this.gene = requireNonNull(gene);
-        this.disease = requireNonNull(disease);
+        super(gene, disease);
         this.disgenetScore = requireNonNull(disgenetScore);
     }
 
@@ -118,25 +106,9 @@ public class GeneDiseaseCombination {
     @Override
     public String toString() {
         return "GeneDiseaseCombination{" +
-                "gene=" + gene +
-                ", disease=" + disease +
-                ", disgenetScore=" + disgenetScore +
+                "disgenetScore=" + disgenetScore +
                 ", sourcesCount=" + sourcesCount +
                 ", sourcesEvidence=" + sourcesEvidence +
-                '}';
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        GeneDiseaseCombination that = (GeneDiseaseCombination) o;
-        return Objects.equals(gene, that.gene) &&
-                Objects.equals(disease, that.disease);
-    }
-
-    @Override
-    public int hashCode() {
-        return Objects.hash(gene, disease);
+                "} " + super.toString();
     }
 }
