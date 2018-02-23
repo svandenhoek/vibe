@@ -56,7 +56,8 @@ public class GenesForHpoRetrieverTester {
         ));
 
         retriever.run();
-        Assert.assertEquals(retriever.getDiseases(), expectedOutputDiseases);
-        Assert.assertEquals(retriever.getGenes(), expectedOutputGenes);
+        Assert.fail("finish test");
+//        Assert.assertEquals(retriever.getDiseases(), expectedOutputDiseases);
+//        Assert.assertEquals(retriever.getGenes(), expectedOutputGenes);
     }
 }

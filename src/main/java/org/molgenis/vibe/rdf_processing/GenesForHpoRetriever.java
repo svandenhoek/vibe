@@ -19,19 +19,8 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
     private Set<Hpo> hpos = new HashSet<>();
     private Map<URI, Gene> genes = new HashMap<>();
     private Map<URI, Disease> diseases = new HashMap<>();
-    private Map<Gene, Map<GeneDiseaseCombination, GeneDiseaseCombination>> gdcsByGene = new HashMap<>();
-
-    public Set<Disease> getDiseases() {
-        return Collections.unmodifiableSet(new HashSet<>(diseases.values()));
-    }
-
-    public Set<Gene> getGenes() {
-        return Collections.unmodifiableSet(new HashSet<>(genes.values()));
-    }
-
-    public Set<GeneDiseaseCombination> getCombinationsforGene(Gene gene) {
-        return Collections.unmodifiableSet(gdcsByGene.get(gene).keySet());
-    }
+//    private Map<Gene, Map<GeneDiseaseCombination, GeneDiseaseCombination>> gdcsByGene = new HashMap<>();
+    private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
     public GenesForHpoRetriever(OptionsParser appOptions, ModelReader modelReader) {
         super(appOptions, modelReader);
@@ -141,20 +130,15 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
             double score = Double.parseDouble(result.get("gdaScoreNumber").asLiteral().getString());
 
             // The gene-disease combination belonging to the single query result.
-            GeneDiseaseCombination gdc = new GeneDiseaseCombination(gene, disease, score);
+            GeneDiseaseCombination comparisonGdc = new GeneDiseaseCombination(gene, disease, score);
 
-            // The currently stored gene-disease combinations for the query gene.
-            Map<GeneDiseaseCombination, GeneDiseaseCombination> gdcsForSingleGene = gdcsByGene.get(gene);
-            // If no results available for gene, generates empty map.
-            if(gdcsForSingleGene == null) {
-                gdcsForSingleGene = new HashMap<>();
-            }
+            // Retrieves it from the collection (if it already exists).
+            GeneDiseaseCombination gdc = geneDiseaseCollection.get(comparisonGdc);
 
-            // The gene-disease combination which should be updated.
-            GeneDiseaseCombination storedGdc = gdcsForSingleGene.get(gdc);
-            // if the gene-disease combination is not present yet, uses basic comparison gdc.
-            if(storedGdc == null) {
-                storedGdc = gdc;
+            // If the gene-disease combination is not present yet, uses the comparison gdc and also adds it to the collection.
+            if(gdc == null) {
+                gdc = comparisonGdc;
+                geneDiseaseCollection.add(gdc);
             }
 
             // Retrieves source belonging to match. If this causes an error, this might indicate a corrupt database (as
@@ -163,13 +147,10 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
 
             // Adds source to gene-disease combination (with evidence if available).
             if(result.get("evidence") != null) {
-                storedGdc.add(source, URI.create(result.get("evidence").asResource().getURI()));
+                gdc.add(source, URI.create(result.get("evidence").asResource().getURI()));
             } else {
-                storedGdc.add(source);
+                gdc.add(source);
             }
-
-            gdcsForSingleGene.put(storedGdc, storedGdc);
-            gdcsByGene.put(gene, gdcsForSingleGene);
         }
         query.close();
     }
