@@ -162,7 +162,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testPdasSingleHpo() throws InvalidStringFormatException {
         Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        hpos.add(new Hpo("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
 
         String[] fieldOrder = {"disease", "diseaseTitle", "pdaSource"};
 
@@ -178,9 +178,9 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testPdasMultipleHpo() throws InvalidStringFormatException {
         Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-        hpos.add(new Hpo("hp:0002967", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
-        hpos.add(new Hpo("hp:0002966", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
+        hpos.add(new Hpo("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        hpos.add(new Hpo("hp:0002967", "Cubitus valgus", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
+        hpos.add(new Hpo("hp:0002966", "Limited elbow movement", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
 
         String[] fieldOrder = {"hpo", "disease"};
 

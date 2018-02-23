@@ -95,6 +95,7 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
 
     private void addHpoToHpos(QuerySolution result) {
         hpos.add(new Hpo(result.get("hpoId").asLiteral().getString(),
+                result.get("hpoTitle").asLiteral().getString(),
                 URI.create(result.get("hpo").asResource().getURI())
         ));
     }

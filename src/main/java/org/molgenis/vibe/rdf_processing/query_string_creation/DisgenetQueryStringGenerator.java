@@ -55,10 +55,11 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [1] and [2]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
      * <br />[3]: closing "}" belonging to [0]
      */
-    private static final String[] IRI_FOR_HPO = {"SELECT DISTINCT ?hpo ?hpoId \n" + // DISTINCT forces unique results only
+    private static final String[] IRI_FOR_HPO = {"SELECT DISTINCT ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
             "WHERE { \n", // [0] -> [1]
             "?hpo rdf:type sio:SIO_010056 ; \n" +
-            "dcterms:identifier ?hpoId . \n" +
+            "dcterms:identifier ?hpoId ; \n" +
+            "dcterms:title ?hpoTitle . \n" +
             "VALUES ?hpoId ", " . \n", // [1] -> [2] -> [3]
             "}"
     };
@@ -71,11 +72,12 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [2] and [3]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
      * <br />[4]: closing "}" belonging to [0]
      */
-    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpoParent ?hpo ?hpoId \n" + // DISTINCT forces unique results only
+    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpoParent ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
             "WHERE { \n", // [0] -> [1]
             "?hpo rdf:type sio:SIO_010056 ; \n" +
             "rdfs:subClassOf", " ?hpoParent ; \n" + // [1] -> [2]
-            "dcterms:identifier ?hpoId . \n" +
+            "dcterms:identifier ?hpoId ; \n" +
+            "dcterms:title ?hpoTitle . \n" +
             "{ \n" +
             "SELECT DISTINCT (?hpo as ?hpoParent) \n" + // subquery for retrieving URI(s) based on HPO id(s)
             "WHERE { \n" +

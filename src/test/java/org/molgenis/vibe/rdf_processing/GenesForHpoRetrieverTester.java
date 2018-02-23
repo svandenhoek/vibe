@@ -50,9 +50,9 @@ public class GenesForHpoRetrieverTester {
 
         Set<Gene> expectedOutputGenes = new HashSet<>();
         expectedOutputGenes.addAll(Arrays.asList(
-                new Gene(1311),
-                new Gene(10082),
-                new Gene(960)
+                new Gene("1311"),
+                new Gene("10082"),
+                new Gene("960")
         ));
 
         retriever.run();
