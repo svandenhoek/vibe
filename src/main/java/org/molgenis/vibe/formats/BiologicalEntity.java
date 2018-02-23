@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
-public abstract class BiologicalEntity implements ResourceUri {
+public abstract class BiologicalEntity implements ResourceUri, Comparable<BiologicalEntity> {
     protected abstract String prefix();
     protected abstract String regex();
     protected abstract int regexGroup();
@@ -25,7 +25,7 @@ public abstract class BiologicalEntity implements ResourceUri {
     }
 
     public String getFormattedId() {
-        return prefix() + ":" + id;
+        return prefix() + id;
     }
 
     protected void setId(String id) {
@@ -94,5 +94,10 @@ public abstract class BiologicalEntity implements ResourceUri {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    @Override
+    public int compareTo(BiologicalEntity o) {
+        return getFormattedId().compareTo(o.getFormattedId());
     }
 }

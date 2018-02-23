@@ -8,7 +8,7 @@ import java.net.URI;
  * A disease. Note that equality is based on the id only.
  */
 public class Disease extends BiologicalEntity {
-    @Override protected String prefix() { return "umls"; }
+    @Override protected String prefix() { return "umls:"; }
     @Override protected String regex() { return "^((umls|UMLS):)?C([0-9]+)$"; }
     @Override protected int regexGroup() { return 3; }
 

@@ -11,7 +11,7 @@ import java.net.URI;
  * name/symbol should be regarded as invalid and not as multiple DIFFERENT genes).
  */
 public class Gene extends BiologicalEntity {
-    @Override protected String prefix() { return "ncbigene"; }
+    @Override protected String prefix() { return "ncbigene:"; }
     @Override protected String regex() { return "^(ncbigene:)?([0-9]+)$"; }
     @Override protected int regexGroup() { return 2; }
 
