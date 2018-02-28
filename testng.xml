@@ -15,7 +15,7 @@
         </packages>
     </test>
 
-    <test name="FailedTestsCausedByDependency" enabled="true">
+    <test name="FailedTestsCausedByDependency" enabled="false">
         <groups>
             <run>
                 <include name="dependencyBug" />
