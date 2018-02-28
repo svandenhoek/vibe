@@ -3,7 +3,7 @@ package org.molgenis.vibe.options_digestion;
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.molgenis.vibe.TestFilesDir;
-import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.formats.Phenotype;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
@@ -37,14 +37,14 @@ public class CommandLineOptionsParserTester {
     }
 
     @Test
-    public void getGenesWIthSingleHpoId() throws IOException, ParseException {
+    public void getGenesUsingSinglePhenotype() throws IOException, ParseException {
         String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567"};
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
-        Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
         Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFilesDir.TDB_MINI.getDir());
-        Assert.assertEquals(appOptions.getHpos().size(), 1);
-        Assert.assertTrue(appOptions.getHpos().contains(new Hpo("hp:1234567")));
+        Assert.assertEquals(appOptions.getPhenotypes().size(), 1);
+        Assert.assertTrue(appOptions.getPhenotypes().contains(new Phenotype("hp:1234567")));
     }
 
 //    @Test

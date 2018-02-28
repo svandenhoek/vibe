@@ -7,7 +7,7 @@ public class RunModeTester {
 
     @Test
     public void setRunModeWithKnownInt() {
-        Assert.assertEquals(RunMode.retrieve(1), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(RunMode.retrieve(1), RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
     }
 
     @Test
@@ -17,7 +17,7 @@ public class RunModeTester {
 
     @Test
     public void setRunModeWithKnownString() {
-        Assert.assertEquals(RunMode.retrieve("1"), RunMode.GET_GENES_WITH_SINGLE_HPO);
+        Assert.assertEquals(RunMode.retrieve("1"), RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
     }
 
     @Test

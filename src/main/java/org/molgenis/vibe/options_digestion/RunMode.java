@@ -4,7 +4,7 @@ package org.molgenis.vibe.options_digestion;
  * Describes what the application should do.
  */
 public enum RunMode {
-    NONE("none"), GET_GENES_WITH_SINGLE_HPO("get genes matching a single HPO id");
+    NONE("none"), GET_GENES_USING_SINGLE_PHENOTYPE("get genes matching a single phenotype");
 
     private String description;
 
@@ -34,7 +34,7 @@ public enum RunMode {
     public static RunMode retrieve(int i) {
         switch (i) {
             case 1:
-                return GET_GENES_WITH_SINGLE_HPO;
+                return GET_GENES_USING_SINGLE_PHENOTYPE;
             default:
                 return NONE;
         }

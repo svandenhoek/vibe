@@ -15,7 +15,7 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class RetrieveGeneByHpoSpeed {
+public class RetrieveGeneByPhenotypeSpeedComparison {
     private static final String database = TestFilesDir.TDB_FULL.getDir();
     private static final int testRepeats = 3;
 

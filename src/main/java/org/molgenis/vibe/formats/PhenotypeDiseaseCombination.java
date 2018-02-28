@@ -3,8 +3,8 @@ package org.molgenis.vibe.formats;
 /**
  * Currently unsupported.
  */
-public class PhenotypeDiseaseCombination extends BiologicalEntityCombination<Hpo, Disease> {
-    public PhenotypeDiseaseCombination(Hpo hpo, Disease disease) {
-        super(hpo, disease);
+public class PhenotypeDiseaseCombination extends BiologicalEntityCombination<Phenotype, Disease> {
+    public PhenotypeDiseaseCombination(Phenotype phenotype, Disease disease) {
+        super(phenotype, disease);
     }
 }

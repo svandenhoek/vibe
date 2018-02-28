@@ -4,7 +4,7 @@ import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestFilesDir;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Disease;
-import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.QueryTester;
@@ -81,8 +81,8 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
 
     @Test
     public void testIriForHpo() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811"));
 
         String[] fieldOrder = {"hpo"};
 
@@ -90,17 +90,17 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(hpos);
+        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(phenotypes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
     public void testIriForMultiHpo() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
-        hpos.add(new Hpo("hp:0002967"));
-        hpos.add(new Hpo("hp:0002996"));
-        hpos.add(new Hpo("hp:0001377"));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811"));
+        phenotypes.add(new Phenotype("hp:0002967"));
+        phenotypes.add(new Phenotype("hp:0002996"));
+        phenotypes.add(new Phenotype("hp:0001377"));
 
         String[] fieldOrder = {"hpo"};
 
@@ -111,14 +111,14 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0001377")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(hpos);
+        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(phenotypes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
     public void testAllHpoChildren() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
 
         String[] fieldOrder = {"hpo"};
 
@@ -130,16 +130,16 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0005060")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(hpos,
+        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
                 new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE));
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
     public void testAllHpoChildrenExcludingSelfUsingMultipleParents() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811"));
-        hpos.add(new Hpo("hp:0001376"));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        phenotypes.add(new Phenotype("hp:0001376", "Limitation of joint mobility", URI.create("http://purl.obolibrary.org/obo/HP_0001376")));
 
         String[] fieldOrder = {"hpoParent", "hpo"};
 
@@ -154,15 +154,15 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0001376", "http://purl.obolibrary.org/obo/HP_0005060")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(hpos,
+        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
                 new QueryStringPathRange(QueryStringPathRange.Predefined.ONE_OR_MORE));
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
     public void testPdasSingleHpo() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
 
         String[] fieldOrder = {"disease", "diseaseTitle", "pdaSource"};
 
@@ -171,16 +171,16 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://linkedlifedata.com/resource/umls/id/C0152084", "Jaccoud's syndrome", "http://rdf.disgenet.org/v5.0.0/void/HOEHNDORF-2015")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getPdas(hpos);
+        QueryString queryString = DisgenetQueryStringGenerator.getPdas(phenotypes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
     public void testPdasMultipleHpo() throws InvalidStringFormatException {
-        Set<Hpo> hpos = new HashSet<>();
-        hpos.add(new Hpo("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-        hpos.add(new Hpo("hp:0002967", "Cubitus valgus", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
-        hpos.add(new Hpo("hp:0002966", "Limited elbow movement", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
+        Set<Phenotype> phenotypes = new HashSet<>();
+        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
+        phenotypes.add(new Phenotype("hp:0002967", "Cubitus valgus", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
+        phenotypes.add(new Phenotype("hp:0002966", "Limited elbow movement", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
 
         String[] fieldOrder = {"hpo", "disease"};
 
@@ -191,7 +191,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0002996", "http://linkedlifedata.com/resource/umls/id/C1834674")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getPdas(hpos);
+        QueryString queryString = DisgenetQueryStringGenerator.getPdas(phenotypes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 

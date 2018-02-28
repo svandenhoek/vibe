@@ -1,7 +1,7 @@
 package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 
 import java.io.IOException;
@@ -45,9 +45,9 @@ public abstract class OptionsParser {
     private DisgenetRdfVersion disgenetRdfVersion;
 
     /**
-     * The HPO(s) to be used within the application.
+     * The phenotype(s) to be used within the application.
      */
-    private Set<Hpo> hpos = new HashSet<>();
+    private Set<Phenotype> phenotypes = new HashSet<>();
 
     private QueryStringPathRange queryStringPathRange = new QueryStringPathRange(0);
 
@@ -147,42 +147,42 @@ public abstract class OptionsParser {
         this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
-    public Set<Hpo> getHpos() {
-        return hpos;
+    public Set<Phenotype> getPhenotypes() {
+        return phenotypes;
     }
 
     /**
-     * @param hpoStrings {@link String}{@code []}
-     * @throws InvalidStringFormatException if any of the {@code hpoStrings} failed to be converted into a {@link Hpo} using
-     * {@link Hpo#Hpo(String)}
+     * @param phenotypes {@link String}{@code []}
+     * @throws InvalidStringFormatException if any of the {@code phenotypes} failed to be converted into a {@link Phenotype} using
+     * {@link Phenotype#Phenotype(String)}
      */
-    protected void setHpos(String[] hpoStrings) throws InvalidStringFormatException {
-        this.hpos = new HashSet<>();
-        addHpos(hpoStrings);
+    protected void setPhenotypes(String[] phenotypes) throws InvalidStringFormatException {
+        this.phenotypes = new HashSet<>();
+        addPhenotypes(phenotypes);
     }
 
     /**
-     * @param hpoStrings {@link String}{@code []}
-     * @throws InvalidStringFormatException if any of the {@code hpoStrings} failed to be converted into a {@link Hpo} using
-     * {@link Hpo#Hpo(String)}
+     * @param phenotypes {@link String}{@code []}
+     * @throws InvalidStringFormatException if any of the {@code phenotypes} failed to be converted into a {@link Phenotype} using
+     * {@link Phenotype#Phenotype(String)}
      */
-    protected void addHpos(String[] hpoStrings) throws InvalidStringFormatException {
-        for(int i=0; i < hpoStrings.length; i++) {
-            addHpo(hpoStrings[i]);
+    protected void addPhenotypes(String[] phenotypes) throws InvalidStringFormatException {
+        for(int i=0; i < phenotypes.length; i++) {
+            addPhenotype(phenotypes[i]);
         }
     }
 
     /**
-     * @param hpoString {@link String}
-     * @throws InvalidStringFormatException if the {@code hpoStrings} failed to be converted into a {@link Hpo} using
-     * {@link Hpo#Hpo(String)}
+     * @param phenotype {@link String}
+     * @throws InvalidStringFormatException if the {@code phenotype} failed to be converted into a {@link Phenotype} using
+     * {@link Phenotype#Phenotype(String)}
      */
-    protected void addHpo(String hpoString) throws InvalidStringFormatException {
-        addHpo(new Hpo(hpoString));
+    protected void addPhenotype(String phenotype) throws InvalidStringFormatException {
+        addPhenotype(new Phenotype(phenotype));
     }
 
-    protected void addHpo(Hpo hpo) {
-        hpos.add(hpo);
+    protected void addPhenotype(Phenotype phenotype) {
+        phenotypes.add(phenotype);
     }
 
     public QueryStringPathRange getQueryStringPathRange() {
@@ -205,8 +205,8 @@ public abstract class OptionsParser {
             return false;
         }
         switch (runMode) {
-            case GET_GENES_WITH_SINGLE_HPO:
-                if(hpos != null & hpos.size() == 1) {
+            case GET_GENES_USING_SINGLE_PHENOTYPE:
+                if(phenotypes != null & phenotypes.size() == 1) {
                     return true;
                 }
             default:

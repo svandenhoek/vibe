@@ -5,7 +5,7 @@ import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.options_digestion.RunMode;
-import org.molgenis.vibe.rdf_processing.GenesForHpoRetriever;
+import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
 
@@ -48,10 +48,10 @@ public class VibeApplication {
         appOptions.printVerbose("Preparing DisGeNET dataset");
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
-        if(appOptions.getRunMode() == RunMode.GET_GENES_WITH_SINGLE_HPO) {
-            appOptions.printVerbose("Retrieving gene-disease associations for given HPO.");
-            GenesForHpoRetriever genesForHpo = new GenesForHpoRetriever(appOptions, modelReader);
-            genesForHpo.run();
+        if(appOptions.getRunMode() == RunMode.GET_GENES_USING_SINGLE_PHENOTYPE) {
+            appOptions.printVerbose("Retrieving gene-disease associations for given phenotype.");
+            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(appOptions, modelReader);
+            genesForPhenotypeRetriever.run();
         }
     }
 }

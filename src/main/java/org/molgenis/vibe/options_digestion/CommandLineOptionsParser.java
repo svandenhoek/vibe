@@ -61,14 +61,14 @@ public class CommandLineOptionsParser extends OptionsParser {
 
 //        options.addOption(Option.builder("m")
 //                .longOpt("mode")
-//                .desc("The mode the application should run.\n1: Give an HPO code to retrieve genes matched to it.")
+//                .desc("The mode the application should run.\n1: Give an phenotype HPO code to retrieve genes matched to it.")
 //                .hasArg()
 //                .argName("NUMBER")
 //                .build());
 
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
-                .desc("An HPO id. Can be either the number only or with the 'hp:'/'HP:' prefix.")
+                .desc("A phenotype described using an HPO id. Can be either the number only or with the 'hp:'/'HP:' prefix.")
                 .hasArg()
                 .argName("HPO ID")
                 .build());
@@ -131,9 +131,9 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         if(commandLine.hasOption("p")) {
             // Sets run mode.
-            setRunMode(RunMode.GET_GENES_WITH_SINGLE_HPO);
-            // Digests HPO term(s).
-            setHpos(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+            setRunMode(RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
+            // Digests phenotype(s).
+            setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
 
         if(commandLine.hasOption("d")) {

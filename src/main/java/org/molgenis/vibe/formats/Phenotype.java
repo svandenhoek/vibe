@@ -5,18 +5,18 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import java.net.URI;
 
 /**
- * Defines a HPO term.
+ * Defines a phenotype.
  */
-public class Hpo extends BiologicalEntity {
+public class Phenotype extends BiologicalEntity {
     @Override protected String prefix() { return "hp:"; }
     @Override protected String regex() { return "^((hp|HP):)?([0-9]{7})$"; }
     @Override protected int regexGroup() { return 3; }
 
-    public Hpo(String id) {
+    public Phenotype(String id) {
         super(id);
     }
 
-    public Hpo(String id, String name, URI uri) throws InvalidStringFormatException {
+    public Phenotype(String id, String name, URI uri) throws InvalidStringFormatException {
         super(id, name, uri);
     }
 }

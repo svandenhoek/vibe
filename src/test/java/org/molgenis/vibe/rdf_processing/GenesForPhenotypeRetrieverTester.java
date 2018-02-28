@@ -15,9 +15,9 @@ import org.testng.annotations.Test;
 
 import java.util.*;
 
-public class GenesForHpoRetrieverTester {
+public class GenesForPhenotypeRetrieverTester {
     private ModelReader reader;
-    private GenesForHpoRetriever retriever;
+    private GenesForPhenotypeRetriever retriever;
 
     @BeforeClass(alwaysRun = true)
     public void beforeClass() {
@@ -31,16 +31,16 @@ public class GenesForHpoRetrieverTester {
     }
 
     @Test
-    public void retrieveAllDiseasesForHpoAndDirectChildren() throws CorruptDatabaseException {
+    public void retrieveAllDiseasesForPhenotypeAndDirectChildren() throws CorruptDatabaseException {
         OptionsParser options = new OptionsParser() {
             // Instance initializer.
             {
-                setHpos(new String[]{"hp:0001377"});
+                setPhenotypes(new String[]{"hp:0001377"});
                 setQueryStringPathRange(new QueryStringPathRange(1, false));
             }
         };
 
-        retriever = new GenesForHpoRetriever(options, reader);
+        retriever = new GenesForPhenotypeRetriever(options, reader);
 
         Set<Disease> expectedOutputDiseases = new HashSet<>();
         expectedOutputDiseases.addAll(Arrays.asList(

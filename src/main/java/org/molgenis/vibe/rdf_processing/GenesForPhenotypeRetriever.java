@@ -13,24 +13,24 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 import java.net.URI;
 import java.util.*;
 
-public class GenesForHpoRetriever extends RdfDataRetriever {
+public class GenesForPhenotypeRetriever extends RdfDataRetriever {
 
     private Map<URI,Source> sources = new HashMap<>();
-    private Set<Hpo> hpos = new HashSet<>();
+    private Set<Phenotype> phenotypes = new HashSet<>();
     private Map<URI, Gene> genes = new HashMap<>();
     private Map<URI, Disease> diseases = new HashMap<>();
 //    private Map<Gene, Map<GeneDiseaseCombination, GeneDiseaseCombination>> gdcsByGene = new HashMap<>();
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
-    public GenesForHpoRetriever(OptionsParser appOptions, ModelReader modelReader) {
+    public GenesForPhenotypeRetriever(OptionsParser appOptions, ModelReader modelReader) {
         super(appOptions, modelReader);
     }
 
     @Override
     public void run() throws CorruptDatabaseException {
         retrieveSources();
-        retrieveHpos();
-        retrieveHpoChildren();
+        retrieveHpoUris();
+        retrievePhenotypeWithChildren();
         retrieveDiseases();
         retrieveGeneDiseaseAssociations();
     }
@@ -52,42 +52,42 @@ public class GenesForHpoRetriever extends RdfDataRetriever {
         query.close();
     }
 
-    private void retrieveHpos() throws CorruptDatabaseException {
+    private void retrieveHpoUris() throws CorruptDatabaseException {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getIriForHpo(getAppOptions().getHpos()));
+                DisgenetQueryStringGenerator.getIriForHpo(getAppOptions().getPhenotypes()));
 
         int counter = 0;
         while(query.hasNext()) {
             counter++;
-            addHpoToHpos(query.next());
+            addToPhenotypes(query.next());
         }
         query.close();
 
-        if(counter != getAppOptions().getHpos().size()) {
-            throw new CorruptDatabaseException("the retrieved number of HPOs is not equal to the number of inserted HPOs.");
+        if(counter != getAppOptions().getPhenotypes().size()) {
+            throw new CorruptDatabaseException("the retrieved number of phenotypes is not equal to the number of inserted phenotypes.");
         }
     }
 
-    private void retrieveHpoChildren() {
+    private void retrievePhenotypeWithChildren() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getHpoChildren(hpos, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE)));
+                DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE)));
 
         while(query.hasNext()) {
-            addHpoToHpos(query.next());
+            addToPhenotypes(query.next());
         }
         query.close();
     }
 
-    private void addHpoToHpos(QuerySolution result) {
-        hpos.add(new Hpo(result.get("hpoId").asLiteral().getString(),
+    private void addToPhenotypes(QuerySolution result) {
+        phenotypes.add(new Phenotype(result.get("hpoId").asLiteral().getString(),
                 result.get("hpoTitle").asLiteral().getString(),
-                URI.create(result.get("hpo").asResource().getURI())
-        ));
+                URI.create(result.get("hpo").asResource().getURI()))
+        );
     }
 
     private void retrieveDiseases() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getPdas(hpos));
+                DisgenetQueryStringGenerator.getPdas(phenotypes));
 
         while(query.hasNext()) {
             QuerySolution result = query.next();
