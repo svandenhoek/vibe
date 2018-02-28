@@ -22,6 +22,10 @@ public class GenesForPhenotypeRetriever extends RdfDataRetriever {
 //    private Map<Gene, Map<GeneDiseaseCombination, GeneDiseaseCombination>> gdcsByGene = new HashMap<>();
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
+    public GeneDiseaseCollection getGeneDiseaseCollection() {
+        return geneDiseaseCollection;
+    }
+
     public GenesForPhenotypeRetriever(OptionsParser appOptions, ModelReader modelReader) {
         super(appOptions, modelReader);
     }
