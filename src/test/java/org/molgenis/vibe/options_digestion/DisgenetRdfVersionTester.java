@@ -1,7 +1,6 @@
-package org.molgenis.vibe.data_enrichment;
+package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.options_digestion.DisgenetRdfVersion;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
