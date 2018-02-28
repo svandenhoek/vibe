@@ -6,6 +6,8 @@ import java.net.URI;
 
 /**
  * A disease. Note that equality is based on the id only.
+ *
+ * If no prefix is given for validation, an umls id is assumed.
  */
 public class Disease extends BiologicalEntity {
     @Override protected String prefix() { return "umls:"; }

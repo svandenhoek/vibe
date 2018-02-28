@@ -6,6 +6,8 @@ import java.net.URI;
 
 /**
  * Defines a phenotype.
+ *
+ * If no prefix is given for validation, an HPO id is assumed.
  */
 public class Phenotype extends BiologicalEntity {
     @Override protected String prefix() { return "hp:"; }

@@ -21,16 +21,12 @@ public class PhenotypeTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidPhenotypeIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        Phenotype phenotype = new Phenotype("Hp:0012345");
-        Assert.assertEquals(phenotype.getId(), "0012345");
-        Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        new Phenotype("Hp:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidPhenotypeIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        Phenotype phenotype = new Phenotype("hP:0012345");
-        Assert.assertEquals(phenotype.getId(), "0012345");
-        Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        new Phenotype("hP:0012345");
     }
 
     @Test

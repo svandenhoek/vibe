@@ -9,11 +9,13 @@ import java.net.URI;
 /**
  * A gene. Note that equality is based on the NCBI gene id only (as multiple objects with the same id but a different
  * name/symbol should be regarded as invalid and not as multiple DIFFERENT genes).
+ *
+ * If no prefix is given for validation, an ncbi gene id is assumed.
  */
 public class Gene extends BiologicalEntity {
     @Override protected String prefix() { return "ncbigene:"; }
-    @Override protected String regex() { return "^(ncbigene:)?([0-9]+)$"; }
-    @Override protected int regexGroup() { return 2; }
+    @Override protected String regex() { return "^((ncbigene|NCBIGENE):)?([0-9]+)$"; }
+    @Override protected int regexGroup() { return 3; }
 
     private static final String PREFIX = "ncbigene";
 
