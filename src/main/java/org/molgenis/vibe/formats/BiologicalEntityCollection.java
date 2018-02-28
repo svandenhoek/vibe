@@ -123,4 +123,24 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         combinationsByT1.clear();
         combinationsByT2.clear();
     }
+
+    @Override
+    public String toString() {
+        return "BiologicalEntityCollection{" +
+                "combinationsMap=" + combinationsMap +
+                '}';
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BiologicalEntityCollection<?, ?, ?> that = (BiologicalEntityCollection<?, ?, ?>) o;
+        return Objects.equals(combinationsMap, that.combinationsMap);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(combinationsMap);
+    }
 }
