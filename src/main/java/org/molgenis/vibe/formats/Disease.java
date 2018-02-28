@@ -11,7 +11,7 @@ import java.net.URI;
  */
 public class Disease extends BiologicalEntity {
     @Override protected String prefix() { return "umls:"; }
-    @Override protected String regex() { return "^((umls|UMLS):)?C([0-9]+)$"; }
+    @Override protected String regex() { return "^((umls|UMLS):)?(C[0-9]+)$"; }
     @Override protected int regexGroup() { return 3; }
 
     public Disease(String id) {
