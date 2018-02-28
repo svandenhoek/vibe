@@ -1,10 +1,11 @@
 package org.molgenis.vibe.rdf_processing;
 
+import static java.util.Objects.requireNonNull;
+
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.options_digestion.OptionsParser;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetAssociationType;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
 import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
@@ -13,9 +14,9 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 import java.net.URI;
 import java.util.*;
 
-public class GenesForPhenotypeRetriever extends RdfDataRetriever {
+public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
-    private Map<URI,Source> sources = new HashMap<>();
+    private Set<Phenotype> inputPhenotypes;
     private Set<Phenotype> phenotypes = new HashSet<>();
     private Map<URI, Gene> genes = new HashMap<>();
     private Map<URI, Disease> diseases = new HashMap<>();
@@ -26,8 +27,9 @@ public class GenesForPhenotypeRetriever extends RdfDataRetriever {
         return geneDiseaseCollection;
     }
 
-    public GenesForPhenotypeRetriever(OptionsParser appOptions, ModelReader modelReader) {
-        super(appOptions, modelReader);
+    public GenesForPhenotypeRetriever(ModelReader modelReader, Set<Phenotype> phenotypes) {
+        super(modelReader);
+        this.inputPhenotypes = requireNonNull(phenotypes);
     }
 
     @Override
@@ -38,36 +40,14 @@ public class GenesForPhenotypeRetriever extends RdfDataRetriever {
         retrieveDiseases();
         retrieveGeneDiseaseAssociations();
     }
-    
-    private void retrieveSources() {
-        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getSources());
-
-        while(query.hasNext()) {
-            QuerySolution result = query.next();
-
-            URI sourceUri = URI.create(result.get("source").asResource().getURI());
-            sources.put(sourceUri,
-                    new Source(result.get("sourceTitle").asLiteral().getString(),
-                            result.get("sourceLevel").asResource().getURI(),
-                            sourceUri)
-            );
-        }
-        query.close();
-    }
 
     private void retrieveHpoUris() throws CorruptDatabaseException {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getIriForHpo(getAppOptions().getPhenotypes()));
+                DisgenetQueryStringGenerator.getIriForHpo(inputPhenotypes));
+        addToPhenotypes(query);
 
-        int counter = 0;
-        while(query.hasNext()) {
-            counter++;
-            addToPhenotypes(query.next());
-        }
-        query.close();
-
-        if(counter != getAppOptions().getPhenotypes().size()) {
+        // Checks if for all input phenotypes a new phenotype was created that includes an URI.
+        if(inputPhenotypes.size() != phenotypes.size()) {
             throw new CorruptDatabaseException("the retrieved number of phenotypes is not equal to the number of inserted phenotypes.");
         }
     }
@@ -75,18 +55,19 @@ public class GenesForPhenotypeRetriever extends RdfDataRetriever {
     private void retrievePhenotypeWithChildren() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE)));
-
-        while(query.hasNext()) {
-            addToPhenotypes(query.next());
-        }
-        query.close();
+        addToPhenotypes(query);
     }
 
-    private void addToPhenotypes(QuerySolution result) {
-        phenotypes.add(new Phenotype(result.get("hpoId").asLiteral().getString(),
-                result.get("hpoTitle").asLiteral().getString(),
-                URI.create(result.get("hpo").asResource().getURI()))
-        );
+    private void addToPhenotypes(QueryRunner query) {
+        while(query.hasNext()) {
+            QuerySolution result = query.next();
+
+            phenotypes.add(new Phenotype(result.get("hpoId").asLiteral().getString(),
+                    result.get("hpoTitle").asLiteral().getString(),
+                    URI.create(result.get("hpo").asResource().getURI()))
+            );
+        }
+        query.close();
     }
 
     private void retrieveDiseases() {
@@ -147,7 +128,7 @@ public class GenesForPhenotypeRetriever extends RdfDataRetriever {
 
             // Retrieves source belonging to match. If this causes an error, this might indicate a corrupt database (as
             // retrieveSources() should retrieve all possible sources available).
-            Source source = sources.get(URI.create(result.get("gdaSource").asResource().getURI()));
+            Source source = getSources().get(URI.create(result.get("gdaSource").asResource().getURI()));
 
             // Adds source to gene-disease combination (with evidence if available).
             if(result.get("evidence") != null) {

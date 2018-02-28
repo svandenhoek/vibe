@@ -1,5 +1,6 @@
 package org.molgenis.vibe;
 
+import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.options_digestion.CommandLineOptionsParser;
@@ -45,13 +46,19 @@ public class VibeApplication {
      * @param appOptions {@link OptionsParser}
      */
     public void run(OptionsParser appOptions) throws IOException {
+        // Prepares DisGeNET database for querying.
         appOptions.printVerbose("Preparing DisGeNET dataset");
         ModelReader modelReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
         if(appOptions.getRunMode() == RunMode.GET_GENES_USING_SINGLE_PHENOTYPE) {
+            // Retrieves data from DisGeNET database.
             appOptions.printVerbose("Retrieving gene-disease associations for given phenotype.");
-            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(appOptions, modelReader);
+            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(modelReader, appOptions.getPhenotypes());
             genesForPhenotypeRetriever.run();
+
+            // Stores needed data and allows rest to be collected by garbage collector.
+            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
+            genesForPhenotypeRetriever = null;
         }
     }
 }

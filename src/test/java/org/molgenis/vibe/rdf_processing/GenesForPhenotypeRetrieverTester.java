@@ -32,14 +32,6 @@ public class GenesForPhenotypeRetrieverTester {
 
     @Test
     public void retrieveAllDiseasesForPhenotypeAndDirectChildren() throws CorruptDatabaseException {
-        OptionsParser options = new OptionsParser() {
-            // Instance initializer.
-            {
-                setPhenotypes(new String[]{"hp:0001377"});
-                setQueryStringPathRange(new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE));
-            }
-        };
-
         Gene[] genes = new Gene[]{
                 new Gene("1311"),
                 new Gene("10082"),
@@ -75,7 +67,7 @@ public class GenesForPhenotypeRetrieverTester {
         geneDiseaseCombinations[1].add(sources[1], URI.create("http://identifiers.org/pubmed/19481194"));
         geneDiseaseCombinations[2].add(sources[2], URI.create("http://identifiers.org/pubmed/19481194"));
 
-        retriever = new GenesForPhenotypeRetriever(options, reader);
+        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0001377"))));
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 

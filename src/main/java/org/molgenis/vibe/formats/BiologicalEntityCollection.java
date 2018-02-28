@@ -13,16 +13,24 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         return  combinationsMap.get(t3);
     }
 
-    public Set<T3> getAll() {
-        return combinationsMap.keySet();
+    public Set<T1> getT1() {
+        return Collections.unmodifiableSet(combinationsByT1.keySet());
+    }
+
+    public Set<T2> getT2() {
+        return Collections.unmodifiableSet(combinationsByT2.keySet());
+    }
+
+    public Set<T3> getT3() {
+        return Collections.unmodifiableSet(combinationsMap.keySet());
     }
 
     public Set<T3> getByT1(T1 t1) {
-        return combinationsByT1.get(t1);
+        return Collections.unmodifiableSet(combinationsByT1.get(t1));
     }
 
     public Set<T3> getByT2(T2 t2) {
-        return combinationsByT2.get(t2);
+        return Collections.unmodifiableSet(combinationsByT2.get(t2));
     }
 
     @Override
