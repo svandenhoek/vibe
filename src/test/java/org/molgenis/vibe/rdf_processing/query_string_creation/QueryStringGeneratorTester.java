@@ -89,7 +89,7 @@ public class QueryStringGeneratorTester extends QueryTester {
 
     @Test
     public void testLimit() {
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes +  "SELECT ?id \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes +  "SELECT ?gda \n" +
                 "WHERE { ?gda rdf:type sio:SIO_001121 } \n" +
                 "LIMIT 3"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
