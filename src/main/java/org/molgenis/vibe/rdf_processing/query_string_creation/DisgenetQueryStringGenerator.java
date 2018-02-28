@@ -1,9 +1,10 @@
 package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.molgenis.vibe.formats.Disease;
-import org.molgenis.vibe.formats.Hpo;
+import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.ResourceUri;
 
+import java.net.URI;
 import java.util.Iterator;
 import java.util.Set;
 
@@ -56,7 +57,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <p>Retrieves the IRI belonging to a HPO id ({@code hp:<numbers>})</p>
      *
      * [0]: "SELECT ... WHERE { "
-     * <br />between [1] and [2]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
+     * <br />between [1] and [2]: 1 or more HPO ids (see {@link #createHposStringFromPhenotypes(Set)}
      * <br />[3]: closing "}" belonging to [0]
      */
     private static final String[] IRI_FOR_HPO = {"SELECT DISTINCT ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
@@ -73,23 +74,41 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      *
      * [0]: "SELECT ... WHERE { "
      * <br />between [1] and [2]: child range
-     * <br />between [2] and [3]: 1 or more HPO ids (see {@link #createValuesStringFromHpoIds(Set)}
+     * <br />between [2] and [3]: 1 or more HPO ids (see {@link #createValuesStringForUris(Set)}
      * <br />[4]: closing "}" belonging to [0]
      */
-    private static final String[] HPO_CHILDREN_FOR_IRI = {"SELECT DISTINCT ?hpoParent ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
+    private static final String[] HPO_WITH_CHILDREN_FOR_HPO_IRI = {"SELECT DISTINCT ?hpoRoot ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
             "WHERE { \n", // [0] -> [1]
             "?hpo rdf:type sio:SIO_010056 ; \n" +
-            "rdfs:subClassOf", " ?hpoParent ; \n" + // [1] -> [2]
+            "rdfs:subClassOf", " ?hpoRoot ; \n" + // [1] -> [2]
             "dcterms:identifier ?hpoId ; \n" +
             "dcterms:title ?hpoTitle . \n" +
-            "{ \n" +
-            "SELECT DISTINCT (?hpo as ?hpoParent) \n" + // subquery for retrieving URI(s) based on HPO id(s)
-            "WHERE { \n" +
-            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + // [2] -> [3]
-            "} \n" +
-            "} \n", // [3] -> [4]
+            "VALUES ?hpoRoot ", " \n", // [2] -> [3] -> [4]
             "} \n"
     };
+
+//    /**
+//     * <p>Retrieves the children (based on a specified range) belonging to an HPO.</p>
+//     *
+//     * [0]: "SELECT ... WHERE { "
+//     * <br />between [1] and [2]: child range
+//     * <br />between [2] and [3]: 1 or more HPO ids (see {@link #createHposStringFromPhenotypes(Set)}
+//     * <br />[4]: closing "}" belonging to [0]
+//     */
+//    private static final String[] HPO_WITH_CHILDREN_FOR_HPO = {"SELECT DISTINCT ?hpoParent ?hpo ?hpoId ?hpoTitle \n" + // DISTINCT forces unique results only
+//            "WHERE { \n", // [0] -> [1]
+//            "?hpo rdf:type sio:SIO_010056 ; \n" +
+//            "rdfs:subClassOf", " ?hpoParent ; \n" + // [1] -> [2]
+//            "dcterms:identifier ?hpoId ; \n" +
+//            "dcterms:title ?hpoTitle . \n" +
+//            "{ \n" +
+//            "SELECT DISTINCT (?hpo as ?hpoParent) \n" + // subquery for retrieving URI(s) based on HPO id(s)
+//            "WHERE { \n" +
+//            IRI_FOR_HPO[1], IRI_FOR_HPO[2] + // [2] -> [3]
+//            "} \n" +
+//            "} \n", // [3] -> [4]
+//            "} \n"
+//    };
 
     /**
      * <p>Retrieves the phenotype-disease associations given based on a VALUES list containing the HPO terms.</p>
@@ -139,20 +158,26 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
         return new QueryString(PREFIXES + SOURCES);
     }
 
-    public static QueryString getIriForHpo(Set<Hpo> hpos) {
-        return new QueryString(PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + createValuesStringFromHpoIds(hpos) +
+    /**
+     * Retrieves the URIs for the given phenotypes. Note that the input to this method allows for {@link Phenotype}{@code s}
+     * created using {@link Phenotype#Phenotype(String)} (so with {@link Phenotype#getUri()} returning {@code null}).
+     * @param phenotypes the phenotypes (storing an HPO id) to be used (use of {@link Phenotype#Phenotype(String) Objects is allowed}
+     * @return a {@link QueryString}
+     */
+    public static QueryString getIriForHpo(Set<Phenotype> phenotypes) {
+        return new QueryString(PREFIXES + IRI_FOR_HPO[0] + IRI_FOR_HPO[1] + createHposStringFromPhenotypes(phenotypes) +
                 IRI_FOR_HPO[2] + IRI_FOR_HPO[3]);
     }
 
-    public static QueryString getHpoChildren(Set<Hpo> hpos, QueryStringPathRange range) {
-        return new QueryString(PREFIXES + HPO_CHILDREN_FOR_IRI[0] + HPO_CHILDREN_FOR_IRI[1] + range.getRangeString() +
-                HPO_CHILDREN_FOR_IRI[2] + createValuesStringFromHpoIds(hpos) + HPO_CHILDREN_FOR_IRI[3] +
-                HPO_CHILDREN_FOR_IRI[4], range.getSyntax());
+    public static QueryString getHpoChildren(Set<Phenotype> phenotypes, QueryStringPathRange range) {
+        return new QueryString(PREFIXES + HPO_WITH_CHILDREN_FOR_HPO_IRI[0] + HPO_WITH_CHILDREN_FOR_HPO_IRI[1] + range.getRangeString() +
+                HPO_WITH_CHILDREN_FOR_HPO_IRI[2] + createValuesStringForUris(phenotypes) + HPO_WITH_CHILDREN_FOR_HPO_IRI[3] +
+                HPO_WITH_CHILDREN_FOR_HPO_IRI[4], range.getSyntax());
     }
 
-    public static QueryString getPdas(Set<Hpo> hpos) {
+    public static QueryString getPdas(Set<Phenotype> phenotypes) {
         return new QueryString(PREFIXES + PDA_FOR_MULTIPLE_HPO[0] + PDA_FOR_MULTIPLE_HPO[1] +
-                createValuesStringForUris(hpos) + PDA_FOR_MULTIPLE_HPO[2] + PDA_FOR_MULTIPLE_HPO[3]);
+                createValuesStringForUris(phenotypes) + PDA_FOR_MULTIPLE_HPO[2] + PDA_FOR_MULTIPLE_HPO[3]);
     }
 
     public static QueryString getGdas(Set<Disease> diseases, DisgenetAssociationType disgenetAssociationType) {
@@ -170,16 +195,20 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
         strBuilder.append("{ <").append(resourceUriIterator.next().getUri());
 
         while (resourceUriIterator.hasNext()) {
-            strBuilder.append("> <").append(resourceUriIterator.next().getUri());
+            URI uri = resourceUriIterator.next().getUri();
+            if(uri == null) {
+                throw new IllegalArgumentException("Not all Objects have a valid URI (an uri was null).");
+            }
+            strBuilder.append("> <").append(uri);
         }
         return strBuilder.append("> }").toString();
     }
 
-    private static String createValuesStringFromHpoIds(Set<Hpo> hpos) {
-        if(hpos.size() < 1) {
+    private static String createHposStringFromPhenotypes(Set<Phenotype> phenotypes) {
+        if(phenotypes.size() < 1) {
             throw new IllegalArgumentException("Set should at least contain 1 item.");
         }
-        Iterator<Hpo> resourceUriIterator = hpos.iterator();
+        Iterator<Phenotype> resourceUriIterator = phenotypes.iterator();
 
         StringBuilder strBuilder = new StringBuilder();
         strBuilder.append("{ \"").append(resourceUriIterator.next().getFormattedId());

@@ -141,7 +141,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
         phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
         phenotypes.add(new Phenotype("hp:0001376", "Limitation of joint mobility", URI.create("http://purl.obolibrary.org/obo/HP_0001376")));
 
-        String[] fieldOrder = {"hpoParent", "hpo"};
+        String[] fieldOrder = {"hpoRoot", "hpo"};
 
         List<List<String>> expectedOutput = Arrays.asList(
                 Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://purl.obolibrary.org/obo/HP_0002967"),
