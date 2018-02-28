@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
-public class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> {
+public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> {
     private T1 t1;
 
     private T2 t2;
