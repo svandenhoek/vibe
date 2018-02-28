@@ -6,6 +6,8 @@ import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 
 public class GeneDiseaseCombinationTester {
@@ -70,5 +72,25 @@ public class GeneDiseaseCombinationTester {
 
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), source1Evidence);
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source2), source2Evidence);
+    }
+
+    @Test
+    public void retrieveCountsWhenNothingIsStored() {
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount(), new HashMap<>());
+    }
+
+    @Test
+    public void retrieveSourcesWithEvidenceWhenNothingIsStored() {
+        Assert.assertEquals(geneDiseaseCombo.getSourcesWithEvidence(), new HashSet<>());
+    }
+
+    @Test
+    public void retrieveCountForNonExistingSource() {
+        Assert.assertEquals(geneDiseaseCombo.getCountForSource(source1), 0);
+    }
+
+    @Test
+    public void retrieveEvidenceForNonExistingSource() {
+        Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), null);
     }
 }

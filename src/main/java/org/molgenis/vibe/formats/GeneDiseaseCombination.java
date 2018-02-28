@@ -45,8 +45,21 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * The count for the defined {@link Source}
+     * @param source the {@link Source} to retrieve the count for
+     * @return an {@code int} containing the frequency of this source found
+     */
+    public int getCountForSource(Source source) {
+        Integer count = sourcesCount.get(source);
+        if(count == null) {
+            count = 0;
+        }
+        return count;
+    }
+
+    /**
      * All {@link Source}{@code s} for this gene-disease combination that have evidence {@link URI}{@code s}.
-     * @return an unmodifiable {@link Set}
+     * @return an unmodifiable {@link Set} containing {@link Source}{@code s}
      */
     public Set<Source> getSourcesWithEvidence() {
         return Collections.unmodifiableSet(sourcesEvidence.keySet());
@@ -54,10 +67,15 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
 
     /**
      * The evidence {@link URI}{@code s} for the defined {@link Source}
-     * @return an unmodifiable {@link List}
+     * @param source
+     * @return an unmodifiable {@link List} containing evidence {@link URI}{@code s}, or {@code null} if {@link Source} does not have any evidence
      */
     public List<URI> getEvidenceForSource(Source source) {
-        return Collections.unmodifiableList(sourcesEvidence.get(source));
+        List evidence = sourcesEvidence.get(source);
+        if(evidence != null) {
+            evidence = Collections.unmodifiableList(evidence);
+        }
+        return evidence;
     }
 
     /**
