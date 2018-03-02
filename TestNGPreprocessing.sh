@@ -85,7 +85,7 @@ function runTestPreparations {
     echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n"
     wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR"
 
-        # Removes current mini TDBs if present.
+    # Removes current mini TDBs if present.
     rm -fr "$BASE_PATH"src/test/resources/disgenet_mini_tdb_no_ontology
     rm -fr "$BASE_PATH"src/test/resources/disgenet_mini_tdb
 
