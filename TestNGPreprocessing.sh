@@ -30,10 +30,10 @@ readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-02.tar.gz"
 readonly TEST_RESOURCES_DOWNLOAD="https://molgenis26.target.rug.nl/downloads/vibe/${TEST_RESOURCES_DOWNLOAD_NAME}"
 
 # Base path (to script).
-readonly BASE_PATH=$(sed 's/\/TestNGPreprocessing.sh$//' <<< $0)
+readonly BASE_PATH=$(sed 's/TestNGPreprocessing.sh$//' <<< $0)
 
 # Location of directory for storing temporary files.
-readonly TMP_DIR="${BASE_PATH}/TMP"
+readonly TMP_DIR="${BASE_PATH}TMP/"
 
 main() {
 	digestCommandLine $@
@@ -74,12 +74,12 @@ digestCommandLine() {
 
 runTestPreparations() {
     # Define variables.
-    declare -r disgenet_mini="${BASE_PATH}/src/test/resources/disgenet_mini"
-    declare -r disgenet_mini_tdb_no_ontology="${BASE_PATH}/src/test/resources/disgenet_mini_tdb_no_ontology"
-    declare -r disgenet_mini_tdb="${BASE_PATH}/src/test/resources/disgenet_mini_tdb"
-    declare -r disgenet_full_symlink_path="${BASE_PATH}/src/test/resources/disgenet_full_tdb"
-    declare -r test_resources_tmp_download="${TMP_DIR}/${TEST_RESOURCES_DOWNLOAD_NAME}"
-    declare -r resources_download_extract_dir="${BASE_PATH}/src/test"
+    declare -r disgenet_mini="${BASE_PATH}src/test/resources/disgenet_mini"
+    declare -r disgenet_mini_tdb_no_ontology="${BASE_PATH}src/test/resources/disgenet_mini_tdb_no_ontology"
+    declare -r disgenet_mini_tdb="${BASE_PATH}src/test/resources/disgenet_mini_tdb"
+    declare -r disgenet_full_symlink_path="${BASE_PATH}src/test/resources/disgenet_full_tdb"
+    declare -r test_resources_tmp_download="${TMP_DIR}${TEST_RESOURCES_DOWNLOAD_NAME}"
+    declare -r resources_download_extract_dir="${BASE_PATH}src/test"
 
     # Removes currently present files if present (symlink is not removed!).
     rm -fr "$disgenet_mini"
