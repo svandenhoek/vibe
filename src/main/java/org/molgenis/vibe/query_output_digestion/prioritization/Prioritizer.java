@@ -9,8 +9,12 @@ import java.util.Set;
 public abstract class Prioritizer<T extends BiologicalEntity> {
     private List<T> data;
 
-    public List<T> getData() {
+    public List<T> getPriority() {
         return data;
+    }
+
+    protected void setPriority(List<T> data) {
+        this.data = data;
     }
 
     public Prioritizer(List<T> data) {

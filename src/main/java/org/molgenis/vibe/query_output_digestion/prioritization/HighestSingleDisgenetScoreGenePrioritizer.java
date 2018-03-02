@@ -18,7 +18,7 @@ public class HighestSingleDisgenetScoreGenePrioritizer extends GenePrioritizer {
 
     @Override
     public void run() {
-        List<Gene> genes = getData();
+        List<Gene> genes = getPriority();
         Map<Gene, Double> highestGeneScores = new HashMap<>();
 
         // Goes through all genes.
@@ -38,6 +38,9 @@ public class HighestSingleDisgenetScoreGenePrioritizer extends GenePrioritizer {
         }
 
         // Sorts the gene list based on the highest gene-disease score per gene.
-        Collections.sort(genes, Comparator.comparingDouble(highestGeneScores::get));
+        Collections.sort(genes, Comparator.comparingDouble(highestGeneScores::get).reversed());
+
+        // Updates the priority order.
+        setPriority(genes);
     }
 }
