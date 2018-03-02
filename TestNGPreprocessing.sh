@@ -8,10 +8,10 @@
 #########################################################################
 
 # Defines error echo.
-function errcho { echo "$@" 1>&2; }
+errcho() { echo "$@" 1>&2; }
 
 # Describes usage.
-USAGE="Usage: disgenet-data-formatter.sh [-h] [-d <DIR>]
+readonly USAGE="Usage: disgenet-data-formatter.sh [-h] [-d <DIR>]
 Description: Runs preparations for unit testing.
 Arguments:
 -h --help           Shows this help message.
@@ -22,25 +22,37 @@ IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
             See https://jena.apache.org/documentation/tdb/commands.html for more information.
 "
 
-function main {
-    generateDefaultVariables
+# Side of text for echo when displaying which phase is executed.
+readonly SEP_SIDE='######## ######## ########'
+
+# Download location of resource files.
+readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-02.tar.gz"
+readonly TEST_RESOURCES_DOWNLOAD="https://molgenis26.target.rug.nl/downloads/vibe/${TEST_RESOURCES_DOWNLOAD_NAME}"
+
+# Base path (to script).
+readonly BASE_PATH=$(sed 's/\/TestNGPreprocessing.sh$//' <<< $0)
+
+# Location of directory for storing temporary files.
+readonly TMP_DIR="${BASE_PATH}/TMP"
+
+main() {
 	digestCommandLine $@
 	runTestPreparations
 }
 
-function digestCommandLine {
+digestCommandLine() {
 	#Digests the command line arguments.
 	while [[ $# -gt 0 ]]
 	do
 		key="$1"
 		case $key in
 			-d|--disgenet)
-			DISGENET_FULL="$2"
+			readonly DISGENET_FULL="$2"
 			shift # argument
 			shift # value
 			;;
 			-h|--help)
-			HELP=TRUE
+			local help=TRUE
 			shift # argument
 			;;
 			*)    # unknown option
@@ -50,7 +62,7 @@ function digestCommandLine {
 	done
 
 	# Checks if usage is requested.
-	if [[ $HELP == TRUE ]]; then echo "$USAGE"; exit 0; fi
+	if [[ ${help} == TRUE ]]; then echo "$USAGE"; exit 0; fi
 
 	# Checks if DISGENET_FULL variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
 	if [[ ${DISGENET_FULL+isset} == isset ]]
@@ -60,24 +72,20 @@ function digestCommandLine {
     fi
 }
 
-function generateDefaultVariables {
-    # Side of text for echo when displaying which phase is executed.
-    SEP_SIDE='######## ######## ########'
+runTestPreparations() {
+    # Define variables.
+    declare -r disgenet_mini="${BASE_PATH}/src/test/resources/disgenet_mini"
+    declare -r disgenet_mini_tdb_no_ontology="${BASE_PATH}/src/test/resources/disgenet_mini_tdb_no_ontology"
+    declare -r disgenet_mini_tdb="${BASE_PATH}/src/test/resources/disgenet_mini_tdb"
+    declare -r disgenet_full_symlink_path="${BASE_PATH}/src/test/resources/disgenet_full_tdb"
+    declare -r test_resources_tmp_download="${TMP_DIR}/${TEST_RESOURCES_DOWNLOAD_NAME}"
+    declare -r resources_download_extract_dir="${BASE_PATH}/src/test"
 
-    # Download location of resource files.
-    TEST_RESOURCES_DOWNLOAD=https://molgenis26.target.rug.nl/downloads/vibe/test_resources_2018-03-02.tar.gz
+    # Removes currently present files if present (symlink is not removed!).
+    rm -fr "$disgenet_mini"
+    rm -fr "$disgenet_mini_tdb_no_ontology"
+    rm -fr "$disgenet_mini_tdb"
 
-	# Base path (to script).
-	BASE_PATH=$(sed 's/TestNGPreprocessing.sh$//' <<< $0)
-
-    # Location of directory storing temporary files.
-	TMP_DIR="$BASE_PATH"TMP/
-
-	# Disgenet mini path (after extraction from archive)
-	DISGENET_MINI="$BASE_PATH"src/test/resources/disgenet_mini
-}
-
-function runTestPreparations {
     # Creates tmp dir for temporary storage of data.
     mkdir "$TMP_DIR"
 
@@ -85,26 +93,22 @@ function runTestPreparations {
     echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n"
     wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR"
 
-    # Removes current mini TDBs if present.
-    rm -fr "$BASE_PATH"src/test/resources/disgenet_mini_tdb_no_ontology
-    rm -fr "$BASE_PATH"src/test/resources/disgenet_mini_tdb
-
     # Extracts archive (overrides if exists).
     echo "\n\n$SEP_SIDE Extracting data $SEP_SIDE\n\n"
-    tar -zxvf "$TMP_DIR"test_resources_2018-03-02.tar.gz -C "$BASE_PATH"src/test
+    tar -zxvf "$test_resources_tmp_download" -C "$resources_download_extract_dir"
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
     echo "\n\n$SEP_SIDE Generating TDB without ontology information $SEP_SIDE\n\n"
-    tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb_no_ontology "$DISGENET_MINI"/*.ttl
+    tdbloader2 --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
     echo "\n\n$SEP_SIDE Generating TDB with ontology information $SEP_SIDE\n\n"
-    tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb "$DISGENET_MINI"/*.ttl "$DISGENET_MINI"/*.owl
+    tdbloader2 --loc "$disgenet_mini_tdb" "$disgenet_mini"/*.ttl "$disgenet_mini"/*.owl
 
     # Generates symlink to full DisGeNET TDB.
     if [[ ${DISGENET_FULL+isset} == isset ]]
     then
-        ln -s "$DISGENET_FULL" "$BASE_PATH"src/test/resources/disgenet_full_tdb
+        ln -s "$DISGENET_FULL" "$disgenet_full_symlink_path"
     fi
 
     # Removes tmp dir including content.
