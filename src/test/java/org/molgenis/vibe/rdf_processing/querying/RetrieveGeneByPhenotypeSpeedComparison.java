@@ -16,14 +16,12 @@ import java.util.Arrays;
 import java.util.stream.Collectors;
 
 public class RetrieveGeneByPhenotypeSpeedComparison {
-    private static final String database = TestFilesDir.TDB_FULL.getDir();
     private static final int testRepeats = 3;
+    private static ModelReader reader;
 
-    ModelReader reader;
-
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass(groups = {"benchmarking"})
     public void beforeClass() {
-        reader = new TripleStoreDbReader(database);
+        reader = new TripleStoreDbReader(TestFilesDir.TDB_FULL.getDir());
     }
 
     @AfterClass(alwaysRun = true)

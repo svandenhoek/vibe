@@ -26,21 +26,18 @@ import java.util.*;
 public class DisgenetQueryStringGeneratorTester extends QueryTester {
     private static final String delimiter = " - ";
 
-    private ModelReader readerMini;
-    private ModelReader readerFull;
+    private ModelReader reader;
 
     private QueryRunnerRewindable runner;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass
     public void beforeClass() {
-        readerMini = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
-        readerFull = new TripleStoreDbReader(TestFilesDir.TDB_FULL.getDir());
+        reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
     }
 
     @AfterClass(alwaysRun = true)
     public void afterClass() {
-        readerMini.close();
-        readerFull.close();
+        reader.close();
     }
 
     @AfterMethod(alwaysRun = true)
@@ -57,7 +54,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
             System.out.println(queryString.getQuery());
         }
 
-        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
+        runner = new QueryRunnerRewindable(reader.getModel(), queryString);
 
         if(verbose) {
             ResultSetFormatter.out(System.out, runner.getResultSet());
@@ -70,7 +67,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testSourcesUnique() {
         QueryString queryString = DisgenetQueryStringGenerator.getSources();
-        runner = new QueryRunnerRewindable(readerMini.getModel(), queryString);
+        runner = new QueryRunnerRewindable(reader.getModel(), queryString);
 
         Set<String> sources = new HashSet<>();
 

@@ -18,7 +18,7 @@ public class ModelReadersTester {
     private Model tripleStoreModelNoOntology;
     private Model tripleStoreModelWithOntology;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass
     public void beforeClass() {
         modelFileReaderNoOntology = new ModelFilesReader(TestFilesDir.TTL_NO_ONTOLOGY.getFiles());
         modelFileReaderWithOntology = new ModelFilesReader(TestFilesDir.TTL.getFiles());

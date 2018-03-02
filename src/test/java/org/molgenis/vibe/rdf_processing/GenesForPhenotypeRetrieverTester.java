@@ -25,7 +25,7 @@ public class GenesForPhenotypeRetrieverTester {
     private ModelReader reader;
     private GenesForPhenotypeRetriever retriever;
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass
     public void beforeClass() {
         reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
 

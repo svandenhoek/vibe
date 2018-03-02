@@ -21,7 +21,7 @@ public class GeneDiseaseCombinationTester {
 
     private GeneDiseaseCombination geneDiseaseCombo;
 
-    @BeforeMethod(alwaysRun = true)
+    @BeforeMethod
     public void beforeMethod() {
         geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
     }

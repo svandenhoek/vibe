@@ -30,7 +30,11 @@ public enum TestFilesDir {
     private String dir;
 
     TestFilesDir(String dir) {
-        this.dir = classLoader.getResource(dir).getFile();
+        try {
+            this.dir = classLoader.getResource(dir).getFile();
+        } catch(NullPointerException e) {
+            this.dir = null;
+        }
     }
 
     /**

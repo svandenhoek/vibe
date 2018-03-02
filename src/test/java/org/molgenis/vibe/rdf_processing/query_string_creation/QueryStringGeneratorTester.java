@@ -32,7 +32,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     private QueryRunnerRewindable runner;
     private final String prefixes = DisgenetQueryStringGenerator.getPrefixes();
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeClass
     public void beforeClass() {
         reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
     }
