@@ -7,6 +7,8 @@ import org.apache.jena.tdb.TDBFactory;
 
 import java.nio.file.Path;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Creates an (Ontology) {@link Model} from a TDB database.
  */
@@ -31,7 +33,7 @@ public class TripleStoreDbReader implements ModelReader {
     }
 
     public TripleStoreDbReader(String dir) {
-        dataset = TDBFactory.createDataset(dir);
+        dataset = TDBFactory.createDataset(requireNonNull(dir));
         dataset.begin(ReadWrite.READ);
         model = dataset.getDefaultModel();
     }
