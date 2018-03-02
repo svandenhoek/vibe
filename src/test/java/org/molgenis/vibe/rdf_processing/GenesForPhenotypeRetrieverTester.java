@@ -13,6 +13,14 @@ import org.testng.annotations.Test;
 import java.net.URI;
 import java.util.*;
 
+/**
+ * Note that these tests use data from DisGeNET for validation. These files are not provided (though a bash download
+ * script is present in the GitHub repository). For validation purposes some data (such as gene-disease association IDs)
+ * are present within this test class. However, this was kept as minimal as possible while still being able to actually
+ * test the functioning of the code and only reflects what is EXPECTED to be found within the DisGeNET dataset when using
+ * the query (on a technical basis). The DisGeNET RDF dataset can be downloaded from http://rdf.disgenet.org/download/
+ * and the license can be found on http://www.disgenet.org/ds/DisGeNET/html/legal.html .
+ */
 public class GenesForPhenotypeRetrieverTester {
     private ModelReader reader;
     private GenesForPhenotypeRetriever retriever;

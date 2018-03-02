@@ -20,8 +20,6 @@ import java.util.List;
 /**
  * Tests the {@link QueryStringGenerator} (based on Apache Jena for RDF file reading/querying).
  *
- * IMPORTANT: Run TestNGPreprocessing.sh before using TestNG!
- *
  * Note that these tests use data from DisGeNET for validation. These files are not provided (though a bash download
  * script is present in the GitHub repository). For validation purposes some data (such as gene-disease association IDs)
  * are present within this test class. However, this was kept as minimal as possible while still being able to actually
