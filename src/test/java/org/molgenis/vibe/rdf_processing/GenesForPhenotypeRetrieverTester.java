@@ -5,8 +5,6 @@ import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
-import org.molgenis.vibe.options_digestion.OptionsParser;
-import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
@@ -33,14 +31,14 @@ public class GenesForPhenotypeRetrieverTester {
     @Test
     public void retrieveAllDiseasesForPhenotypeAndDirectChildren() throws CorruptDatabaseException {
         Gene[] genes = new Gene[]{
-                new Gene("1311"),
-                new Gene("10082"),
-                new Gene("960")
+                new Gene("1311", "cartilage oligomeric matrix protein", "COMP", URI.create("http://identifiers.org/ncbigene/1311")),
+                new Gene("10082", "glypican 6", "GPC6", URI.create("http://identifiers.org/ncbigene/10082")),
+                new Gene("960", "CD44 molecule (Indian blood group)", "CD44", URI.create("http://identifiers.org/ncbigene/960"))
         };
 
         Disease[] diseases = new Disease[]{
-                new Disease("umls:C0410538"),
-                new Disease("umls:C1850318")
+                new Disease("umls:C0410538", "Pseudoachondroplasia", URI.create("http://linkedlifedata.com/resource/umls/id/C0410538")),
+                new Disease("umls:C1850318", "Omodysplasia type 1", URI.create("http://linkedlifedata.com/resource/umls/id/C1850318"))
         };
 
         GeneDiseaseCombination[] geneDiseaseCombinations = new GeneDiseaseCombination[]{
@@ -50,16 +48,9 @@ public class GenesForPhenotypeRetrieverTester {
         };
 
         Source[] sources = new Source[] {
-                new Source("UniProt 2017 Dataset Distribution"),
-                new Source("CTD_human 2017 Dataset Distribution"),
-                new Source("BeFree 2017 Dataset Distribution")
-        };
-
-        URI[] pubmedIds = new URI[] {
-                URI.create("http://identifiers.org/pubmed/11565064"),
-                URI.create("http://identifiers.org/pubmed/21922596"),
-                URI.create("http://identifiers.org/pubmed/19481194"),
-                URI.create("http://identifiers.org/pubmed/19481194")
+                new Source("UniProt 2017 Dataset Distribution", Source.Level.CURATED, URI.create("http://rdf.disgenet.org/v5.0.0/void/UNIPROT")),
+                new Source("CTD_human 2017 Dataset Distribution", Source.Level.CURATED, URI.create("http://rdf.disgenet.org/v5.0.0/void/CTD_human")),
+                new Source("BeFree 2017 Dataset Distribution", Source.Level.LITERATURE, URI.create("http://rdf.disgenet.org/v5.0.0/void/BEFREE"))
         };
 
         geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/11565064"));
@@ -76,8 +67,22 @@ public class GenesForPhenotypeRetrieverTester {
 
         // Compares extra fields for geneDiseaseCombinations that are not in the equals().
         for(int i = 0; i < geneDiseaseCombinations.length; i++) {
-            Assert.assertEquals(actualCollection.get(geneDiseaseCombinations[i]).getSourcesCount(), geneDiseaseCombinations[i].getSourcesCount());
-            Assert.assertEquals(actualCollection.get(geneDiseaseCombinations[i]).getSourcesWithEvidence(), geneDiseaseCombinations[i].getSourcesWithEvidence());
+            // The GeneDiseaseCombination to be compared.
+            GeneDiseaseCombination expectedGdc = geneDiseaseCombinations[i];
+            GeneDiseaseCombination actualGdc = actualCollection.get(geneDiseaseCombinations[i]);
+
+            // Check gene fields.
+            Assert.assertEquals(actualGdc.getGene().getName(), expectedGdc.getGene().getName());
+            Assert.assertEquals(actualGdc.getGene().getSymbol(), expectedGdc.getGene().getSymbol());
+            Assert.assertEquals(actualGdc.getGene().getUri(), expectedGdc.getGene().getUri());
+
+            // Check disease fields.
+            Assert.assertEquals(actualGdc.getDisease().getName(), expectedGdc.getDisease().getName());
+            Assert.assertEquals(actualGdc.getDisease().getUri(), expectedGdc.getDisease().getUri());
+
+            // Check other GeneDiseaseCombination fields.
+            Assert.assertEquals(actualGdc.getSourcesCount(), expectedGdc.getSourcesCount());
+            Assert.assertEquals(actualGdc.getSourcesWithEvidence(), expectedGdc.getSourcesWithEvidence());
         }
     }
 }
