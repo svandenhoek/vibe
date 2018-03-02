@@ -23,8 +23,9 @@ IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
 "
 
 function main {
+    generateDefaultVariables
 	digestCommandLine $@
-	runTestPreperations
+	runTestPreparations
 }
 
 function digestCommandLine {
@@ -51,12 +52,6 @@ function digestCommandLine {
 	# Checks if usage is requested.
 	if [[ $HELP == TRUE ]]; then echo "$USAGE"; exit 0; fi
 
-	# Generates default variables.
-	DISGENET_MINI="./src/test/resources/disgenet_mini"
-
-    # Checks default variables.
-    if [ ! -d "$DISGENET_MINI" ]; then errcho "The directory "$DISGENET_MINI" is missing.\n\n$USAGE"; exit 1; fi
-
 	# Checks if DISGENET_FULL variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
 	if [[ ${DISGENET_FULL+isset} == isset ]]
 	then
@@ -65,18 +60,44 @@ function digestCommandLine {
     fi
 }
 
-function runTestPreperations {
+function generateDefaultVariables {
+    # Download location of resource files.
+    TEST_RESOURCES_DOWNLOAD=https://molgenis26.target.rug.nl/downloads/vibe/test_resources_2018-03-02.tar.gz
+
+	# Base path (to script).
+	BASE_PATH=$(sed 's/TestNGPreprocessing.sh$//' <<< $0)
+
+    # Location of directory storing temporary files.
+	TMP_DIR="$BASE_PATH"TMP/
+
+	# Disgenet mini path (after extraction from archive)
+	DISGENET_MINI="$BASE_PATH"src/test/resources/disgenet_mini
+}
+
+function runTestPreparations {
+    # Creates tmp dir for temporary storage of data.
+    mkdir "$TMP_DIR"
+
+    # Downloads test data.
+    wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR"
+
+    # Extracts archive.
+    tar -zxvf "$TMP_DIR"test_resources_2018-03-02.tar.gz -C "$BASE_PATH"src/test
+
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
-    tdbloader2 --loc ./src/test/resources/disgenet_mini_tdb_no_ontology "$DISGENET_MINI"/*.ttl
+    tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb_no_ontology "$DISGENET_MINI"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
-    tdbloader2 --loc ./src/test/resources/disgenet_mini_tdb "$DISGENET_MINI"/*.ttl "$DISGENET_MINI"/*.owl
+    tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb "$DISGENET_MINI"/*.ttl "$DISGENET_MINI"/*.owl
 
     # Generates symlink to full DisGeNET TDB.
     if [[ ${DISGENET_FULL+isset} == isset ]]
     then
-        ln -s "$DISGENET_FULL" ./src/test/resources/disgenet_full_tdb
+        ln -s "$DISGENET_FULL" "$BASE_PATH"src/test/resources/disgenet_full_tdb
     fi
+
+    # Removes tmp dir including content.
+    rm -r "$TMP_DIR"
 }
 
 main $@
