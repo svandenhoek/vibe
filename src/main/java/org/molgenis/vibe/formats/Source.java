@@ -7,7 +7,7 @@ import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
-public class Source {
+public class Source implements ResourceUri {
     private String name;
     private Level level;
 
