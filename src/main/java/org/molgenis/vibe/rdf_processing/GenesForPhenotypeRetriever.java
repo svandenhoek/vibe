@@ -20,7 +20,6 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     private Set<Phenotype> phenotypes = new HashSet<>();
     private Map<URI, Gene> genes = new HashMap<>();
     private Map<URI, Disease> diseases = new HashMap<>();
-//    private Map<Gene, Map<GeneDiseaseCombination, GeneDiseaseCombination>> gdcsByGene = new HashMap<>();
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
     public GeneDiseaseCollection getGeneDiseaseCollection() {

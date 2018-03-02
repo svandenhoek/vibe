@@ -39,7 +39,7 @@ public class HighestSingleDisgenetScoreGenePrioritizerTester {
                 genes[2], // highest is 0.5
                 genes[0] // highest is 0.4
         ));
-        
+
         GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(new GeneDiseaseCollection(geneDiseaseCombinations));
         prioritizer.run();
         Assert.assertEquals(prioritizer.getPriority(), expectedPriority);
