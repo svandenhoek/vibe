@@ -23,4 +23,11 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
     public Set<GeneDiseaseCombination> getByDisease(Disease disease) {
         return getByT2(disease);
     }
+
+    public GeneDiseaseCollection() {
+    }
+
+    public GeneDiseaseCollection(Set<GeneDiseaseCombination> combinationsMap) {
+        super(combinationsMap);
+    }
 }

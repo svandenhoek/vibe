@@ -33,6 +33,13 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         return Collections.unmodifiableSet(combinationsByT2.get(t2));
     }
 
+    public BiologicalEntityCollection() {
+    }
+
+    public BiologicalEntityCollection(Set<T3> combinations) {
+        addAll(combinations);
+    }
+
     @Override
     public int size() {
         return combinationsMap.size();
