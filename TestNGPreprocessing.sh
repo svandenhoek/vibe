@@ -61,6 +61,9 @@ function digestCommandLine {
 }
 
 function generateDefaultVariables {
+    # Side of text for echo when displaying which phase is executed.
+    SEP_SIDE='######## ######## ########'
+
     # Download location of resource files.
     TEST_RESOURCES_DOWNLOAD=https://molgenis26.target.rug.nl/downloads/vibe/test_resources_2018-03-02.tar.gz
 
@@ -79,15 +82,19 @@ function runTestPreparations {
     mkdir "$TMP_DIR"
 
     # Downloads test data.
+    echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n"
     wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR"
 
-    # Extracts archive.
+    # Extracts archive (overrides if exists).
+    echo "\n\n$SEP_SIDE Extracting data $SEP_SIDE\n\n"
     tar -zxvf "$TMP_DIR"test_resources_2018-03-02.tar.gz -C "$BASE_PATH"src/test
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
+    echo "\n\n$SEP_SIDE Generating TDB without ontology information $SEP_SIDE\n\n"
     tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb_no_ontology "$DISGENET_MINI"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
+    echo "\n\n$SEP_SIDE Generating TDB with ontology information $SEP_SIDE\n\n"
     tdbloader2 --loc "$BASE_PATH"src/test/resources/disgenet_mini_tdb "$DISGENET_MINI"/*.ttl "$DISGENET_MINI"/*.owl
 
     # Generates symlink to full DisGeNET TDB.
