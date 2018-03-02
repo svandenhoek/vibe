@@ -25,14 +25,14 @@ public class HighestSingleDisgenetScoreGenePrioritizerTester {
                 new Disease("umls:C6")
         };
 
-        Set<GeneDiseaseCombination> geneDiseaseCombinations = new HashSet<>(Arrays.asList(
+        Set<GeneDiseaseCombination> geneDiseaseCombinations = new HashSet<>( Arrays.asList(
                 new GeneDiseaseCombination(genes[0], diseases[0], 0.4),
                 new GeneDiseaseCombination(genes[0], diseases[1], 0.3),
                 new GeneDiseaseCombination(genes[1], diseases[2], 0.6),
                 new GeneDiseaseCombination(genes[1], diseases[3], 0.3),
                 new GeneDiseaseCombination(genes[2], diseases[4], 0.4),
                 new GeneDiseaseCombination(genes[2], diseases[5], 0.5)
-                ));
+        ));
 
         List<Gene> expectedPriority = new ArrayList<>( Arrays.asList(
                 genes[1], // highest is 0.6
