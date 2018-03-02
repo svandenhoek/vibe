@@ -6,7 +6,7 @@ For building/testing:
 
 * [Apache Maven][maven_download]
 * [Apache Jena v3.6.0][jena_download]
-* Resource files (URL coming soon)
+* [Vibe test resource archive v2018-03-02]([vibe_resource_files])
 
 For generating a local TDB dataset needed by the application:
 
@@ -28,6 +28,12 @@ Before using the tool, be sure all steps below are done (certain steps can be sk
 1. [Download][maven_download] and [install][maven_install] Apache Maven
 2. Run `mvn clean install` from the git repository directory.
 
+### Preperations for unit-testing.
+
+1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
+2. Run `TestNGPreprocessing.sh` (optionally with extra arguments required for certain tests).
+
+
 ### Creating a local TDB dataset.
 
 1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
@@ -48,3 +54,4 @@ Tip: If all files are in the same directory, simply use: `cd /directory/of/input
 [disgenet_rdf_v5_dump]:http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
 [sio_owl]:http://semanticscience.org/ontology/sio.owl
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
+[vibe_resource_files]:https://molgenis26.target.rug.nl/downloads/vibe/

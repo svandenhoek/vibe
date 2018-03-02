@@ -26,6 +26,7 @@
         </packages>
     </test>
 
+    <!-- Require the full DisGeNET TDB to be available! -->
     <test name="Benchmarking" enabled="false">
         <groups>
             <run>
