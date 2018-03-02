@@ -30,7 +30,7 @@ readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-02.tar.gz"
 readonly TEST_RESOURCES_DOWNLOAD="https://molgenis26.target.rug.nl/downloads/vibe/${TEST_RESOURCES_DOWNLOAD_NAME}"
 
 # Base path (to script).
-readonly BASE_PATH=$(sed 's/TestNGPreprocessing.sh$//' <<< $0)
+readonly BASE_PATH=$(sed 's/TestNGPreprocessing.sh$//' <<< $0 | sed -e 's/^$/.\//g')
 
 # Location of directory for storing temporary files.
 readonly TMP_DIR="${BASE_PATH}TMP/"
@@ -79,7 +79,6 @@ runTestPreparations() {
     declare -r disgenet_mini_tdb="${BASE_PATH}src/test/resources/disgenet_mini_tdb"
     declare -r disgenet_full_symlink_path="${BASE_PATH}src/test/resources/disgenet_full_tdb"
     declare -r test_resources_tmp_download="${TMP_DIR}${TEST_RESOURCES_DOWNLOAD_NAME}"
-    declare -r resources_download_extract_dir="${BASE_PATH}src/test"
 
     # Removes currently present files if present (symlink is not removed!).
     rm -fr "$disgenet_mini"
@@ -95,7 +94,7 @@ runTestPreparations() {
 
     # Extracts archive (overrides if exists).
     echo "\n\n$SEP_SIDE Extracting data $SEP_SIDE\n\n"
-    tar -zxvf "$test_resources_tmp_download" -C "$resources_download_extract_dir"
+    tar -zxvf "$test_resources_tmp_download" -C "$BASE_PATH"
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
     echo "\n\n$SEP_SIDE Generating TDB without ontology information $SEP_SIDE\n\n"
