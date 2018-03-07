@@ -74,18 +74,27 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     public boolean add(T3 t3) {
         if(!combinationsMap.containsKey(t3)) {
             combinationsMap.put(t3,t3);
-            addCombinationToSearchKeyMaps(t3, (Map<BiologicalEntity, Set<T3>>) combinationsByT1, t3.getT1());
-            addCombinationToSearchKeyMaps(t3, (Map<BiologicalEntity, Set<T3>>) combinationsByT2, t3.getT2());
+            addCombinationToT1Map(t3, combinationsByT1); // "? extends BiologicalEntity" causes issues
+            addCombinationToT2Map(t3, combinationsByT2); // "? extends BiologicalEntity" causes issues
             return true;
         }
         return false;
     }
 
-    private void addCombinationToSearchKeyMaps(T3 t3, Map<BiologicalEntity, Set<T3>> combinationsMap, BiologicalEntity bioEntity) {
-        Set<T3> valueSet = combinationsMap.get(bioEntity);
+    private void addCombinationToT1Map(T3 t3, Map<T1, Set<T3>> combinationsMap) {
+        Set<T3> valueSet = combinationsMap.get(t3.getT1());
         if(valueSet == null) {
             valueSet = new HashSet<>();
-            combinationsMap.put(bioEntity, valueSet);
+            combinationsMap.put(t3.getT1(), valueSet);
+        }
+        valueSet.add(t3);
+    }
+
+    private void addCombinationToT2Map(T3 t3, Map<T2, Set<T3>> combinationsMap) {
+        Set<T3> valueSet = combinationsMap.get(t3.getT2());
+        if(valueSet == null) {
+            valueSet = new HashSet<>();
+            combinationsMap.put(t3.getT2(), valueSet);
         }
         valueSet.add(t3);
     }

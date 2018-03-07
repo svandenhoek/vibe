@@ -14,6 +14,10 @@ public class Source implements ResourceUri {
     private URI uri;
 
     public String getName() {
+        return name.split(" ")[0];
+    }
+
+    public String getFullName() {
         return name;
     }
 

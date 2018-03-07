@@ -1,10 +1,15 @@
 package org.molgenis.vibe.options_digestion;
 
-import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.io.output.FileOutputWriter;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.io.output.ResultsPerGeneCsvFileOutputWriter;
+import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
+import org.molgenis.vibe.query_output_digestion.prioritization.HighestSingleDisgenetScoreGenePrioritizer;
 import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
+
+import java.io.IOException;
 
 /**
  * Describes what the application should do.
@@ -17,7 +22,7 @@ public enum RunMode {
         }
     }, GET_GENES_USING_SINGLE_PHENOTYPE("get genes matching a single phenotype") {
         @Override
-        public void run(OptionsParser appOptions) throws CorruptDatabaseException {
+        public void run(OptionsParser appOptions) throws IOException {
             appOptions.printVerbose("Preparing DisGeNET dataset.");
             ModelReader reader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
@@ -29,6 +34,16 @@ public enum RunMode {
             // Stores needed data and allows the rest to be collected by garbage collector.
             GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
             genesForPhenotypeRetriever = null;
+
+            // Generates gene order.
+            appOptions.printVerbose("Ordering genes based on priority.");
+            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
+            prioritizer.run();
+
+            // Writes output to file.
+            appOptions.printVerbose("Writing genes to file.");
+            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
+            outputWriter.run();
         }
     };
 

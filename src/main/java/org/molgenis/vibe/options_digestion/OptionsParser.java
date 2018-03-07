@@ -5,10 +5,7 @@ import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.InvalidPathException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -50,6 +47,11 @@ public abstract class OptionsParser {
     private Set<Phenotype> phenotypes = new HashSet<>();
 
     private QueryStringPathRange queryStringPathRange = new QueryStringPathRange(0);
+
+    /**
+     * The file to write the output to.
+     */
+    private Path outputFile;
 
     public boolean isVerbose() {
         return verbose;
@@ -193,17 +195,38 @@ public abstract class OptionsParser {
         this.queryStringPathRange = queryStringPathRange;
     }
 
+    public Path getOutputFile() {
+        return outputFile;
+    }
+    protected void setOutputFile(String outputFile) throws FileAlreadyExistsException {
+        setOutputFile(Paths.get(outputFile));
+    }
+
+    protected void setOutputFile(Path outputFile) throws FileAlreadyExistsException {
+        if(checkIfPathIsReadableFile(outputFile)) {
+            throw new FileAlreadyExistsException(outputFile.getFileName() + " already exists.");
+        }
+        this.outputFile = outputFile;
+    }
+
     /**
      * Checks whether the set variables adhere to the selected {@link RunMode}.
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
     protected boolean checkConfig() {
+        // With RunMode.NONE there are no requirements.
         if(runMode.equals(RunMode.NONE)) {
             return true;
         }
+        // Otherwise check if DisGeNET data is set.
         if(disgenetDataDir == null || disgenetRdfVersion == null) {
             return false;
         }
+        // Check if an output file was given.
+        if(outputFile == null) {
+            return false;
+        }
+        // Check config specific settings.
         switch (runMode) {
             case GET_GENES_USING_SINGLE_PHENOTYPE:
                 if(phenotypes != null & phenotypes.size() == 1) {

@@ -86,6 +86,13 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .hasArg()
                 .argName("VERSION")
                 .build());
+
+        options.addOption(Option.builder("o")
+                .longOpt("output")
+                .desc("The file to write output to.")
+                .hasArg()
+                .argName("FILE")
+                .build());
     }
 
     /**
@@ -93,7 +100,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID>";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID> -o <FILE>";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -142,6 +149,10 @@ public class CommandLineOptionsParser extends OptionsParser {
             } else {
                 setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
             }
+        }
+
+        if(commandLine.hasOption("o")) {
+            setOutputFile(commandLine.getOptionValue("o"));
         }
 
         // If explicit run mode was given, this is chosen. This also overrides guessed run modes based on given user-input.

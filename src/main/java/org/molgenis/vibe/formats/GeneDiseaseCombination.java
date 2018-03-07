@@ -44,6 +44,10 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         return Collections.unmodifiableMap(sourcesCount);
     }
 
+    public Set<Source> getSourcesWithCount() {
+        return Collections.unmodifiableSet(sourcesCount.keySet());
+    }
+
     /**
      * The count for the defined {@link Source}
      * @param source the {@link Source} to retrieve the count for
@@ -76,6 +80,15 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
             evidence = Collections.unmodifiableList(evidence);
         }
         return evidence;
+    }
+
+    public Set<URI> getAllEvidence() {
+        Set<URI> allSources = new HashSet<>();
+        for(List<URI> evidenceForSingleSource : sourcesEvidence.values()) {
+            allSources.addAll(evidenceForSingleSource);
+        }
+
+        return allSources;
     }
 
     /**
