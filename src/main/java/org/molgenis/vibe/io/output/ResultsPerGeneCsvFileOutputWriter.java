@@ -24,20 +24,27 @@ public class ResultsPerGeneCsvFileOutputWriter extends CsvFileOutputWriter {
     public void run() throws IOException {
         BufferedWriter writer = getWriter();
 
-        writer.write("gene,diseases");
+        writer.write("gene,diseases,highest score");
         writer.newLine();
         for(Gene gene : priority) {
             boolean firstDisease = true;
-            writer.write(gene.getSymbol() + ",");
+            writer.write(gene.getSymbol() + ",\"");
+
+            double highestScore = 0;
 
             Set<GeneDiseaseCombination> geneCombinations = collection.getByGene(gene);
             for(GeneDiseaseCombination gdc : geneCombinations) {
-                if(!firstDisease) {
-                    writer.write(";");
+                if(gdc.getDisgenetScore() > highestScore) {
+                    highestScore = gdc.getDisgenetScore();
                 }
-                writer.write(gdc.getDisease().getName());
-
+                if(firstDisease) {
+                    writer.write(gdc.getDisease().getName());
+                    firstDisease=false;
+                } else {
+                    writer.write(";" + gdc.getDisease().getName());
+                }
             }
+            writer.write("\"," + highestScore);
             writer.newLine();
         }
 
