@@ -9,11 +9,11 @@ public abstract class CsvFileOutputWriter extends FileOutputWriter {
     /**
      * Separator to be used in CSV files (comma-separated).
      */
-    protected static final char SEPARATOR = ',';
+    protected static final String SEPARATOR = ",";
     /**
      * Quotes can be used to that comma's within a field aren't seen as a field-separator.
      */
-    protected static final char QUOTE_MARK = '"';
+    protected static final String QUOTE_MARK = "\"";
 
     public CsvFileOutputWriter(Path path) {
         super(path);
