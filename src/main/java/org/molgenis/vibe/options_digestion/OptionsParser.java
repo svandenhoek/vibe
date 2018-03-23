@@ -1,12 +1,15 @@
 package org.molgenis.vibe.options_digestion;
 
+import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 
 import java.io.IOException;
 import java.nio.file.*;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -213,27 +216,34 @@ public abstract class OptionsParser {
      * Checks whether the set variables adhere to the selected {@link RunMode}.
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
-    protected boolean checkConfig() {
+    protected void checkConfig() throws IOException {
+        List<String> errors = new ArrayList<>();
+
         // With RunMode.NONE there are no requirements.
-        if(runMode.equals(RunMode.NONE)) {
-            return true;
+        if(!runMode.equals(RunMode.NONE)) {
+            // Otherwise check if DisGeNET data is set.
+            if (disgenetDataDir == null || disgenetRdfVersion == null) {
+                errors.add("DisGeNET dataset not set.");
+            }
+            // Check if an output file was given.
+            if (outputFile == null) {
+                errors.add("No output file was given.");
+            }
+            // Check config specific settings.
+            switch (runMode) {
+                case GET_GENES_USING_SINGLE_PHENOTYPE:
+                    if (phenotypes.size() == 0) {
+                        errors.add("No phenotype was given.");
+                    } else {
+                        if(phenotypes.size() > 1) {
+                            errors.add("More than 1 phenotype was given.");
+                        }
+                    }
+            }
         }
-        // Otherwise check if DisGeNET data is set.
-        if(disgenetDataDir == null || disgenetRdfVersion == null) {
-            return false;
-        }
-        // Check if an output file was given.
-        if(outputFile == null) {
-            return false;
-        }
-        // Check config specific settings.
-        switch (runMode) {
-            case GET_GENES_USING_SINGLE_PHENOTYPE:
-                if(phenotypes != null & phenotypes.size() == 1) {
-                    return true;
-                }
-            default:
-                return false;
+
+        if(errors.size() > 0) {
+            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
 

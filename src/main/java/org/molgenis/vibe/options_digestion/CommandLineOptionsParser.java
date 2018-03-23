@@ -40,9 +40,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         parseCommandLine(args);
         digestCommandLine();
-        if(!super.checkConfig()) {
-            throw new IOException("The given user-input (such as settings or file locations) does not adhere the run mode.");
-        }
+        super.checkConfig();
     }
 
     /**
@@ -61,7 +59,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
 //        options.addOption(Option.builder("m")
 //                .longOpt("mode")
-//                .desc("The mode the application should run.\n1: Give an phenotype HPO code to retrieve genes matched to it.")
+//                .desc("The mode the application should run.\n1: Give a phenotype HPO code to retrieve genes matched to it.")
 //                .hasArg()
 //                .argName("NUMBER")
 //                .build());
@@ -137,8 +135,6 @@ public class CommandLineOptionsParser extends OptionsParser {
         }
 
         if(commandLine.hasOption("p")) {
-            // Sets run mode.
-            setRunMode(RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
             // Digests phenotype(s).
             setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
@@ -155,11 +151,17 @@ public class CommandLineOptionsParser extends OptionsParser {
             setOutputFile(commandLine.getOptionValue("o"));
         }
 
-        // If explicit run mode was given, this is chosen. This also overrides guessed run modes based on given user-input.
-        // Note that the help option overrides the run mode.
+        // Selects run mode.
+        // Note: current implementation only has 1 mode and therefore currently uses the uncommented code below instead.
 //        if(commandLine.hasOption("m")) {
-//            setRunMode(RunMode.retrieveMode(commandLine.getOptionValue("m"))); // throws NumberFormatException
+//            setRunMode(RunMode.retrieve(commandLine.getOptionValue("m"))); // throws NumberFormatException
 //        }
+
+        // As there currently is only 1 run mode, if ANY argument is given this run mode is automatically selected (-h overrides this).
+        if(commandLine.getOptions().length > 0) {
+            // Sets run mode.
+            setRunMode(RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
+        }
 
         // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
         // is shown before the application quits.

@@ -14,7 +14,9 @@ public class CommandLineOptionsParserTester {
     @Test
     public void noArguments() throws IOException, ParseException {
         String[] args = new String[]{};
-        new CommandLineOptionsParser(args);
+        CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
+
+        Assert.assertEquals(appOptions.getRunMode(), RunMode.NONE);
     }
 
     @Test(expectedExceptions = UnrecognizedOptionException.class)
@@ -36,9 +38,38 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser.printHelpMessage();
     }
 
+    @Test(expectedExceptions = IOException.class)
+    public void missingDisgenetDatabase() throws IOException, ParseException {
+        String[] args = new String[]{"-p", "hp:1234567", "-o", "/path/to/output/file"};
+        new CommandLineOptionsParser(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void missingOutputFile() throws IOException, ParseException {
+        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567"};
+        new CommandLineOptionsParser(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void missingPhenotype() throws IOException, ParseException {
+        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-o", "/path/to/output/file"};
+        new CommandLineOptionsParser(args);
+    }
+
+    /**
+     * Future implementations should support multiple phenotypes (depending on run mode).
+     * @throws IOException
+     * @throws ParseException
+     */
+    @Test(expectedExceptions = IOException.class)
+    public void multiplePhenotypes() throws IOException, ParseException {
+        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567", "-p", "hp:7654321", "-o", "/path/to/output/file"};
+        new CommandLineOptionsParser(args);
+    }
+
     @Test
     public void getGenesUsingSinglePhenotype() throws IOException, ParseException {
-        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567"};
+        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567", "-o", "/path/to/output/file"};
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
         Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
