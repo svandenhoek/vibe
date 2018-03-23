@@ -3,7 +3,6 @@ package org.molgenis.vibe.options_digestion;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -48,8 +47,6 @@ public abstract class OptionsParser {
      * The phenotype(s) to be used within the application.
      */
     private Set<Phenotype> phenotypes = new HashSet<>();
-
-    private QueryStringPathRange queryStringPathRange = new QueryStringPathRange(0);
 
     /**
      * The file to write the output to.
@@ -188,14 +185,6 @@ public abstract class OptionsParser {
 
     protected void addPhenotype(Phenotype phenotype) {
         phenotypes.add(phenotype);
-    }
-
-    public QueryStringPathRange getQueryStringPathRange() {
-        return queryStringPathRange;
-    }
-
-    public void setQueryStringPathRange(QueryStringPathRange queryStringPathRange) {
-        this.queryStringPathRange = queryStringPathRange;
     }
 
     public Path getOutputFile() {

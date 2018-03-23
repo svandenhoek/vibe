@@ -4,9 +4,20 @@ import static java.util.Objects.requireNonNull;
 
 import java.util.Objects;
 
+/**
+ * A combination of 2 {@link BiologicalEntity} subclass objects.
+ * @param <T1> the first {@link BiologicalEntity} subclass type
+ * @param <T2> the second {@link BiologicalEntity} subclass type
+ */
 public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> {
+    /**
+     * The first {@link BiologicalEntity} subclass object.
+     */
     private T1 t1;
 
+    /**
+     * The second {@link BiologicalEntity} subclass object.
+     */
     private T2 t2;
 
     public T1 getT1() {

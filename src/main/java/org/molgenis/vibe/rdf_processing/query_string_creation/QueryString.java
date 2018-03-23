@@ -2,9 +2,18 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.apache.jena.query.Syntax;
 
+/**
+ * A {@link String} that can be used for SPARQL querying.
+ */
 public class QueryString {
+    /**
+     * The {@link String} to be used.
+     */
     private String query;
 
+    /**
+     * The {@link Syntax} needed for the query.
+     */
     private Syntax syntax;
 
     public String getQuery() {

@@ -2,10 +2,25 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.apache.jena.query.Syntax;
 
+/**
+ * A {@link String} defining the path which should be used in the RDF graph.
+ * @see <a href="https://jena.apache.org/documentation/query/property_paths.html">https://jena.apache.org/documentation/query/property_paths.html</a>
+ * @see <a href="https://www.w3.org/2009/sparql/docs/property-paths/Overview.xml#path-language">https://www.w3.org/2009/sparql/docs/property-paths/Overview.xml#path-language</a>
+ */
 public class QueryStringPathRange {
+    // Some simplified syntaxes that are available. See also links mentioned in the JavaDoc of this class.
+    private static final String ZERO_OR_MORE = "*";
+    private static final String ONE_OR_MORE = "+";
+    private static final String ZERO_OR_ONE = "?";
 
+    /**
+     * The {@link String} defining the path.
+     */
     private String rangeString;
 
+    /**
+     * Apache Jena Syntax needed for it.
+     */
     private Syntax syntax;
 
     public String getRangeString() {
@@ -16,89 +31,79 @@ public class QueryStringPathRange {
         return syntax;
     }
 
-    public QueryStringPathRange(Predefined predefined) {
-        syntax = Syntax.syntaxSPARQL_11;
-        this.rangeString = predefined.getRangeString();
-    }
-
+    /**
+     * @param value must be >= 0
+     */
     public QueryStringPathRange(int value) {
+        rangeString = "{" + value + "}";
         syntax = Syntax.syntaxARQ;
-        this.rangeString = "{" + value + "}";
     }
 
+    /**
+     * @param value must be >= 0
+     * @param isStart whether value indicates the start value of the range (if false, indicates end value)
+     */
     public QueryStringPathRange(int value, boolean isStart) {
-        syntax = Syntax.syntaxARQ;
+        throwExceptionIfNegative(value);
+
         if(isStart) {
-            this.rangeString = "{" + Integer.toString(value) + ",}";
+            switch (value) {
+                case 0:
+                    rangeString = ZERO_OR_MORE;
+                    syntax = Syntax.syntaxSPARQL_11;
+                    break;
+                case 1:
+                    rangeString = ONE_OR_MORE;
+                    syntax = Syntax.syntaxSPARQL_11;
+                    break;
+                default:
+                    rangeString = "{" + Integer.toString(value) + ",}";
+                    syntax = Syntax.syntaxARQ;
+            }
         } else {
-            this.rangeString =  "{," + Integer.toString(value) + "}";
+            switch (value) {
+                case 1:
+                    rangeString = ZERO_OR_ONE;
+                    syntax = Syntax.syntaxSPARQL_11;
+                    break;
+                default:
+                    this.rangeString =  "{," + Integer.toString(value) + "}";
+                    syntax = Syntax.syntaxARQ;
+            }
         }
-        simplifySyntaxIfPossible();
     }
 
+    /**
+     *
+     * @param start must be >= 0
+     * @param end must be >= 0
+     */
     public QueryStringPathRange(int start, int end) {
-        syntax = Syntax.syntaxARQ;
-        if(start == end) {
-            this.rangeString = "{" + start + "}";
-        } else if (start > end) {
-          throw new IllegalArgumentException("start > end");
+        throwExceptionIfNegative(start);
+        throwExceptionIfNegative(end);
+
+        if(start > end) {
+            throw new IllegalArgumentException("start > end");
+        } else if(start == end) {
+            rangeString = "{" + start + "}";
+            syntax = Syntax.syntaxARQ;
+        } else if(start == 0 && end == 1) {
+            rangeString = ZERO_OR_ONE;
+            syntax = Syntax.syntaxSPARQL_11;
         } else {
             this.rangeString = "{" + Integer.toString(start) + "," + Integer.toString(end) + "}";
+            syntax = Syntax.syntaxARQ;
         }
-        simplifySyntaxIfPossible();
     }
 
-    private void simplifySyntaxIfPossible() {
-        switch(rangeString) {
-            case "{0,}":
-                syntax = Syntax.syntaxSPARQL_11;
-                rangeString = Predefined.ZERO_OR_MORE.getRangeString();
-                break;
-            case "{,0}":
-                rangeString = "{0}";
-                break;
-            case "{1,}":
-                syntax = Syntax.syntaxSPARQL_11;
-                rangeString = Predefined.ONE_OR_MORE.getRangeString();
-                break;
-            case "{,1}":
-                syntax = Syntax.syntaxSPARQL_11;
-                rangeString = Predefined.ZERO_OR_ONE.getRangeString();
-                break;
-            case "{0,1}":
-                syntax = Syntax.syntaxSPARQL_11;
-                rangeString = Predefined.ZERO_OR_ONE.getRangeString();
-                break;
+    private void throwExceptionIfNegative(int value) {
+        if(value < 0) {
+            throw new IllegalArgumentException("a negative argument was found while not allowed");
         }
     }
 
     @Override
     public String toString() {
         return getRangeString();
-    }
-
-    /**
-     * @see <a href="https://jena.apache.org/documentation/query/property_paths.html">https://jena.apache.org/documentation/query/property_paths.html</a>
-     * @see <a href="https://www.w3.org/TR/sparql11-query/#pp-language">https://www.w3.org/TR/sparql11-query/#pp-language</a>
-     */
-    public enum Predefined {
-        ZERO_OR_MORE("*"),
-        ONE_OR_MORE("+"),
-        ZERO_OR_ONE("?");
-
-        private String rangeString;
-
-        public String getRangeString() {
-            return rangeString;
-        }
-
-        Predefined(String rangeString) {
-            this.rangeString = rangeString;
-        }
-
-        @Override
-        public String toString() {
-            return getRangeString();
-        }
     }
 }

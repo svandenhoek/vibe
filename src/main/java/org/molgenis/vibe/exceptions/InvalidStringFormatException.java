@@ -1,5 +1,9 @@
 package org.molgenis.vibe.exceptions;
 
+/**
+ * Thrown to indicate that a method has been given a {@link String} that is formatted in an inappropriate/unexpected way.
+ * For example, a {@link String} that is expected to adhere to a specific regular expression (but does not adhere to this).
+ */
 public class InvalidStringFormatException extends IllegalArgumentException {
     /**
      * Constructs an {@code InvalidStringFormatException} with {@code null}

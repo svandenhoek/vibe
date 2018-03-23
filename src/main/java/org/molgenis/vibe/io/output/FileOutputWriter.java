@@ -6,9 +6,18 @@ import java.nio.charset.Charset;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * An output writer for files.
+ */
 public abstract class FileOutputWriter {
+    /**
+     * Path to write output to.
+     */
     private Path path;
 
+    /**
+     * Writer to be used for file writing.
+     */
     private BufferedWriter writer;
 
     public Path getPath() {

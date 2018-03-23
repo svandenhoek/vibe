@@ -2,7 +2,6 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
-import java.nio.file.Path;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 

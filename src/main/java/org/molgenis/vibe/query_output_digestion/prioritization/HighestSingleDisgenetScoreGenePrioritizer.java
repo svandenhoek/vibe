@@ -8,6 +8,10 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Generates a priority order for a given collection ({@link List} or {@link Set}) of {@link Gene}{@code s}.
+ * The priority order is based on the highest {@link GeneDiseaseCombination#getDisgenetScore()} per {@link Gene}.
+ */
 public class HighestSingleDisgenetScoreGenePrioritizer extends GenePrioritizer {
     private GeneDiseaseCollection geneDiseaseCollection;
 

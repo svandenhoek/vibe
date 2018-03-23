@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
  * Please refer to http://www.disgenet.org/ds/DisGeNET/html/images/ontology.svg for the Ontology overview.
  */
 public enum DisgenetAssociationType {
-    GENE_DISEASE("000897"),
+    GENE_DISEASE("000983"),
     THERAPEUTIC("001120"),
     BIOMARKER("001121"),
     GENOMIC_ALTERATION("001350"),
@@ -26,6 +26,11 @@ public enum DisgenetAssociationType {
     GERMLINE_CASUAL_MUTATION("001344"),
     SOMATIC_MODIFYING_MUTATION("001346"),
     GERMLINE_MODIFYING_MUTATION("001347");
+
+    /**
+     * The root {@link DisgenetAssociationType} of all association types available in this enum
+     */
+    public static final DisgenetAssociationType ROOT = GENE_DISEASE;
 
     private static final String PREFIX = "sio:SIO_";
     private String id;

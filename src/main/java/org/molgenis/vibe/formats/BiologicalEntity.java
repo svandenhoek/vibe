@@ -9,21 +9,53 @@ import java.util.regex.Pattern;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * Describes a biological entity (such as a {@link Gene}, {@link Disease} or {@link Phenotype}).
+ */
 public abstract class BiologicalEntity implements ResourceUri, Comparable<BiologicalEntity> {
+    /**
+     * The entity prefix.
+     * @return a {@link String} containing the prefix.
+     */
     protected abstract String prefix();
+
+    /**
+     * A regular expression an input {@link String} should adhere to when deriving the {@link BiologicalEntity} from it.
+     * @return
+     */
     protected abstract String regex();
+
+    /**
+     * The group within the regular expression the actual {@link BiologicalEntity#id} is stored in.
+     * @return
+     */
     protected abstract int regexGroup();
 
+    /**
+     * The unique id.
+     */
     private String id;
 
+    /**
+     * The name.
+     */
     private String name;
 
+    /**
+     * The {@link URI}.
+     */
     private URI uri;
 
+    /**
+     * @return the {@link BiologicalEntity} ID without prefix.
+     */
     public String getId() {
         return id;
     }
 
+    /**
+     * @return the {@link BiologicalEntity} ID with prefix.
+     */
     public String getFormattedId() {
         return prefix() + id;
     }
@@ -50,13 +82,13 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
      * @param id
      */
     public BiologicalEntity(String id) {
-        this.id = retrieveIdFromString(id);
+        this.id = retrieveIdFromString(requireNonNull(id));
     }
 
     public BiologicalEntity(String id, String name, URI uri) throws InvalidStringFormatException {
-        this.id = retrieveIdFromString(id);
-        this.name = name;
-        this.uri = uri;
+        this.id = retrieveIdFromString(requireNonNull(id));
+        this.name = requireNonNull(name);
+        this.uri = requireNonNull(uri);
     }
 
     /**

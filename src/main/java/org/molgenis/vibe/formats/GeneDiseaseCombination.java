@@ -6,7 +6,7 @@ import java.net.URI;
 import java.util.*;
 
 /**
- * A combination between a gene and a disease.
+ * A combination of a {@link Gene} and a {@link Disease}.
  */
 public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Disease> {
     /**
@@ -24,10 +24,18 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      */
     private Map<Source, List<URI>> sourcesEvidence = new HashMap<>();
 
+    /**
+     * @return the {@link Gene}
+     * @see #getT1()
+     */
     public Gene getGene() {
         return getT1();
     }
 
+    /**
+     * @return the {@link Disease}
+     * @see #getT2()
+     */
     public Disease getDisease() {
         return getT2();
     }
@@ -51,7 +59,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * The count for the defined {@link Source}
      * @param source the {@link Source} to retrieve the count for
-     * @return an {@code int} containing the frequency of this source found
+     * @return an {@code int} containing the frequency of this source found (if {@link Source} is not present returns a 0)
      */
     public int getCountForSource(Source source) {
         Integer count = sourcesCount.get(source);
@@ -82,6 +90,10 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         return evidence;
     }
 
+    /**
+     * The evidence of all {@link Source}{@code s} combined.
+     * @return a {@link Set} containing all the evidence {@link URI}{@code s}
+     */
     public Set<URI> getAllEvidence() {
         Set<URI> allSources = new HashSet<>();
         for(List<URI> evidenceForSingleSource : sourcesEvidence.values()) {
@@ -111,8 +123,10 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @param evidence
      */
     public void add(Source source, URI evidence) {
+        // Increments counter for source.
         add(source);
 
+        // Stores evidence URI.
         List<URI> evidenceList = sourcesEvidence.get(source);
         if(evidenceList == null) {
             evidenceList = new ArrayList<>();

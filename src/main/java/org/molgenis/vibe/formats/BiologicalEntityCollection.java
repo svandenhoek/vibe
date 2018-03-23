@@ -2,11 +2,26 @@ package org.molgenis.vibe.formats;
 
 import java.util.*;
 
+/**
+ * A collection of 0 or more {@link BiologicalEntityCombination}{@code s} that have the same {@link T1} and {@link T2} class types.
+ * @param <T1> the first {@link BiologicalEntity} subclass type
+ * @param <T2> the second {@link BiologicalEntity} subclass type
+ * @param <T3> the {@link BiologicalEntityCombination} combining {@link T1} and {@link T2}
+ */
 public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2 extends BiologicalEntity, T3 extends BiologicalEntityCombination<T1,T2>> implements Collection<T3> {
+    /**
+     * All the {@link BiologicalEntityCombination}{@code s} (retrievable by themselves as key).
+     */
     private Map<T3, T3> combinationsMap = new HashMap<>();
 
+    /**
+     * The {@link BiologicalEntityCombination}{@code s} grouped per {@link T1}.
+     */
     private Map<T1, Set<T3>> combinationsByT1 = new HashMap<>();
 
+    /**
+     * The {@link BiologicalEntityCombination}{@code s} grouped per {@link T2}.
+     */
     private Map<T2, Set<T3>> combinationsByT2 = new HashMap<>();
 
     public T3 get(T3 t3) {
@@ -25,10 +40,20 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         return Collections.unmodifiableSet(combinationsMap.keySet());
     }
 
+    /**
+     * Get all {@link T3} belonging to a single {@link T1}.
+     * @param t1
+     * @return all {@link T3} belonging to {@code t1}
+     */
     public Set<T3> getByT1(T1 t1) {
         return Collections.unmodifiableSet(combinationsByT1.get(t1));
     }
 
+    /**
+     * Get all {@link T3} belonging to a single {@link T2}.
+     * @param t2
+     * @return all {@link T3} belonging to {@code t2}
+     */
     public Set<T3> getByT2(T2 t2) {
         return Collections.unmodifiableSet(combinationsByT2.get(t2));
     }
@@ -104,6 +129,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         Object object = combinationsMap.remove(o);
         combinationsByT1.values().remove(o);
         combinationsByT2.values().remove(o);
+        // object is null if combinationsMap.remove(o) did NOT remove something.
         return !Objects.isNull(object);
     }
 
@@ -127,18 +153,18 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        Object object = combinationsMap.keySet().removeAll(c);
+        boolean changed = combinationsMap.keySet().removeAll(c);
         combinationsByT1.values().removeAll(c);
         combinationsByT2.values().removeAll(c);
-        return !Objects.isNull(object);
+        return changed;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
-        Object object = combinationsMap.keySet().retainAll(c);
+        boolean changed = combinationsMap.keySet().retainAll(c);
         combinationsByT1.values().retainAll(c);
         combinationsByT2.values().retainAll(c);
-        return !Objects.isNull(object);
+        return changed;
     }
 
     @Override
