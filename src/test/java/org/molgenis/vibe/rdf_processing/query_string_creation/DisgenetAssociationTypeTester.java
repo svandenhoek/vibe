@@ -7,51 +7,51 @@ import org.testng.annotations.Test;
 public class DisgenetAssociationTypeTester {
     @Test
     public void useValidSioWithFullPrefix() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio:SIO_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio:SIO_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithFullPrefixCaseReversed() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO:sio_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO:sio_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithFullPrefixUpperCase() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO:SIO_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO:SIO_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithFullPrefixLowerCase() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio:sio_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio:sio_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithPartialPrefix() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("SIO_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithPartialPrefixLowerCase() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio_000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("sio_000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
     public void useValidSioWithWithoutPrefix() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("000897");
-        Assert.assertEquals(type.getId(), "000897");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000897");
+        DisgenetAssociationType type = DisgenetAssociationType.retrieve("000983");
+        Assert.assertEquals(type.getId(), "000983");
+        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
     @Test
@@ -62,12 +62,12 @@ public class DisgenetAssociationTypeTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidSioWithInvalidPrefix1() throws InvalidStringFormatException {
-        DisgenetAssociationType.retrieve("SII_000897");
+        DisgenetAssociationType.retrieve("SII_000983");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidSioWithInvalidPrefix2() throws InvalidStringFormatException {
-        DisgenetAssociationType.retrieve("sii:SIO_000897");
+        DisgenetAssociationType.retrieve("sii:SIO_000983");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)

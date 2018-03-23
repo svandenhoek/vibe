@@ -207,7 +207,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      */
     public static QueryString getGdas(Set<Disease> diseases, DisgenetAssociationType disgenetAssociationType) {
         return new QueryString(PREFIXES + GDA_FOR_DISEASES[0] + GDA_FOR_DISEASES[1] + disgenetAssociationType.getFormattedId() +
-                GDA_FOR_DISEASES[2] + createValuesStringForUris(diseases) + GDA_FOR_DISEASES[3]);
+                GDA_FOR_DISEASES[2] + createValuesStringForUris(diseases) + GDA_FOR_DISEASES[3] + GDA_FOR_DISEASES[4]);
     }
 
     /**

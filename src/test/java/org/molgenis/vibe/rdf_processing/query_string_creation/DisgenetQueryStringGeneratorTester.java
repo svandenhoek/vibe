@@ -136,7 +136,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
         );
 
         QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
-                new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE));
+                new QueryStringPathRange(0, true));
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
@@ -160,7 +160,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
         );
 
         QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
-                new QueryStringPathRange(QueryStringPathRange.Predefined.ONE_OR_MORE));
+                new QueryStringPathRange(1, true));
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 

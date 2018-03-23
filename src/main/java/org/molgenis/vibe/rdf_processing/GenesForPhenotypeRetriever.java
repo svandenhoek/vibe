@@ -53,7 +53,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
     private void retrievePhenotypeWithChildren() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(QueryStringPathRange.Predefined.ZERO_OR_MORE)));
+                DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(0, true)));
         addToPhenotypes(query);
     }
 

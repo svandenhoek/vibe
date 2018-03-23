@@ -57,17 +57,21 @@ public class QueryStringPathRange {
                     syntax = Syntax.syntaxSPARQL_11;
                     break;
                 default:
-                    rangeString = "{" + Integer.toString(value) + ",}";
+                    rangeString = "{" + value + ",}";
                     syntax = Syntax.syntaxARQ;
             }
         } else {
             switch (value) {
+                case 0:
+                    rangeString =  "{" + value + "}";
+                    syntax = Syntax.syntaxARQ;
+                    break;
                 case 1:
                     rangeString = ZERO_OR_ONE;
                     syntax = Syntax.syntaxSPARQL_11;
                     break;
                 default:
-                    this.rangeString =  "{," + Integer.toString(value) + "}";
+                    rangeString =  "{," + value + "}";
                     syntax = Syntax.syntaxARQ;
             }
         }
@@ -91,7 +95,7 @@ public class QueryStringPathRange {
             rangeString = ZERO_OR_ONE;
             syntax = Syntax.syntaxSPARQL_11;
         } else {
-            this.rangeString = "{" + Integer.toString(start) + "," + Integer.toString(end) + "}";
+            rangeString = "{" + start + "," + end + "}";
             syntax = Syntax.syntaxARQ;
         }
     }
