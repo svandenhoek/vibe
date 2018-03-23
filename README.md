@@ -44,7 +44,7 @@ Tip: If all files are in the same directory, simply use: `cd /directory/of/input
 
 ## Running the application
 
-`java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID>` 
+`java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID> -o <FILE>` 
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
