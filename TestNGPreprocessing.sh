@@ -26,7 +26,7 @@ IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
 readonly SEP_SIDE='######## ######## ########'
 
 # Download location of resource files.
-readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-02.tar.gz"
+readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-07.tar.gz"
 readonly TEST_RESOURCES_DOWNLOAD="https://molgenis26.target.rug.nl/downloads/vibe/${TEST_RESOURCES_DOWNLOAD_NAME}"
 
 # Base path (to script).
