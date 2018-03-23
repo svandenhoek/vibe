@@ -32,7 +32,14 @@ public enum DisgenetAssociationType {
      */
     public static final DisgenetAssociationType ROOT = GENE_DISEASE;
 
+    /**
+     * The prefix belonging to the association types.
+     */
     private static final String PREFIX = "sio:SIO_";
+
+    /**
+     * The ID belonging to single association type.
+     */
     private String id;
 
     public String getId() {

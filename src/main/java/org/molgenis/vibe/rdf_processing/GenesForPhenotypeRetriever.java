@@ -14,12 +14,18 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 import java.net.URI;
 import java.util.*;
 
+/**
+ * Retrieves all required information for further processing regarding the genes belonging to a given phenotype.
+ */
 public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
+    // Parameters used for temporary storage during querying.
     private Set<Phenotype> inputPhenotypes;
     private Set<Phenotype> phenotypes = new HashSet<>();
     private Map<URI, Gene> genes = new HashMap<>();
     private Map<URI, Disease> diseases = new HashMap<>();
+
+    // The final output to be retrieved for further usage after querying.
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
     public GeneDiseaseCollection getGeneDiseaseCollection() {
@@ -40,6 +46,10 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         retrieveGeneDiseaseAssociations();
     }
 
+    /**
+     * Retrieves/disgests the {@link URI}{@code s} for the given HPO IDs from phenotypes.
+     * @throws CorruptDatabaseException
+     */
     private void retrieveHpoUris() throws CorruptDatabaseException {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getIriForHpo(inputPhenotypes));
@@ -51,12 +61,19 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         }
     }
 
+    /**
+     * Retrieves/digests the children of initial input phenotypes.
+     */
     private void retrievePhenotypeWithChildren() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(0, true)));
         addToPhenotypes(query);
     }
 
+    /**
+     * Adds the phenotypes of a query to the phenotypes to be used (for later queries).
+     * @param query
+     */
     private void addToPhenotypes(QueryRunner query) {
         while(query.hasNext()) {
             QuerySolution result = query.next();
@@ -69,6 +86,9 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         query.close();
     }
 
+    /**
+     * Retrieves/digests the phenotype-disease associations for the selected phenotypes.
+     */
     private void retrieveDiseases() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getPdas(phenotypes));
@@ -86,6 +106,9 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         query.close();
     }
 
+    /**
+     * Retrieves/digests gene-disease associations for the selected diseases.
+     */
     private void retrieveGeneDiseaseAssociations() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getGdas(new HashSet<>(diseases.values()), DisgenetAssociationType.GENE_DISEASE));

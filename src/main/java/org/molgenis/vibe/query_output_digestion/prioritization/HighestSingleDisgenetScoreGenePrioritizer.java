@@ -13,6 +13,9 @@ import static java.util.Objects.requireNonNull;
  * The priority order is based on the highest {@link GeneDiseaseCombination#getDisgenetScore()} per {@link Gene}.
  */
 public class HighestSingleDisgenetScoreGenePrioritizer extends GenePrioritizer {
+    /**
+     * The data to be used for creating a priority order.
+     */
     private GeneDiseaseCollection geneDiseaseCollection;
 
     public HighestSingleDisgenetScoreGenePrioritizer(GeneDiseaseCollection geneDiseaseCollection) {

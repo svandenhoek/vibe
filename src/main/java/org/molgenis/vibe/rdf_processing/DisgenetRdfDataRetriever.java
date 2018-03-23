@@ -13,6 +13,9 @@ import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Retrieves data for further usage from the DisGeNET database.
+ */
 public abstract class DisgenetRdfDataRetriever {
     private ModelReader modelReader;
     private Map<URI,Source> sources = new HashMap<>();
