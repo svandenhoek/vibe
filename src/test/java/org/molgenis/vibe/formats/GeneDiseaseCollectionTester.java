@@ -69,4 +69,6 @@ public class GeneDiseaseCollectionTester {
         collection.addAll(Arrays.asList(gdcs));
         Assert.assertEquals(collection.getByDisease(gdcs[1].getDisease()), expectedOutput);
     }
+
+    //TODO: More tests for basic java.util.Collection functionalities!
 }
