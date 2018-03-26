@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+
+<suite name="TestSuite">
+    <test name="ValidationTests" enabled="true">
+        <groups>
+            <run>
+                <exclude name="benchmarking" />
+                <exclude name="noTest" />
+                <exclude name="dependencyBug" />
+            </run>
+        </groups>
+        <packages>
+            <package name="org.molgenis.vibe.*" />
+        </packages>
+    </test>
+
+    <test name="FailedTestsCausedByDependency" enabled="false">
+        <groups>
+            <run>
+                <include name="dependencyBug" />
+            </run>
+        </groups>
+        <packages>
+            <package name="org.molgenis.vibe.*" />
+        </packages>
+    </test>
+
+    <!-- Require the full DisGeNET TDB to be available! -->
+    <test name="Benchmarking" enabled="false">
+        <groups>
+            <run>
+                <include name="benchmarking" />
+            </run>
+        </groups>
+        <packages>
+            <package name="org.molgenis.vibe.*" />
+        </packages>
+    </test>
+
+    <test name="OutputExamplesWithoutTesting" enabled="true">
+        <groups>
+            <run>
+                <include name="noTest" />
+            </run>
+        </groups>
+        <packages>
+            <package name="org.molgenis.vibe.*" />
+        </packages>
+    </test>
+</suite>
