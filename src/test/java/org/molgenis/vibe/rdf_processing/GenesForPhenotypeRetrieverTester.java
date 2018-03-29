@@ -39,9 +39,9 @@ public class GenesForPhenotypeRetrieverTester {
     @Test
     public void retrieveAllDiseasesForPhenotypeAndDirectChildren() throws CorruptDatabaseException {
         Gene[] genes = new Gene[]{
-                new Gene("1311", "cartilage oligomeric matrix protein", "COMP", URI.create("http://identifiers.org/ncbigene/1311")),
-                new Gene("10082", "glypican 6", "GPC6", URI.create("http://identifiers.org/ncbigene/10082")),
-                new Gene("960", "CD44 molecule (Indian blood group)", "CD44", URI.create("http://identifiers.org/ncbigene/960"))
+                new Gene("ncbigene:1311", "cartilage oligomeric matrix protein", "COMP", URI.create("http://identifiers.org/ncbigene/1311")),
+                new Gene("ncbigene:10082", "glypican 6", "GPC6", URI.create("http://identifiers.org/ncbigene/10082")),
+                new Gene("ncbigene:960", "CD44 molecule (Indian blood group)", "CD44", URI.create("http://identifiers.org/ncbigene/960"))
         };
 
         Disease[] diseases = new Disease[]{

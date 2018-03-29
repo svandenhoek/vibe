@@ -29,7 +29,7 @@ public class DiseaseTester {
         new Disease("uMls:C0123456");
     }
 
-    @Test
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidDiseaseIdWithoutPrefix() throws InvalidStringFormatException {
         Disease disease = new Disease("C0123456");
         Assert.assertEquals(disease.getId(), "C0123456");

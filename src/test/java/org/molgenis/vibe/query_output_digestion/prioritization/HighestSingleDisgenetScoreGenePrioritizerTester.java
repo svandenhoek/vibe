@@ -11,9 +11,9 @@ public class HighestSingleDisgenetScoreGenePrioritizerTester {
     @Test
     public void testOrdering() {
         Gene[] genes = new Gene[]{
-                new Gene("1"),
-                new Gene("2"),
-                new Gene("3")
+                new Gene("ncbigene:1"),
+                new Gene("ncbigene:2"),
+                new Gene("ncbigene:3")
         };
 
         Disease[] diseases = new Disease[]{

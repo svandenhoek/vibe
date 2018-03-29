@@ -29,7 +29,7 @@ public class GeneTester {
         new Gene("nCbigene:1234");
     }
 
-    @Test
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidGeneIdWithoutPrefix() throws InvalidStringFormatException {
         Gene gene = new Gene("1234");
         Assert.assertEquals(gene.getId(), "1234");
