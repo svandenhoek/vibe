@@ -4,7 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum TestFilesDir {
+public enum TestData {
     TTL("disgenet_mini") {
         @Override
         public String[] getFiles() {
@@ -29,7 +29,7 @@ public enum TestFilesDir {
 
     private String dir;
 
-    TestFilesDir(String dir) {
+    TestData(String dir) {
         try {
             this.dir = classLoader.getResource(dir).getFile();
         } catch(NullPointerException e) {

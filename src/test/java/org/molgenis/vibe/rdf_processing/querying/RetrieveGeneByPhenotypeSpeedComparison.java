@@ -3,7 +3,7 @@ package org.molgenis.vibe.rdf_processing.querying;
 import com.google.common.base.Stopwatch;
 import com.google.common.io.ByteStreams;
 import org.apache.jena.query.ResultSetFormatter;
-import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
@@ -21,7 +21,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
 
     @BeforeClass(groups = {"benchmarking"})
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFilesDir.TDB_FULL.getDir());
+        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
     }
 
     @AfterClass(alwaysRun = true)

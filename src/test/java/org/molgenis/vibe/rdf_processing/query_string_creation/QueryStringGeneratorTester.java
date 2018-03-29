@@ -4,7 +4,7 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.Syntax;
-import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.QueryTester;
@@ -34,7 +34,7 @@ public class QueryStringGeneratorTester extends QueryTester {
 
     @BeforeClass
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
+        reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
     }
 
     @AfterClass(alwaysRun = true)

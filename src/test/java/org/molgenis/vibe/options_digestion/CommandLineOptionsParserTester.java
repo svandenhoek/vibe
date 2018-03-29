@@ -2,7 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
-import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
 import org.testng.Assert;
 import org.testng.annotations.*;
@@ -46,13 +46,13 @@ public class CommandLineOptionsParserTester {
 
     @Test(expectedExceptions = IOException.class)
     public void missingOutputFile() throws IOException, ParseException {
-        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567"};
+        String[] args = new String[]{"-d", TestData.TDB_MINI.getDir(), "-p", "hp:1234567"};
         new CommandLineOptionsParser(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void missingPhenotype() throws IOException, ParseException {
-        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-o", "/path/to/output/file"};
+        String[] args = new String[]{"-d", TestData.TDB_MINI.getDir(), "-o", "/path/to/output/file"};
         new CommandLineOptionsParser(args);
     }
 
@@ -63,17 +63,17 @@ public class CommandLineOptionsParserTester {
      */
     @Test(expectedExceptions = IOException.class)
     public void multiplePhenotypes() throws IOException, ParseException {
-        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567", "-p", "hp:7654321", "-o", "/path/to/output/file"};
+        String[] args = new String[]{"-d", TestData.TDB_MINI.getDir(), "-p", "hp:1234567", "-p", "hp:7654321", "-o", "/path/to/output/file"};
         new CommandLineOptionsParser(args);
     }
 
     @Test
     public void getGenesUsingSinglePhenotype() throws IOException, ParseException {
-        String[] args = new String[]{"-d", TestFilesDir.TDB_MINI.getDir(), "-p", "hp:1234567", "-o", "/path/to/output/file"};
+        String[] args = new String[]{"-d", TestData.TDB_MINI.getDir(), "-p", "hp:1234567", "-o", "/path/to/output/file"};
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
         Assert.assertEquals(appOptions.getRunMode(), RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
-        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestFilesDir.TDB_MINI.getDir());
+        Assert.assertEquals(appOptions.getDisgenetDataDir().toString(), TestData.TDB_MINI.getDir());
         Assert.assertEquals(appOptions.getPhenotypes().size(), 1);
         Assert.assertTrue(appOptions.getPhenotypes().contains(new Phenotype("hp:1234567")));
     }

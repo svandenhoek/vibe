@@ -1,7 +1,7 @@
 package org.molgenis.vibe.io;
 
 import org.apache.jena.rdf.model.Model;
-import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.TestData;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
@@ -20,10 +20,10 @@ public class ModelReadersTester {
 
     @BeforeClass
     public void beforeClass() {
-        modelFileReaderNoOntology = new ModelFilesReader(TestFilesDir.TTL_NO_ONTOLOGY.getFiles());
-        modelFileReaderWithOntology = new ModelFilesReader(TestFilesDir.TTL.getFiles());
-        tripleStoreReaderNoOntology = new TripleStoreDbReader(TestFilesDir.TDB_MINI_NO_ONTOLOGY.getDir());
-        tripleStoreReaderWithOntology = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
+        modelFileReaderNoOntology = new ModelFilesReader(TestData.TTL_NO_ONTOLOGY.getFiles());
+        modelFileReaderWithOntology = new ModelFilesReader(TestData.TTL.getFiles());
+        tripleStoreReaderNoOntology = new TripleStoreDbReader(TestData.TDB_MINI_NO_ONTOLOGY.getDir());
+        tripleStoreReaderWithOntology = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
 
         modelFileModelNoOntology = modelFileReaderNoOntology.getModel();
         modelFileModelWithOntology = modelFileReaderWithOntology.getModel();
