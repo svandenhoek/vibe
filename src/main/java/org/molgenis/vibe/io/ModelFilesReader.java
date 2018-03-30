@@ -1,6 +1,7 @@
 package org.molgenis.vibe.io;
 
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.rdf.model.ModelFactory;
 import org.apache.jena.riot.Lang;
 import org.apache.jena.riot.RDFDataMgr;
 
@@ -18,44 +19,16 @@ public class ModelFilesReader implements ModelReader {
         return model;
     }
 
-    /**
-     * generates a {@link Model} from {@code file}.
-     * @param file a {@link String} defining the location of an RDF file
-     */
-    public ModelFilesReader(String file) {
-        model = RDFDataMgr.loadModel(file);
+    public ModelFilesReader() {
+        model = generateModel();
     }
 
     /**
-     * generates a {@link Model} from {@code file}.
-     * @param file a {@link String} defining the location of an RDF file
-     * @param lang the type of RDF file as described by {@link Lang}
+     * Generates a new {@link Model} using the {@link ModelFactory}.
+     * @return
      */
-    public ModelFilesReader(String file, Lang lang) {
-        model = RDFDataMgr.loadModel(file, lang);
-    }
-
-    /**
-     * generates a {@link Model} from multiple {@code files}.
-     * @param files a {@link String} array defining the location of the RDF files.
-     */
-    public ModelFilesReader(String[] files) {
-        this(files[0]);
-        if(files.length > 1) {
-            readFiles(files, 1);
-        }
-    }
-
-    /**
-     * generates a {@link Model} from multiple {@code files}.
-     * @param files a {@link String} array defining the location of the RDF files.
-     * @param lang the type of RDF file as described by {@link Lang}
-     */
-    public ModelFilesReader(String[] files, Lang lang) {
-        this(files[0], lang);
-        if(files.length > 1) {
-            readFiles(files, lang, 1);
-        }
+    protected Model generateModel() {
+        return ModelFactory.createDefaultModel();
     }
 
     /**
@@ -85,7 +58,9 @@ public class ModelFilesReader implements ModelReader {
      * @return
      */
     public ModelFilesReader read(String[] files) {
-        readFiles(files, 0);
+        for(String file : files) {
+            read(file);
+        }
         return this;
     }
 
@@ -96,33 +71,10 @@ public class ModelFilesReader implements ModelReader {
      * @return
      */
     public ModelFilesReader read(String[] files, Lang lang) {
-        readFiles(files, lang, 0);
+        for(String file : files) {
+            read(file, lang);
+        }
         return this;
-    }
-
-    /**
-     * Adds the {@code files} to the existing {@link Model} starting from {@code pos} (RDF files in the array before
-     * {@code pos} are ignored).
-     * @param files a {@link String} array defining the location of the RDF files.
-     * @param pos the starting position from {@code files} to be used when adding to the existing {@link Model}
-     */
-    private void readFiles(String[] files, int pos) {
-        for (int i = pos; i < files.length; i++) {
-            RDFDataMgr.read(model, files[i]);
-        }
-    }
-
-    /**
-     * Adds the {@code files} to the existing {@link Model} starting from {@code pos} (RDF files in the array before
-     * {@code pos} are ignored).
-     * @param files a {@link String} array defining the location of the RDF files.
-     * @param lang the type of RDF file as described by {@link Lang}
-     * @param pos the starting position from {@code files} to be used when adding to the existing {@link Model}
-     */
-    private void readFiles(String[] files, Lang lang, int pos) {
-        for (int i = pos; i < files.length; i++) {
-            RDFDataMgr.read(model, files[i], lang);
-        }
     }
 
     @Override
