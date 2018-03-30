@@ -126,9 +126,11 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean remove(Object o) {
+        // Removes item from general collection.
         Object object = combinationsMap.remove(o);
-        combinationsByT1.values().remove(o);
-        combinationsByT2.values().remove(o);
+        // Goes through the set of every key to remove the item.
+        combinationsByT1.values().forEach(s->s.remove(o));
+        combinationsByT2.values().forEach(s->s.remove(o));
         // object is null if combinationsMap.remove(o) did NOT remove something.
         return !Objects.isNull(object);
     }
@@ -154,17 +156,34 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean changed = combinationsMap.keySet().removeAll(c);
-        combinationsByT1.values().removeAll(c);
-        combinationsByT2.values().removeAll(c);
+        // Goes through the set of every key to remove the items.
+        combinationsByT1.values().forEach(s->s.removeAll(c));
+        combinationsByT2.values().forEach(s->s.removeAll(c));
+
+        removeEmptySets(combinationsByT1);
+        removeEmptySets(combinationsByT2);
+
         return changed;
     }
 
     @Override
     public boolean retainAll(Collection<?> c) {
         boolean changed = combinationsMap.keySet().retainAll(c);
-        combinationsByT1.values().retainAll(c);
-        combinationsByT2.values().retainAll(c);
+        combinationsByT1.values().forEach(s->s.retainAll(c));
+        combinationsByT2.values().forEach(s->s.retainAll(c));
+
+        removeEmptySets(combinationsByT1);
+        removeEmptySets(combinationsByT2);
+
         return changed;
+    }
+
+    private void removeEmptySets(Map<? extends BiologicalEntity, Set<T3>> combinationsByKey) {
+        for(BiologicalEntity key:combinationsByKey.keySet()) {
+            if(combinationsByKey.get(key).isEmpty()) {
+                combinationsByKey.remove(key);
+            }
+        }
     }
 
     @Override

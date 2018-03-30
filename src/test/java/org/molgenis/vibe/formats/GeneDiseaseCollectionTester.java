@@ -71,4 +71,24 @@ public class GeneDiseaseCollectionTester {
     }
 
     //TODO: More tests for basic java.util.Collection functionalities!
+
+    @Test
+    public void testRemove() {
+        Set<GeneDiseaseCombination> expectedFull = new HashSet<>();
+        expectedFull.add(gdcs[0]);
+        expectedFull.add(gdcs[1]);
+        expectedFull.add(gdcs[3]);
+
+        Set<GeneDiseaseCombination> expectedGene = new HashSet<>();
+        expectedGene.add(gdcs[3]);
+
+        Set<GeneDiseaseCombination> expectedDisease = new HashSet<>();
+        expectedDisease.add(gdcs[1]);
+        
+        collection.addAll(Arrays.asList(gdcs));
+        collection.remove(gdcs[2]);
+        Assert.assertEquals(collection, expectedFull);
+        Assert.assertEquals(collection.getByGene(gdcs[2].getGene()), expectedGene);
+        Assert.assertEquals(collection.getByDisease(gdcs[2].getDisease()), expectedDisease);
+    }
 }
