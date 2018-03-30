@@ -8,10 +8,30 @@ import java.net.URI;
  * Defines a phenotype.
  */
 public class Phenotype extends BiologicalEntity {
-    @Override protected String idPrefix() { return "hp:"; }
-    @Override protected String idRegex() { return "^(hp|HP):([0-9]{7})$"; }
-    @Override protected int regexGroup() { return 2; }
-    @Override protected String uriPrefix() { return "http://purl.obolibrary.org/obo/HP_"; }
+    private static final String ID_PREFIX = "hp:";
+    private static final String ID_REGEX = "^(hp|HP):([0-9]{7})$";
+    private static final int REGEX_ID_GROUP = 2;
+    private static final String URI_PREFIX = "http://purl.obolibrary.org/obo/HP_";
+
+    @Override
+    protected String getIdPrefix() {
+        return ID_PREFIX;
+    }
+
+    @Override
+    protected String getIdRegex() {
+        return ID_REGEX;
+    }
+
+    @Override
+    protected int getRegexIdGroup() {
+        return REGEX_ID_GROUP;
+    }
+
+    @Override
+    protected String getUriPrefix() {
+        return URI_PREFIX;
+    }
 
     public Phenotype(String id) {
         super(id);

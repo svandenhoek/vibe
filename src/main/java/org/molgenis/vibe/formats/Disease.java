@@ -8,10 +8,30 @@ import java.net.URI;
  * A disease. Note that equality is based on the id only.
  */
 public class Disease extends BiologicalEntity {
-    @Override protected String idPrefix() { return "umls:"; }
-    @Override protected String idRegex() { return "^(umls|UMLS):(C[0-9]+)$"; }
-    @Override protected int regexGroup() { return 2; }
-    @Override protected String uriPrefix() { return "http://linkedlifedata.com/resource/umls/id/"; }
+    private static final String ID_PREFIX = "umls:";
+    private static final String ID_REGEX = "^(umls|UMLS):(C[0-9]+)$";
+    private static final int REGEX_ID_GROUP = 2;
+    private static final String URI_PREFIX = "http://linkedlifedata.com/resource/umls/id/";
+
+    @Override
+    protected String getIdPrefix() {
+        return ID_PREFIX;
+    }
+
+    @Override
+    protected String getIdRegex() {
+        return ID_REGEX;
+    }
+
+    @Override
+    protected int getRegexIdGroup() {
+        return REGEX_ID_GROUP;
+    }
+
+    @Override
+    protected String getUriPrefix() {
+        return URI_PREFIX;
+    }
 
     public Disease(String id) {
         super(id);
