@@ -84,7 +84,7 @@ public class GeneDiseaseCollectionTester {
 
         Set<GeneDiseaseCombination> expectedDisease = new HashSet<>();
         expectedDisease.add(gdcs[1]);
-        
+
         collection.addAll(Arrays.asList(gdcs));
         collection.remove(gdcs[2]);
         Assert.assertEquals(collection, expectedFull);
