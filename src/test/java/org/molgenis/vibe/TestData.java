@@ -17,6 +17,12 @@ public enum TestData {
             return filterFileArray(super.getFiles(), ".ttl");
         }
     },
+    ONTOLOGY_FILE("disgenet_mini") {
+        @Override
+        public String[] getFiles() {
+            return new String[]{getDir() + "/hp.owl"};
+        }
+    },
     TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology"),
     TDB_MINI("disgenet_mini_tdb"),
     TDB_FULL("disgenet_full_tdb");
