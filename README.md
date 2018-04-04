@@ -13,11 +13,11 @@ For generating a local TDB dataset needed by the application:
 * [Apache Jena v3.6.0][jena_download]
 * [DisGeNET RDF v5 dump][disgenet_rdf_v5_dump]
 * [Semanticscience Integrated Ontology (SIO)][sio_owl]
-* [Human Phenotype Ontology (HPO)][hpo_owl]
 
 For running the application:
 
 * [Java 8][java_download]
+* [Human Phenotype Ontology (HPO)][hpo_owl]
 * A local TDB dataset (see above).
 
 ## Preparations
@@ -38,13 +38,11 @@ Before using the tool, be sure all steps below are done (certain steps can be sk
 
 1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
 2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl], [HPO][hpo_owl]).
-3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl /path/to/hp.owl`
-
-Tip: If all files are in the same directory, simply use: `cd /directory/of/input/files && tdbloader2 --loc /path/to/store/TDB *.ttl *.owl`
+3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl`
 
 ## Running the application
 
-`java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID> -o <FILE>` 
+`java -jar vibe-with-dependencies.jar [-h] [-v] -n <FILE> -nd <NUMBER> -d <DIR> -o <FILE> -p <HPO ID> [-p <HPO ID>]...` 
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
