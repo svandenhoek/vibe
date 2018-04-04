@@ -9,9 +9,23 @@ import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
+/**
+ * For one or more {@link Phenotype}{@code s} within an {@link OntModel}, retrieves other {@link Phenotype}{@code s} that are linked to it.
+ */
 public abstract class PhenotypesRetriever {
+    /**
+     * The model that stores the {@link Phenotype}{@code s}.
+     */
     private OntModel model;
+
+    /**
+     * The input {@link Phenotype}{@code s} for which linked {@link Phenotype}{@code s} need to be found.
+     */
     private Collection<Phenotype> inputPhenotypes;
+
+    /**
+     * The found linked {@link Phenotype}{@code s} for the {@code inputPhenotypes} (stored per {@code inputPhenotype}).
+     */
     private Set<PhenotypeNetwork> retrievedPhenotypeNetworks = new HashSet<>();
 
     public Collection<Phenotype> getInputPhenotypes() {

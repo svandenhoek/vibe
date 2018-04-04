@@ -19,6 +19,9 @@ import java.util.*;
  *
  * The full Human Phenotype Ontology dataset can be downloaded from: https://human-phenotype-ontology.github.io/downloads.html
  * The license can be found on: https://human-phenotype-ontology.github.io/license.html
+ *
+ * Please view the README.md in the externally downloadable resources for an overview about how all the HPOs are connected
+ * to each other.
  */
 public class MaxDistanceRetrieverTester {
     private OntModel model;

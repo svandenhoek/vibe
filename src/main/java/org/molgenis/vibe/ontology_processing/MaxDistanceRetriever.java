@@ -9,7 +9,14 @@ import org.molgenis.vibe.formats.PhenotypeNetwork;
 import java.net.URI;
 import java.util.Collection;
 
+/**
+ * {@link PhenotypesRetriever} implementation that retrieves {@link Phenotype}{@code s} based on a maximum distance from
+ * the {@code source}.
+ */
 public class MaxDistanceRetriever extends PhenotypesRetriever {
+    /**
+     * The maximum distance.
+     */
     private int maxDistance;
 
     public MaxDistanceRetriever(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
@@ -26,6 +33,12 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
         }
     }
 
+    /**
+     * Traverses the {@link OntModel}.
+     * @param phenotypeOC current item being traversed
+     * @param network stores the {@link Phenotype}{@code s} based on traversal
+     * @param distance current distance from the {@code network source} (see {@link PhenotypeNetwork#getSource()})
+     */
     private void traverse(OntClass phenotypeOC, PhenotypeNetwork network, int distance) {
         // Converts URI to Phenotype.
         Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
