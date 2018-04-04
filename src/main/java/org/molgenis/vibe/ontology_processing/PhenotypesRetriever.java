@@ -3,34 +3,34 @@ package org.molgenis.vibe.ontology_processing;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.formats.PhenotypeNetwork;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
 public abstract class PhenotypesRetriever {
     private OntModel model;
-    private Set<Phenotype> inputPhenotypes;
-    private Set<Phenotype> retrievedPhenotypes = new HashSet<>();
+    private Collection<Phenotype> inputPhenotypes;
+    private Set<PhenotypeNetwork> retrievedPhenotypeNetworks = new HashSet<>();
 
-    public Set<Phenotype> getInputPhenotypes() {
+    public Collection<Phenotype> getInputPhenotypes() {
         return inputPhenotypes;
     }
 
-    public Set<Phenotype> getRetrievedPhenotypes() {
-        return retrievedPhenotypes;
+    public Set<PhenotypeNetwork> getRetrievedPhenotypeNetworks() {
+        return retrievedPhenotypeNetworks;
     }
 
-    protected void setRetrievedPhenotypes(Set<Phenotype> phenotypes) {
-        this.retrievedPhenotypes = phenotypes;
+    protected void setRetrievedPhenotypeNetworks(Set<PhenotypeNetwork> retrievedPhenotypeNetworks) {
+        this.retrievedPhenotypeNetworks = retrievedPhenotypeNetworks;
     }
 
-    protected void addRetrievedPhenotype(Phenotype phenotype) {
-        retrievedPhenotypes.add(phenotype);
+    protected void addRetrievedPhenotypeNetworks(PhenotypeNetwork phenotypeNetwork) {
+        retrievedPhenotypeNetworks.add(phenotypeNetwork);
     }
 
-    public PhenotypesRetriever(OntModel model, Set<Phenotype> inputPhenotypes) {
+    public PhenotypesRetriever(OntModel model, Collection<Phenotype> inputPhenotypes) {
         this.model = requireNonNull(model);
         this.inputPhenotypes = requireNonNull(inputPhenotypes);
     }

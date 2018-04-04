@@ -4,14 +4,15 @@ import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.apache.jena.util.iterator.ExtendedIterator;
 import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.formats.PhenotypeNetwork;
 
 import java.net.URI;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.Collection;
 
 public class MaxDistanceRetriever extends PhenotypesRetriever {
     private int maxDistance;
-    public MaxDistanceRetriever(OntModel model, Set<Phenotype> phenotypes, int maxDistance) {
+
+    public MaxDistanceRetriever(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
         super(model, phenotypes);
         this.maxDistance = maxDistance;
     }
@@ -19,20 +20,27 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
     @Override
     public void run() {
         for(Phenotype phenotype:getInputPhenotypes()) {
-            Set<OntClass> visited = new HashSet<>();
-            traverse(retrievePhenotypeFromModel(phenotype), visited, 0);
+            PhenotypeNetwork network = new PhenotypeNetwork(phenotype);
+            traverse(retrievePhenotypeFromModel(phenotype), network, 0);
+            addRetrievedPhenotypeNetworks(network);
         }
     }
 
-    private void traverse(OntClass phenotypeOC, Set<OntClass> visited, int distance) {
+    private void traverse(OntClass phenotypeOC, PhenotypeNetwork network, int distance) {
         // Converts URI to Phenotype.
         Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
 
-        // Checks if Phenotype is already visited. If so, returns. If not, adds phenotype to collection.
-        if(getRetrievedPhenotypes().contains(currentPhenotype)) {
-            return;
-        } else {
-            addRetrievedPhenotype(currentPhenotype);
+        // For distance 0, ignores checking/adding phenotype to network (as a Phenotype at position 0 should always be present).
+        if(distance > 0) {
+            // Checks if Phenotype is already visited. If not, adds it and continues. If already visited, checks whether
+            // this was using a higher distance value. If so, re-adds the phenotype (now with a lower distance value) and
+            // continues (as this lower distance means additional phenotypes need to be looked for and other already
+            // known phenotypes might need a distance adjustment as well).
+            if (network.contains(currentPhenotype) && network.getDistance(currentPhenotype) <= distance) {
+                return;
+            } else {
+                network.add(currentPhenotype, distance);
+            }
         }
 
         // Checks if maximum distance is achieved. If so, returns. If not, continues.
@@ -44,14 +52,13 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
 
             // Goes through the parents.
             for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(true); it.hasNext(); ) {
-                traverse(it.next(), visited, nextDistance);
+                traverse(it.next(), network, nextDistance);
             }
 
             // Goes through the children.
             for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(true); it.hasNext(); ) {
-                traverse(it.next(), visited, nextDistance);
+                traverse(it.next(), network, nextDistance);
             }
         }
-
     }
 }
