@@ -11,7 +11,7 @@ public class PhenotypeNetwork {
     /**
      * A collection of all stored phenotypes.
      */
-    private Set<Phenotype> items = new HashSet<>();
+    private Map<Phenotype, Integer> items = new HashMap<>();
 
     /**
      * The phenotypes stored per distance level.
@@ -19,6 +19,7 @@ public class PhenotypeNetwork {
     private List<Set<Phenotype>> network = new ArrayList<>();
 
     public PhenotypeNetwork(Phenotype phenotype) {
+        items.put(phenotype, 0);
         Set<Phenotype> sourceSet = new HashSet<>();
         sourceSet.add(requireNonNull(phenotype));
         network.add(sourceSet);
@@ -30,6 +31,10 @@ public class PhenotypeNetwork {
 
     public Set<Phenotype> getByDistance(int distance) {
         return Collections.unmodifiableSet(network.get(distance));
+    }
+
+    public int getDistance(Phenotype phenotype) {
+        return items.get(phenotype);
     }
 
     public int getMaxDistance() {
@@ -55,45 +60,35 @@ public class PhenotypeNetwork {
      * simply added.
      * @param phenotype the {@link Phenotype} to be added to the {@code network}
      * @param distance the {@code distance} the {@link Phenotype} is from the {@code source}
+     * @return {@code true} if added/distance is updated, otherwise {@code false}
      * @throws IllegalArgumentException if {@code distance} 0 is given in combination with a a different {@link Phenotype}
      * than used during {@link PhenotypeNetwork} creation or if the {@code distance} is 2 or more higher than the currently
      * stored highest {@code distance} (as this would indicate a missing {@link Phenotype} to link the two {@code distances})
      */
-    public void add(Phenotype phenotype, int distance) {
+    public boolean add(Phenotype phenotype, int distance) {
         // Checks if the given distance is 0.
         if(distance == 0) {
             // If given phenotype is the source, nothing happens.
             if(phenotype.equals(getSource())) {
-                return;
+                return false;
             } else { // If it is another phenotype, an exception is thrown.
                 throw new IllegalArgumentException("The given phenotype with distance 0 does not equal the source phenotype.");
             }
         }
 
         // If phenotype is already stored within the network.
-        if(items.contains(phenotype)) {
-            // Checks if stored phenotype is simply a duplicate, and if so, leaves data as it is.
-            if(network.get(distance).contains(phenotype)) {
-                return;
-            }
+        if(items.keySet().contains(phenotype)) {
+            int currentlyStoredDistance = items.get(phenotype);
 
-            // If no duplicate, compares distances and chooses lower distance to be stored.
-            for(int i = 0; i < network.size(); i++) {
-                Set<Phenotype> distancePhenotypes = network.get(i);
-                if(distancePhenotypes.contains(phenotype)) {
-                    if(i > distance) {
-                        // Moves phenotype to different distance.
-                        distancePhenotypes.remove(phenotype);
-                        network.get(distance).add(phenotype);
-                        return;
-                    } else { // Currently stored phenotype distance is closer or equal to new one.
-                        return;
-                    }
-                }
+            // If new distance is higher than currently stored one, nothing happens.
+            if(currentlyStoredDistance <= distance) {
+                return false;
+            } else { // Adjusts the phenotype with the new distance if this was closer.
+                items.put(phenotype, distance);
+                network.get(currentlyStoredDistance).remove(phenotype);
+                network.get(distance).add(phenotype);
+                return true;
             }
-
-            // If items indicate phenotype should be stored but it cannot be found in network, something has gone horribly wrong.
-            throw new RuntimeException("An error has occurred. Please contact the developer.");
 
         } else { // If phenotype is not stored yet.
             if(distance == network.size()) { // Input 1 higher than current max is allowed.
@@ -103,9 +98,14 @@ public class PhenotypeNetwork {
             }
 
             // Adds phenotype.
-            items.add(phenotype);
+            items.put(phenotype, distance);
             network.get(distance).add(phenotype);
+            return true;
         }
+    }
+
+    public boolean contains(Phenotype phenotype) {
+        return items.keySet().contains(phenotype);
     }
 
     @Override
