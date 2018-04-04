@@ -9,7 +9,7 @@ import static java.util.Objects.requireNonNull;
  */
 public class PhenotypeNetwork {
     /**
-     * A collection of all stored phenotypes.
+     * A collection of all stored phenotypes with their distance from the source.
      */
     private Map<Phenotype, Integer> items = new HashMap<>();
 
@@ -25,18 +25,34 @@ public class PhenotypeNetwork {
         network.add(sourceSet);
     }
 
+    /**
+     * @return the source phenotype (the only {@link Phenotype} with {@code distance} 0)
+     */
     public Phenotype getSource() {
         return network.get(0).iterator().next();
     }
 
+    /**
+     * Retrieves all {@link Phenotype}{@code s} that have the specified {@code distance}
+     * @param distance value to be used for {@link Phenotype} retrieval
+     * @return all {@link Phenotype}{@code s} with the given {@code distance}
+     */
     public Set<Phenotype> getByDistance(int distance) {
         return Collections.unmodifiableSet(network.get(distance));
     }
 
+    /**
+     * Retrieve the stored {@code distance} belonging to a {@link Phenotype}
+     * @param phenotype the {@link Phenotype} to retrieve the {@code distance} from
+     * @return the {@code distance} belonging to the {@code phenotype}
+     */
     public int getDistance(Phenotype phenotype) {
         return items.get(phenotype);
     }
 
+    /**
+     * @return the highest {@code distance} currently stored
+     */
     public int getMaxDistance() {
         return network.size() - 1;
     }
