@@ -19,13 +19,29 @@ public class ModelFilesReader implements ModelReader {
         return model;
     }
 
-    public ModelFilesReader() {
+    public ModelFilesReader(String file) {
         model = generateModel();
+        read(file);
+    }
+
+    public ModelFilesReader(String file, Lang lang) {
+        model = generateModel();
+        read(file, lang);
+    }
+
+    public ModelFilesReader(String[] files) {
+        model = generateModel();
+        read(files);
+    }
+
+    public ModelFilesReader(String[] files, Lang lang) {
+        model = generateModel();
+        read(files, lang);
     }
 
     /**
      * Generates a new {@link Model} using the {@link ModelFactory}.
-     * @return
+     * @return a new {@link Model}
      */
     protected Model generateModel() {
         return ModelFactory.createDefaultModel();
@@ -34,7 +50,7 @@ public class ModelFilesReader implements ModelReader {
     /**
      * Adds the {@code file} to the existing {@link Model}
      * @param file a {@link String} defining the location of an RDF file
-     * @return
+     * @return itself for fluent programming
      */
     public ModelFilesReader read(String file) {
         RDFDataMgr.read(model, file);
@@ -45,7 +61,7 @@ public class ModelFilesReader implements ModelReader {
      * Adds the {@code file} to the existing {@link Model}
      * @param file a {@link String} defining the location of an RDF file
      * @param lang the type of RDF file as described by {@link Lang}
-     * @return
+     * @return itself for fluent programming
      */
     public ModelFilesReader read(String file, Lang lang) {
         RDFDataMgr.read(model, file, lang);
@@ -55,7 +71,7 @@ public class ModelFilesReader implements ModelReader {
     /**
      * Adds the {@code files} to the existing {@link Model}
      * @param files a {@link String} array defining the location of the RDF files.
-     * @return
+     * @return itself for fluent programming
      */
     public ModelFilesReader read(String[] files) {
         for(String file : files) {
@@ -68,7 +84,7 @@ public class ModelFilesReader implements ModelReader {
      * Adds the {@code files} to the existing {@link Model}
      * @param files a {@link String} array defining the location of the RDF files.
      * @param lang the type of RDF file as described by {@link Lang}
-     * @return
+     * @return itself for fluent programming
      */
     public ModelFilesReader read(String[] files, Lang lang) {
         for(String file : files) {

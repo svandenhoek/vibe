@@ -20,8 +20,8 @@ public class ModelReadersTester {
 
     @BeforeClass
     public void beforeClass() {
-        modelFileReaderNoOntology = new ModelFilesReader().read(TestData.TTL_NO_ONTOLOGY.getFiles());
-        modelFileReaderWithOntology = new ModelFilesReader().read(TestData.TTL.getFiles());
+        modelFileReaderNoOntology = new ModelFilesReader(TestData.TTL_NO_ONTOLOGY.getFiles());
+        modelFileReaderWithOntology = new ModelFilesReader(TestData.TTL_NO_ONTOLOGY.getFiles());
         tripleStoreReaderNoOntology = new TripleStoreDbReader(TestData.TDB_MINI_NO_ONTOLOGY.getDir());
         tripleStoreReaderWithOntology = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
 

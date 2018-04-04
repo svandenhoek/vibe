@@ -27,8 +27,7 @@ public class MaxDistanceRetrieverTester {
     private OntModel model;
     @BeforeClass
     public void beforeClass() {
-        OntologyModelFilesReader reader = new OntologyModelFilesReader();
-        reader.read(TestData.ONTOLOGY_FILE.getFiles()[0]);
+        OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.ONTOLOGY_FILE.getFiles()[0]);
         model = reader.getModel();
     }
 
