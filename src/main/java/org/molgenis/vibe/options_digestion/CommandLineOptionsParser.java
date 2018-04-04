@@ -59,16 +59,30 @@ public class CommandLineOptionsParser extends OptionsParser {
 
 //        options.addOption(Option.builder("m")
 //                .longOpt("mode")
-//                .desc("The mode the application should run.\n1: Give a phenotype HPO code to retrieve genes matched to it.")
+//                .desc("The application mode to be ran.")
 //                .hasArg()
 //                .argName("NUMBER")
 //                .build());
 
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
-                .desc("A phenotype described using an HPO id. Can be either the number only or with the 'hp:'/'HP:' prefix.")
+                .desc("A phenotype described using an HPO id. Must include the 'hp:' or 'HP:' prefix.")
                 .hasArg()
                 .argName("HPO ID")
+                .build());
+
+        options.addOption(Option.builder("n")
+                .longOpt("ontology")
+                .desc("The Human Phenotype Ontology file (.owl).")
+                .hasArg()
+                .argName("FILE")
+                .build());
+
+        options.addOption(Option.builder("nd")
+                .longOpt("ontology-distance")
+                .desc("The maximum distance to be used for retrieval of connected HPOs.")
+                .hasArg()
+                .argName("NUMBER")
                 .build());
 
         options.addOption(Option.builder("d")
@@ -78,12 +92,12 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .argName("DIR")
                 .build());
 
-        options.addOption(Option.builder("dv")
-                .longOpt("disgenetver")
-                .desc("The disgenet dump file release version.")
-                .hasArg()
-                .argName("VERSION")
-                .build());
+//        options.addOption(Option.builder("dv")
+//                .longOpt("disgenetver")
+//                .desc("The disgenet dump file release version.")
+//                .hasArg()
+//                .argName("VERSION")
+//                .build());
 
         options.addOption(Option.builder("o")
                 .longOpt("output")
@@ -98,7 +112,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID> -o <FILE>";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -n <FILE> -nd <NUMBER> -d <DIR> -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -139,12 +153,19 @@ public class CommandLineOptionsParser extends OptionsParser {
             setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
         }
 
-        if(commandLine.hasOption("d")) {
-            if(commandLine.hasOption("dv")) {
-                setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
-            } else {
-                setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+        if(commandLine.hasOption("n")) {
+            setHpoOntology(commandLine.getOptionValue("n"));
+            if(commandLine.hasOption("nd")) {
+                setOntologyMaxDistance(commandLine.getOptionValue("nd"));
             }
+        }
+
+        if(commandLine.hasOption("d")) {
+//            if(commandLine.hasOption("dv")) {
+//                setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
+//            } else {
+            setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+//            }
         }
 
         if(commandLine.hasOption("o")) {
@@ -160,7 +181,7 @@ public class CommandLineOptionsParser extends OptionsParser {
         // As there currently is only 1 run mode, if ANY argument is given this run mode is automatically selected (-h overrides this).
         if(commandLine.getOptions().length > 0) {
             // Sets run mode.
-            setRunMode(RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
+            setRunMode(RunMode.GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES);
         }
 
         // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message

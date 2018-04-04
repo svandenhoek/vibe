@@ -1,10 +1,13 @@
 package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.io.OntologyModelFilesReader;
 import org.molgenis.vibe.io.output.FileOutputWriter;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.io.output.ResultsPerGeneCsvFileOutputWriter;
+import org.molgenis.vibe.ontology_processing.MaxDistanceRetriever;
+import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
 import org.molgenis.vibe.query_output_digestion.prioritization.HighestSingleDisgenetScoreGenePrioritizer;
 import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
@@ -20,30 +23,40 @@ public enum RunMode {
         public void run(OptionsParser appOptions) {
             CommandLineOptionsParser.printHelpMessage();
         }
-    }, GET_GENES_USING_SINGLE_PHENOTYPE("get genes matching a single phenotype") {
+    }, GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES("Retrieve all genes (with gene-disease association data) for the given phenotypes.") {
         @Override
         public void run(OptionsParser appOptions) throws IOException {
-            appOptions.printVerbose("Preparing DisGeNET dataset.");
-            ModelReader reader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
+            // Loads HPO dataset.
+            appOptions.printVerbose("Loading HPO dataset.");
+            OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(appOptions.getHpoOntology().toString());
 
-            // Retrieves data from DisGeNET database.
-            appOptions.printVerbose("Retrieving gene-disease associations for given phenotype.");
-            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(reader, appOptions.getPhenotypes());
-            genesForPhenotypeRetriever.run();
+            // Retrieves data from HPO dataset.
+            appOptions.printVerbose("Retrieving linked HPOs with a maximum distance of: " + appOptions.getOntologyMaxDistance());
+            PhenotypesRetriever hpoRetriever = new MaxDistanceRetriever(ontologyReader.getModel(), appOptions.getPhenotypes(), appOptions.getOntologyMaxDistance());
+            hpoRetriever.run();
 
-            // Stores needed data and allows the rest to be collected by garbage collector.
-            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
-            genesForPhenotypeRetriever = null;
+            // Loads DisGeNET dataset.
+            appOptions.printVerbose("Loading DisGeNET dataset.");
+            ModelReader disgenetReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
-            // Generates gene order.
-            appOptions.printVerbose("Ordering genes based on priority.");
-            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
-            prioritizer.run();
-
-            // Writes output to file.
-            appOptions.printVerbose("Writing genes to file.");
-            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
-            outputWriter.run();
+//            // Retrieves data from DisGeNET dataset.
+//            appOptions.printVerbose("Retrieving data from DisGeNET dataset.");
+//            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(disgenetReader, hpoRetriever.getRetrievedPhenotypeNetworks());
+//            genesForPhenotypeRetriever.run();
+//
+//            // Stores needed data and allows the rest to be collected by garbage collector.
+//            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
+//            genesForPhenotypeRetriever = null;
+//
+//            // Generates gene order.
+//            appOptions.printVerbose("Ordering genes based on priority.");
+//            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
+//            prioritizer.run();
+//
+//            // Writes output to file.
+//            appOptions.printVerbose("Writing genes to file.");
+//            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
+//            outputWriter.run();
         }
     };
 
@@ -77,7 +90,7 @@ public enum RunMode {
     public static RunMode retrieve(int i) {
         switch (i) {
             case 1:
-                return GET_GENES_USING_SINGLE_PHENOTYPE;
+                return GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES;
             default:
                 return NONE;
         }

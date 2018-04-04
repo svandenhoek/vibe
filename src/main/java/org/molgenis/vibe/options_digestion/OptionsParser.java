@@ -1,6 +1,7 @@
 package org.molgenis.vibe.options_digestion;
 
 import org.apache.commons.lang3.StringUtils;
+import org.molgenis.vibe.exceptions.OptionsException;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
 
@@ -14,6 +15,9 @@ import java.util.Set;
 /**
  * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
  * to actual files).
+ *
+ * After processing, implementations should ALWAYS call {@link #checkConfig()} for validation to prevent unexpected errors
+ * further into the application.
  */
 public abstract class OptionsParser {
 
@@ -28,8 +32,12 @@ public abstract class OptionsParser {
     private RunMode runMode = RunMode.NONE;
 
     /**
-     * Path to the directory storing all required files for creating a SPARQL searchable DisGeNET model
-     * (retrievable from http://rdf.disgenet.org/download/ and http://semanticscience.org/ontology/sio.owl).
+     * Path to the Human Phenotype Oontology .owl file.
+     */
+    private Path hpoOntology;
+
+    /**
+     * Path to the directory storing all required files for creating a SPARQL searchable DisGeNET model.
      */
     private Path disgenetDataDir;
 
@@ -53,6 +61,12 @@ public abstract class OptionsParser {
      */
     private Path outputFile;
 
+    /**
+     * If set, defines the maximum distance to be used for finding Phenotypes within the HPO ontology connected to the
+     * input Phenotypes.
+     */
+    private Integer ontologyMaxDistance;
+
     public boolean isVerbose() {
         return verbose;
     }
@@ -74,6 +88,22 @@ public abstract class OptionsParser {
     protected void setRunMode(RunMode runMode) {
         printVerbose("run mode: " + runMode.getDescription());
         this.runMode = runMode;
+    }
+
+    public Path getHpoOntology() {
+        return hpoOntology;
+    }
+
+    protected void setHpoOntology(String hpoOntology) throws IOException {
+        setHpoOntology(Paths.get(hpoOntology));
+    }
+
+    protected void setHpoOntology(Path hpoOntology) throws IOException {
+        if(checkIfPathIsReadableFile(hpoOntology)) {
+            this.hpoOntology = hpoOntology;
+        } else {
+            throw new IOException(hpoOntology.getFileName() + " is not a readable file.");
+        }
     }
 
     protected void setDisgenet(String disgenetDataDir, String disgenetRdfVersion) throws InvalidPathException, IOException {
@@ -201,6 +231,18 @@ public abstract class OptionsParser {
         this.outputFile = outputFile;
     }
 
+    public int getOntologyMaxDistance() {
+        return ontologyMaxDistance;
+    }
+
+    protected void setOntologyMaxDistance(String ontologyMaxDistance) {
+        setOntologyMaxDistance(Integer.parseInt(ontologyMaxDistance));
+    }
+
+    protected void setOntologyMaxDistance(int ontologyMaxDistance) {
+        this.ontologyMaxDistance = ontologyMaxDistance;
+    }
+
     /**
      * Checks whether the set variables adhere to the selected {@link RunMode}.
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
@@ -210,7 +252,11 @@ public abstract class OptionsParser {
 
         // With RunMode.NONE there are no requirements.
         if(!runMode.equals(RunMode.NONE)) {
-            // Otherwise check if DisGeNET data is set.
+            // Check if HPO ontology data is set.
+            if (hpoOntology == null) {
+                errors.add("HPO ontology not set.");
+            }
+            // Check if DisGeNET data is set.
             if (disgenetDataDir == null || disgenetRdfVersion == null) {
                 errors.add("DisGeNET dataset not set.");
             }
@@ -218,21 +264,20 @@ public abstract class OptionsParser {
             if (outputFile == null) {
                 errors.add("No output file was given.");
             }
-            // Check config specific settings.
+            // Check config specific settings are set.
             switch (runMode) {
-                case GET_GENES_USING_SINGLE_PHENOTYPE:
+                case GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES:
                     if (phenotypes.size() == 0) {
                         errors.add("No phenotype was given.");
-                    } else {
-                        if(phenotypes.size() > 1) {
-                            errors.add("More than 1 phenotype was given.");
-                        }
+                    }
+                    if(ontologyMaxDistance == null) {
+                        errors.add("No HPO ontology maximum distance was set.");
                     }
             }
         }
 
         if(errors.size() > 0) {
-            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
+            throw new OptionsException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
 
