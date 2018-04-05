@@ -2,8 +2,7 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.formats.Disease;
+import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
@@ -86,153 +85,36 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     }
 
     @Test
-    public void testIriForHpo() throws InvalidStringFormatException {
+    public void testGenesForPhenotypes() {
         Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811"));
+        phenotypes.add(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
 
-        String[] fieldOrder = {"hpo"};
+        String[] fieldOrder = {"gene", "geneId", "geneTitle", "geneSymbolTitle"};
 
         List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811")
+                Arrays.asList("http://identifiers.org/ncbigene/1280", "ncbigene:1280", "collagen type II alpha 1 chain", "COL2A1"),
+                Arrays.asList("http://identifiers.org/ncbigene/8243", "ncbigene:8243", "structural maintenance of chromosomes 1A", "SMC1A"),
+                Arrays.asList("http://identifiers.org/ncbigene/1291", "ncbigene:1291", "collagen type VI alpha 1 chain", "COL6A1"),
+                Arrays.asList("http://identifiers.org/ncbigene/1292", "ncbigene:1292", "collagen type VI alpha 2 chain", "COL6A2")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(phenotypes);
+        QueryString queryString = DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
     @Test
-    public void testIriForMultiHpo() throws InvalidStringFormatException {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811"));
-        phenotypes.add(new Phenotype("hp:0002967"));
-        phenotypes.add(new Phenotype("hp:0002996"));
-        phenotypes.add(new Phenotype("hp:0001377"));
+    public void testGdaForGenes() {
+        Set<Gene> genes = new HashSet<>();
+        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", URI.create("http://identifiers.org/ncbigene/1291")));
 
-        String[] fieldOrder = {"hpo"};
+        String[] fieldOrder = {"gene", "disease", "diseaseId", "diseaseTitle", "gdaScoreNumber", "gdaSource", "evidence"};
 
         List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002967"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002996"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0001377")
+                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C1834674", "umls:C1834674", "Bethlem myopathy", "0.68357144819477E0", "http://rdf.disgenet.org/v5.0.0/void/MGD"),
+                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C0026850", "umls:C0026850", "Muscular Dystrophy", "0.214763469460921E0", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/19519726")
         );
 
-        QueryString queryString = DisgenetQueryStringGenerator.getIriForHpo(phenotypes);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void testAllHpoChildren() throws InvalidStringFormatException {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-
-        String[] fieldOrder = {"hpo"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002967"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002996"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0001377"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0005060")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
-                new QueryStringPathRange(0, true));
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void testAllHpoChildrenExcludingSelfUsingMultipleParents() throws InvalidStringFormatException {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-        phenotypes.add(new Phenotype("hp:0001376", "Limitation of joint mobility", URI.create("http://purl.obolibrary.org/obo/HP_0001376")));
-
-        String[] fieldOrder = {"hpoRoot", "hpo"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://purl.obolibrary.org/obo/HP_0002967"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://purl.obolibrary.org/obo/HP_0002996"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://purl.obolibrary.org/obo/HP_0001377"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://purl.obolibrary.org/obo/HP_0005060"),
-
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0001376", "http://purl.obolibrary.org/obo/HP_0002996"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0001376", "http://purl.obolibrary.org/obo/HP_0001377"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0001376", "http://purl.obolibrary.org/obo/HP_0005060")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getHpoChildren(phenotypes,
-                new QueryStringPathRange(1, true));
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void testPdasSingleHpo() throws InvalidStringFormatException {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-
-        String[] fieldOrder = {"disease", "diseaseTitle", "pdaSource"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C0039516", "Tennis Elbow", "http://rdf.disgenet.org/v5.0.0/void/GROZA-2015"),
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C0152084", "Jaccoud's syndrome", "http://rdf.disgenet.org/v5.0.0/void/HOEHNDORF-2015")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getPdas(phenotypes);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void testPdasMultipleHpo() throws InvalidStringFormatException {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype("hp:0009811", "Abnormality of the elbow", URI.create("http://purl.obolibrary.org/obo/HP_0009811")));
-        phenotypes.add(new Phenotype("hp:0002967", "Cubitus valgus", URI.create("http://purl.obolibrary.org/obo/HP_0002967")));
-        phenotypes.add(new Phenotype("hp:0002966", "Limited elbow movement", URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
-
-        String[] fieldOrder = {"hpo", "disease"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://linkedlifedata.com/resource/umls/id/C0039516"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0009811", "http://linkedlifedata.com/resource/umls/id/C0152084"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002967", "http://linkedlifedata.com/resource/umls/id/C0175704"),
-                Arrays.asList("http://purl.obolibrary.org/obo/HP_0002996", "http://linkedlifedata.com/resource/umls/id/C1834674")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getPdas(phenotypes);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void geneDiseaseCombinationsForSingleDisease() {
-        Set<Disease> inputDiseases = new HashSet<>();
-        inputDiseases.add(new Disease("umls:C1853733", "HEMOCHROMATOSIS, TYPE 4", URI.create("http://linkedlifedata.com/resource/umls/id/C1853733")));
-
-        String[] fieldOrder = {"gene", "geneId", "geneSymbolTitle", "gdaScoreNumber", "gdaSource", "evidence"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/UNIPROT", "http://identifiers.org/pubmed/15466004"),
-                Arrays.asList("http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/CTD_human")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getGdas(inputDiseases, DisgenetAssociationType.GENE_DISEASE);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-    @Test
-    public void geneDiseaseCombinationsForMultipleDiseases() {
-        Set<Disease> inputDiseases = new HashSet<>();
-        inputDiseases.add(new Disease("umls:C1853733", "HEMOCHROMATOSIS, TYPE 4", URI.create("http://linkedlifedata.com/resource/umls/id/C1853733")));
-        inputDiseases.add(new Disease("umls:C0015773", "Felty Syndrome", URI.create("http://linkedlifedata.com/resource/umls/id/C0015773")));
-
-        String[] fieldOrder = {"disease", "gene", "geneId", "geneSymbolTitle", "gdaScoreNumber", "gdaSource", "evidence"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C1853733", "http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/UNIPROT", "http://identifiers.org/pubmed/15466004"),
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C1853733", "http://identifiers.org/ncbigene/30061", "ncbigene:30061", "SLC40A1", "0.682472541057918E0", "http://rdf.disgenet.org/v5.0.0/void/CTD_human"),
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C0015773", "http://identifiers.org/ncbigene/3105", "ncbigene:3105", "HLA-A", "2.747267842131E-4", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/10817772"),
-                Arrays.asList("http://linkedlifedata.com/resource/umls/id/C0015773", "http://identifiers.org/ncbigene/27087", "ncbigene:27087", "B3GAT1", "2.747267842131E-4", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/3345230")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getGdas(inputDiseases, DisgenetAssociationType.GENE_DISEASE);
+        QueryString queryString = DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes);
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 }
