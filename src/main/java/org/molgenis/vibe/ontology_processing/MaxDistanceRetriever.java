@@ -29,7 +29,7 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
         for(Phenotype phenotype:getInputPhenotypes()) {
             PhenotypeNetwork network = new PhenotypeNetwork(phenotype);
             traverse(retrievePhenotypeFromModel(phenotype), network, 0);
-            addRetrievedPhenotypeNetworks(network);
+            getPhenotypeNetworkCollection().add(network);
         }
     }
 

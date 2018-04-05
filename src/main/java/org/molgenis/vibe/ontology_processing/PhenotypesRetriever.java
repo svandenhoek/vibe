@@ -3,7 +3,7 @@ package org.molgenis.vibe.ontology_processing;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.formats.PhenotypeNetwork;
+import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
 
 import java.util.*;
 
@@ -26,22 +26,14 @@ public abstract class PhenotypesRetriever {
     /**
      * The found linked {@link Phenotype}{@code s} for the {@code inputPhenotypes} (stored per {@code inputPhenotype}).
      */
-    private Set<PhenotypeNetwork> retrievedPhenotypeNetworks = new HashSet<>();
+    private PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypeNetworkCollection();
 
     public Collection<Phenotype> getInputPhenotypes() {
         return inputPhenotypes;
     }
 
-    public Set<PhenotypeNetwork> getRetrievedPhenotypeNetworks() {
-        return retrievedPhenotypeNetworks;
-    }
-
-    protected void setRetrievedPhenotypeNetworks(Set<PhenotypeNetwork> retrievedPhenotypeNetworks) {
-        this.retrievedPhenotypeNetworks = retrievedPhenotypeNetworks;
-    }
-
-    protected void addRetrievedPhenotypeNetworks(PhenotypeNetwork phenotypeNetwork) {
-        retrievedPhenotypeNetworks.add(phenotypeNetwork);
+    public PhenotypeNetworkCollection getPhenotypeNetworkCollection() {
+        return phenotypeNetworkCollection;
     }
 
     public PhenotypesRetriever(OntModel model, Collection<Phenotype> inputPhenotypes) {

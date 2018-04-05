@@ -4,9 +4,11 @@ import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
+import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
 import org.molgenis.vibe.io.OntologyModelFilesReader;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.util.*;
@@ -25,10 +27,17 @@ import java.util.*;
  */
 public class MaxDistanceRetrieverTester {
     private OntModel model;
+    private PhenotypeNetworkCollection expectedPhenotypeNetworkCollection;
+
     @BeforeClass
     public void beforeClass() {
         OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.ONTOLOGY_FILE.getFiles()[0]);
         model = reader.getModel();
+    }
+
+    @BeforeMethod
+    public void beforeMethod() {
+        expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
     }
 
     @Test
@@ -36,15 +45,13 @@ public class MaxDistanceRetrieverTester {
         List<Phenotype> startPhenotypes = new ArrayList<>();
         startPhenotypes.add(new Phenotype("hp:0001377"));
 
-        Set<PhenotypeNetwork> expectedOutput = new HashSet<>();
-
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
         expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
-        expectedOutput.add(expectedNetwork1);
+        expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
         MaxDistanceRetriever retriever = new MaxDistanceRetriever(model, startPhenotypes, 0);
         retriever.run();
-        Assert.assertEquals(retriever.getRetrievedPhenotypeNetworks(), expectedOutput);
+        Assert.assertEquals(retriever.getPhenotypeNetworkCollection(), expectedPhenotypeNetworkCollection);
     }
 
     @Test
@@ -52,26 +59,22 @@ public class MaxDistanceRetrieverTester {
         List<Phenotype> startPhenotypes = new ArrayList<>();
         startPhenotypes.add(new Phenotype("hp:0001377"));
 
-        Set<PhenotypeNetwork> expectedOutput = new HashSet<>();
-
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
         expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
         expectedNetwork1.add(new Phenotype("hp:0002996"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005852"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005060"), 1);
-        expectedOutput.add(expectedNetwork1);
+        expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
         MaxDistanceRetriever retriever = new MaxDistanceRetriever(model, startPhenotypes, 1);
         retriever.run();
-        Assert.assertEquals(retriever.getRetrievedPhenotypeNetworks(), expectedOutput);
+        Assert.assertEquals(retriever.getPhenotypeNetworkCollection(), expectedPhenotypeNetworkCollection);
     }
 
     @Test
     public void retrieveWithDistance2() {
         List<Phenotype> startPhenotypes = new ArrayList<>();
         startPhenotypes.add(new Phenotype("hp:0001377"));
-
-        Set<PhenotypeNetwork> expectedOutput = new HashSet<>();
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
         expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
@@ -83,19 +86,17 @@ public class MaxDistanceRetrieverTester {
         expectedNetwork1.add(new Phenotype("hp:0006376"), 2);
         expectedNetwork1.add(new Phenotype("hp:0006394"), 2);
         expectedNetwork1.add(new Phenotype("hp:0002987"), 2);
-        expectedOutput.add(expectedNetwork1);
+        expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
         MaxDistanceRetriever retriever = new MaxDistanceRetriever(model, startPhenotypes, 2);
         retriever.run();
-        Assert.assertEquals(retriever.getRetrievedPhenotypeNetworks(), expectedOutput);
+        Assert.assertEquals(retriever.getPhenotypeNetworkCollection(), expectedPhenotypeNetworkCollection);
     }
 
     @Test
     public void retrieveWithDistance3With2RoutesHavingDifferentDistanceToHpo() {
         List<Phenotype> startPhenotypes = new ArrayList<>();
         startPhenotypes.add(new Phenotype("hp:0005060"));
-
-        Set<PhenotypeNetwork> expectedOutput = new HashSet<>();
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
         expectedNetwork1.add(new Phenotype("hp:0005060"), 0);
@@ -108,11 +109,10 @@ public class MaxDistanceRetrieverTester {
         expectedNetwork1.add(new Phenotype("hp:0001376"), 3);
         expectedNetwork1.add(new Phenotype("hp:0006394"), 3);
         expectedNetwork1.add(new Phenotype("hp:0002987"), 3);
-
-        expectedOutput.add(expectedNetwork1);
+        expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
         MaxDistanceRetriever retriever = new MaxDistanceRetriever(model, startPhenotypes, 3);
         retriever.run();
-        Assert.assertEquals(retriever.getRetrievedPhenotypeNetworks(), expectedOutput);
+        Assert.assertEquals(retriever.getPhenotypeNetworkCollection(), expectedPhenotypeNetworkCollection);
     }
 }

@@ -32,6 +32,10 @@ public class PhenotypeNetwork {
         return network.get(0).iterator().next();
     }
 
+    public Set<Phenotype> getAll() {
+        return items.keySet();
+    }
+
     /**
      * Retrieves all {@link Phenotype}{@code s} that have the specified {@code distance}
      * @param distance value to be used for {@link Phenotype} retrieval
