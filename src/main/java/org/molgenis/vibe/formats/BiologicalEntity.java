@@ -99,16 +99,33 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         id = uriString.split(getUriPrefix())[1];
     }
 
+    public BiologicalEntity(String id, String name) {
+        this(id);
+        this.name = requireNonNull(name);
+    }
+
+    public BiologicalEntity(URI uri, String name) {
+        this(uri);
+        this.name = requireNonNull(name);
+    }
+
     public BiologicalEntity(String id, String name, URI uri) throws InvalidStringFormatException {
         this.id = retrieveIdFromString(requireNonNull(id));
         this.name = requireNonNull(name);
         this.uri = requireNonNull(uri);
         validateUri(this.uri.toString());
+        checkIfIdAndUriAreEqual(this.id, this.uri);
     }
 
     private void validateUri(String uriString) {
         if(!uriString.startsWith(getUriPrefix())) {
             throw new IllegalArgumentException("The URI \"" + uriString + "\" does not start with: " + getUriPrefix());
+        }
+    }
+
+    private void checkIfIdAndUriAreEqual(String id, URI uri) {
+        if(!uri.toString().endsWith(id)) {
+            throw new IllegalArgumentException("The URI does not refer to the same BiologicalEntity as the id.");
         }
     }
 
