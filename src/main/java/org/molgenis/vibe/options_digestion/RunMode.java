@@ -39,24 +39,24 @@ public enum RunMode {
             appOptions.printVerbose("Loading DisGeNET dataset.");
             ModelReader disgenetReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
 
-//            // Retrieves data from DisGeNET dataset.
-//            appOptions.printVerbose("Retrieving data from DisGeNET dataset.");
-//            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(disgenetReader, hpoRetriever.getRetrievedPhenotypeNetworks());
-//            genesForPhenotypeRetriever.run();
-//
-//            // Stores needed data and allows the rest to be collected by garbage collector.
-//            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
-//            genesForPhenotypeRetriever = null;
-//
-//            // Generates gene order.
-//            appOptions.printVerbose("Ordering genes based on priority.");
-//            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
-//            prioritizer.run();
-//
-//            // Writes output to file.
-//            appOptions.printVerbose("Writing genes to file.");
-//            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
-//            outputWriter.run();
+            // Retrieves data from DisGeNET dataset.
+            appOptions.printVerbose("Retrieving data from DisGeNET dataset.");
+            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
+            genesForPhenotypeRetriever.run();
+
+            // Stores needed data and allows the rest to be collected by garbage collector.
+            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
+            genesForPhenotypeRetriever = null;
+
+            // Generates gene order.
+            appOptions.printVerbose("Ordering genes based on priority.");
+            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
+            prioritizer.run();
+
+            // Writes output to file.
+            appOptions.printVerbose("Writing genes to file.");
+            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
+            outputWriter.run();
         }
     };
 
