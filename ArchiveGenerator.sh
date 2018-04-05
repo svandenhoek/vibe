@@ -16,7 +16,7 @@ function main {
     declare -r start_pwd=$PWD
 
     cd "$BASE_PATH"
-	tar --exclude '.*' -czvf "test_resources_$(date "+%Y-%m-%d").tar.gz" "src/test/resources/disgenet_mini/"*
+	tar --exclude '.*' --exclude 'disgenet_mini_tdb' --exclude 'disgenet_mini_tdb_no_ontology' -czvf "test_resources_$(date "+%Y-%m-%d").tar.gz" "src/test/resources/"*
 	cd "$start_pwd"
 }
 

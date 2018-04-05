@@ -17,7 +17,7 @@ public enum TestData {
             return filterFileArray(super.getFiles(), ".ttl");
         }
     },
-    ONTOLOGY_FILE("disgenet_mini") {
+    ONTOLOGY_FILE("hpo") {
         @Override
         public String[] getFiles() {
             return new String[]{getDir() + "/hp.owl"};
