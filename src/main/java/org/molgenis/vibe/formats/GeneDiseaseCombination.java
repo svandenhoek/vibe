@@ -12,7 +12,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * The score belonging to the gene-disease combination from the DisGeNET database.
      */
-    private double disgenetScore;
+    private Double disgenetScore;
 
     /**
      * A {@link Map} storing which {@link Source}{@code s} contains this combination and how often.
