@@ -15,19 +15,8 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.stream.Collectors;
 
-public class RetrieveGeneByPhenotypeSpeedComparison {
+public class RetrieveGeneByPhenotypeSpeedComparison extends QuerySpeedComparison {
     private static final int testRepeats = 3;
-    private static ModelReader reader;
-
-    @BeforeClass(groups = {"benchmarking"})
-    public void beforeClass() {
-        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
-    }
-
-    @AfterClass(alwaysRun = true)
-    public void afterClass() {
-        reader.close();
-    }
 
     // timeOut gives "org.apache.jena.tdb.transaction.TDBTransactionException: Not in a transaction".
     // Can't run on big tests because too slow.
@@ -44,7 +33,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
                 "sio:SIO_000628 ?hpo , ?disease ." +
                 "?hpo rdf:type sio:SIO_010056 ;" +
                 "dcterms:identifier \"hp:0009811\"^^xsd:string }";
-        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query, testRepeats);
         System.out.println("gda times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -61,7 +50,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
                 "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
                 "?gene rdf:type ncit:C7057 ; " +
                 "dcterms:title ?geneTitle .}";
-        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query, testRepeats);
         System.out.println("pda times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -78,7 +67,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
                 "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
                 "?gene rdf:type ncit:C7057 ; \n" +
                 "dcterms:title ?geneTitle .}";
-        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query, testRepeats);
         System.out.println("hpo times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -105,7 +94,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
                 "sio:SIO_000205 ?geneSymbol . \n" +
                 "?geneSymbol rdf:type ncit:C43568 ; \n" +
                 "dcterms:title ?geneSymbolTitle . }";
-        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query, testRepeats);
         System.out.println("hpo V2 initial times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
     }
 
@@ -133,19 +122,7 @@ public class RetrieveGeneByPhenotypeSpeedComparison {
                 "?gdaSource rdf:type dctypes:Dataset ; \n" +
                 "dcterms:title ?gdaSourceTitle . \n" +
                 "}";
-        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query);
+        String[] times = runQuery(DisgenetQueryStringGenerator.getPrefixes() + query, testRepeats);
         System.out.println("hpo V2 reordered times: " + Arrays.stream(times).map(String::toString).collect(Collectors.joining(", ")));
-    }
-
-    private String[] runQuery(String queryString) {
-        String[] times = new String[testRepeats];
-        for(int i = 0; i<testRepeats;i++) {
-            Stopwatch timer = Stopwatch.createStarted();
-            QueryRunner runner = new QueryRunner(reader.getModel(), new QueryString(DisgenetQueryStringGenerator.getPrefixes() + queryString));
-            ResultSetFormatter.out(ByteStreams.nullOutputStream(), runner.getResultSet());
-            times[i] = timer.stop().toString();
-            runner.close();
-        }
-        return times;
     }
 }
