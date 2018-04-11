@@ -26,6 +26,9 @@ public enum RunMode {
     }, GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES("Retrieve all genes (with gene-disease association data) for the given phenotypes.") {
         @Override
         public void run(OptionsParser appOptions) throws IOException {
+            // Prints RunMode if verbose.
+            appOptions.printVerbose(getDescription());
+
             // Loads HPO dataset.
             appOptions.printVerbose("Loading HPO dataset.");
             OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(appOptions.getHpoOntology().toString());

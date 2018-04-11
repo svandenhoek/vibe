@@ -86,7 +86,6 @@ public abstract class OptionsParser {
     }
 
     protected void setRunMode(RunMode runMode) {
-        printVerbose("run mode: " + runMode.getDescription());
         this.runMode = runMode;
     }
 
