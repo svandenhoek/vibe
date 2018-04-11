@@ -15,9 +15,9 @@ import java.util.stream.Collectors;
 
 public class MaxDistanceAlgorithmsSpeedComparison {
     private OntModel model;
-    private static final int testRepeats = 1;
+    private static final int testRepeats = 3;
     private static final Set<Phenotype> startPhenotypes = new HashSet<>(Arrays.asList(
-            new Phenotype("hp:0001377")
+            new Phenotype("hp:0002996")
     ));
 
     @BeforeClass(groups = {"benchmarking"})
@@ -45,9 +45,9 @@ public class MaxDistanceAlgorithmsSpeedComparison {
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance10() {
-        System.out.println("# Distance 10");
-        runTestWithDistance(8);
+    public void compareDistance07() {
+        System.out.println("# Distance 7");
+        runTestWithDistance(7);
     }
 
     public void runTestWithDistance(int maxDistance) {
