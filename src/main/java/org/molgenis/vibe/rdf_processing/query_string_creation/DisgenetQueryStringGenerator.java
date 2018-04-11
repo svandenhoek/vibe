@@ -94,11 +94,11 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      */
     private static final String[] GDA_WITH_DISEASES_FOR_GENES = {"SELECT ?gene ?disease ?diseaseId ?diseaseTitle ?gdaScoreNumber ?gdaSource ?evidence \n" +
             "WHERE { \n" +
-            "VALUES ?gene ", " \n" + // [0] -> [1]
-            "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
+            "?gda sio:SIO_000628 ?gene , ?disease ; \n" +
             "rdf:type ?type ; \n" +
             "sio:SIO_000216 ?gdaScore ; \n" +
             "sio:SIO_000253 ?gdaSource . \n" +
+            "VALUES ?gene ", " \n" + // [0] -> [1]
             "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
             "?gdaScore rdf:type ncit:C25338 ; \n" +
             "sio:SIO_000300 ?gdaScoreNumber . \n" +
