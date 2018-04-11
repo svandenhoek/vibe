@@ -99,12 +99,12 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "sio:SIO_000216 ?gdaScore ; \n" +
             "sio:SIO_000253 ?gdaSource . \n" +
             "VALUES ?gene ", " \n" + // [0] -> [1]
-            "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
-            "?gdaScore rdf:type ncit:C25338 ; \n" +
-            "sio:SIO_000300 ?gdaScoreNumber . \n" +
             "?disease rdf:type ncit:C7057 ; \n" +
             "dcterms:identifier ?diseaseId ; \n" +
             "dcterms:title ?diseaseTitle . \n" +
+            "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
+            "?gdaScore rdf:type ncit:C25338 ; \n" +
+            "sio:SIO_000300 ?gdaScoreNumber . \n" +
             "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
             "}"
     };
