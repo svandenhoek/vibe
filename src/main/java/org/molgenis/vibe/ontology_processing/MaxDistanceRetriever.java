@@ -40,21 +40,14 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
      * @param distance current distance from the {@code network source} (see {@link PhenotypeNetwork#getSource()})
      */
     private void traverse(OntClass phenotypeOC, PhenotypeNetwork network, int distance) {
-        // Converts URI to Phenotype.
-        Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
-
-        // For distance 0, ignores checking/adding phenotype to network (as a Phenotype at position 0 should always be present).
-        if(distance > 0) {
-            // Checks if Phenotype is already visited. If not, adds it and continues. If already visited, checks whether
-            // this was using a higher distance value. If so, re-adds the phenotype (now with a lower distance value) and
-            // continues (as this lower distance means additional phenotypes need to be looked for and other already
-            // known phenotypes might need a distance adjustment as well).
-            if (network.contains(currentPhenotype) && network.getDistance(currentPhenotype) <= distance) {
-                return;
-            } else {
-                network.add(currentPhenotype, distance);
-            }
+        // Skips certain URIs.
+        if(skippableUri(phenotypeOC)) {
+            return;
         }
+
+        // Converts URI to Phenotype and tries to add it to the network.
+        Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
+        network.add(currentPhenotype, distance);
 
         // Checks if maximum distance is achieved. If so, returns. If not, continues.
         if(distance >= maxDistance) {

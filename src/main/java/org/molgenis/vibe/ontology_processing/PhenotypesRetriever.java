@@ -46,4 +46,22 @@ public abstract class PhenotypesRetriever {
     }
 
     public abstract void run();
+
+    /**
+     * Checks whether an URI is skippable. This is based on the fact that while the URI is an expected result, it is not
+     * used within the application. Otherwise these URIs could cause an error because they would be treated as an unexpected
+     * result.
+     *
+     * @param phenotypeOC the {@link OntClass} representing a {@link Phenotype} that needs to be checked
+     * @return {@code true} if {@link OntClass} can be skipped (expected non-valid {@link Phenotype#uri}), {@code false}
+     * if not (can either be a valid or an unexpected non-valid {@link Phenotype#uri})
+     */
+    protected boolean skippableUri(OntClass phenotypeOC) {
+        String uriString = phenotypeOC.getURI();
+        if(uriString.startsWith("http://purl.obolibrary.org/obo/UPHENO_")) {
+            return true;
+        }
+
+        return false;
+    }
 }
