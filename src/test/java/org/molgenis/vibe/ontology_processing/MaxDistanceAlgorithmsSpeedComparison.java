@@ -27,27 +27,21 @@ public class MaxDistanceAlgorithmsSpeedComparison {
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance00() {
+    public void compareDistance0() {
         System.out.println("# Distance 0");
         runTestWithDistance(0);
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance03() {
+    public void compareDistance3() {
         System.out.println("# Distance 3");
         runTestWithDistance(3);
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance05() {
-        System.out.println("# Distance 5");
-        runTestWithDistance(5);
-    }
-
-    @Test(groups = {"benchmarking"})
-    public void compareDistance07() {
-        System.out.println("# Distance 7");
-        runTestWithDistance(7);
+    public void compareDistance4() {
+        System.out.println("# Distance 4");
+        runTestWithDistance(4);
     }
 
     public void runTestWithDistance(int maxDistance) {
