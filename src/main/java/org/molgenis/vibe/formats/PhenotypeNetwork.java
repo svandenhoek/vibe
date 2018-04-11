@@ -100,7 +100,7 @@ public class PhenotypeNetwork {
         if(items.keySet().contains(phenotype)) {
             int currentlyStoredDistance = items.get(phenotype);
 
-            // If new distance is higher than currently stored one, nothing happens.
+            // If new distance is higher or equal to currently stored one, nothing happens.
             if(currentlyStoredDistance <= distance) {
                 return false;
             } else { // Adjusts the phenotype with the new distance if this was closer.
