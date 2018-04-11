@@ -154,4 +154,21 @@ public class MaxDistanceRetrieverTester {
         expectedNetwork1.add(new Phenotype("hp:0002987"), 3);
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
     }
+
+    @Test
+    public void compareOutputPhenotypes() {
+        startPhenotypes.add(new Phenotype("hp:0002996"));
+
+        for(int i = 0; i < 5; i++) {
+            PhenotypesRetriever retriever1 = new MaxDistanceRetriever(model, startPhenotypes, i);
+            retriever1.run();
+
+            PhenotypesRetriever retriever2 = new MaxDistanceRetriever(model, startPhenotypes, i);
+            retriever2.run();
+
+            System.out.println("maxDistance=" + i + ", geneCount=" + retriever1.getPhenotypeNetworkCollection().getPhenotypes().size());
+            Assert.assertEquals(retriever1.getPhenotypeNetworkCollection().getPhenotypes(),
+                    retriever2.getPhenotypeNetworkCollection().getPhenotypes());
+        }
+    }
 }
