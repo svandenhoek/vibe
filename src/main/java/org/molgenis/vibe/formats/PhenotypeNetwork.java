@@ -96,21 +96,11 @@ public class PhenotypeNetwork {
             }
         }
 
-        // If phenotype is already stored within the network.
-        if(items.keySet().contains(phenotype)) {
-            int currentlyStoredDistance = items.get(phenotype);
+        // Tries to retrieve the distance of the given phenotype.
+        Integer retrievedPhenotypeDistance = items.get(phenotype);
 
-            // If new distance is higher or equal to currently stored one, nothing happens.
-            if(currentlyStoredDistance <= distance) {
-                return false;
-            } else { // Adjusts the phenotype with the new distance if this was closer.
-                items.put(phenotype, distance);
-                network.get(currentlyStoredDistance).remove(phenotype);
-                network.get(distance).add(phenotype);
-                return true;
-            }
-
-        } else { // If phenotype is not stored yet.
+        // If no distance was retrieved, phenotype was not yet stored and will be added.
+        if(retrievedPhenotypeDistance == null) {
             if(distance == network.size()) { // Input 1 higher than current max is allowed.
                 network.add(new HashSet<>());
             } else if(distance > network.size()) { // if gap is bigger, the phenotypes cannot be connected to each other as a connecting "in-between" phenotype is missing.
@@ -121,6 +111,17 @@ public class PhenotypeNetwork {
             items.put(phenotype, distance);
             network.get(distance).add(phenotype);
             return true;
+
+        } else { // If phenotype is already stored within the network.
+            // If new distance is higher or equal to currently stored one, nothing happens.
+            if(retrievedPhenotypeDistance <= distance) {
+                return false;
+            } else { // Adjusts the phenotype with the new distance if this was closer.
+                items.put(phenotype, distance);
+                network.get(retrievedPhenotypeDistance).remove(phenotype);
+                network.get(distance).add(phenotype);
+                return true;
+            }
         }
     }
 

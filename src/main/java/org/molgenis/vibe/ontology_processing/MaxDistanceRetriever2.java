@@ -2,6 +2,8 @@ package org.molgenis.vibe.ontology_processing;
 
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
+
+import org.apache.jena.util.iterator.ExtendedIterator;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
 
@@ -52,9 +54,15 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
             network.add(currentPhenotype, distance);
 
             if(distance < maxDistance) {
-                // Adds parents and children.
-                nextPhenotypeOCsToDigest.addAll(phenotypeOC.listSuperClasses(true).toSet());
-                nextPhenotypeOCsToDigest.addAll(phenotypeOC.listSubClasses(true).toSet());
+                // Goes through the parents.
+                for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(true); it.hasNext(); ) {
+                    nextPhenotypeOCsToDigest.add(it.next());
+                }
+
+                // Goes through the children.
+                for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(true); it.hasNext(); ) {
+                    nextPhenotypeOCsToDigest.add(it.next());
+                }
             }
         }
 
