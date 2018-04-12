@@ -3,7 +3,6 @@ package org.molgenis.vibe.ontology_processing;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 
-import org.apache.jena.util.iterator.ExtendedIterator;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
 
@@ -21,9 +20,11 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
         for(Phenotype phenotype:getInputPhenotypes()) {
             PhenotypeNetwork network = new PhenotypeNetwork(phenotype);
 
+            // previousPhenotypeOCs is an empty Set
+            // currentPhenotypeOCs is a single inputPhenotype
             Set<OntClass> startOC = new HashSet<>();
             startOC.add(retrievePhenotypeFromModel(phenotype));
-            traverse(startOC, network, 0);
+            traverse(new HashSet<>(), startOC, network, 0);
 
             getPhenotypeNetworkCollection().add(network);
         }
@@ -31,35 +32,39 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
 
     /**
      * Traverses the {@link OntModel}.
-     * @param phenotypeOCsToDigest current item being traversed
+     * @param previousPhenotypeOCs all {@link Phenotype}{@code s} for {@code distance - 1}
+     * @param currentPhenotypeOCs all {@link Phenotype}{@code s} for the current {@code distance}
      * @param network stores the {@link Phenotype}{@code s} based on traversal
      * @param distance current distance from the {@code network source} (see {@link PhenotypeNetwork#getSource()})
      */
-    private void traverse(Set<OntClass> phenotypeOCsToDigest, PhenotypeNetwork network, int distance) {
-        Set<OntClass> nextPhenotypeOCsToDigest = new HashSet<>();
+    private void traverse(Set<OntClass> previousPhenotypeOCs, Set<OntClass> currentPhenotypeOCs, PhenotypeNetwork network, int distance) {
+        // For storing phenotypes with a distance + 1
+        Set<OntClass> nextPhenotypeOCs = new HashSet<>();
 
-        for(OntClass phenotypeOC : phenotypeOCsToDigest) {
-            if(skippableUri(phenotypeOC)) {
+        for(OntClass phenotypeOC : currentPhenotypeOCs) {
+            // Checks if URI is of a known exception.
+            if (skippableUri(phenotypeOC)) {
                 continue;
             }
 
+            // Adds current phenotype to the network.
             addPhenotypeToNetwork(phenotypeOC, network, distance);
 
-            if(distance < getMaxDistance()) {
-                // Goes through the parents.
-                for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(); it.hasNext(); ) {
-                    nextPhenotypeOCsToDigest.add(it.next());
-                }
-
-                // Goes through the children.
-                for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(); it.hasNext(); ) {
-                    nextPhenotypeOCsToDigest.add(it.next());
-                }
+            // Looks further if maxDistance is not reached yet.
+            if (distance < getMaxDistance()) {
+                // Adds all the parent and child phenotypes to the "distance + 1" set.
+                nextPhenotypeOCs.addAll(phenotypeOC.listSuperClasses().toSet());
+                nextPhenotypeOCs.addAll(phenotypeOC.listSubClasses().toSet());
             }
         }
 
-        if(nextPhenotypeOCsToDigest.size() > 0) {
-            traverse(nextPhenotypeOCsToDigest, network, distance + 1);
+        // Removes all "distance - 1" phenotypes from the "distance + 1" set.
+        nextPhenotypeOCs.removeAll(previousPhenotypeOCs);
+
+        // If there are any phenotypes remaining with "distance + 1", continues.
+        // Note that if the max distance is reached, no phenotypes were ever added to this set.
+        if(nextPhenotypeOCs.size() > 0) {
+            traverse(currentPhenotypeOCs, nextPhenotypeOCs, network, distance + 1);
         }
     }
 }
