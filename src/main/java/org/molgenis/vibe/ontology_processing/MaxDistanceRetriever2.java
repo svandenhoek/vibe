@@ -47,12 +47,12 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
 
             if(distance < getMaxDistance()) {
                 // Goes through the parents.
-                for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(true); it.hasNext(); ) {
+                for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(); it.hasNext(); ) {
                     nextPhenotypeOCsToDigest.add(it.next());
                 }
 
                 // Goes through the children.
-                for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(true); it.hasNext(); ) {
+                for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(); it.hasNext(); ) {
                     nextPhenotypeOCsToDigest.add(it.next());
                 }
             }

@@ -48,12 +48,12 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
             int nextDistance = distance + 1;
 
             // Goes through the parents.
-            for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(true); it.hasNext(); ) {
+            for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(); it.hasNext(); ) {
                 traverse(it.next(), network, nextDistance);
             }
 
             // Goes through the children.
-            for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(true); it.hasNext(); ) {
+            for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(); it.hasNext(); ) {
                 traverse(it.next(), network, nextDistance);
             }
         }

@@ -27,7 +27,7 @@ public class ChildrenRetriever extends PhenotypesRetriever {
 
         int nextDistance = distance + 1;
         if(nextDistance <= getMaxDistance()) {
-            for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(true); it.hasNext(); ) {
+            for (ExtendedIterator<OntClass> it = phenotypeOC.listSubClasses(); it.hasNext(); ) {
                 OntClass nextOC = it.next();
                 traverse(nextOC, network, nextDistance);
             }
