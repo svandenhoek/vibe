@@ -1,6 +1,7 @@
 package org.molgenis.vibe.ontology_processing;
 
 import com.google.common.base.Stopwatch;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
@@ -11,13 +12,19 @@ import org.testng.annotations.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 public class MaxDistanceAlgorithmsSpeedComparison {
+    private static final String SYS_OUT_FORMAT = "%12s|%10s|%10s|%10s|%10s%n";
+    private static final int SPACER_REPEAT = 56;
     private OntModel model;
-    private static final int testRepeats = 3;
-    private static final Set<Phenotype> startPhenotypes = new HashSet<>(Arrays.asList(
+    private static final int TEST_REPEATS = 3;
+
+    private static final Set<Phenotype> startPhenotypes1 = new HashSet<>(Arrays.asList(
             new Phenotype("hp:0002996")
+    ));
+
+    private static final Set<Phenotype> startPhenotypes2 = new HashSet<>(Arrays.asList(
+            new Phenotype("hp:0000001")
     ));
 
     @BeforeClass(groups = {"benchmarking"})
@@ -27,43 +34,84 @@ public class MaxDistanceAlgorithmsSpeedComparison {
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance0() {
-        System.out.println("# Distance 0");
-        runTestWithDistance(0);
+    public void benchmarkMaxDistance1() {
+        printHeader();
+        for(int i : new int[]{0,2,5,6,7,8}) {
+            printResults(i, runRetriever(new MaxDistanceRetriever(model, startPhenotypes1, i)));
+        }
+        printFooter();
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance3() {
-        System.out.println("# Distance 3");
-        runTestWithDistance(3);
+    public void benchmarkMaxDistance2() {
+        printHeader();
+        for(int i : new int[]{0,2,5,10,20,50}) {
+            printResults(i, runRetriever(new MaxDistanceRetriever2(model, startPhenotypes1, i)));
+        }
+        printFooter();
     }
 
     @Test(groups = {"benchmarking"})
-    public void compareDistance4() {
-        System.out.println("# Distance 4");
-        runTestWithDistance(4);
+    public void benchmarkChildren() {
+        printHeader();
+        for(int i : new int[]{0,2,5}) { // 2 is furthest child distance available
+            printResults(i, runRetriever(new ChildrenRetriever(model, startPhenotypes1, i)));
+        }
+        printFooter();
     }
 
-    public void runTestWithDistance(int maxDistance) {
-        printResults(
-                runRetriever(new MaxDistanceRetriever(model, startPhenotypes, maxDistance)),
-                runRetriever(new MaxDistanceRetriever2(model, startPhenotypes, maxDistance))
-        );
+    @Test(groups = {"benchmarking"})
+    public void benchmarkChildrenFromRoot() {
+        printHeader();
+        for(int i : new int[]{0,2,5,10,20,50}) {
+            printResults(i, runRetriever(new ChildrenRetriever(model, startPhenotypes2, i)));
+        }
+        printFooter();
     }
 
-    private String[] runRetriever(PhenotypesRetriever retriever) {
-        String[] times = new String[testRepeats];
-        for(int i = 0; i<testRepeats;i++) {
+    private BenchmarkOutput runRetriever(PhenotypesRetriever retriever) {
+        String[] times = new String[TEST_REPEATS];
+        for(int i = 0; i<TEST_REPEATS;i++) {
             Stopwatch timer = Stopwatch.createStarted();
             retriever.run();
             times[i] = timer.stop().toString();
         }
-        return times;
+
+        return new BenchmarkOutput(retriever.getPhenotypeNetworkCollection().getPhenotypes().size(), times);
     }
 
-    private void printResults(String[] times1, String[] times2) {
-        System.out.println("MaxDistanceRetriever: " + Arrays.stream(times1).map(String::toString).collect(Collectors.joining(", ")));
-        System.out.println("MaxDistanceRetriever2: " + Arrays.stream(times2).map(String::toString).collect(Collectors.joining(", ")));
+    private void printResults(int maxDistance, BenchmarkOutput benchmarkerOutput) {
+        System.out.format(SYS_OUT_FORMAT, maxDistance, benchmarkerOutput.getOutputSize(), benchmarkerOutput.getTimes()[0],
+                benchmarkerOutput.getTimes()[1], benchmarkerOutput.getTimes()[2]);
+//        System.out.println("maxDistance=" + maxDistance + ", size=" + benchmarkerOutput.getOutputSize() + ", times=" +
+//                Arrays.stream(benchmarkerOutput.getTimes()).map(String::toString).collect(Collectors.joining(", ")));
     }
 
+    private void printHeader() {
+        System.out.format(StringUtils.repeat("-", SPACER_REPEAT) + "\n");
+        System.out.format(SYS_OUT_FORMAT, "maxDistance", "size", "time1", "time2", "time3");
+        System.out.format(StringUtils.repeat("-", SPACER_REPEAT) + "\n");
+    }
+
+    private void printFooter() {
+        System.out.format(StringUtils.repeat("-", SPACER_REPEAT) + "\n");
+    }
+
+    private class BenchmarkOutput {
+        private int outputSize;
+        private String[] times;
+
+        public int getOutputSize() {
+            return outputSize;
+        }
+
+        public String[] getTimes() {
+            return times;
+        }
+
+        public BenchmarkOutput(int outputSize, String[] times) {
+            this.outputSize = outputSize;
+            this.times = times;
+        }
+    }
 }
