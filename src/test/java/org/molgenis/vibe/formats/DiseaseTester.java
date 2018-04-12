@@ -20,6 +20,11 @@ public class DiseaseTester {
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
+    public void useUriAsIdInput() {
+        new Disease("http://linkedlifedata.com/resource/umls/id/C0123456");
+    }
+
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidDiseaseIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Disease("Umls:C0123456");
     }

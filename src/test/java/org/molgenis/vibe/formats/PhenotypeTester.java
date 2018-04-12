@@ -32,6 +32,11 @@ public class PhenotypeTester {
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
+    public void useUriAsIdInput() {
+        new Phenotype("http://purl.obolibrary.org/obo/HP_0012345");
+    }
+
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidPhenotypeIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Phenotype("Hp:0012345");
     }
