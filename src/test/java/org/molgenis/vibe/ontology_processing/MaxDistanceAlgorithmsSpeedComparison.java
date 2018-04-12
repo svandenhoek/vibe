@@ -15,6 +15,7 @@ import java.util.Set;
 
 public class MaxDistanceAlgorithmsSpeedComparison {
     private static final String SYS_OUT_FORMAT = "%12s|%10s|%10s|%10s|%10s%n";
+//    private static final String SYS_OUT_FORMAT = "%s & %s & %s & %s & %s%n";
     private static final int SPACER_REPEAT = 56;
     private OntModel model;
     private static final int TEST_REPEATS = 3;
@@ -36,7 +37,7 @@ public class MaxDistanceAlgorithmsSpeedComparison {
     @Test(groups = {"benchmarking"})
     public void benchmarkMaxDistance1() {
         printHeader();
-        for(int i : new int[]{0,2,5,6,7,8}) {
+        for(int i : new int[]{0,2,5,6,7,8,9}) {
             printResults(i, runRetriever(new MaxDistanceRetriever(model, startPhenotypes1, i)));
         }
         printFooter();
@@ -45,7 +46,7 @@ public class MaxDistanceAlgorithmsSpeedComparison {
     @Test(groups = {"benchmarking"})
     public void benchmarkMaxDistance2() {
         printHeader();
-        for(int i : new int[]{0,2,5,10,20,50}) {
+        for(int i : new int[]{0,2,5,8,9,10,20,50}) {
             printResults(i, runRetriever(new MaxDistanceRetriever2(model, startPhenotypes1, i)));
         }
         printFooter();
