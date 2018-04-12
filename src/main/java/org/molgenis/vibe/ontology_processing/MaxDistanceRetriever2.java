@@ -7,10 +7,11 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
 
-import java.net.URI;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
+
+import static java.util.Objects.requireNonNull;
 
 public class MaxDistanceRetriever2 extends PhenotypesRetriever {
     /**
@@ -20,7 +21,7 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
 
     public MaxDistanceRetriever2(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
         super(model, phenotypes);
-        this.maxDistance = maxDistance;
+        this.maxDistance = requireNonNull(maxDistance);
     }
 
     @Override

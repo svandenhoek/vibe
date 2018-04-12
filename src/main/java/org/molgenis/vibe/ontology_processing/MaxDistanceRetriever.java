@@ -6,8 +6,9 @@ import org.apache.jena.util.iterator.ExtendedIterator;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
 
-import java.net.URI;
 import java.util.Collection;
+
+import static java.util.Objects.requireNonNull;
 
 /**
  * {@link PhenotypesRetriever} implementation that retrieves {@link Phenotype}{@code s} based on a maximum distance from
@@ -21,7 +22,7 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
 
     public MaxDistanceRetriever(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
         super(model, phenotypes);
-        this.maxDistance = maxDistance;
+        this.maxDistance = requireNonNull(maxDistance);
     }
 
     @Override
