@@ -3,8 +3,10 @@ package org.molgenis.vibe.ontology_processing;
 import org.apache.jena.ontology.OntClass;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.formats.PhenotypeNetwork;
 import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
 
+import java.net.URI;
 import java.util.*;
 
 import static java.util.Objects.requireNonNull;
@@ -63,5 +65,17 @@ public abstract class PhenotypesRetriever {
         }
 
         return false;
+    }
+
+    /**
+     * Adds a {@link OntClass} representing a {@link Phenotype} to a {@link PhenotypeNetwork}.
+     * @param phenotypeOC what needs to be added to the {@code network}
+     * @param network where the {@code phenotypeOC} needs to be added to
+     * @param distance the number to be used as {@code distance} when adding the {@code phenotypeOC} to the {@code network}
+     */
+    protected void addPhenotypeToNetwork(OntClass phenotypeOC, PhenotypeNetwork network, int distance) {
+        // Converts URI to Phenotype and tries to add it to the network.
+        Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
+        network.add(currentPhenotype, distance);
     }
 }

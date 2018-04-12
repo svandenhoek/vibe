@@ -45,9 +45,7 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
             return;
         }
 
-        // Converts URI to Phenotype and tries to add it to the network.
-        Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
-        network.add(currentPhenotype, distance);
+        addPhenotypeToNetwork(phenotypeOC, network, distance);
 
         // Checks if maximum distance is achieved. If so, returns. If not, continues.
         if(distance >= maxDistance) {

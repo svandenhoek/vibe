@@ -50,8 +50,7 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
                 continue;
             }
 
-            Phenotype currentPhenotype = new Phenotype(URI.create(phenotypeOC.getURI()));
-            network.add(currentPhenotype, distance);
+            addPhenotypeToNetwork(phenotypeOC, network, distance);
 
             if(distance < maxDistance) {
                 // Goes through the parents.
