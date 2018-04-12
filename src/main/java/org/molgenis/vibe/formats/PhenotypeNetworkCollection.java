@@ -36,7 +36,7 @@ public class PhenotypeNetworkCollection {
      */
     public void add(PhenotypeNetwork network) {
         phenotypeNetworks.put(network.getSource(), network);
-        phenotypes.addAll(network.getAll());
+        phenotypes.addAll(network.getPhenotypes());
 
     }
 
@@ -64,7 +64,7 @@ public class PhenotypeNetworkCollection {
      */
     private void generatePhenotypes() {
         for(PhenotypeNetwork network : phenotypeNetworks.values()) {
-            phenotypes.addAll(network.getAll());
+            phenotypes.addAll(network.getPhenotypes());
         }
     }
 

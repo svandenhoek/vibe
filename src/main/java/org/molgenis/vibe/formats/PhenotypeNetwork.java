@@ -16,13 +16,13 @@ public class PhenotypeNetwork {
     /**
      * The phenotypes stored per distance level.
      */
-    private List<Set<Phenotype>> network = new ArrayList<>();
+    private Map<Integer, Set<Phenotype>> network = new HashMap<>();
 
     public PhenotypeNetwork(Phenotype phenotype) {
         items.put(phenotype, 0);
         Set<Phenotype> sourceSet = new HashSet<>();
         sourceSet.add(requireNonNull(phenotype));
-        network.add(sourceSet);
+        network.put(0, sourceSet);
     }
 
     /**
@@ -32,8 +32,19 @@ public class PhenotypeNetwork {
         return network.get(0).iterator().next();
     }
 
-    public Set<Phenotype> getAll() {
-        return items.keySet();
+    /**
+     *
+     * @return all stored {@link Phenotype}{@code s}
+     */
+    public Set<Phenotype> getPhenotypes() {
+        return Collections.unmodifiableSet(items.keySet());
+    }
+
+    /**
+     * @return all {@code distances} for which {@link Phenotype}{@code s} are stored.
+     */
+    public Set<Integer> getDistances() {
+        return Collections.unmodifiableSet(network.keySet());
     }
 
     /**
@@ -52,13 +63,6 @@ public class PhenotypeNetwork {
      */
     public int getDistance(Phenotype phenotype) {
         return items.get(phenotype);
-    }
-
-    /**
-     * @return the highest {@code distance} currently stored
-     */
-    public int getMaxDistance() {
-        return network.size() - 1;
     }
 
     public void add(Phenotype[] phenotypes, int distance) {
@@ -81,9 +85,6 @@ public class PhenotypeNetwork {
      * @param phenotype the {@link Phenotype} to be added to the {@code network}
      * @param distance the {@code distance} the {@link Phenotype} is from the {@code source}
      * @return {@code true} if added/distance is updated, otherwise {@code false}
-     * @throws IllegalArgumentException if {@code distance} 0 is given in combination with a a different {@link Phenotype}
-     * than used during {@link PhenotypeNetwork} creation or if the {@code distance} is 2 or more higher than the currently
-     * stored highest {@code distance} (as this would indicate a missing {@link Phenotype} to link the two {@code distances})
      */
     public boolean add(Phenotype phenotype, int distance) {
         // Checks if the given distance is 0.
@@ -101,28 +102,44 @@ public class PhenotypeNetwork {
 
         // If no distance was retrieved, phenotype was not yet stored and will be added.
         if(retrievedPhenotypeDistance == null) {
-            if(distance == network.size()) { // Input 1 higher than current max is allowed.
-                network.add(new HashSet<>());
-            } else if(distance > network.size()) { // if gap is bigger, the phenotypes cannot be connected to each other as a connecting "in-between" phenotype is missing.
-                throw new IllegalArgumentException("Input distance may only be 1 higher than currently stored highest distance.");
-            }
-
-            // Adds phenotype.
             items.put(phenotype, distance);
-            network.get(distance).add(phenotype);
+            getPhenotypesForDistance(distance).add(phenotype);
             return true;
 
         } else { // If phenotype is already stored within the network.
             // If new distance is higher or equal to currently stored one, nothing happens.
             if(retrievedPhenotypeDistance <= distance) {
                 return false;
-            } else { // Adjusts the phenotype with the new distance if this was closer.
+            } else { // Adjusts the phenotype with the new distance if the new distance is closer.
                 items.put(phenotype, distance);
-                network.get(retrievedPhenotypeDistance).remove(phenotype);
-                network.get(distance).add(phenotype);
+                getPhenotypesForDistance(retrievedPhenotypeDistance).remove(phenotype);
+                getPhenotypesForDistance(distance).add(phenotype);
                 return true;
             }
         }
+    }
+
+    /**
+     * Tries to retrieve all phenotypes belonging to the defined {@code distance}. Note that this functions differently
+     * than the {@code public} version ({@link #getByDistance(int)}) and should be used internally only. It mainly functions
+     * as a safe method for further processing as when a distance is not yet stored. Instead of returning {@code null} in
+     * such cases, a new {@link Set} is created and added to the {@code network} before returning a {@link Set} for further
+     * usage.
+     * @param distance the {@code distance} for which {@link Phenotype}{@code s} should be returned
+     * @return {@link Phenotype}{@code s} currently stored for that distance or an empty {@link Set} if no {@link Phenotype}{@code s}
+     * are stored for that {@code distance}
+     */
+    private Set<Phenotype> getPhenotypesForDistance(int distance) {
+        // Tries to retrieve the HashSet for that distance.
+        Set<Phenotype> distancePhenotypes = network.get(distance);
+
+        // Adds a HashSet for that distance if not already available.
+        if(distancePhenotypes == null) {
+            distancePhenotypes = new HashSet<>();
+            network.put(distance, distancePhenotypes);
+        }
+
+        return distancePhenotypes;
     }
 
     public boolean contains(Phenotype phenotype) {
