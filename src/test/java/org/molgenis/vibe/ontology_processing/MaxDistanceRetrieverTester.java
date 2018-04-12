@@ -159,7 +159,7 @@ public class MaxDistanceRetrieverTester {
     public void compareOutputPhenotypes() {
         startPhenotypes.add(new Phenotype("hp:0002996"));
 
-        for(int i = 0; i < 5; i++) {
+        for(int i = 0; i <= 10; i++) {
             PhenotypesRetriever retriever1 = new MaxDistanceRetriever(model, startPhenotypes, i);
             retriever1.run();
 
