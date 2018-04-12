@@ -26,6 +26,12 @@ public abstract class PhenotypesRetriever {
     private Collection<Phenotype> inputPhenotypes;
 
     /**
+     * The maximum distance to be used within the model (subclass defines how this should be interpreted, but should be
+     * used as some form of limit).
+     */
+    private int maxDistance;
+
+    /**
      * The found linked {@link Phenotype}{@code s} for the {@code inputPhenotypes} (stored per {@code inputPhenotype}).
      */
     private PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypeNetworkCollection();
@@ -38,9 +44,14 @@ public abstract class PhenotypesRetriever {
         return phenotypeNetworkCollection;
     }
 
-    public PhenotypesRetriever(OntModel model, Collection<Phenotype> inputPhenotypes) {
+    public int getMaxDistance() {
+        return maxDistance;
+    }
+
+    public PhenotypesRetriever(OntModel model, Collection<Phenotype> inputPhenotypes, int maxDistance) {
         this.model = requireNonNull(model);
         this.inputPhenotypes = requireNonNull(inputPhenotypes);
+        this.maxDistance = requireNonNull(maxDistance);
     }
 
     protected OntClass retrievePhenotypeFromModel(Phenotype phenotype) {

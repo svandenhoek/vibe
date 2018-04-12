@@ -8,21 +8,13 @@ import org.molgenis.vibe.formats.PhenotypeNetwork;
 
 import java.util.Collection;
 
-import static java.util.Objects.requireNonNull;
-
 /**
  * {@link PhenotypesRetriever} implementation that retrieves {@link Phenotype}{@code s} based on a maximum distance from
  * the {@code source}.
  */
 public class MaxDistanceRetriever extends PhenotypesRetriever {
-    /**
-     * The maximum distance.
-     */
-    private int maxDistance;
-
-    public MaxDistanceRetriever(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
-        super(model, phenotypes);
-        this.maxDistance = requireNonNull(maxDistance);
+    public MaxDistanceRetriever(OntModel model, Collection<Phenotype> inputPhenotypes, int maxDistance) {
+        super(model, inputPhenotypes, maxDistance);
     }
 
     @Override
@@ -49,7 +41,7 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
         addPhenotypeToNetwork(phenotypeOC, network, distance);
 
         // Checks if maximum distance is achieved. If so, returns. If not, continues.
-        if(distance >= maxDistance) {
+        if(distance >= getMaxDistance()) {
             return;
         } else {
             // Calculates distance for next recursion step.

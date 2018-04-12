@@ -11,17 +11,9 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static java.util.Objects.requireNonNull;
-
 public class MaxDistanceRetriever2 extends PhenotypesRetriever {
-    /**
-     * The maximum distance.
-     */
-    private int maxDistance;
-
-    public MaxDistanceRetriever2(OntModel model, Collection<Phenotype> phenotypes, int maxDistance) {
-        super(model, phenotypes);
-        this.maxDistance = requireNonNull(maxDistance);
+    public MaxDistanceRetriever2(OntModel model, Collection<Phenotype> inputPhenotypes, int maxDistance) {
+        super(model, inputPhenotypes, maxDistance);
     }
 
     @Override
@@ -53,7 +45,7 @@ public class MaxDistanceRetriever2 extends PhenotypesRetriever {
 
             addPhenotypeToNetwork(phenotypeOC, network, distance);
 
-            if(distance < maxDistance) {
+            if(distance < getMaxDistance()) {
                 // Goes through the parents.
                 for (ExtendedIterator<OntClass> it = phenotypeOC.listSuperClasses(true); it.hasNext(); ) {
                     nextPhenotypeOCsToDigest.add(it.next());
