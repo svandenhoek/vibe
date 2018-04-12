@@ -48,7 +48,8 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
     private String name;
 
     /**
-     * The {@link URI}.
+     * The {@link URI}. Note that while in general triplets use IRIs, Apache Jena refers to URIs.
+     * @see org.apache.jena.rdf.model.Resource#getURI()
      */
     private URI uri;
 
@@ -83,10 +84,6 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         return uri;
     }
 
-    /**
-     * Simple constructor allowing for easy comparison of collections.
-     * @param id
-     */
     public BiologicalEntity(String id) {
         this.id = retrieveIdFromString(requireNonNull(id));
         uri = URI.create( getUriPrefix() + this.id );
