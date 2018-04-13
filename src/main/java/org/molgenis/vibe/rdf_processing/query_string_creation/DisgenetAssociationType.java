@@ -1,6 +1,7 @@
 package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.formats.EnumTypeDefiner;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -9,7 +10,7 @@ import java.util.regex.Pattern;
  * Based on: http://semanticscience.org/ontology/sio.owl (which is licensed under http://creativecommons.org/licenses/by/4.0/)
  * Please refer to http://www.disgenet.org/ds/DisGeNET/html/images/ontology.svg for the Ontology overview.
  */
-public enum DisgenetAssociationType {
+public enum DisgenetAssociationType implements EnumTypeDefiner {
     GENE_DISEASE("000983"),
     THERAPEUTIC("001120"),
     BIOMARKER("001121"),
@@ -42,6 +43,7 @@ public enum DisgenetAssociationType {
      */
     private String id;
 
+    @Override
     public String getId() {
         return id;
     }
@@ -57,20 +59,9 @@ public enum DisgenetAssociationType {
     public static DisgenetAssociationType retrieve(String sio) {
         Matcher m = Pattern.compile("^(((sio|SIO):)?(sio|SIO)_)?([0-9]{6})$").matcher(sio);
         if (m.matches()) {
-            return compareWithAvailableIds(m.group(5));
+            return EnumTypeDefiner.retrieve(m.group(5), DisgenetAssociationType.class);
         } else {
             throw new InvalidStringFormatException(sio + " does not adhere the required format: ^(((sio|SIO):)?(sio|SIO)_)?([0-9]{6})$");
         }
-    }
-
-    private static DisgenetAssociationType compareWithAvailableIds(String sio) {
-        DisgenetAssociationType[] allTypes = DisgenetAssociationType.values();
-        for(int i = 0; i < allTypes.length; i++) {
-            if(sio.toLowerCase().equals(allTypes[i].getId().toLowerCase())) {
-                return allTypes[i];
-            }
-        }
-        // If no match was found.
-        return null;
     }
 }
