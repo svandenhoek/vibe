@@ -70,7 +70,6 @@ public class MaxDistanceRetrieverTester {
         startPhenotypes.add(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
-        expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
     }
 
@@ -90,7 +89,6 @@ public class MaxDistanceRetrieverTester {
         startPhenotypes.add(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
-        expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
         expectedNetwork1.add(new Phenotype("hp:0002996"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005852"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005060"), 1);
@@ -114,7 +112,6 @@ public class MaxDistanceRetrieverTester {
         startPhenotypes.add(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
-        expectedNetwork1.add(new Phenotype("hp:0001377"), 0);
         expectedNetwork1.add(new Phenotype("hp:0002996"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005852"), 1);
         expectedNetwork1.add(new Phenotype("hp:0005060"), 1);
@@ -142,7 +139,6 @@ public class MaxDistanceRetrieverTester {
         startPhenotypes.add(new Phenotype("hp:0005060"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
-        expectedNetwork1.add(new Phenotype("hp:0005060"), 0);
         expectedNetwork1.add(new Phenotype("hp:0001377"), 1);
         expectedNetwork1.add(new Phenotype("hp:0006376"), 1);
         expectedNetwork1.add(new Phenotype("hp:0002996"), 2);
@@ -159,7 +155,7 @@ public class MaxDistanceRetrieverTester {
     public void compareOutputPhenotypes() {
         startPhenotypes.add(new Phenotype("hp:0002996"));
 
-        for(int i = 0; i <= 8; i++) {
+        for(int i = 0; i <= 7; i++) {
             PhenotypesRetriever retriever1 = new MaxDistanceRetriever(model, startPhenotypes, i);
             retriever1.run();
 
