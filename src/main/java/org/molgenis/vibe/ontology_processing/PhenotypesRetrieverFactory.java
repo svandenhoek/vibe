@@ -41,7 +41,7 @@ public enum PhenotypesRetrieverFactory implements EnumTypeDefiner {
 
     public abstract PhenotypesRetriever create(OntModel model, Collection<Phenotype> inputPhenotypes, int distance);
 
-    public static DisgenetAssociationType retrieve(String name) {
-        return EnumTypeDefiner.retrieve(name, DisgenetAssociationType.class);
+    public static PhenotypesRetrieverFactory retrieve(String name) {
+        return EnumTypeDefiner.retrieve(name, PhenotypesRetrieverFactory.class);
     }
 }
