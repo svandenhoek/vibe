@@ -45,7 +45,9 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         parseCommandLine(args);
         digestCommandLine();
-        super.checkConfig();
+        if(!super.checkConfig()) {
+            throw new IOException("Something went wrong during app configuration. Please contact the developer.");
+        }
     }
 
     /**
@@ -113,7 +115,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> -w <FILE> ( -c | -d ) -m <NUMBER> -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> ( -c | -d ) -m <NUMBER>] -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -165,9 +167,6 @@ public class CommandLineOptionsParser extends OptionsParser {
             setVerbose(true);
         }
 
-        // Sets RunMode to currently only available option (besides NONE).
-        setRunMode(RunMode.GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES);
-
         // REQUIRED: DisGeNET TDB.
         if(commandLine.hasOption("t")) {
             try {
@@ -179,39 +178,56 @@ public class CommandLineOptionsParser extends OptionsParser {
             missing.add("-t");
         }
 
-        // REQUIRED: HPO ontology file.
+        // OPTIONAL: HPO ontology file.
         if(commandLine.hasOption("w")) {
+            // -w defines RunMode.
+            setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
             try {
                 setHpoOntology(commandLine.getOptionValue("w"));
             } catch(InvalidPathException | IOException e) {
                 errors.add(e.getMessage());
             }
-        } else {
-            missing.add("-w");
-        }
 
-        // REQUIRED: HPO ontology related retrieval max distance.
-        if(commandLine.hasOption("m")) {
-            try {
-                setOntologyMaxDistance(commandLine.getOptionValue("m"));
-            } catch (NumberFormatException e) {
-                errors.add(e.getMessage());
+            // REQUIRED if -w set: HPO ontology related retrieval max distance.
+            if(commandLine.hasOption("m")) {
+                try {
+                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
+                } catch (NumberFormatException e) {
+                    errors.add(e.getMessage());
+                }
+            } else {
+                missing.add("-m");
+            }
+
+            // REQUIRED if -w set: HPO ontology related retrieval algorithm.
+            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
+                errors.add("Only 1 of these arguments is allowed: -c | -d");
+            } else if(commandLine.hasOption("c") || commandLine.hasOption("d")) { // If one is available, set factory.
+                if (commandLine.hasOption("c")) {
+                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.CHILDREN);
+                } else if (commandLine.hasOption("d")) {
+                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.DISTANCE);
+                }
+            } else { // Both missing not allowed.
+                missing.add("-c | -d");
             }
         } else {
-            missing.add("-m");
-        }
+            // -w defines RunMode.
+            setRunMode(RunMode.GENES_FOR_PHENOTYPES);
 
-        // REQUIRED: HPO ontology related retrieval algorithm.
-        if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
-            errors.add("Only 1 of these arguments is allowed: -c | -d");
-        } else if(commandLine.hasOption("c") || commandLine.hasOption("d")) { // If one is available, set factory.
-            if (commandLine.hasOption("c")) {
-                setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.CHILDREN);
-            } else if (commandLine.hasOption("d")) {
-                setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.DISTANCE);
+            // Generates errors if any option was given that requires -w when -w is not given.
+            if(commandLine.hasOption("m")) {
+                errors.add("Missing -w: -m requires -w.");
             }
-        } else { // Both missing not allowed.
-            missing.add("-c | -d");
+            if(commandLine.hasOption("c")) {
+                errors.add("Missing -w: -c requires -w.");
+            }
+            if(commandLine.hasOption("d")) {
+                errors.add("Missing -w: -d requires -w.");
+            }
+            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
+                errors.add("Only 1 of these arguments is allowed: -c | -d");
+            }
         }
 
         // REQUIRED: Phenotypes.

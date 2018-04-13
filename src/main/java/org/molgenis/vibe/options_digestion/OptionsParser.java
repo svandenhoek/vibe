@@ -238,10 +238,6 @@ public abstract class OptionsParser {
     protected boolean checkConfig() {
         // With RunMode.NONE there are no requirements.
         if(!runMode.equals(RunMode.NONE)) {
-            // Check if HPO ontology data is set.
-            if (hpoOntology == null) {
-                return false;
-            }
             // Check if DisGeNET data is set.
             if (disgenetDataDir == null || disgenetRdfVersion == null) {
                 return false;
@@ -252,17 +248,24 @@ public abstract class OptionsParser {
             }
             // Check config specific settings are set.
             switch (runMode) {
-                // Check if there are any input phenotypes.
-                case GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES:
-                    if (phenotypes.size() == 0) {
-                        return false;
-                    }
+                // Additional checks if related HPOs need to be retrieved.
+                case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
                     // Check if a factory for related HPO retrieval was set.
                     if(phenotypesRetrieverFactory == null) {
                         return false;
                     }
+                    // Check if HPO ontology data is set.
+                    if (hpoOntology == null) {
+                        return false;
+                    }
                     // Check if a max distance for related HPO retrieval was set.
                     if(ontologyMaxDistance == null) {
+                        return false;
+                    }
+                // Checks for if no associated phenotypes need to be retrieved.
+                case GENES_FOR_PHENOTYPES:
+                    // Check if there are any input phenotypes.
+                    if (phenotypes.size() == 0) {
                         return false;
                     }
             }

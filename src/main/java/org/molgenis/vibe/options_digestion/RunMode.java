@@ -1,18 +1,21 @@
 package org.molgenis.vibe.options_digestion;
 
+import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.OntologyModelFilesReader;
 import org.molgenis.vibe.io.output.FileOutputWriter;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.io.output.ResultsPerGeneCsvFileOutputWriter;
-import org.molgenis.vibe.ontology_processing.MaxDistanceRetriever;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
 import org.molgenis.vibe.query_output_digestion.prioritization.HighestSingleDisgenetScoreGenePrioritizer;
+import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
+import java.util.Set;
 
 /**
  * Describes what the application should do.
@@ -20,82 +23,119 @@ import java.io.IOException;
 public enum RunMode {
     NONE("none") {
         @Override
-        public void run(OptionsParser appOptions) {
+        protected void runMode() {
             CommandLineOptionsParser.printHelpMessage();
         }
-    }, GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES("Retrieve all genes (with gene-disease association data) for the given phenotypes.") {
+    }, GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES("Retrieves genes for input phenotypes and phenotypes associated to input phenotypes.") {
         @Override
-        public void run(OptionsParser appOptions) throws IOException {
-            // Prints RunMode if verbose.
-            appOptions.printVerbose(getDescription());
-
-            // Loads HPO dataset.
-            appOptions.printVerbose("Loading HPO dataset.");
-            OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(appOptions.getHpoOntology().toString());
-
-            // Retrieves data from HPO dataset.
-            appOptions.printVerbose("Retrieving linked HPOs with a maximum distance of: " + appOptions.getOntologyMaxDistance());
-            PhenotypesRetriever hpoRetriever = new MaxDistanceRetriever(ontologyReader.getModel(), appOptions.getPhenotypes(), appOptions.getOntologyMaxDistance());
-            hpoRetriever.run();
-
-            // Loads DisGeNET dataset.
-            appOptions.printVerbose("Loading DisGeNET dataset.");
-            ModelReader disgenetReader = new TripleStoreDbReader(appOptions.getDisgenetDataDir());
-
-            // Retrieves data from DisGeNET dataset.
-            appOptions.printVerbose("Retrieving data from DisGeNET dataset.");
-            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
-            genesForPhenotypeRetriever.run();
-
-            // Stores needed data and allows the rest to be collected by garbage collector.
-            GeneDiseaseCollection geneDiseaseCollection = genesForPhenotypeRetriever.getGeneDiseaseCollection();
-            genesForPhenotypeRetriever = null;
-
-            // Generates gene order.
-            appOptions.printVerbose("Ordering genes based on priority.");
-            GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
-            prioritizer.run();
-
-            // Writes output to file.
-            appOptions.printVerbose("Writing genes to file.");
-            FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(appOptions.getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
-            outputWriter.run();
+        protected void runMode() throws IOException {
+            OntologyModelFilesReader ontologyReader = loadPhenotypeOntology();
+            PhenotypesRetriever hpoRetriever = retrieveAssociatedPhenotypes(ontologyReader);
+            ModelReader disgenetReader = loadDisgenetDatabase();
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
+            Prioritizer prioritizer = orderGenes(geneDiseaseCollection);
+            writeToFile(geneDiseaseCollection, prioritizer);
+        }
+    }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
+        @Override
+        protected void runMode() throws Exception {
+            ModelReader disgenetReader = loadDisgenetDatabase();
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, getAppOptions().getPhenotypes());
+            Prioritizer prioritizer = orderGenes(geneDiseaseCollection);
+            writeToFile(geneDiseaseCollection, prioritizer);
         }
     };
 
+    protected OntologyModelFilesReader loadPhenotypeOntology() {
+        getAppOptions().printVerbose("# Loading HPO dataset.");
+        OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(getAppOptions().getHpoOntology().toString());
+        printElapsedTime();
+
+        return ontologyReader;
+    }
+
+    protected PhenotypesRetriever retrieveAssociatedPhenotypes(OntologyModelFilesReader ontologyReader) {
+        getAppOptions().printVerbose("# " + getAppOptions().getPhenotypesRetrieverFactory().getDescription());
+        PhenotypesRetriever hpoRetriever = getAppOptions().getPhenotypesRetrieverFactory().create(
+                ontologyReader.getModel(), getAppOptions().getPhenotypes(), getAppOptions().getOntologyMaxDistance()
+        );
+        hpoRetriever.run();
+        getAppOptions().printVerbose("Retrieved number of phenotypes: " + hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes().size());
+        printElapsedTime();
+
+        return hpoRetriever;
+    }
+
+    protected ModelReader loadDisgenetDatabase() {
+        getAppOptions().printVerbose("# Loading DisGeNET dataset.");
+        ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDisgenetDataDir());
+        printElapsedTime();
+
+        return disgenetReader;
+    }
+
+    protected GeneDiseaseCollection retrieveDisgenetData(ModelReader disgenetReader, Set<Phenotype> phenotypes) {
+        getAppOptions().printVerbose("# Retrieving data from DisGeNET dataset.");
+        GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(
+                disgenetReader, phenotypes
+        );
+        genesForPhenotypeRetriever.run();
+        printElapsedTime();
+
+        return genesForPhenotypeRetriever.getGeneDiseaseCollection();
+    }
+
+    protected Prioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
+        getAppOptions().printVerbose("# Ordering genes based on priority.");
+        GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
+        prioritizer.run();
+        printElapsedTime();
+
+        return prioritizer;
+    }
+
+    protected void writeToFile(GeneDiseaseCollection geneDiseaseCollection, Prioritizer prioritizer) throws IOException {
+        getAppOptions().printVerbose("# Writing genes to file.");
+        FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(getAppOptions().getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
+        outputWriter.run();
+        printElapsedTime();
+    }
+
+    private OptionsParser appOptions;
+
     private String description;
 
-    public String getDescription() {
+    private Stopwatch stopwatch;
+
+    protected OptionsParser getAppOptions() {
+        return appOptions;
+    }
+
+    protected void setAppOptions(OptionsParser appOptions) {
+        this.appOptions = appOptions;
+    }
+
+    protected String getDescription() {
         return description;
     }
 
     RunMode(String description) {
         this.description = description;
+        stopwatch = Stopwatch.createStarted();
     }
 
-    public abstract void run(OptionsParser appOptions) throws Exception;
-
-    /**
-     * Retrieves the {@link RunMode} based on a {@link String} existing out of ONLY numbers.
-     * @param i a {@link String} that contains a number (and nothing else).
-     * @return the {@link RunMode} belonging to the given number {@code i}
-     * @throws NumberFormatException see {@link Integer#parseInt(String)}
-     */
-    public static RunMode retrieve(String i) throws NumberFormatException {
-        return retrieve(Integer.parseInt(i));
+    public final void run(OptionsParser appOptions) throws Exception {
+        // Sets the OptionsParser.
+        setAppOptions(appOptions);
+        // Prints the RunMode description if verbose.
+        getAppOptions().printVerbose(getDescription());
+        // Runs mode-specific code.
+        runMode();
     }
 
-    /**
-     * Retrieves the {@link RunMode} based on a {@code int}.
-     * @param i an {@code int} defining the {@link RunMode}
-     * @return the {@link RunMode} belonging to the given number {@code i}
-     */
-    public static RunMode retrieve(int i) {
-        switch (i) {
-            case 1:
-                return GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES;
-            default:
-                return NONE;
-        }
+    protected abstract void runMode() throws Exception;
+
+    protected void printElapsedTime() {
+        getAppOptions().printVerbose("Elapsed time: " + stopwatch.toString());
     }
 }

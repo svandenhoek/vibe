@@ -64,6 +64,13 @@ public class CommandLineOptionsParserTester {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         new CommandLineOptionsParser(args);
     }
+
+    @Test
+    public void validSingleHpoWithoutOntology() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        new CommandLineOptionsParser(args);
+    }
+
     @Test
     public void validTwoHpos() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, TWO_HPOS, NON_EXISTING_OUTPUT_FILE);
@@ -85,8 +92,15 @@ public class CommandLineOptionsParserTester {
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingOntology() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+    public void missingOntologyWithAlgorithm() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        printError(args);
+        new CommandLineOptionsParser(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void missingOntologyWithMaxDistance() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         printError(args);
         new CommandLineOptionsParser(args);
     }
