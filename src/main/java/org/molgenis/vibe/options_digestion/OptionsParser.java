@@ -1,15 +1,12 @@
 package org.molgenis.vibe.options_digestion;
 
-import org.apache.commons.lang3.StringUtils;
-import org.molgenis.vibe.exceptions.OptionsException;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 /**
@@ -20,7 +17,6 @@ import java.util.Set;
  * further into the application.
  */
 public abstract class OptionsParser {
-
     /**
      * Wether the app should run in verbose modus (extra print statements).
      */
@@ -42,11 +38,6 @@ public abstract class OptionsParser {
     private Path disgenetDataDir;
 
     /**
-     * The format of how the data is stored.
-     */
-    private RdfStorageFormat rdfStorageFormat = RdfStorageFormat.TDB; // individual files model creation not supported
-
-    /**
      * The DisGeNET RDF version.
      */
     private DisgenetRdfVersion disgenetRdfVersion;
@@ -60,6 +51,11 @@ public abstract class OptionsParser {
      * The file to write the output to.
      */
     private Path outputFile;
+
+    /**
+     * Defines the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever} to be used.
+     */
+    private PhenotypesRetrieverFactory phenotypesRetrieverFactory;
 
     /**
      * If set, defines the maximum distance to be used for finding Phenotypes within the HPO ontology connected to the
@@ -93,7 +89,7 @@ public abstract class OptionsParser {
         return hpoOntology;
     }
 
-    protected void setHpoOntology(String hpoOntology) throws IOException {
+    protected void setHpoOntology(String hpoOntology) throws InvalidPathException, IOException {
         setHpoOntology(Paths.get(hpoOntology));
     }
 
@@ -138,17 +134,9 @@ public abstract class OptionsParser {
         if(checkIfPathIsDir(disgenetDataDir)) {
             this.disgenetDataDir = disgenetDataDir;
         } else {
-            throw new IOException(disgenetDataDir.getFileName() + " is not a readable file.");
+            throw new IOException(disgenetDataDir.getFileName() + " is not a directory.");
         }
     }
-
-    public RdfStorageFormat getRdfStorageFormat() {
-        return rdfStorageFormat;
-    }
-
-//    protected void setRdfStorageFormat(RdfStorageFormat rdfStorageFormat) {
-//        this.rdfStorageFormat = rdfStorageFormat;
-//    }
 
     public DisgenetRdfVersion getDisgenetRdfVersion() {
         return disgenetRdfVersion;
@@ -156,19 +144,11 @@ public abstract class OptionsParser {
 
     /**
      * @param disgenetRdfVersion a {@link String} defining the DisGeNET RDF version
-     * @throws InvalidStringFormatException see {@link DisgenetRdfVersion#retrieveVersion(String)}
-     * @see DisgenetRdfVersion#retrieveVersion(String)
+     * @throws InvalidStringFormatException see {@link DisgenetRdfVersion#retrieve(String)}
+     * @see DisgenetRdfVersion#retrieve(String)
      */
     private void setDisgenetRdfVersion(String disgenetRdfVersion) throws InvalidStringFormatException {
-        this.disgenetRdfVersion = DisgenetRdfVersion.retrieveVersion(disgenetRdfVersion);
-    }
-
-    /**
-     * @param disgenetRdfVersion an {@code int} defining the DisGeNET RDF version
-     * @see DisgenetRdfVersion#retrieveVersion(int)
-     */
-    private void setDisgenetRdfVersion(int disgenetRdfVersion) {
-        this.disgenetRdfVersion = DisgenetRdfVersion.retrieveVersion(disgenetRdfVersion);
+        this.disgenetRdfVersion = DisgenetRdfVersion.retrieve(disgenetRdfVersion);
     }
 
     /**
@@ -219,7 +199,7 @@ public abstract class OptionsParser {
     public Path getOutputFile() {
         return outputFile;
     }
-    protected void setOutputFile(String outputFile) throws FileAlreadyExistsException {
+    protected void setOutputFile(String outputFile) throws InvalidPathException, FileAlreadyExistsException {
         setOutputFile(Paths.get(outputFile));
     }
 
@@ -230,11 +210,19 @@ public abstract class OptionsParser {
         this.outputFile = outputFile;
     }
 
+    public PhenotypesRetrieverFactory getPhenotypesRetrieverFactory() {
+        return phenotypesRetrieverFactory;
+    }
+
+    protected void setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory phenotypesRetrieverFactory) {
+        this.phenotypesRetrieverFactory = phenotypesRetrieverFactory;
+    }
+
     public int getOntologyMaxDistance() {
         return ontologyMaxDistance;
     }
 
-    protected void setOntologyMaxDistance(String ontologyMaxDistance) {
+    protected void setOntologyMaxDistance(String ontologyMaxDistance) throws NumberFormatException {
         setOntologyMaxDistance(Integer.parseInt(ontologyMaxDistance));
     }
 
@@ -243,41 +231,44 @@ public abstract class OptionsParser {
     }
 
     /**
-     * Checks whether the set variables adhere to the selected {@link RunMode}.
+     * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
+     * user input if variables are set correctly (based on the specified {@link RunMode}.
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
-    protected void checkConfig() throws IOException {
-        List<String> errors = new ArrayList<>();
-
+    protected boolean checkConfig() {
         // With RunMode.NONE there are no requirements.
         if(!runMode.equals(RunMode.NONE)) {
             // Check if HPO ontology data is set.
             if (hpoOntology == null) {
-                errors.add("HPO ontology not set.");
+                return false;
             }
             // Check if DisGeNET data is set.
             if (disgenetDataDir == null || disgenetRdfVersion == null) {
-                errors.add("DisGeNET dataset not set.");
+                return false;
             }
             // Check if an output file was given.
             if (outputFile == null) {
-                errors.add("No output file was given.");
+                return false;
             }
             // Check config specific settings are set.
             switch (runMode) {
+                // Check if there are any input phenotypes.
                 case GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES:
                     if (phenotypes.size() == 0) {
-                        errors.add("No phenotype was given.");
+                        return false;
                     }
+                    // Check if a factory for related HPO retrieval was set.
+                    if(phenotypesRetrieverFactory == null) {
+                        return false;
+                    }
+                    // Check if a max distance for related HPO retrieval was set.
                     if(ontologyMaxDistance == null) {
-                        errors.add("No HPO ontology maximum distance was set.");
+                        return false;
                     }
             }
         }
 
-        if(errors.size() > 0) {
-            throw new OptionsException(StringUtils.join(errors, System.lineSeparator()));
-        }
+        return true;
     }
 
     /**

@@ -3,11 +3,16 @@ package org.molgenis.vibe.options_digestion;
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Command line options parser.
@@ -35,7 +40,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws InvalidPathException see {@link #digestCommandLine()}
      * @throws IOException see {@link #digestCommandLine()}
      */
-    public CommandLineOptionsParser(String[] args) throws ParseException, InvalidPathException, IOException {
+    public CommandLineOptionsParser(String[] args) throws ParseException, IOException {
         requireNonNull(args);
 
         parseCommandLine(args);
@@ -57,13 +62,6 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("Shows text indicating the processes that are being done.")
                 .build());
 
-//        options.addOption(Option.builder("m")
-//                .longOpt("mode")
-//                .desc("The application mode to be ran.")
-//                .hasArg()
-//                .argName("NUMBER")
-//                .build());
-
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
                 .desc("A phenotype described using an HPO id. Must include the 'hp:' or 'HP:' prefix.")
@@ -71,33 +69,36 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .argName("HPO ID")
                 .build());
 
-        options.addOption(Option.builder("n")
+        options.addOption(Option.builder("w")
                 .longOpt("ontology")
                 .desc("The Human Phenotype Ontology file (.owl).")
                 .hasArg()
                 .argName("FILE")
                 .build());
 
-        options.addOption(Option.builder("nd")
+        options.addOption(Option.builder("c")
+                .longOpt("ontology-children")
+                .desc("Use the HPO children algorithm for related HPO retrieval.")
+                .build());
+
+        options.addOption(Option.builder("d")
                 .longOpt("ontology-distance")
-                .desc("The maximum distance to be used for retrieval of connected HPOs.")
+                .desc("Use the HPO distance algorithm for related HPO retrieval.")
+                .build());
+
+        options.addOption(Option.builder("m")
+                .longOpt("ontology-max")
+                .desc("The maximum distance to be used for the related HPO retrieval algorithms.")
                 .hasArg()
                 .argName("NUMBER")
                 .build());
 
-        options.addOption(Option.builder("d")
-                .longOpt("disgenet")
-                .desc("The directory containing the files for creating a DisGeNET RDF model.")
+        options.addOption(Option.builder("t")
+                .longOpt("tdb")
+                .desc("The directory containing the DisGeNET RDF model as a Apache Jena TDB.")
                 .hasArg()
                 .argName("DIR")
                 .build());
-
-//        options.addOption(Option.builder("dv")
-//                .longOpt("disgenetver")
-//                .desc("The disgenet dump file release version.")
-//                .hasArg()
-//                .argName("VERSION")
-//                .build());
 
         options.addOption(Option.builder("o")
                 .longOpt("output")
@@ -112,7 +113,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -n <FILE> -nd <NUMBER> -d <DIR> -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> -w <FILE> ( -c | -d ) -m <NUMBER> -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -144,50 +145,103 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
     private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
+        List<String> missing = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        // If no arguments were given, RunMode is set to NONE.
+        if(commandLine.getOptions().length == 0) {
+            setRunMode(RunMode.NONE);
+            return; // IMPORTANT: Does not process any other arguments from this point.
+        }
+
+        // OPTIONAL: Only show help message (set RunMode to NONE).
+        if(commandLine.hasOption("h")) {
+            setRunMode(RunMode.NONE);
+            return; // IMPORTANT: Does not process any other arguments from this point.
+        }
+
+        // OPTIONAL: Verbose
         if(commandLine.hasOption("v")) {
             setVerbose(true);
         }
 
-        if(commandLine.hasOption("p")) {
-            // Digests phenotype(s).
-            setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
-        }
+        // Sets RunMode to currently only available option (besides NONE).
+        setRunMode(RunMode.GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES);
 
-        if(commandLine.hasOption("n")) {
-            setHpoOntology(commandLine.getOptionValue("n"));
-            if(commandLine.hasOption("nd")) {
-                setOntologyMaxDistance(commandLine.getOptionValue("nd"));
+        // REQUIRED: DisGeNET TDB.
+        if(commandLine.hasOption("t")) {
+            try {
+                setDisgenet(commandLine.getOptionValue("t"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+            } catch (InvalidPathException | IOException e) {
+                errors.add(e.getMessage());
             }
+        } else {
+            missing.add("-t");
         }
 
-        if(commandLine.hasOption("d")) {
-//            if(commandLine.hasOption("dv")) {
-//                setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
-//            } else {
-            setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
-//            }
+        // REQUIRED: HPO ontology file.
+        if(commandLine.hasOption("w")) {
+            try {
+                setHpoOntology(commandLine.getOptionValue("w"));
+            } catch(InvalidPathException | IOException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-w");
         }
 
+        // REQUIRED: HPO ontology related retrieval max distance.
+        if(commandLine.hasOption("m")) {
+            try {
+                setOntologyMaxDistance(commandLine.getOptionValue("m"));
+            } catch (NumberFormatException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-m");
+        }
+
+        // REQUIRED: HPO ontology related retrieval algorithm.
+        if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
+            errors.add("Only 1 of these arguments is allowed: -c | -d");
+        } else if(commandLine.hasOption("c") || commandLine.hasOption("d")) { // If one is available, set factory.
+            if (commandLine.hasOption("c")) {
+                setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.CHILDREN);
+            } else if (commandLine.hasOption("d")) {
+                setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.DISTANCE);
+            }
+        } else { // Both missing not allowed.
+            missing.add("-c | -d");
+        }
+
+        // REQUIRED: Phenotypes.
+        if(commandLine.hasOption("p")) {
+            try {
+                setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+            } catch(InvalidStringFormatException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-p");
+        }
+
+        // Output file.
         if(commandLine.hasOption("o")) {
-            setOutputFile(commandLine.getOptionValue("o"));
+            try {
+                setOutputFile(commandLine.getOptionValue("o"));
+            } catch(InvalidPathException | FileAlreadyExistsException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-o");
         }
 
-        // Selects run mode.
-        // Note: current implementation only has 1 mode and therefore currently uses the uncommented code below instead.
-//        if(commandLine.hasOption("m")) {
-//            setRunMode(RunMode.retrieve(commandLine.getOptionValue("m"))); // throws NumberFormatException
-//        }
-
-        // As there currently is only 1 run mode, if ANY argument is given this run mode is automatically selected (-h overrides this).
-        if(commandLine.getOptions().length > 0) {
-            // Sets run mode.
-            setRunMode(RunMode.GET_DISGENET_GENE_GDAS_FOR_PHENOTYPES);
+        // Processes missing and errors and throws an Exception if any errors were present.
+        if(missing.size() > 0) {
+            errors.add(0, "Missing arguments: " + StringUtils.join(missing, ", "));
         }
-
-        // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
-        // is shown before the application quits.
-        if(commandLine.hasOption("h")) {
-            setRunMode(RunMode.NONE);
+        if(errors.size() > 0) {
+            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
 }

@@ -5,27 +5,38 @@ import java.util.ArrayList;
 import java.util.List;
 
 public enum TestData {
-    TTL("disgenet_mini") {
+    TTL("disgenet_mini/") {
         @Override
         public String[] getFiles() {
             return filterFileArray(super.getFiles(), ".ttl", ".owl");
         }
     },
-    TTL_NO_ONTOLOGY("disgenet_mini") {
+    TTL_NO_ONTOLOGY("disgenet_mini/") {
         @Override
         public String[] getFiles() {
             return filterFileArray(super.getFiles(), ".ttl");
         }
     },
-    ONTOLOGY_FILE("hpo") {
+    ONTOLOGY_FILE("hpo/") {
         @Override
         public String[] getFiles() {
-            return new String[]{getDir() + "/hp.owl"};
+            return new String[]{getDir() + "hp.owl"};
         }
     },
-    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology"),
-    TDB_MINI("disgenet_mini_tdb"),
-    TDB_FULL("disgenet_full_tdb");
+    NON_EXISTING("") {
+        @Override
+        public String[] getFiles() {
+            return new String[]{super.getDir() + "myNonExistingFile.txt"};
+        }
+
+        @Override
+        public String getDir() {
+            return super.getDir() + "nonExistingDir/";
+        }
+    },
+    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology/"),
+    TDB_MINI("disgenet_mini_tdb/"),
+    TDB_FULL("disgenet_full_tdb/");
 
     /**
      * ClassLoader object to view test resource files. Test files can be retrieved using {@code getResource()}, where an
