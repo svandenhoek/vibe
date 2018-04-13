@@ -1,15 +1,6 @@
 package org.molgenis.vibe.rdf_processing.querying;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.io.ByteStreams;
-import org.apache.jena.query.ResultSetFormatter;
-import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
-import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.Arrays;

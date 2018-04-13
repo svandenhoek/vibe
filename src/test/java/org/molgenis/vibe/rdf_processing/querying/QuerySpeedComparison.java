@@ -1,7 +1,7 @@
 package org.molgenis.vibe.rdf_processing.querying;
 
-import com.google.common.base.Stopwatch;
-import com.google.common.io.ByteStreams;
+import org.apache.jena.ext.com.google.common.base.Stopwatch;
+import org.apache.jena.ext.com.google.common.io.ByteStreams;
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.ModelReader;

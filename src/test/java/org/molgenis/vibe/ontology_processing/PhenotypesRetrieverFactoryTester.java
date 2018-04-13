@@ -4,7 +4,6 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 public class PhenotypesRetrieverFactoryTester {
-
     @Test
     public void retrieveChildren() {
         Assert.assertEquals(PhenotypesRetrieverFactory.retrieve("children"), PhenotypesRetrieverFactory.CHILDREN);

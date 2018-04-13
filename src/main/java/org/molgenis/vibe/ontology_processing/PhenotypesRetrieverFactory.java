@@ -3,7 +3,6 @@ package org.molgenis.vibe.ontology_processing;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.formats.EnumTypeDefiner;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetAssociationType;
 
 import java.util.Collection;
 

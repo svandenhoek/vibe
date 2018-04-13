@@ -1,7 +1,7 @@
 package org.molgenis.vibe.ontology_processing;
 
-import com.google.common.base.Stopwatch;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.apache.jena.ontology.OntModel;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
