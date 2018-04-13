@@ -67,7 +67,7 @@ public enum RunMode {
     }
 
     protected ModelReader loadDisgenetDatabase() {
-        getAppOptions().printVerbose("# Loading DisGeNET dataset.");
+        getAppOptions().printVerbose("# Loading DisGeNET TDB.");
         ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDisgenetDataDir());
         printElapsedTime();
 
