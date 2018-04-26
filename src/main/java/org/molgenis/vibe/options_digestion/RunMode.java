@@ -7,7 +7,8 @@ import org.molgenis.vibe.io.OntologyModelFilesReader;
 import org.molgenis.vibe.io.output.FileOutputWriter;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
-import org.molgenis.vibe.io.output.ResultsPerGeneCsvFileOutputWriter;
+import org.molgenis.vibe.io.output.ResultsPerGeneSeparatedValuesFileOutputWriter;
+import org.molgenis.vibe.io.output.ValuesSeparator;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
 import org.molgenis.vibe.query_output_digestion.prioritization.HighestSingleDisgenetScoreGenePrioritizer;
@@ -96,7 +97,8 @@ public enum RunMode {
 
     protected void writeToFile(GeneDiseaseCollection geneDiseaseCollection, Prioritizer prioritizer) throws IOException {
         getAppOptions().printVerbose("# Writing genes to file.");
-        FileOutputWriter outputWriter = new ResultsPerGeneCsvFileOutputWriter(getAppOptions().getOutputFile(), geneDiseaseCollection, prioritizer.getPriority());
+        FileOutputWriter outputWriter = new ResultsPerGeneSeparatedValuesFileOutputWriter(getAppOptions().getOutputFile(),
+                geneDiseaseCollection, prioritizer.getPriority(), ValuesSeparator.COMMA, ValuesSeparator.SEMICOLON);
         outputWriter.run();
         printElapsedTime();
     }

@@ -10,12 +10,13 @@ import java.nio.file.Path;
 import java.util.List;
 import java.util.Set;
 
+import static java.util.Objects.requireNonNull;
+
 /**
  * Writer for writing {@link Gene}{@code} to a CSV file where a single line represent a {@link Gene}. A separate {@link List}
  * defines the order of {@link Gene}{@code s} in the output file.
  */
-public class ResultsPerGeneCsvFileOutputWriter extends CsvFileOutputWriter {
-
+public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValuesFileOutputWriter {
     /**
      * The data to be written.
      */
@@ -27,15 +28,25 @@ public class ResultsPerGeneCsvFileOutputWriter extends CsvFileOutputWriter {
     private List<Gene> priority;
 
     /**
+     * The second level separator to be used to separate values within a single field separated by the primary separator.
+     */
+    private ValuesSeparator secondarySeparator;
+
+    /**
      *
      * @param path path of file for data to be written to
      * @param collection the data to be written
      * @param priority defines the order in which the {@link Gene}{@code s} are written to the file
+     * @param primarySeparator highest level values separator
+     * @param secondarySeparator second level values separator (separation of values within a single value separated by
+     *                          the {@code primarySeparator})
      */
-    public ResultsPerGeneCsvFileOutputWriter(Path path, GeneDiseaseCollection collection, List<Gene> priority) {
-        super(path);
-        this.collection = collection;
-        this.priority = priority;
+    public ResultsPerGeneSeparatedValuesFileOutputWriter(Path path, GeneDiseaseCollection collection, List<Gene> priority,
+                                                         ValuesSeparator primarySeparator, ValuesSeparator secondarySeparator) {
+        super(path, primarySeparator);
+        this.collection = requireNonNull(collection);
+        this.priority = requireNonNull(priority);
+        this.secondarySeparator = requireNonNull(secondarySeparator);
     }
 
     public void run() throws IOException {
@@ -45,7 +56,7 @@ public class ResultsPerGeneCsvFileOutputWriter extends CsvFileOutputWriter {
         writer.newLine();
         for(Gene gene : priority) {
             boolean firstDisease = true;
-            writer.write(gene.getSymbol() + SEPARATOR + QUOTE_MARK);
+            writer.write(gene.getSymbol() + getSeparator() + QUOTE_MARK);
 
             double highestScore = 0;
 
@@ -58,14 +69,13 @@ public class ResultsPerGeneCsvFileOutputWriter extends CsvFileOutputWriter {
                     writer.write(gdc.getDisease().getName());
                     firstDisease=false;
                 } else {
-                    writer.write(";" + gdc.getDisease().getName());
+                    writer.write(secondarySeparator + gdc.getDisease().getName());
                 }
             }
-            writer.write(QUOTE_MARK + SEPARATOR + Double.toString(highestScore));
+            writer.write(QUOTE_MARK + getSeparator() + Double.toString(highestScore));
             writer.newLine();
         }
 
-        writer.flush();
-        writer.close();
+        closeWriter();
     }
 }

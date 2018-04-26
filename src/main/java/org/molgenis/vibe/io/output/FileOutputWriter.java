@@ -31,6 +31,13 @@ public abstract class FileOutputWriter {
         return writer;
     }
 
+    protected void closeWriter() throws IOException {
+        if(writer != null) {
+            writer.flush();
+            writer.close();
+        }
+    }
+
     public FileOutputWriter(Path path) {
         this.path = path;
     }
