@@ -5,6 +5,7 @@ import static java.util.Objects.requireNonNull;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.io.output.FileOutputWriterFactory;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
@@ -107,6 +108,11 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("The file to write output to.")
                 .hasArg()
                 .argName("FILE")
+                .build());
+
+        options.addOption(Option.builder("s")
+                .longOpt("output")
+                .desc("Simple output format (file only contains separated gene symbols)")
                 .build());
     }
 
@@ -247,6 +253,11 @@ public class CommandLineOptionsParser extends OptionsParser {
                 setOutputFile(commandLine.getOptionValue("o"));
             } catch(InvalidPathException | FileAlreadyExistsException e) {
                 errors.add(e.getMessage());
+            }
+            if(commandLine.hasOption("s")) {
+                setFileOutputWriterFactory(FileOutputWriterFactory.SIMPLE);
+            } else {
+                setFileOutputWriterFactory(FileOutputWriterFactory.REGULAR);
             }
         } else {
             missing.add("-o");

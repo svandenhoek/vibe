@@ -2,6 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.io.output.FileOutputWriterFactory;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
@@ -51,6 +52,11 @@ public abstract class OptionsParser {
      * The file to write the output to.
      */
     private Path outputFile;
+
+    /**
+     * Defines the {@link org.molgenis.vibe.io.output.FileOutputWriter} to be used.
+     */
+    private FileOutputWriterFactory fileOutputWriterFactory;
 
     /**
      * Defines the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever} to be used.
@@ -210,6 +216,14 @@ public abstract class OptionsParser {
         this.outputFile = outputFile;
     }
 
+    public FileOutputWriterFactory getFileOutputWriterFactory() {
+        return fileOutputWriterFactory;
+    }
+
+    protected void setFileOutputWriterFactory(FileOutputWriterFactory fileOutputWriterFactory) {
+        this.fileOutputWriterFactory = fileOutputWriterFactory;
+    }
+
     public PhenotypesRetrieverFactory getPhenotypesRetrieverFactory() {
         return phenotypesRetrieverFactory;
     }
@@ -244,6 +258,10 @@ public abstract class OptionsParser {
             }
             // Check if an output file was given.
             if (outputFile == null) {
+                return false;
+            }
+            // Checks if an output factory was given.
+            if (fileOutputWriterFactory == null) {
                 return false;
             }
             // Check config specific settings are set.
