@@ -26,7 +26,7 @@ IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
 readonly SEP_SIDE='######## ######## ########'
 
 # Download location of resource files.
-readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-03-07.tar.gz"
+readonly TEST_RESOURCES_DOWNLOAD_NAME="test_resources_2018-05-03.tar.gz"
 readonly TEST_RESOURCES_DOWNLOAD="https://molgenis26.target.rug.nl/downloads/vibe/${TEST_RESOURCES_DOWNLOAD_NAME}"
 
 # Base path (to script).
@@ -74,35 +74,34 @@ digestCommandLine() {
 
 runTestPreparations() {
     # Define variables.
-    declare -r disgenet_mini="${BASE_PATH}src/test/resources/disgenet_mini"
-    declare -r disgenet_mini_tdb_no_ontology="${BASE_PATH}src/test/resources/disgenet_mini_tdb_no_ontology"
-    declare -r disgenet_mini_tdb="${BASE_PATH}src/test/resources/disgenet_mini_tdb"
-    declare -r disgenet_full_symlink_path="${BASE_PATH}src/test/resources/disgenet_full_tdb"
+    declare -r test_resources="${BASE_PATH}src/test/resources/"
+    declare -r disgenet_mini="${test_resources}disgenet_mini"
+    declare -r disgenet_mini_tdb_no_ontology="${test_resources}disgenet_mini_tdb_no_ontology"
+    declare -r disgenet_mini_tdb="${test_resources}disgenet_mini_tdb"
+    declare -r disgenet_full_symlink_path="${test_resources}disgenet_full_tdb"
     declare -r test_resources_tmp_download="${TMP_DIR}${TEST_RESOURCES_DOWNLOAD_NAME}"
 
-    # Removes currently present files if present (symlink is not removed!).
-    rm -fr "$disgenet_mini"
-    rm -fr "$disgenet_mini_tdb_no_ontology"
-    rm -fr "$disgenet_mini_tdb"
+    # Removes all available test resources (uncludes symlink!).
+    rm -fr "$test_resources"/*
 
     # Creates tmp dir for temporary storage of data.
-    mkdir "$TMP_DIR"
+    mkdir "$TMP_DIR" # local test: disable and create manually
 
     # Downloads test data.
-    echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n"
-    wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR"
+    echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n" # local test: disable
+    wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR" # local test: disable
 
     # Extracts archive (overrides if exists).
     echo "\n\n$SEP_SIDE Extracting data $SEP_SIDE\n\n"
     tar -zxvf "$test_resources_tmp_download" -C "$BASE_PATH"
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
-    echo "\n\n$SEP_SIDE Generating TDB without ontology information $SEP_SIDE\n\n"
+    echo "\n\n$SEP_SIDE Generating TDB without DisGeNET Association Type Ontology $SEP_SIDE\n\n"
     tdbloader2 --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
-    echo "\n\n$SEP_SIDE Generating TDB with ontology information $SEP_SIDE\n\n"
-    tdbloader2 --loc "$disgenet_mini_tdb" "$disgenet_mini"/*.ttl "$disgenet_mini"/*.owl
+    echo "\n\n$SEP_SIDE Generating TDB with DisGeNET Association Type Ontology $SEP_SIDE\n\n"
+    tdbloader2 --loc "$disgenet_mini_tdb" "$disgenet_mini"/*
 
     # Generates symlink to full DisGeNET TDB.
     if [[ ${DISGENET_FULL+isset} == isset ]]
@@ -111,7 +110,7 @@ runTestPreparations() {
     fi
 
     # Removes tmp dir including content.
-    rm -r "$TMP_DIR"
+    rm -r "$TMP_DIR" # local test: disable
 }
 
 main $@
