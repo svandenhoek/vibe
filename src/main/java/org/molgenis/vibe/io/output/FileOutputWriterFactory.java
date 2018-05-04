@@ -17,7 +17,7 @@ public enum FileOutputWriterFactory {
         @Override
         public FileOutputWriter create(Path path, GeneDiseaseCollection geneDiseaseCollection, Prioritizer prioritizer) {
             return new ResultsPerGeneSeparatedValuesFileOutputWriter(path, geneDiseaseCollection, prioritizer.getPriority(),
-                    ValuesSeparator.COMMA, ValuesSeparator.SEMICOLON);
+                    ValuesSeparator.TAB, ValuesSeparator.VERTICAL_LINE, ValuesSeparator.COLON, ValuesSeparator.COMMA);
         }
     };
 

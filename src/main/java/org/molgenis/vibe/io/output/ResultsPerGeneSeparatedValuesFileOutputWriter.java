@@ -1,5 +1,6 @@
 package org.molgenis.vibe.io.output;
 
+import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.GeneDiseaseCombination;
@@ -7,6 +8,7 @@ import org.molgenis.vibe.formats.GeneDiseaseCombination;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -28,9 +30,19 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
     private List<Gene> priority;
 
     /**
-     * The second level separator to be used to separate values within a single field separated by the primary separator.
+     * Separates key-value pairs.
      */
-    private ValuesSeparator secondarySeparator;
+    private ValuesSeparator keyValuePairSeparator;
+
+    /**
+     * Separates the key from the values in a key-value pair.
+     */
+    private ValuesSeparator keyValueSeparator;
+
+    /**
+     * Separates the values from a single key from a key-value pair.
+     */
+    private ValuesSeparator valuesSeparator;
 
     /**
      *
@@ -38,41 +50,78 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
      * @param collection the data to be written
      * @param priority defines the order in which the {@link Gene}{@code s} are written to the file
      * @param primarySeparator highest level values separator
-     * @param secondarySeparator second level values separator (separation of values within a single value separated by
-     *                          the {@code primarySeparator})
+     * @param keyValuePairSeparator separates different key-value pairs
+     * @param keyValueSeparator separates a key and value
+     * @param valuesSeparator separates the values from a key-value pair
+     * @throws IllegalArgumentException if any separator is equal to another separator
      */
     public ResultsPerGeneSeparatedValuesFileOutputWriter(Path path, GeneDiseaseCollection collection, List<Gene> priority,
-                                                         ValuesSeparator primarySeparator, ValuesSeparator secondarySeparator) {
+                                                         ValuesSeparator primarySeparator, ValuesSeparator keyValuePairSeparator,
+                                                         ValuesSeparator keyValueSeparator, ValuesSeparator valuesSeparator) {
         super(path, primarySeparator);
         this.collection = requireNonNull(collection);
         this.priority = requireNonNull(priority);
-        this.secondarySeparator = requireNonNull(secondarySeparator);
+        this.keyValuePairSeparator = requireNonNull(keyValuePairSeparator);
+        this.keyValueSeparator = requireNonNull(keyValueSeparator);
+        this.valuesSeparator = requireNonNull(valuesSeparator);
+
+        Set<ValuesSeparator> separators = new HashSet<>();
+        separators.add(primarySeparator);
+        separators.add(keyValuePairSeparator);
+        separators.add(keyValueSeparator);
+        separators.add(valuesSeparator);
+
+        // Checks whether all separators are unique.
+        if(separators.size() < 4) {
+            throw new IllegalArgumentException("the separators cannot be the same");
+        }
     }
 
     public void run() throws IOException {
         BufferedWriter writer = getWriter();
 
-        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest score");
+        // Writes header.
+        writer.write("gene" + getSeparator() + "disease pubmed IDs" + getSeparator() + "highest score");
         writer.newLine();
-        for(Gene gene : priority) {
-            boolean firstDisease = true;
-            writer.write(gene.getSymbol() + getSeparator() + QUOTE_MARK);
 
+        // Goes through all ordered genes.
+        for(Gene gene : priority) {
+            // Writes gene symbol to file.
+            writer.write(gene.getSymbol() + getSeparator());
+
+            // Stores the highest DisGeNET score for this gene.
             double highestScore = 0;
 
-            Set<GeneDiseaseCombination> geneCombinations = collection.getByGene(gene);
-            for(GeneDiseaseCombination gdc : geneCombinations) {
+            // Used for key-value pair separator.
+            boolean firstDisease = true;
+
+            // Processes/writes gene data.
+            for(GeneDiseaseCombination gdc : collection.getByGene(gene)) {
+                // Selects highest DisGeNET score available for the gene.
                 if(gdc.getDisgenetScore() > highestScore) {
                     highestScore = gdc.getDisgenetScore();
                 }
-                if(firstDisease) {
-                    writer.write(gdc.getDisease().getName());
-                    firstDisease=false;
+
+                // Checks whether this is the first disease. If not, adds a key-value pair separator before the next
+                // disease data is written.
+                if(!firstDisease) {
+                    writer.write(keyValuePairSeparator.toString());
                 } else {
-                    writer.write(secondarySeparator + gdc.getDisease().getName());
+                    firstDisease = false;
+                }
+
+                // Writes the disease name surrouned by quotes.
+                writer.write(QUOTE_MARK + gdc.getDisease().getName() + QUOTE_MARK);
+
+                // If there is evidence, writes these as well.
+                if(gdc.getAllEvidence().size() > 0) {
+                    // Merges the evidence URIs with as separator the values separator.
+                    String evidence = StringUtils.join(gdc.getAllEvidence(), valuesSeparator.toString());
+                    writer.write(keyValueSeparator + evidence);
                 }
             }
-            writer.write(QUOTE_MARK + getSeparator() + Double.toString(highestScore));
+
+            writer.write(getSeparator() + Double.toString(highestScore));
             writer.newLine();
         }
 

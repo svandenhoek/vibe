@@ -6,7 +6,10 @@ package org.molgenis.vibe.io.output;
 public enum ValuesSeparator {
     COMMA(","),
     TAB("\t"),
-    SEMICOLON(";");
+    COLON(":"),
+    SEMICOLON(";"),
+    HYPHEN_MINUS("-"),
+    VERTICAL_LINE("|");
 
     /**
      * The separator character.
