@@ -52,7 +52,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
     public void run() throws IOException {
         BufferedWriter writer = getWriter();
 
-        writer.write("gene,diseases,highest score");
+        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest score");
         writer.newLine();
         for(Gene gene : priority) {
             boolean firstDisease = true;
