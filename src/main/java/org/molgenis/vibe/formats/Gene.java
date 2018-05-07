@@ -9,15 +9,12 @@ import java.net.URI;
 /**
  * A gene. Note that equality is based on the NCBI gene id only (as multiple objects with the same id but a different
  * name/symbol should be regarded as invalid and not as multiple DIFFERENT genes).
- *
- * If no prefix is given for validation, an ncbi gene id is assumed.
  */
 public class Gene extends BiologicalEntity {
-    @Override protected String prefix() { return "ncbigene:"; }
-    @Override protected String regex() { return "^((ncbigene|NCBIGENE):)?([0-9]+)$"; }
-    @Override protected int regexGroup() { return 3; }
-
-    private static final String PREFIX = "ncbigene";
+    private static final String ID_PREFIX = "ncbigene:";
+    private static final String ID_REGEX = "^(ncbigene|NCBIGENE):([0-9]+)$";
+    private static final int REGEX_ID_GROUP = 2;
+    private static final String URI_PREFIX = "http://identifiers.org/ncbigene/";
 
     /**
      * The HGNC (HUGO Gene Nomenclature Committee) name.
@@ -26,6 +23,26 @@ public class Gene extends BiologicalEntity {
 
     public String getSymbol() {
         return symbol;
+    }
+
+    @Override
+    protected String getIdPrefix() {
+        return ID_PREFIX;
+    }
+
+    @Override
+    protected String getIdRegex() {
+        return ID_REGEX;
+    }
+
+    @Override
+    protected int getRegexIdGroup() {
+        return REGEX_ID_GROUP;
+    }
+
+    @Override
+    protected String getUriPrefix() {
+        return URI_PREFIX;
     }
 
     public Gene(String id) {

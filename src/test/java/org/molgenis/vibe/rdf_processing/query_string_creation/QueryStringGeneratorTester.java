@@ -4,7 +4,7 @@ import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
 import org.apache.jena.query.Syntax;
-import org.molgenis.vibe.TestFilesDir;
+import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.rdf_processing.QueryTester;
@@ -34,7 +34,7 @@ public class QueryStringGeneratorTester extends QueryTester {
 
     @BeforeClass
     public void beforeClass() {
-        reader = new TripleStoreDbReader(TestFilesDir.TDB_MINI.getDir());
+        reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
     }
 
     @AfterClass(alwaysRun = true)
@@ -116,189 +116,85 @@ public class QueryStringGeneratorTester extends QueryTester {
     }
 
     @Test
-    public void testHpoSubClassOfInclusive() {
+    public void testDiseaseRetrievalForHpo() {
         List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
+        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1849955");
+        expectedOutput.add("http://linkedlifedata.com/resource/umls/id/C1834674");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf* <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?disease \n" +
+                "WHERE { \n" +
+                "VALUES ?hpo {<http://purl.obolibrary.org/obo/HP_0002996>} \n" +
+                "{ \n" +
+                "?hpo skos:exactMatch ?disease . \n" +
+                "} \n" +
+                "UNION \n" +
+                "{ \n" +
+                "?pda rdf:type sio:SIO_000897 ; \n" +
+                "sio:SIO_000628 ?hpo , ?disease . \n" +
+                "} \n" +
+                "?disease rdf:type ncit:C7057 . \n" +
                 "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+        assertSingleFieldFromRunnerOutput(runner, "disease", expectedOutput);
     }
 
     @Test
-    public void testHpoSubClassOfExclusive() {
+    public void testGeneRetrievalForHpo() {
         List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
+        expectedOutput.add("http://identifiers.org/ncbigene/1280");
+        expectedOutput.add("http://identifiers.org/ncbigene/8243");
+        expectedOutput.add("http://identifiers.org/ncbigene/1291");
+        expectedOutput.add("http://identifiers.org/ncbigene/1292");
 
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf+ <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?gene \n" +
+                "WHERE { \n" +
+                "VALUES ?hpo {<http://purl.obolibrary.org/obo/HP_0002996>} \n" +
+                "{ \n" +
+                "?hpo rdf:type sio:SIO_010056 ; \n" +
+                "skos:exactMatch ?disease . \n" +
+                "} \n" +
+                "UNION \n" +
+                "{ \n" +
+                "?pda rdf:type sio:SIO_000897 ; \n" +
+                "sio:SIO_000628 ?hpo , ?disease . \n" +
+                "} \n" +
+                "?disease rdf:type ncit:C7057 . \n" +
+                "?gda sio:SIO_000628 ?disease , ?gene ; \n" +
+                "rdf:type ?type . \n" +
+                "?type rdfs:subClassOf* sio:SIO_000983 . \n" +
+                "?gene rdf:type ncit:C16612 . \n" +
                 "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+        assertSingleFieldFromRunnerOutput(runner, "gene", expectedOutput);
     }
 
     @Test
-    public void testHpoSubClassOfNoGrandChilds() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf? <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
+    public void testGdaDataRetrievalForGenes() {
+        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?disease ?diseaseId ?diseaseTitle ?gdaScoreNumber ?gdaSource ?evidence \n" +
+                "WHERE { \n" +
+                "VALUES ?gene {<http://identifiers.org/ncbigene/1280>}" +
+                "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
+                "rdf:type ?type ; \n" +
+                "sio:SIO_000216 ?gdaScore ; \n" +
+                "sio:SIO_000253 ?gdaSource . \n" +
+                "?type rdfs:subClassOf* sio:SIO_000983 . \n" + // [1] -> [2]
+                "?gene rdf:type ncit:C16612 ; \n" +
+                "dcterms:identifier ?geneId ; \n" +
+                "dcterms:title ?geneTitle ; \n" +
+                "sio:SIO_000205 ?geneSymbol . \n" +
+                "?geneSymbol rdf:type ncit:C43568 ; \n" +
+                "dcterms:title ?geneSymbolTitle . \n" +
+                "?gdaScore rdf:type ncit:C25338 ; \n" +
+                "sio:SIO_000300 ?gdaScoreNumber . \n" +
+                "?disease rdf:type ncit:C7057 ; \n" +
+                "dcterms:identifier ?diseaseId ; \n" +
+                "dcterms:title ?diseaseTitle . \n" +
+                "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
                 "}"));
         ResultSetFormatter.out(System.out, runner.getResultSet());
         runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * @see #testHpoSubClassOfAllStartingFromSelf()
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoSubClassOfOnlyGrandChildrenWithoutDistinct() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * @see #testHpoSubClassOfAllStartingFromSelf()
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoSubClassOfOnlyGrandChildrenWithDistinct() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT DISTINCT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * @see #testHpoSubClassOfAllStartingFromSelf()
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoSubClassOfOnlyGrandChildrenWithIdRetrieval() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo ?hpoId \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{2,} <http://purl.obolibrary.org/obo/HP_0009811> ; \n" +
-                "dcterms:identifier ?hpoId . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    @Test
-    public void testHpoSubClassOfOnlyChildren2Deep() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * {0,} acts as {1,} instead of * (HP_0009811 is not included in the output).
-     *
-     * If no DISTINCT is added, HP_0005060 is returned twice.
-     * Note that it is a child from HP_0002996 through both HP_0001377 and HP_0006376.
-     * Nevertheless, when using * instead of a custom range, it is only returned once without the need for DISTINCT.
-     *
-     * @see #testHpoSubClassOfInclusive()
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoSubClassOfAllStartingFromSelf() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{0,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    /**
-     * @see #testHpoSubClassOfAllStartingFromSelf()
-     */
-    @Test(groups = {"dependencyBug"})
-    public void testHpoSubClassOfAllStartingFromChild() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0005060");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{1,} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
-    }
-
-    @Test
-    public void testHpoSubClassOfOnlyChildren2DeepExcplicitStart() {
-        List<String> expectedOutput = new ArrayList<>();
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0009811");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002967");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0002996");
-        expectedOutput.add("http://purl.obolibrary.org/obo/HP_0001377");
-
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?hpo \n" +
-                "WHERE { ?hpo rdf:type sio:SIO_010056 ; \n" +
-                "rdfs:subClassOf{0,2} <http://purl.obolibrary.org/obo/HP_0009811> . \n" +
-                "}", Syntax.syntaxARQ));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-        assertSingleFieldFromRunnerOutput(runner, "hpo", expectedOutput);
+//        assertSingleFieldFromRunnerOutput(runner, "gene", expectedOutput);
     }
 }

@@ -20,6 +20,11 @@ public class GeneTester {
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
+    public void useUriAsIdInput() {
+        new Gene("http://identifiers.org/ncbigene/1234");
+    }
+
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidGeneIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Gene("Ncbigene:1234");
     }
@@ -29,7 +34,7 @@ public class GeneTester {
         new Gene("nCbigene:1234");
     }
 
-    @Test
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidGeneIdWithoutPrefix() throws InvalidStringFormatException {
         Gene gene = new Gene("1234");
         Assert.assertEquals(gene.getId(), "1234");

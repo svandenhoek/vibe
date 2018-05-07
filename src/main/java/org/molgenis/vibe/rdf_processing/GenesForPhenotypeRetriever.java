@@ -3,12 +3,9 @@ package org.molgenis.vibe.rdf_processing;
 import static java.util.Objects.requireNonNull;
 
 import org.apache.jena.query.QuerySolution;
-import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetAssociationType;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
-import org.molgenis.vibe.rdf_processing.query_string_creation.QueryStringPathRange;
 import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 
 import java.net.URI;
@@ -18,14 +15,29 @@ import java.util.*;
  * Retrieves all required information for further processing regarding the genes belonging to a given phenotype.
  */
 public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
+    /**
+     * The {@link Phenotype}{@code s} to be processed.
+     */
+    private Set<Phenotype> phenotypes;
 
-    // Parameters used for temporary storage during querying.
-    private Set<Phenotype> inputPhenotypes;
-    private Set<Phenotype> phenotypes = new HashSet<>();
-    private Map<URI, Gene> genes = new HashMap<>();
-    private Map<URI, Disease> diseases = new HashMap<>();
+    /**
+     * {@link Gene}{@code s} storage for further processing.
+     */
+    private Set<Gene> genes = new HashSet<>();
 
-    // The final output to be retrieved for further usage after querying.
+    /**
+     * {@link Gene}{@code s} storage for easy retrieval.
+     */
+    private Map<URI, Gene> genesByUri = new HashMap<>();
+
+    /**
+     * {@link Disease}{@code s} storage for easy retrieval.
+     */
+    private Map<URI, Disease> diseasesByUri = new HashMap<>();
+
+    /**
+     * The final output to be retrieved for further usage after querying.
+     */
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
 
     public GeneDiseaseCollection getGeneDiseaseCollection() {
@@ -34,104 +46,58 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
     public GenesForPhenotypeRetriever(ModelReader modelReader, Set<Phenotype> phenotypes) {
         super(modelReader);
-        this.inputPhenotypes = requireNonNull(phenotypes);
+        this.phenotypes = requireNonNull(phenotypes);
     }
 
     @Override
-    public void run() throws CorruptDatabaseException {
+    public void run() {
         retrieveSources();
-        retrieveHpoUris();
-        retrievePhenotypeWithChildren();
-        retrieveDiseases();
-        retrieveGeneDiseaseAssociations();
+        retrieveGenes();
+        retrieveGdasWithDiseases();
     }
 
-    /**
-     * Retrieves/disgests the {@link URI}{@code s} for the given HPO IDs from phenotypes.
-     * @throws CorruptDatabaseException
-     */
-    private void retrieveHpoUris() throws CorruptDatabaseException {
+    private void retrieveGenes() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getIriForHpo(inputPhenotypes));
-        addToPhenotypes(query);
+                DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes));
 
-        // Checks if for all input phenotypes a new phenotype was created that includes an URI.
-        if(inputPhenotypes.size() != phenotypes.size()) {
-            throw new CorruptDatabaseException("the retrieved number of phenotypes is not equal to the number of inserted phenotypes.");
-        }
-    }
-
-    /**
-     * Retrieves/digests the children of initial input phenotypes.
-     */
-    private void retrievePhenotypeWithChildren() {
-        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getHpoChildren(phenotypes, new QueryStringPathRange(0, true)));
-        addToPhenotypes(query);
-    }
-
-    /**
-     * Adds the phenotypes of a query to the phenotypes to be used (for later queries).
-     * @param query
-     */
-    private void addToPhenotypes(QueryRunner query) {
         while(query.hasNext()) {
             QuerySolution result = query.next();
 
-            phenotypes.add(new Phenotype(result.get("hpoId").asLiteral().getString(),
-                    result.get("hpoTitle").asLiteral().getString(),
-                    URI.create(result.get("hpo").asResource().getURI()))
-            );
-        }
-        query.close();
-    }
-
-    /**
-     * Retrieves/digests the phenotype-disease associations for the selected phenotypes.
-     */
-    private void retrieveDiseases() {
-        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getPdas(phenotypes));
-
-        while(query.hasNext()) {
-            QuerySolution result = query.next();
-            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
-
-            diseases.put(diseaseUri,
-                    new Disease(result.get("diseaseId").asLiteral().getString(),
-                            result.get("diseaseTitle").asLiteral().getString(),
-                            diseaseUri)
-            );
-        }
-        query.close();
-    }
-
-    /**
-     * Retrieves/digests gene-disease associations for the selected diseases.
-     */
-    private void retrieveGeneDiseaseAssociations() {
-        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getGdas(new HashSet<>(diseases.values()), DisgenetAssociationType.GENE_DISEASE));
-
-        while(query.hasNext()) {
-            // Retrieve single result.
-            QuerySolution result = query.next();
-
-            // Check if gene is already stored, and if not, stores it (using URI as key).
             URI geneUri = URI.create(result.get("gene").asResource().getURI());
-            Gene gene = genes.get(geneUri);
-            if(gene == null) {
-                gene = new Gene(result.get("geneId").asLiteral().getString(),
-                        result.get("geneTitle").asLiteral().getString(),
-                        result.get("geneSymbolTitle").asLiteral().getString(),
-                        geneUri);
+            String geneId = result.get("geneId").asLiteral().getString();
+            String geneTitle= result.get("geneTitle").asLiteral().getString();
+            String geneSymbol = result.get("geneSymbolTitle").asLiteral().getString();
 
-                genes.put(geneUri, gene);
+            Gene gene = new Gene(geneId, geneTitle, geneSymbol, geneUri);
+            genes.add(gene);
+            genesByUri.put(geneUri, gene);
+        }
+
+        query.close();
+    }
+
+    private void retrieveGdasWithDiseases() {
+        QueryRunner query = new QueryRunner(getModelReader().getModel(),
+                DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes));
+
+        while(query.hasNext()) {
+            QuerySolution result = query.next();
+
+            // Check if disease is already stored, and if not, stores it (using URI as key).
+            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
+            Disease disease = diseasesByUri.get(diseaseUri);
+
+            if(disease == null) {
+                disease = new Disease(result.get("diseaseId").asLiteral().getString(),
+                        result.get("diseaseTitle").asLiteral().getString(),
+                        diseaseUri);
+
+                diseasesByUri.put(diseaseUri, disease);
             }
 
-            // Retrieves disease.
-            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
-            Disease disease = diseases.get(diseaseUri);
+            // Retrieves gene.
+            URI geneUri = URI.create(result.get("gene").asResource().getURI());
+            Gene gene = genesByUri.get(geneUri);
 
             // Retrieves score belonging to the gene-disease combination.
             double score = Double.parseDouble(result.get("gdaScoreNumber").asLiteral().getString());
@@ -159,6 +125,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
                 gdc.add(source);
             }
         }
+
         query.close();
     }
 }

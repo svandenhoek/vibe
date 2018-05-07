@@ -1,6 +1,7 @@
 package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.formats.EnumTypeDefiner;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -10,9 +11,20 @@ import java.util.regex.Pattern;
  * files or fields), these can be specified here (with accompanying getters) so that readers do not need to check for this
  * themselves.
  */
-public enum DisgenetRdfVersion {
-    V5,
-    UNSUPPORTED;
+public enum DisgenetRdfVersion implements EnumTypeDefiner {
+    V5("5"),
+    UNSUPPORTED(null);
+
+    private String id;
+
+    @Override
+    public String getId() {
+        return id;
+    }
+
+    DisgenetRdfVersion(String id) {
+        this.id = id;
+    }
 
     /**
      * Retrieves the {@link DisgenetRdfVersion} based on a {@link String}. If version is not supported, returns
@@ -22,27 +34,17 @@ public enum DisgenetRdfVersion {
      * @return an {@link DisgenetRdfVersion} enum of the specific version
      * @throws InvalidStringFormatException if {@code versionNumber} does not adhere to the regex "^[v|V]?([0-9]+).*$"
      */
-    public static DisgenetRdfVersion retrieveVersion(String versionNumber) throws InvalidStringFormatException {
+    public static DisgenetRdfVersion retrieve(String versionNumber) throws InvalidStringFormatException {
         Matcher m = Pattern.compile("^[v|V]?([0-9]+).*$").matcher(versionNumber);
         if(m.matches()) {
-            return retrieveVersion(Integer.parseInt(m.group(1)));
+            DisgenetRdfVersion version = EnumTypeDefiner.retrieve(m.group(1), DisgenetRdfVersion.class);
+            // If no result is found, returns UNSUPPORTED (so that output is never null).
+            if(version == null) {
+                return DisgenetRdfVersion.UNSUPPORTED;
+            }
+            return version;
         } else {
             throw new InvalidStringFormatException(versionNumber + " does not adhere the required format: ^[v|V]?([0-9]+).*$");
-        }
-    }
-
-    /**
-     * Retrieves the {@link DisgenetRdfVersion} based on a {@code int}. If version is not supported, returns
-     * {@link DisgenetRdfVersion#UNSUPPORTED}.
-     * @param versionNumber a number as {@code int} describing the version
-     * @return an {@link DisgenetRdfVersion} enum of the specific version
-     */
-    public static DisgenetRdfVersion retrieveVersion(int versionNumber) {
-        switch(versionNumber) {
-            case 5:
-                return V5;
-            default:
-                return UNSUPPORTED;
         }
     }
 }

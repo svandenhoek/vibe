@@ -3,11 +3,17 @@ package org.molgenis.vibe.options_digestion;
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
+import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.io.output.FileOutputWriterFactory;
+import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
+import java.nio.file.FileAlreadyExistsException;
 import java.nio.file.InvalidPathException;
 import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Command line options parser.
@@ -35,12 +41,14 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws InvalidPathException see {@link #digestCommandLine()}
      * @throws IOException see {@link #digestCommandLine()}
      */
-    public CommandLineOptionsParser(String[] args) throws ParseException, InvalidPathException, IOException {
+    public CommandLineOptionsParser(String[] args) throws ParseException, IOException {
         requireNonNull(args);
 
         parseCommandLine(args);
         digestCommandLine();
-        super.checkConfig();
+        if(!super.checkConfig()) {
+            throw new IOException("Something went wrong during app configuration. Please contact the developer.");
+        }
     }
 
     /**
@@ -57,32 +65,42 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .desc("Shows text indicating the processes that are being done.")
                 .build());
 
-//        options.addOption(Option.builder("m")
-//                .longOpt("mode")
-//                .desc("The mode the application should run.\n1: Give a phenotype HPO code to retrieve genes matched to it.")
-//                .hasArg()
-//                .argName("NUMBER")
-//                .build());
-
         options.addOption(Option.builder("p")
                 .longOpt("phenotype")
-                .desc("A phenotype described using an HPO id. Can be either the number only or with the 'hp:'/'HP:' prefix.")
+                .desc("A phenotype described using an HPO id. Must include the 'hp:' or 'HP:' prefix.")
                 .hasArg()
                 .argName("HPO ID")
                 .build());
 
-        options.addOption(Option.builder("d")
-                .longOpt("disgenet")
-                .desc("The directory containing the files for creating a DisGeNET RDF model.")
+        options.addOption(Option.builder("w")
+                .longOpt("ontology")
+                .desc("The Human Phenotype Ontology file (.owl).")
                 .hasArg()
-                .argName("DIR")
+                .argName("FILE")
                 .build());
 
-        options.addOption(Option.builder("dv")
-                .longOpt("disgenetver")
-                .desc("The disgenet dump file release version.")
+        options.addOption(Option.builder("c")
+                .longOpt("ontology-children")
+                .desc("Use the HPO children algorithm for related HPO retrieval.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("ontology-distance")
+                .desc("Use the HPO distance algorithm for related HPO retrieval.")
+                .build());
+
+        options.addOption(Option.builder("m")
+                .longOpt("ontology-max")
+                .desc("The maximum distance to be used for the related HPO retrieval algorithms.")
                 .hasArg()
-                .argName("VERSION")
+                .argName("NUMBER")
+                .build());
+
+        options.addOption(Option.builder("t")
+                .longOpt("tdb")
+                .desc("The directory containing the DisGeNET RDF model as a Apache Jena TDB.")
+                .hasArg()
+                .argName("DIR")
                 .build());
 
         options.addOption(Option.builder("o")
@@ -91,6 +109,11 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .hasArg()
                 .argName("FILE")
                 .build());
+
+        options.addOption(Option.builder("s")
+                .longOpt("output")
+                .desc("Simple output format (file only contains separated gene symbols)")
+                .build());
     }
 
     /**
@@ -98,7 +121,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      */
     public static void printHelpMessage()
     {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -d <DIR> -p <HPO ID> -o <FILE>";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> ( -c | -d ) -m <NUMBER>] -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -130,43 +153,122 @@ public class CommandLineOptionsParser extends OptionsParser {
      * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
     private void digestCommandLine() throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
+        List<String> missing = new ArrayList<>();
+        List<String> errors = new ArrayList<>();
+
+        // If no arguments were given, RunMode is set to NONE.
+        if(commandLine.getOptions().length == 0) {
+            setRunMode(RunMode.NONE);
+            return; // IMPORTANT: Does not process any other arguments from this point.
+        }
+
+        // OPTIONAL: Only show help message (set RunMode to NONE).
+        if(commandLine.hasOption("h")) {
+            setRunMode(RunMode.NONE);
+            return; // IMPORTANT: Does not process any other arguments from this point.
+        }
+
+        // OPTIONAL: Verbose
         if(commandLine.hasOption("v")) {
             setVerbose(true);
         }
 
-        if(commandLine.hasOption("p")) {
-            // Digests phenotype(s).
-            setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+        // REQUIRED: DisGeNET TDB.
+        if(commandLine.hasOption("t")) {
+            try {
+                setDisgenet(commandLine.getOptionValue("t"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+            } catch (InvalidPathException | IOException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-t");
         }
 
-        if(commandLine.hasOption("d")) {
-            if(commandLine.hasOption("dv")) {
-                setDisgenet(commandLine.getOptionValue("d"), commandLine.getOptionValue("dv")); // throws InvalidPathException, IOException
+        // OPTIONAL: HPO ontology file.
+        if(commandLine.hasOption("w")) {
+            // -w defines RunMode.
+            setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
+            try {
+                setHpoOntology(commandLine.getOptionValue("w"));
+            } catch(InvalidPathException | IOException e) {
+                errors.add(e.getMessage());
+            }
+
+            // REQUIRED if -w set: HPO ontology related retrieval max distance.
+            if(commandLine.hasOption("m")) {
+                try {
+                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
+                } catch (NumberFormatException e) {
+                    errors.add(e.getMessage());
+                }
             } else {
-                setDisgenet(commandLine.getOptionValue("d"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+                missing.add("-m");
+            }
+
+            // REQUIRED if -w set: HPO ontology related retrieval algorithm.
+            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
+                errors.add("Only 1 of these arguments is allowed: -c | -d");
+            } else if(commandLine.hasOption("c") || commandLine.hasOption("d")) { // If one is available, set factory.
+                if (commandLine.hasOption("c")) {
+                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.CHILDREN);
+                } else if (commandLine.hasOption("d")) {
+                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.DISTANCE);
+                }
+            } else { // Both missing not allowed.
+                missing.add("-c | -d");
+            }
+        } else {
+            // -w defines RunMode.
+            setRunMode(RunMode.GENES_FOR_PHENOTYPES);
+
+            // Generates errors if any option was given that requires -w when -w is not given.
+            if(commandLine.hasOption("m")) {
+                errors.add("Missing -w: -m requires -w.");
+            }
+            if(commandLine.hasOption("c")) {
+                errors.add("Missing -w: -c requires -w.");
+            }
+            if(commandLine.hasOption("d")) {
+                errors.add("Missing -w: -d requires -w.");
+            }
+            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
+                errors.add("Only 1 of these arguments is allowed: -c | -d");
             }
         }
 
+        // REQUIRED: Phenotypes.
+        if(commandLine.hasOption("p")) {
+            try {
+                setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+            } catch(InvalidStringFormatException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            missing.add("-p");
+        }
+
+        // Output file.
         if(commandLine.hasOption("o")) {
-            setOutputFile(commandLine.getOptionValue("o"));
+            try {
+                setOutputFile(commandLine.getOptionValue("o"));
+            } catch(InvalidPathException | FileAlreadyExistsException e) {
+                errors.add(e.getMessage());
+            }
+            if(commandLine.hasOption("s")) {
+                setFileOutputWriterFactory(FileOutputWriterFactory.SIMPLE);
+            } else {
+                setFileOutputWriterFactory(FileOutputWriterFactory.REGULAR);
+            }
+        } else {
+            missing.add("-o");
         }
 
-        // Selects run mode.
-        // Note: current implementation only has 1 mode and therefore currently uses the uncommented code below instead.
-//        if(commandLine.hasOption("m")) {
-//            setRunMode(RunMode.retrieve(commandLine.getOptionValue("m"))); // throws NumberFormatException
-//        }
-
-        // As there currently is only 1 run mode, if ANY argument is given this run mode is automatically selected (-h overrides this).
-        if(commandLine.getOptions().length > 0) {
-            // Sets run mode.
-            setRunMode(RunMode.GET_GENES_USING_SINGLE_PHENOTYPE);
+        // Processes missing and errors and throws an Exception if any errors were present.
+        if(missing.size() > 0) {
+            errors.add(0, "Missing arguments: " + StringUtils.join(missing, ", "));
         }
-
-        // If any additional arguments were given that defined a RunMode, -h resets it to NONE so that only the help message
-        // is shown before the application quits.
-        if(commandLine.hasOption("h")) {
-            setRunMode(RunMode.NONE);
+        if(errors.size() > 0) {
+            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
 }

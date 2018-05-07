@@ -4,22 +4,39 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
-public enum TestFilesDir {
-    TTL("disgenet_mini") {
+public enum TestData {
+    TTL("disgenet_mini/") {
         @Override
         public String[] getFiles() {
             return filterFileArray(super.getFiles(), ".ttl", ".owl");
         }
     },
-    TTL_NO_ONTOLOGY("disgenet_mini") {
+    TTL_NO_ONTOLOGY("disgenet_mini/") {
         @Override
         public String[] getFiles() {
             return filterFileArray(super.getFiles(), ".ttl");
         }
     },
-    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology"),
-    TDB_MINI("disgenet_mini_tdb"),
-    TDB_FULL("disgenet_full_tdb");
+    ONTOLOGY_FILE("hpo/") {
+        @Override
+        public String[] getFiles() {
+            return new String[]{getDir() + "hp.owl"};
+        }
+    },
+    NON_EXISTING("") {
+        @Override
+        public String[] getFiles() {
+            return new String[]{super.getDir() + "myNonExistingFile.txt"};
+        }
+
+        @Override
+        public String getDir() {
+            return super.getDir() + "nonExistingDir/";
+        }
+    },
+    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology/"),
+    TDB_MINI("disgenet_mini_tdb/"),
+    TDB_FULL("disgenet_full_tdb/");
 
     /**
      * ClassLoader object to view test resource files. Test files can be retrieved using {@code getResource()}, where an
@@ -29,7 +46,7 @@ public enum TestFilesDir {
 
     private String dir;
 
-    TestFilesDir(String dir) {
+    TestData(String dir) {
         try {
             this.dir = classLoader.getResource(dir).getFile();
         } catch(NullPointerException e) {

@@ -11,7 +11,7 @@ import java.util.HashSet;
 import java.util.List;
 
 public class GeneDiseaseCombinationTester {
-    private Gene gene = new Gene("0");
+    private Gene gene = new Gene("ncbigene:0");
     private Disease disease = new Disease("umls:C01234567") {
 
     };

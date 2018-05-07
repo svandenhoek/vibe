@@ -17,19 +17,25 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
      * The entity prefix.
      * @return a {@link String} containing the prefix.
      */
-    protected abstract String prefix();
+    protected abstract String getIdPrefix();
 
     /**
      * A regular expression an input {@link String} should adhere to when deriving the {@link BiologicalEntity} from it.
      * @return
      */
-    protected abstract String regex();
+    protected abstract String getIdRegex();
 
     /**
      * The group within the regular expression the actual {@link BiologicalEntity#id} is stored in.
      * @return
      */
-    protected abstract int regexGroup();
+    protected abstract int getRegexIdGroup();
+
+    /**
+     * The regular expression describing the URI prefix it should match with.
+     * @return
+     */
+    protected abstract String getUriPrefix();
 
     /**
      * The unique id.
@@ -42,7 +48,8 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
     private String name;
 
     /**
-     * The {@link URI}.
+     * The {@link URI}. Note that while in general triplets use IRIs, Apache Jena refers to URIs.
+     * @see org.apache.jena.rdf.model.Resource#getURI()
      */
     private URI uri;
 
@@ -57,7 +64,7 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
      * @return the {@link BiologicalEntity} ID with prefix.
      */
     public String getFormattedId() {
-        return prefix() + id;
+        return getIdPrefix() + id;
     }
 
     protected void setId(String id) {
@@ -77,18 +84,46 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         return uri;
     }
 
-    /**
-     * Simple constructor allowing for easy comparison of collections.
-     * @param id
-     */
     public BiologicalEntity(String id) {
         this.id = retrieveIdFromString(requireNonNull(id));
+        uri = URI.create( getUriPrefix() + this.id );
+    }
+
+    public BiologicalEntity(URI uri) {
+        this.uri = uri;
+        String uriString = this.uri.toString();
+        validateUri(uriString);
+        id = uriString.split(getUriPrefix())[1];
+    }
+
+    public BiologicalEntity(String id, String name) {
+        this(id);
+        this.name = requireNonNull(name);
+    }
+
+    public BiologicalEntity(URI uri, String name) {
+        this(uri);
+        this.name = requireNonNull(name);
     }
 
     public BiologicalEntity(String id, String name, URI uri) throws InvalidStringFormatException {
         this.id = retrieveIdFromString(requireNonNull(id));
         this.name = requireNonNull(name);
         this.uri = requireNonNull(uri);
+        validateUri(this.uri.toString());
+        checkIfIdAndUriAreEqual(this.id, this.uri);
+    }
+
+    private void validateUri(String uriString) {
+        if(!uriString.startsWith(getUriPrefix())) {
+            throw new IllegalArgumentException("The URI \"" + uriString + "\" does not start with: " + getUriPrefix());
+        }
+    }
+
+    private void checkIfIdAndUriAreEqual(String id, URI uri) {
+        if(!uri.toString().endsWith(id)) {
+            throw new IllegalArgumentException("The URI does not refer to the same BiologicalEntity as the id.");
+        }
     }
 
     /**
@@ -98,11 +133,11 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
      * @throws InvalidStringFormatException if {@code fullString} did not adhere to the regular expression
      */
     protected String retrieveIdFromString(String fullString) throws InvalidStringFormatException {
-        Matcher m = Pattern.compile(regex()).matcher(fullString);
+        Matcher m = Pattern.compile(getIdRegex()).matcher(fullString);
         if(m.matches()) {
-            return m.group(regexGroup());
+            return m.group(getRegexIdGroup());
         } else {
-            throw new InvalidStringFormatException(fullString + " does not adhere the required format: " + regex());
+            throw new InvalidStringFormatException(fullString + " does not adhere the required format: " + getIdRegex());
         }
     }
 

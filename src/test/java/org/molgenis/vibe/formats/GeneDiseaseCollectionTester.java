@@ -15,11 +15,11 @@ public class GeneDiseaseCollectionTester {
 
     @BeforeClass
     public void beforeClass() {
-        Gene gene1 = new Gene("1111111");
-        Gene gene2 = new Gene("2222222");
-        Disease disease1 = new Disease("C3333333");
-        Disease disease2 = new Disease("C4444444");
-        Disease disease3 = new Disease("C5555555");
+        Gene gene1 = new Gene("ncbigene:1111111");
+        Gene gene2 = new Gene("ncbigene:2222222");
+        Disease disease1 = new Disease("umls:C3333333");
+        Disease disease2 = new Disease("umls:C4444444");
+        Disease disease3 = new Disease("umls:C5555555");
         gdcs = new GeneDiseaseCombination[]{
                 new GeneDiseaseCombination(gene1, disease1),
                 new GeneDiseaseCombination(gene1, disease2),
@@ -71,4 +71,24 @@ public class GeneDiseaseCollectionTester {
     }
 
     //TODO: More tests for basic java.util.Collection functionalities!
+
+    @Test
+    public void testRemove() {
+        Set<GeneDiseaseCombination> expectedFull = new HashSet<>();
+        expectedFull.add(gdcs[0]);
+        expectedFull.add(gdcs[1]);
+        expectedFull.add(gdcs[3]);
+
+        Set<GeneDiseaseCombination> expectedGene = new HashSet<>();
+        expectedGene.add(gdcs[3]);
+
+        Set<GeneDiseaseCombination> expectedDisease = new HashSet<>();
+        expectedDisease.add(gdcs[1]);
+
+        collection.addAll(Arrays.asList(gdcs));
+        collection.remove(gdcs[2]);
+        Assert.assertEquals(collection, expectedFull);
+        Assert.assertEquals(collection.getByGene(gdcs[2].getGene()), expectedGene);
+        Assert.assertEquals(collection.getByDisease(gdcs[2].getDisease()), expectedDisease);
+    }
 }

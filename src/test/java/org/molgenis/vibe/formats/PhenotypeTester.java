@@ -4,12 +4,15 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 
+import java.net.URI;
+
 public class PhenotypeTester {
     @Test
     public void useValidPhenotypeIdWithPrefix() throws InvalidStringFormatException {
         Phenotype phenotype = new Phenotype("hp:0012345");
         Assert.assertEquals(phenotype.getId(), "0012345");
         Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        Assert.assertEquals(phenotype.getUri(), URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
     }
 
     @Test
@@ -17,6 +20,20 @@ public class PhenotypeTester {
         Phenotype phenotype = new Phenotype("HP:0012345");
         Assert.assertEquals(phenotype.getId(), "0012345");
         Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        Assert.assertEquals(phenotype.getUri(), URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
+    }
+
+    @Test
+    public void useValidPhenotypeUri() throws InvalidStringFormatException {
+        Phenotype phenotype = new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
+        Assert.assertEquals(phenotype.getId(), "0012345");
+        Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        Assert.assertEquals(phenotype.getUri(), URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
+    }
+
+    @Test(expectedExceptions = InvalidStringFormatException.class)
+    public void useUriAsIdInput() {
+        new Phenotype("http://purl.obolibrary.org/obo/HP_0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
@@ -29,7 +46,7 @@ public class PhenotypeTester {
         new Phenotype("hP:0012345");
     }
 
-    @Test
+    @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidPhenotypeIdWithoutPrefix() throws InvalidStringFormatException {
         Phenotype phenotype = new Phenotype("0012345");
         Assert.assertEquals(phenotype.getId(), "0012345");

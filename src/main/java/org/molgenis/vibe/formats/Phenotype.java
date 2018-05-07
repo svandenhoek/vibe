@@ -6,16 +6,39 @@ import java.net.URI;
 
 /**
  * Defines a phenotype.
- *
- * If no prefix is given for validation, an HPO id is assumed.
  */
 public class Phenotype extends BiologicalEntity {
-    @Override protected String prefix() { return "hp:"; }
-    @Override protected String regex() { return "^((hp|HP):)?([0-9]{7})$"; }
-    @Override protected int regexGroup() { return 3; }
+    private static final String ID_PREFIX = "hp:";
+    private static final String ID_REGEX = "^(hp|HP):([0-9]{7})$";
+    private static final int REGEX_ID_GROUP = 2;
+    private static final String URI_PREFIX = "http://purl.obolibrary.org/obo/HP_";
+
+    @Override
+    protected String getIdPrefix() {
+        return ID_PREFIX;
+    }
+
+    @Override
+    protected String getIdRegex() {
+        return ID_REGEX;
+    }
+
+    @Override
+    protected int getRegexIdGroup() {
+        return REGEX_ID_GROUP;
+    }
+
+    @Override
+    protected String getUriPrefix() {
+        return URI_PREFIX;
+    }
 
     public Phenotype(String id) {
         super(id);
+    }
+
+    public Phenotype(URI uri) {
+        super(uri);
     }
 
     public Phenotype(String id, String name, URI uri) throws InvalidStringFormatException {
