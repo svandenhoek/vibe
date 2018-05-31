@@ -37,12 +37,32 @@ Before using the tool, be sure all steps below are done (certain steps can be sk
 ### Creating a local TDB dataset.
 
 1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
-2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl], [HPO][hpo_owl]).
+2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl]).
 3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl`
 
 ## Running the application
 
-`java -jar vibe-with-dependencies.jar [-h] [-v] -n <FILE> -nd <NUMBER> -d <DIR> -o <FILE> -p <HPO ID> [-p <HPO ID>]...` 
+### Usage
+
+`java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> ( -c | -d ) -m <NUMBER>] -o <FILE> -p <HPO ID> [-p <HPO ID>]...`
+
+### Examples
+Using only the user-defined phenotypes:
+
+`java -jar vibe-with-dependencies.jar -t TDB/ -o results.tsv -p HP:0000123 -p HP:0001234 -p HP:0012345`
+
+---
+
+Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 2:
+
+`java -jar vibe-with-dependencies.jar -t TDB/ -w hp.owl -d -m 2 -o results.tsv -p HP:0000123 -p HP:0001234 -p HP:0012345`
+
+---
+
+Using the user-defined phenotypes and their (grand)children with a maximum distance of 5:
+
+`java -jar vibe-with-dependencies.jar -t TDB/ -w hp.owl -c -m 5 -o results.tsv -p HP:0000123 -p HP:0001234 -p HP:0012345`
+
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
