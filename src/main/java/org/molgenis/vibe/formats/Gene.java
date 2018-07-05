@@ -88,7 +88,6 @@ public class Gene extends BiologicalEntity {
 
     /**
      * {@inheritDoc}
-     * @return
      */
     @Override
     public String toString() {
