@@ -40,11 +40,11 @@ public class GenesForPhenotypeRetrieverTester {
     @Test
     public void retrieveGeneDiseaseCollectionForMultiplePhenotypes() {
         Gene[] genes = new Gene[]{
-                new Gene("ncbigene:1311", "cartilage oligomeric matrix protein", "COMP", URI.create("http://identifiers.org/ncbigene/1311")), // umls:C0410538
-                new Gene("ncbigene:10082", "glypican 6", "GPC6", URI.create("http://identifiers.org/ncbigene/10082")), // umls:C1850318 & umls:C1968605
-                new Gene("ncbigene:960", "CD44 molecule (Indian blood group)", "CD44", URI.create("http://identifiers.org/ncbigene/960")), // umls:C1850318
-                new Gene("ncbigene:10075", "HECT, UBA and WWE domain containing 1, E3 ubiquitin protein ligase", "HUWE1", URI.create("http://identifiers.org/ncbigene/10075")), // umls:C1867103
-                new Gene("ncbigene:2261", "fibroblast growth factor receptor 3", "FGFR3", URI.create("http://identifiers.org/ncbigene/2261")), // umls:C1867103
+                new Gene("ncbigene:1311", "cartilage oligomeric matrix protein", "COMP", 0.507872279859934E0, 0.607142857142857E0, URI.create("http://identifiers.org/ncbigene/1311")), // umls:C0410538
+                new Gene("ncbigene:10082", "glypican 6", "GPC6", 0.596109001438773E0, 0.5E0, URI.create("http://identifiers.org/ncbigene/10082")), // umls:C1850318 & umls:C1968605
+                new Gene("ncbigene:960", "CD44 molecule (Indian blood group)", "CD44", 0.383591614803352E0, 0.821428571428571E0, URI.create("http://identifiers.org/ncbigene/960")), // umls:C1850318
+                new Gene("ncbigene:10075", "HECT, UBA and WWE domain containing 1, E3 ubiquitin protein ligase", "HUWE1", 0.625716589831481E0, 0.5E0, URI.create("http://identifiers.org/ncbigene/10075")), // umls:C1867103
+                new Gene("ncbigene:2261", "fibroblast growth factor receptor 3", "FGFR3", 0.366634840656414E0, 0.821428571428571E0, URI.create("http://identifiers.org/ncbigene/2261")), // umls:C1867103
         };
 
         Disease[] diseases = new Disease[]{
@@ -97,35 +97,11 @@ public class GenesForPhenotypeRetrieverTester {
         // General comparison (does not compare all content)
         Assert.assertEquals(actualCollection, expectedCollection);
 
-        // Goes through all gene-disease combinations.
-        for(Gene gene : actualCollection.getGenes()) {
-            for(Disease disease : actualCollection.getDiseases()) {
-                // Stores actual and expected combination.
-                GeneDiseaseCombination actualCombination = actualCollection.get(new GeneDiseaseCombination(gene, disease));
-                GeneDiseaseCombination expectedCombination = expectedCollection.get(new GeneDiseaseCombination(gene, disease));
-
-                // Not every combination actually has data.
-                if(expectedCombination != null) {
-                    // Compares all stored variables from the gene-disease combination gene not used in equals().
-                    Assert.assertEquals(actualCombination.getGene().getName(), expectedCombination.getGene().getName());
-                    Assert.assertEquals(actualCombination.getGene().getUri(), expectedCombination.getGene().getUri());
-                    Assert.assertEquals(actualCombination.getGene().getSymbol(), expectedCombination.getGene().getSymbol());
-
-                    // Compares all stored variables from the gene-disease combination disease not used in equals().
-                    Assert.assertEquals(actualCombination.getDisease().getName(), expectedCombination.getDisease().getName());
-                    Assert.assertEquals(actualCombination.getDisease().getUri(), expectedCombination.getDisease().getUri());
-
-                    // Compares other variables.
-                    Assert.assertEquals(actualCombination.getDisgenetScore(), expectedCombination.getDisgenetScore());
-                    Assert.assertEquals(actualCombination.getSourcesCount(), expectedCombination.getSourcesCount());
-                    Assert.assertEquals(actualCombination.getSourcesWithEvidence(), expectedCombination.getSourcesWithEvidence());
-
-                    // Compares the the evidence on a per-source level.
-                    for (Source source : actualCombination.getSourcesWithEvidence()) {
-                        Assert.assertEquals(actualCombination.getEvidenceForSource(source), expectedCombination.getEvidenceForSource(source));
-                    }
-                }
-            }
-        }
+        // Above assert only compares equals. Certain classes might store additional data that should not play a role
+        // when validating equality but should be checked on whether they were loaded from the database correctly. An
+        // example of this would be a score belonging to a Gene. While it should not make it a "different" Gene, it does
+        // describe the Gene. For this reason, toString() is used as extra validation (with the assumption that these
+        // extra fields are mentioned in toString()).
+        Assert.assertEquals(actualCollection.toString(), expectedCollection.toString());
     }
 }

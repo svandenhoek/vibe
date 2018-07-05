@@ -61,7 +61,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />between [1] and [2]: the gene-disease association type (see {@link DisgenetAssociationType})
      */
-    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT DISTINCT ?gene ?geneId ?geneTitle ?geneSymbolTitle \n" +
+    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT DISTINCT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?dsiValue ?dpiValue \n" +
             "WHERE { \n" +
             "VALUES ?hpo ", " \n" + // [0] -> [1]
             "?hpo rdf:type sio:SIO_010056 . \n" +
@@ -80,9 +80,14 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "?gene rdf:type ncit:C16612 ; \n" +
             "dcterms:identifier ?geneId ; \n" +
             "dcterms:title ?geneTitle ; \n" +
-            "sio:SIO_000205 ?geneSymbol . \n" +
+            "sio:SIO_000205 ?geneSymbol ; \n" +
+            "sio:SIO_000216 ?dsi, ?dpi . \n" +
             "?geneSymbol rdf:type ncit:C43568 ; \n" +
             "dcterms:title ?geneSymbolTitle . \n" +
+            "?dsi rdf:type sio:SIO_001351 ; \n" +
+            "sio:SIO_000300 ?dsiValue . \n" +
+            "?dpi rdf:type sio:SIO_001352 ; \n" +
+            "sio:SIO_000300 ?dpiValue . \n" +
             "}"
     };
 

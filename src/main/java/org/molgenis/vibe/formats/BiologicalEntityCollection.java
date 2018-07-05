@@ -196,7 +196,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     @Override
     public String toString() {
         return "BiologicalEntityCollection{" +
-                "combinationsMap=" + combinationsMap +
+                "combinationsMap.keySet()=" + combinationsMap.keySet() +
                 '}';
     }
 

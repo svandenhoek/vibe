@@ -40,4 +40,9 @@ public class Disease extends BiologicalEntity {
     public Disease(String id, String name, URI uri) throws InvalidStringFormatException {
         super(id, name, uri);
     }
+
+    @Override
+    public String toString() {
+        return "Disease{} " + super.toString();
+    }
 }

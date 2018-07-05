@@ -21,8 +21,28 @@ public class Gene extends BiologicalEntity {
      */
     private String symbol;
 
+    /**
+     * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
+     * @see <a href="http://www.disgenet.org/web/DisGeNET/menu/dbinfo#specificity">http://www.disgenet.org/web/DisGeNET/menu/dbinfo#specificity</a>
+     */
+    private Double diseaseSpecificityIndex;
+
+    /**
+     * The Disease Pleiotropy Index (DPI) as stored within DisGeNET for a gene.
+     * @see <a href="http://www.disgenet.org/web/DisGeNET/menu/dbinfo#pleiotropy">http://www.disgenet.org/web/DisGeNET/menu/dbinfo#pleiotropy</a>
+     */
+    private Double diseasePleiotropyIndex;
+
     public String getSymbol() {
         return symbol;
+    }
+
+    public Double getDiseaseSpecificityIndex() {
+        return diseaseSpecificityIndex;
+    }
+
+    public Double getDiseasePleiotropyIndex() {
+        return diseasePleiotropyIndex;
     }
 
     @Override
@@ -49,15 +69,33 @@ public class Gene extends BiologicalEntity {
         super(id);
     }
 
-    public Gene(String id, String name, String symbol, URI uri) throws InvalidStringFormatException {
+    /**
+     *
+     * @param id unique NCBI gene ID
+     * @param name {@link BiologicalEntity#name}
+     * @param symbol HUGO Gene Nomenclature Committee (HGNC) name
+     * @param dsi diseaseSpecificityIndex
+     * @param dpi diseasePleiotropyIndex
+     * @param uri {@link BiologicalEntity#uri}
+     * @throws InvalidStringFormatException
+     */
+    public Gene(String id, String name, String symbol, Double dsi, Double dpi, URI uri) throws InvalidStringFormatException {
         super(id, name, uri);
         this.symbol = requireNonNull(symbol);
+        this.diseaseSpecificityIndex = requireNonNull(dsi);
+        this.diseasePleiotropyIndex = requireNonNull(dpi);
     }
 
+    /**
+     * {@inheritDoc}
+     * @return
+     */
     @Override
     public String toString() {
         return "Gene{" +
                 "symbol='" + symbol + '\'' +
+                ", diseaseSpecificityIndex=" + diseaseSpecificityIndex +
+                ", diseasePleiotropyIndex=" + diseasePleiotropyIndex +
                 "} " + super.toString();
     }
 }

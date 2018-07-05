@@ -105,7 +105,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     @Test
     public void testGdaForGenes() {
         Set<Gene> genes = new HashSet<>();
-        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", URI.create("http://identifiers.org/ncbigene/1291")));
+        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", 0.393643700083081E0, 0.75E0, URI.create("http://identifiers.org/ncbigene/1291")));
 
         String[] fieldOrder = {"gene", "disease", "diseaseId", "diseaseTitle", "gdaScoreNumber", "gdaSource", "evidence"};
 

@@ -44,4 +44,9 @@ public class Phenotype extends BiologicalEntity {
     public Phenotype(String id, String name, URI uri) throws InvalidStringFormatException {
         super(id, name, uri);
     }
+
+    @Override
+    public String toString() {
+        return "Phenotype{} " + super.toString();
+    }
 }
