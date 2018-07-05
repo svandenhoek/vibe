@@ -15,17 +15,6 @@
         </packages>
     </test>
 
-    <test name="FailedTestsCausedByDependency" enabled="false">
-        <groups>
-            <run>
-                <include name="dependencyBug" />
-            </run>
-        </groups>
-        <packages>
-            <package name="org.molgenis.vibe.*" />
-        </packages>
-    </test>
-
     <!-- Require the full DisGeNET TDB to be available! -->
     <test name="Benchmarking" enabled="false">
         <groups>
