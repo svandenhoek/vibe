@@ -7,7 +7,6 @@
             <run>
                 <exclude name="benchmarking" />
                 <exclude name="noTest" />
-                <exclude name="dependencyBug" />
             </run>
         </groups>
         <packages>
