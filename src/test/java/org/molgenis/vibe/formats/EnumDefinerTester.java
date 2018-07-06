@@ -14,4 +14,9 @@ public class EnumDefinerTester {
     public void phenotypesRetrieverFactoryDistance() {
         Assert.assertEquals(EnumTypeDefiner.retrieve("distance", PhenotypesRetrieverFactory.class), PhenotypesRetrieverFactory.DISTANCE);
     }
+
+    @Test(expectedExceptions = EnumConstantNotPresentException.class)
+    public void phenotypesRetrieverFactoryNonExistent() {
+        EnumTypeDefiner.retrieve("iDoNotExist", PhenotypesRetrieverFactory.class);
+    }
 }
