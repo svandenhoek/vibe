@@ -18,10 +18,9 @@ public class CommandLineOptionsParserTester {
     private final String[] INVALID_ONTOLOGY_FILE = new String[]{"-w", TestData.NON_EXISTING.getFiles()[0]};
     private final String[] INVALID_ONTOLOGY_DIR = new String[]{"-w", TestData.NON_EXISTING.getDir()};
 
-
-    private final String[] HPO_ALGORITHM_1 = new String[]{"-c"};
-    private final String[] HPO_ALGORITHM_2 = new String[]{"-d"};
-    private final String[] BOTH_HPO_ALGORITHMS = new String[]{"-c", "-d"};
+    private final String[] HPO_ALGORITHM_1 = new String[]{"-n", "children"};
+    private final String[] HPO_ALGORITHM_2 = new String[]{"-n", "distance"};
+    private final String[] HPO_ALGORITHM_INVALID = new String[]{"-n", "myCustomName"};
 
     private final String[] MAX_DISTANCE = new String[]{"-m", "3"};
 
@@ -30,6 +29,10 @@ public class CommandLineOptionsParserTester {
 
     private final String[] NON_EXISTING_OUTPUT_FILE = new String[]{"-o", TestData.NON_EXISTING.getFiles()[0]};
 
+    private final String[] GENE_SORTING_1 = new String[]{"-s", "gda_max"};
+    private final String[] GENE_SORTING_2 = new String[]{"-s", "dsi"};
+    private final String[] GENE_SORTING_3 = new String[]{"-s", "dpi"};
+    private final String[] GENE_SORTING_INVALID = new String[]{"-s", "myCustomName"};
 
     @Test
     public void noArguments() throws IOException, ParseException {
@@ -42,8 +45,7 @@ public class CommandLineOptionsParserTester {
     @Test(expectedExceptions = UnrecognizedOptionException.class)
     public void unknownArgument() throws IOException, ParseException {
         String[] args = new String[]{"--zyxi"};
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test
@@ -60,114 +62,129 @@ public class CommandLineOptionsParserTester {
     }
 
     @Test
-    public void validSingleHpo() throws IOException, ParseException {
+    public void validSingleHpoWithHpoAlgorithm1() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
+    }
+
+    @Test
+    public void validSingleHpoWithHpoAlgorithm2() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_2, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void validSingleHpoWithInvalidHpoAlgorithm() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
+    }
+
+    @Test
+    public void validSingleHpoWithSortAlgorithm1() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
+    }
+
+    @Test
+    public void validSingleHpoWithSortAlgorithm2() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_2, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
+    }
+
+    @Test
+    public void validSingleHpoWithSortAlgorithm3() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_3, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void validSingleHpoWithInvalidSortAlgorithm() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_INVALID, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
     }
 
     @Test
     public void validSingleHpoWithoutOntology() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test
     public void validTwoHpos() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, TWO_HPOS, NON_EXISTING_OUTPUT_FILE);
-        new CommandLineOptionsParser(args);
-    }
-
-    @Test(expectedExceptions = IOException.class)
-    public void missingAllButOneArgument() throws IOException, ParseException {
-        String[] args = HPO_ALGORITHM_1;
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void missingTdb() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingOntologyWithAlgorithm() throws IOException, ParseException {
+    public void noOntologyWithHpoAlgorithm() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingOntologyWithMaxDistance() throws IOException, ParseException {
+    public void noOntologyWithHpoMaxDistance() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingRelatedHpoAlgorithm() throws IOException, ParseException {
+    public void withOntologyMissingHpoAlgorithm() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingMaxDistanceRelatedHpo() throws IOException, ParseException {
+    public void withOntologyMissingHpoMaxDistance() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
+    }
+
+    @Test(expectedExceptions = IOException.class)
+    public void withOntologyMissingHpoAlgorithmAndHpoMaxDistance() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void missingPhenotype() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void missingOutputFile() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO);
-        printError(args);
-        new CommandLineOptionsParser(args);
-    }
-
-    @Test(expectedExceptions = IOException.class)
-    public void hasBothExclusiveArguments() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, BOTH_HPO_ALGORITHMS, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void invalidTdbDir() throws IOException, ParseException {
-        System.out.println(TestData.NON_EXISTING.getDir());
-        System.out.println(TestData.NON_EXISTING.getFiles()[0]);
         String[] args = stringArraysMerger(INVALID_TDB_DIR, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void invalidTdbFile() throws IOException, ParseException {
         String[] args = stringArraysMerger(INVALID_TDB_FILE, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void invalidOntologyFile() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_FILE, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
     public void invalidOntologyDir() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_DIR, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        printError(args);
-        new CommandLineOptionsParser(args);
+        testWithErrorPrint(args);
     }
 
     private String[] stringArraysMerger(String[]... arrays) {
@@ -178,7 +195,7 @@ public class CommandLineOptionsParserTester {
         return fullArray;
     }
 
-    private void printError(String[] args) throws IOException, ParseException {
+    private void testWithErrorPrint(String[] args) throws IOException, ParseException {
         try {
             new CommandLineOptionsParser(args);
         } catch(Exception e) {

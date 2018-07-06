@@ -4,6 +4,7 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.output.FileOutputWriterFactory;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
+import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -68,6 +69,11 @@ public abstract class OptionsParser {
      * input Phenotypes.
      */
     private Integer ontologyMaxDistance;
+
+    /**
+     * Sets the gene prioritizer to be used.
+     */
+    private GenePrioritizerFactory genePrioritizerFactory;
 
     public boolean isVerbose() {
         return verbose;
@@ -168,6 +174,18 @@ public abstract class OptionsParser {
         return phenotypes;
     }
 
+    protected void setPhenotypes(Set<Phenotype> phenotypes) {
+        this.phenotypes = phenotypes;
+    }
+
+    protected void addPhenotypes(Set<Phenotype> phenotypes) {
+        this.phenotypes.addAll(phenotypes);
+    }
+
+    protected void addPhenotype(Phenotype phenotype) {
+        phenotypes.add(phenotype);
+    }
+
     /**
      * @param phenotypes {@link String}{@code []}
      * @throws InvalidStringFormatException if any of the {@code phenotypes} failed to be converted into a {@link Phenotype} using
@@ -196,10 +214,6 @@ public abstract class OptionsParser {
      */
     protected void addPhenotype(String phenotype) throws InvalidStringFormatException {
         addPhenotype(new Phenotype(phenotype));
-    }
-
-    protected void addPhenotype(Phenotype phenotype) {
-        phenotypes.add(phenotype);
     }
 
     public Path getOutputFile() {
@@ -232,6 +246,15 @@ public abstract class OptionsParser {
         this.phenotypesRetrieverFactory = phenotypesRetrieverFactory;
     }
 
+    /**
+     * @param name the {@link String} describing the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever}
+     *             to be used
+     * @throws EnumConstantNotPresentException if {@code name} is not an accepted possibility.
+     */
+    protected void setPhenotypesRetrieverFactory(String name) throws EnumConstantNotPresentException {
+        this.phenotypesRetrieverFactory = PhenotypesRetrieverFactory.retrieve(name);
+    }
+
     public int getOntologyMaxDistance() {
         return ontologyMaxDistance;
     }
@@ -242,6 +265,23 @@ public abstract class OptionsParser {
 
     protected void setOntologyMaxDistance(int ontologyMaxDistance) {
         this.ontologyMaxDistance = ontologyMaxDistance;
+    }
+
+    public GenePrioritizerFactory getGenePrioritizerFactory() {
+        return genePrioritizerFactory;
+    }
+
+    protected void setGenePrioritizerFactory(GenePrioritizerFactory genePrioritizerFactory) {
+        this.genePrioritizerFactory = genePrioritizerFactory;
+    }
+
+    /**
+     * @param name the {@link String} describing the {@link org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer}
+     *             to be used
+     * @throws EnumConstantNotPresentException if {@code name} is not an accepted possibility.
+     */
+    protected void setGenePrioritizerFactory(String name) throws EnumConstantNotPresentException {
+        this.genePrioritizerFactory = GenePrioritizerFactory.retrieve(name);
     }
 
     /**
@@ -264,6 +304,10 @@ public abstract class OptionsParser {
             if (fileOutputWriterFactory == null) {
                 return false;
             }
+            // Checks whether a gene prioritizer was selected.
+            if(genePrioritizerFactory == null) {
+                return false;
+            }
             // Check config specific settings are set.
             switch (runMode) {
                 // Additional checks if related HPOs need to be retrieved.
@@ -280,6 +324,8 @@ public abstract class OptionsParser {
                     if(ontologyMaxDistance == null) {
                         return false;
                     }
+                    // NO BREAK: continues!!!
+
                 // Checks for if no associated phenotypes need to be retrieved.
                 case GENES_FOR_PHENOTYPES:
                     // Check if there are any input phenotypes.
