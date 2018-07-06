@@ -54,10 +54,9 @@ public class DisgenetAssociationTypeTester {
         Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
     }
 
-    @Test
+    @Test(expectedExceptions = EnumConstantNotPresentException.class)
     public void useNonExistingSio() throws InvalidStringFormatException {
-        DisgenetAssociationType type = DisgenetAssociationType.retrieve("999999");
-        Assert.assertNull(type);
+        DisgenetAssociationType.retrieve("999999");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
