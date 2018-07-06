@@ -81,7 +81,8 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         BufferedWriter writer = getWriter();
 
         // Writes header.
-        writer.write("gene" + getSeparator() + "disease pubmed IDs" + getSeparator() + "highest score");
+        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score" +
+                getSeparator() + "DSI" + getSeparator() + "DPI");
         writer.newLine();
 
         // Goes through all ordered genes.
@@ -111,17 +112,18 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
                 }
 
                 // Writes the disease name surrouned by quotes.
-                writer.write(QUOTE_MARK + gdc.getDisease().getName() + QUOTE_MARK);
+                writer.write(gdc.getDisease().getName());
 
-                // If there is evidence, writes these as well.
-                if(gdc.getAllEvidence().size() > 0) {
-                    // Merges the evidence URIs with as separator the values separator.
-                    String evidence = StringUtils.join(gdc.getAllEvidence(), valuesSeparator.toString());
-                    writer.write(keyValueSeparator + evidence);
-                }
+//                // If there is evidence, writes these as well.
+//                if(gdc.getAllEvidence().size() > 0) {
+//                    // Merges the evidence URIs with as separator the values separator.
+//                    String evidence = StringUtils.join(gdc.getAllEvidence(), valuesSeparator.toString());
+//                    writer.write(keyValueSeparator + evidence);
+//                }
             }
 
-            writer.write(getSeparator() + Double.toString(highestScore));
+            writer.write(getSeparator() + Double.toString(highestScore) + getSeparator() +
+                    gene.getDiseaseSpecificityIndex() + getSeparator() + gene.getDiseasePleiotropyIndex());
             writer.newLine();
         }
 

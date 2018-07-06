@@ -9,7 +9,8 @@ public enum ValuesSeparator {
     COLON(":"),
     SEMICOLON(";"),
     HYPHEN_MINUS("-"),
-    VERTICAL_LINE("|");
+    VERTICAL_LINE("|"),
+    EQUALS("=");
 
     /**
      * The separator character.
