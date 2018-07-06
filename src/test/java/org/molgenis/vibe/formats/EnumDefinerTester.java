@@ -19,4 +19,19 @@ public class EnumDefinerTester {
     public void phenotypesRetrieverFactoryNonExistent() {
         EnumTypeDefiner.retrieve("iDoNotExist", PhenotypesRetrieverFactory.class);
     }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void enumDefinerDoubleNullId() {
+        EnumTypeDefiner.retrieve(null, null);
+    }
+
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void enumDefinerNullClass() {
+        EnumTypeDefiner.retrieve("distance", null);
+    }
+
+    @Test(expectedExceptions = EnumConstantNotPresentException.class)
+    public void enumDefinerDoubleNull() {
+        EnumTypeDefiner.retrieve(null, PhenotypesRetrieverFactory.class);
+    }
 }
