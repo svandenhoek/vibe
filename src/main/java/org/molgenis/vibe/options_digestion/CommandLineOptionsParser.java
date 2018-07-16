@@ -6,7 +6,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.io.output.FileOutputWriterFactory;
-import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
+import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -23,6 +23,11 @@ public class CommandLineOptionsParser extends OptionsParser {
         options = new Options();
         createOptions();
     }
+
+    /**
+     * Used for some formatting if a command line option has options of its own.
+     */
+    private static final String argumentOptionsFormat = "|%-12s%s%n";
 
     /**
      * Variable for generating & digesting the command line options.
@@ -79,19 +84,18 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .argName("FILE")
                 .build());
 
-        options.addOption(Option.builder("c")
-                .longOpt("ontology-children")
-                .desc("Use the HPO children algorithm for related HPO retrieval.")
-                .build());
-
-        options.addOption(Option.builder("d")
-                .longOpt("ontology-distance")
-                .desc("Use the HPO distance algorithm for related HPO retrieval.")
+        options.addOption(Option.builder("n")
+                .longOpt("ontology")
+                .desc("The ontology algorithm to be used for related HPO retrieval:" + System.lineSeparator() +
+                        String.format(argumentOptionsFormat, "children", "Uses child algorithm.") +
+                        String.format(argumentOptionsFormat, "distance", "Uses distance algorithm."))
+                .hasArg()
+                .argName("NAME")
                 .build());
 
         options.addOption(Option.builder("m")
                 .longOpt("ontology-max")
-                .desc("The maximum distance to be used for the related HPO retrieval algorithms.")
+                .desc("The maximum distance to be used for the ontology algorithm.")
                 .hasArg()
                 .argName("NUMBER")
                 .build());
@@ -111,7 +115,21 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .build());
 
         options.addOption(Option.builder("s")
-                .longOpt("output")
+                .longOpt("sort")
+                .desc("The output sorting algorithm to be used:" + System.lineSeparator() +
+                        String.format(argumentOptionsFormat, "gda_max", "Sorts genes based on highest") +
+                        String.format(argumentOptionsFormat, "", "gene-disease association score") +
+                        String.format(argumentOptionsFormat, "", "(DEFAULT).") +
+                        String.format(argumentOptionsFormat, "dsi", "Sorts genes based on highest Disease") +
+                        String.format(argumentOptionsFormat, "", "Specificity Index.") +
+                        String.format(argumentOptionsFormat, "dpi", "Sorts genes based on lowest Disease") +
+                        String.format(argumentOptionsFormat, "", "Pleiotropy Index."))
+                .hasArg()
+                .argName("NAME")
+                .build());
+
+        options.addOption(Option.builder("l")
+                .longOpt("simple-output")
                 .desc("Simple output format (file only contains separated gene symbols)")
                 .build());
     }
@@ -119,9 +137,8 @@ public class CommandLineOptionsParser extends OptionsParser {
     /**
      * Prints the help message to stdout.
      */
-    public static void printHelpMessage()
-    {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> ( -c | -d ) -m <NUMBER>] -o <FILE> -p <HPO ID> [-p <HPO ID>]...";
+    public static void printHelpMessage() {
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -176,7 +193,7 @@ public class CommandLineOptionsParser extends OptionsParser {
         // REQUIRED: DisGeNET TDB.
         if(commandLine.hasOption("t")) {
             try {
-                setDisgenet(commandLine.getOptionValue("t"), DisgenetRdfVersion.V5); // throws InvalidPathException, IOException
+                setDisgenet(commandLine.getOptionValue("t"), DisgenetRdfVersion.V5);
             } catch (InvalidPathException | IOException e) {
                 errors.add(e.getMessage());
             }
@@ -194,6 +211,17 @@ public class CommandLineOptionsParser extends OptionsParser {
                 errors.add(e.getMessage());
             }
 
+            // REQUIRED if -w set: HPO ontology retrieval algorithm.
+            if(commandLine.hasOption("n")) {
+                try {
+                    setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
+                } catch (EnumConstantNotPresentException e) {
+                    errors.add(e.getMessage());
+                }
+            } else {
+                missing.add("-n");
+            }
+
             // REQUIRED if -w set: HPO ontology related retrieval max distance.
             if(commandLine.hasOption("m")) {
                 try {
@@ -204,35 +232,16 @@ public class CommandLineOptionsParser extends OptionsParser {
             } else {
                 missing.add("-m");
             }
-
-            // REQUIRED if -w set: HPO ontology related retrieval algorithm.
-            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
-                errors.add("Only 1 of these arguments is allowed: -c | -d");
-            } else if(commandLine.hasOption("c") || commandLine.hasOption("d")) { // If one is available, set factory.
-                if (commandLine.hasOption("c")) {
-                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.CHILDREN);
-                } else if (commandLine.hasOption("d")) {
-                    setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory.DISTANCE);
-                }
-            } else { // Both missing not allowed.
-                missing.add("-c | -d");
-            }
-        } else {
+        } else { // If no -w was given.
             // -w defines RunMode.
             setRunMode(RunMode.GENES_FOR_PHENOTYPES);
 
             // Generates errors if any option was given that requires -w when -w is not given.
+            if(commandLine.hasOption("n")) {
+                errors.add("Missing -w: -n requires -w.");
+            }
             if(commandLine.hasOption("m")) {
                 errors.add("Missing -w: -m requires -w.");
-            }
-            if(commandLine.hasOption("c")) {
-                errors.add("Missing -w: -c requires -w.");
-            }
-            if(commandLine.hasOption("d")) {
-                errors.add("Missing -w: -d requires -w.");
-            }
-            if (commandLine.hasOption("c") && commandLine.hasOption("d")) { // Both not allowed.
-                errors.add("Only 1 of these arguments is allowed: -c | -d");
             }
         }
 
@@ -247,20 +256,31 @@ public class CommandLineOptionsParser extends OptionsParser {
             missing.add("-p");
         }
 
-        // Output file.
+        // REQUIRED: Output file.
         if(commandLine.hasOption("o")) {
             try {
                 setOutputFile(commandLine.getOptionValue("o"));
             } catch(InvalidPathException | FileAlreadyExistsException e) {
                 errors.add(e.getMessage());
             }
-            if(commandLine.hasOption("s")) {
+            if(commandLine.hasOption("l")) {
                 setFileOutputWriterFactory(FileOutputWriterFactory.SIMPLE);
             } else {
                 setFileOutputWriterFactory(FileOutputWriterFactory.REGULAR);
             }
         } else {
             missing.add("-o");
+        }
+
+        // OPTIONAL: Sorting algorithm.
+        if(commandLine.hasOption("s")) {
+            try {
+                setGenePrioritizerFactory(commandLine.getOptionValue("s"));
+            } catch(EnumConstantNotPresentException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            setGenePrioritizerFactory(GenePrioritizerFactory.HIGHEST_DISGENET_SCORE);
         }
 
         // Processes missing and errors and throws an Exception if any errors were present.

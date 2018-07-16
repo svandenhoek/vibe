@@ -141,6 +141,12 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         }
     }
 
+    /**
+     * While uniqueness is based on the {@link #id} (as each {@link #id} should only occur once and data belonging to it
+     * should be consistent), {@link #toString()} can be used for testing whether data retrieval from external sources
+     * yielded the expected results.
+     * @return
+     */
     @Override
     public String toString() {
         return "BiologicalEntity{" +

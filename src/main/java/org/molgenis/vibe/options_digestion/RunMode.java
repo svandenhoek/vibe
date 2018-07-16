@@ -9,7 +9,6 @@ import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
-import org.molgenis.vibe.query_output_digestion.prioritization.HighestSingleDisgenetScoreGenePrioritizer;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
 
@@ -86,7 +85,7 @@ public enum RunMode {
 
     protected Prioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
         getAppOptions().printVerbose("# Ordering genes based on priority.");
-        GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
+        GenePrioritizer prioritizer = getAppOptions().getGenePrioritizerFactory().create(geneDiseaseCollection);
         prioritizer.run();
         printElapsedTime();
 

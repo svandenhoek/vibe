@@ -67,8 +67,10 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             String geneId = result.get("geneId").asLiteral().getString();
             String geneTitle= result.get("geneTitle").asLiteral().getString();
             String geneSymbol = result.get("geneSymbolTitle").asLiteral().getString();
+            double diseaseSpecificityIndex = result.get("dsiValue").asLiteral().getDouble();
+            double diseasePleiotropyIndex = result.get("dpiValue").asLiteral().getDouble();
 
-            Gene gene = new Gene(geneId, geneTitle, geneSymbol, geneUri);
+            Gene gene = new Gene(geneId, geneTitle, geneSymbol, diseaseSpecificityIndex, diseasePleiotropyIndex, geneUri);
             genes.add(gene);
             genesByUri.put(geneUri, gene);
         }
@@ -100,7 +102,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             Gene gene = genesByUri.get(geneUri);
 
             // Retrieves score belonging to the gene-disease combination.
-            double score = Double.parseDouble(result.get("gdaScoreNumber").asLiteral().getString());
+            double score = result.get("gdaScoreNumber").asLiteral().getDouble();
 
             // The gene-disease combination belonging to the single query result.
             GeneDiseaseCombination comparisonGdc = new GeneDiseaseCombination(gene, disease, score);

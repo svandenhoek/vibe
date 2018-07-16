@@ -6,7 +6,6 @@ import org.testng.annotations.Test;
 
 public class DisgenetRdfVersionTester {
     private static final DisgenetRdfVersion rdfV5 = DisgenetRdfVersion.V5;
-    private static final DisgenetRdfVersion rdfUnsupported = DisgenetRdfVersion.UNSUPPORTED;
 
     @Test
     public void testVersionRetriever1() throws InvalidStringFormatException {
@@ -43,11 +42,9 @@ public class DisgenetRdfVersionTester {
         Assert.assertEquals(actual, rdfV5);
     }
 
-    @Test
+    @Test(expectedExceptions = EnumConstantNotPresentException.class)
     public void testVersionRetriever6() throws InvalidStringFormatException {
-        DisgenetRdfVersion actual = DisgenetRdfVersion.retrieve("50");
-
-        Assert.assertEquals(actual, rdfUnsupported);
+        DisgenetRdfVersion.retrieve("50");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)

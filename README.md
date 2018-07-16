@@ -37,12 +37,35 @@ Before using the tool, be sure all steps below are done (certain steps can be sk
 ### Creating a local TDB dataset.
 
 1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
-2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl], [HPO][hpo_owl]).
+2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl]).
 3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl`
 
 ## Running the application
 
-`java -jar vibe-with-dependencies.jar [-h] [-v] -n <FILE> -nd <NUMBER> -d <DIR> -o <FILE> -p <HPO ID> [-p <HPO ID>]...` 
+### Usage
+
+`java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...`
+
+### Examples
+Using only the user-defined phenotypes with the output being sorted based on the highest gene-disease association score
+present per gene:
+
+`java -jar vibe-with-dependencies.jar -v -t TDB/ -s gda_max -o results.tsv -p HP:0002996 -p HP:0001377`
+
+---
+
+Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 1 with the output
+ sorted based on the Disease Specificity Index:
+
+`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n distance -m 1 -s dsi -o results.tsv -p HP:0002996`
+
+---
+
+Using the user-defined phenotypes and their (grand)children with a maximum distance of 2 with the output sorted based on
+the Disease Pleiotropy Index:
+
+`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n children -m 2 -s dpi -o results.tsv -p HP:0002996`
+
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi

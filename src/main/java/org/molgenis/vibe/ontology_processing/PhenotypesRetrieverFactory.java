@@ -20,7 +20,7 @@ public enum PhenotypesRetrieverFactory implements EnumTypeDefiner {
         }
     };
 
-    protected String id;
+    private String id;
 
     private String description;
 
