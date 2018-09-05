@@ -45,7 +45,7 @@ public enum RunMode {
     };
 
     protected OntologyModelFilesReader loadPhenotypeOntology() {
-        getAppOptions().printVerbose("# Loading HPO dataset.");
+        getAppOptions().printVerbose("# Preparing HPO dataset.");
         OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(getAppOptions().getHpoOntology().toString());
         printElapsedTime();
 
@@ -64,8 +64,8 @@ public enum RunMode {
         return hpoRetriever;
     }
 
-    protected ModelReader loadDisgenetDatabase() {
-        getAppOptions().printVerbose("# Loading DisGeNET TDB.");
+    protected ModelReader loadDisgenetDatabase() throws IOException {
+        getAppOptions().printVerbose("# Preparing DisGeNET TDB.");
         ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDisgenetDataDir());
         printElapsedTime();
 

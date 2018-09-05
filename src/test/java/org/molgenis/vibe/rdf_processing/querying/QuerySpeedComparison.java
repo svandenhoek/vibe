@@ -11,11 +11,13 @@ import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 
+import java.io.IOException;
+
 public abstract class QuerySpeedComparison {
     private static ModelReader reader;
 
     @BeforeClass(groups = {"benchmarking"})
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
     }
 

@@ -13,6 +13,7 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +34,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     private final String prefixes = DisgenetQueryStringGenerator.getPrefixes();
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
     }
 

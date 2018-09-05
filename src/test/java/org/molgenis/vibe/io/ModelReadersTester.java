@@ -7,6 +7,8 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
+
 public class ModelReadersTester {
     private ModelReader modelFileReaderNoOntology;
     private ModelReader modelFileReaderWithOntology;
@@ -19,7 +21,7 @@ public class ModelReadersTester {
     private Model tripleStoreModelWithOntology;
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         modelFileReaderNoOntology = new ModelFilesReader(TestData.TTL_NO_ONTOLOGY.getFiles());
         modelFileReaderWithOntology = new ModelFilesReader(TestData.TTL_NO_ONTOLOGY.getFiles());
         tripleStoreReaderNoOntology = new TripleStoreDbReader(TestData.TDB_MINI_NO_ONTOLOGY.getDir());
