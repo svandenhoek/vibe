@@ -69,7 +69,8 @@ public class ModelReadersTester {
 
     /**
      * Currently disabled as while the test fails, the output of the different models seems equal (just in a different order).
-     * Possibly implement a comparison with the model diff ordered somehow?
+     * As comparison is between the 2 different storage formats, perhaps some differences are present that do not affect
+     * function but do make this test fail. Possibly implement a comparison with the model diff ordered somehow?
      */
     @Test(enabled = false)
     public void checkIfModelsAreEqualWithOntologyData() {

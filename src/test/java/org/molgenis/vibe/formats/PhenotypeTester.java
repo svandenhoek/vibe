@@ -48,9 +48,7 @@ public class PhenotypeTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidPhenotypeIdWithoutPrefix() throws InvalidStringFormatException {
-        Phenotype phenotype = new Phenotype("0012345");
-        Assert.assertEquals(phenotype.getId(), "0012345");
-        Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
+        new Phenotype("0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)

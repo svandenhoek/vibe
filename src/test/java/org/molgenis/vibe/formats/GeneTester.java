@@ -36,9 +36,7 @@ public class GeneTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidGeneIdWithoutPrefix() throws InvalidStringFormatException {
-        Gene gene = new Gene("1234");
-        Assert.assertEquals(gene.getId(), "1234");
-        Assert.assertEquals(gene.getFormattedId(), "ncbigene:1234");
+        new Gene("1234");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
