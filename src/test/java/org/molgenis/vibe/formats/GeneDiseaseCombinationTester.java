@@ -12,9 +12,7 @@ import java.util.List;
 
 public class GeneDiseaseCombinationTester {
     private Gene gene = new Gene("ncbigene:0");
-    private Disease disease = new Disease("umls:C01234567") {
-
-    };
+    private Disease disease = new Disease("umls:C01234567");
     private double score = 0.123456789;
     private Source source1 = new Source("ORPHANET");
     private Source source2 = new Source("BEFREE");

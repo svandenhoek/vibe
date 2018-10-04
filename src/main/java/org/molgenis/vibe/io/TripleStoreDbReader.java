@@ -3,8 +3,10 @@ package org.molgenis.vibe.io;
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;
 import org.apache.jena.rdf.model.Model;
+import org.apache.jena.tdb.TDBException; // A TDBException is also available in: org.apache.jena.tdb2.TDBException
 import org.apache.jena.tdb.TDBFactory;
 
+import java.io.IOException;
 import java.nio.file.Path;
 
 import static java.util.Objects.requireNonNull;
@@ -28,14 +30,26 @@ public class TripleStoreDbReader implements ModelReader {
         return model;
     }
 
-    public TripleStoreDbReader(Path dir) {
+    /**
+     * @param dir {@link Path} to the TDB
+     * @throws IOException see {@link #TripleStoreDbReader(String)}
+     */
+    public TripleStoreDbReader(Path dir) throws IOException {
         this(dir.toString());
     }
 
-    public TripleStoreDbReader(String dir) {
-        dataset = TDBFactory.createDataset(requireNonNull(dir));
-        dataset.begin(ReadWrite.READ);
-        model = dataset.getDefaultModel();
+    /**
+     * @param dir {@link String} containing the path to the TDB
+     * @throws IOException thrown when something goes wrong with digesting the TDB (such as the TDB already being used by another JVM)
+     */
+    public TripleStoreDbReader(String dir) throws IOException {
+        try {
+            dataset = TDBFactory.createDataset(requireNonNull(dir));
+            dataset.begin(ReadWrite.READ);
+            model = dataset.getDefaultModel();
+        } catch (TDBException e) {
+            throw new IOException(e.getMessage());
+        }
     }
 
     @Override

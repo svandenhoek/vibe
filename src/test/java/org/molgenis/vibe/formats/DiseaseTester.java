@@ -36,9 +36,7 @@ public class DiseaseTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidDiseaseIdWithoutPrefix() throws InvalidStringFormatException {
-        Disease disease = new Disease("C0123456");
-        Assert.assertEquals(disease.getId(), "C0123456");
-        Assert.assertEquals(disease.getFormattedId(), "umls:C0123456");
+        new Disease("C0123456");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
