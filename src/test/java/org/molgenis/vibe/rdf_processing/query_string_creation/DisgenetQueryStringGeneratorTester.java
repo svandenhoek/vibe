@@ -11,6 +11,7 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
@@ -31,7 +32,7 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
     private QueryRunnerRewindable runner;
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
     }
 

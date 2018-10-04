@@ -3,7 +3,6 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 import org.apache.jena.query.QueryParseException;
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.query.ResultSetFormatter;
-import org.apache.jena.query.Syntax;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
@@ -13,6 +12,7 @@ import org.molgenis.vibe.rdf_processing.querying.QueryRunnerRewindable;
 import org.testng.Assert;
 import org.testng.annotations.*;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,7 +33,7 @@ public class QueryStringGeneratorTester extends QueryTester {
     private final String prefixes = DisgenetQueryStringGenerator.getPrefixes();
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
     }
 
@@ -170,31 +170,31 @@ public class QueryStringGeneratorTester extends QueryTester {
         assertSingleFieldFromRunnerOutput(runner, "gene", expectedOutput);
     }
 
-    @Test
-    public void testGdaDataRetrievalForGenes() {
-        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?disease ?diseaseId ?diseaseTitle ?gdaScoreNumber ?gdaSource ?evidence \n" +
-                "WHERE { \n" +
-                "VALUES ?gene {<http://identifiers.org/ncbigene/1280>}" +
-                "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
-                "rdf:type ?type ; \n" +
-                "sio:SIO_000216 ?gdaScore ; \n" +
-                "sio:SIO_000253 ?gdaSource . \n" +
-                "?type rdfs:subClassOf* sio:SIO_000983 . \n" + // [1] -> [2]
-                "?gene rdf:type ncit:C16612 ; \n" +
-                "dcterms:identifier ?geneId ; \n" +
-                "dcterms:title ?geneTitle ; \n" +
-                "sio:SIO_000205 ?geneSymbol . \n" +
-                "?geneSymbol rdf:type ncit:C43568 ; \n" +
-                "dcterms:title ?geneSymbolTitle . \n" +
-                "?gdaScore rdf:type ncit:C25338 ; \n" +
-                "sio:SIO_000300 ?gdaScoreNumber . \n" +
-                "?disease rdf:type ncit:C7057 ; \n" +
-                "dcterms:identifier ?diseaseId ; \n" +
-                "dcterms:title ?diseaseTitle . \n" +
-                "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
-                "}"));
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
-//        assertSingleFieldFromRunnerOutput(runner, "gene", expectedOutput);
-    }
+//    @Test
+//    public void testGdaDataRetrievalForGenes() {
+//        runner = new QueryRunnerRewindable(reader.getModel(), new QueryString(prefixes + "SELECT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?disease ?diseaseId ?diseaseTitle ?gdaScoreNumber ?gdaSource ?evidence \n" +
+//                "WHERE { \n" +
+//                "VALUES ?gene {<http://identifiers.org/ncbigene/1280>}" +
+//                "?gda sio:SIO_000628 ?disease, ?gene ; \n" +
+//                "rdf:type ?type ; \n" +
+//                "sio:SIO_000216 ?gdaScore ; \n" +
+//                "sio:SIO_000253 ?gdaSource . \n" +
+//                "?type rdfs:subClassOf* sio:SIO_000983 . \n" + // [1] -> [2]
+//                "?gene rdf:type ncit:C16612 ; \n" +
+//                "dcterms:identifier ?geneId ; \n" +
+//                "dcterms:title ?geneTitle ; \n" +
+//                "sio:SIO_000205 ?geneSymbol . \n" +
+//                "?geneSymbol rdf:type ncit:C43568 ; \n" +
+//                "dcterms:title ?geneSymbolTitle . \n" +
+//                "?gdaScore rdf:type ncit:C25338 ; \n" +
+//                "sio:SIO_000300 ?gdaScoreNumber . \n" +
+//                "?disease rdf:type ncit:C7057 ; \n" +
+//                "dcterms:identifier ?diseaseId ; \n" +
+//                "dcterms:title ?diseaseTitle . \n" +
+//                "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
+//                "}"));
+//        ResultSetFormatter.out(System.out, runner.getResultSet());
+//        runner.reset();
+////        assertSingleFieldFromRunnerOutput(runner, "gene", expectedOutput);
+//    }
 }

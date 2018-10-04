@@ -1,7 +1,6 @@
 package org.molgenis.vibe.rdf_processing;
 
 import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.exceptions.CorruptDatabaseException;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
@@ -10,6 +9,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
+import java.io.IOException;
 import java.net.URI;
 import java.util.*;
 
@@ -27,7 +27,7 @@ public class GenesForPhenotypeRetrieverTester {
     private GenesForPhenotypeRetriever retriever;
 
     @BeforeClass
-    public void beforeClass() {
+    public void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
 
     }
