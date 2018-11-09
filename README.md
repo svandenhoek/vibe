@@ -18,7 +18,7 @@ Variant Interpretation using Biological Evidence
 
 * [Java 8][java_download]
 * [Human Phenotype Ontology (HPO)][hpo_owl]
-* A local TDB dataset ([see above](#for-running-the-application))
+* A local TDB dataset ([see above](#generating-a-local-tdb-dataset-needed-by-the-application))
 
 ## Preparations
 If certain software is already installed, certain steps can be skipped.
