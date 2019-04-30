@@ -88,7 +88,7 @@ LINC01104	Diabetes Mellitus, Insulin-Dependent	0.002407028523288	1.0	0.107142857
 MFAP1	Marfan Syndrome	2.747267842131E-4	1.0	0.142857142857143
 MIR555	Poliomyelitis	2.747267842131E-4	1.0	0.0714285714285714
 ```
-+ 2711 more lines
++2711 more lines
 
 ---
 
@@ -111,7 +111,7 @@ POP5	Inflammatory Bowel Diseases|Ulcerative Colitis|Cartilage-hair hypoplasia	2.
 SMCP	Scleroatonic muscular dystrophy|melanoma	8.241803526393E-4	0.930139099005312	0.0357142857142857
 SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357142857142857
 ```
-+ 974 more lines
++974 more lines
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
