@@ -74,6 +74,22 @@ Using the user-defined phenotypes and phenotypes that are related to them with a
 
 `java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n distance -m 1 -s dsi -o results.tsv -p HP:0002996`
 
+Output file:
+
+```
+gene	diseases	highest GDA score	DSI	DPI
+MRXSA	Armfield X-Linked Mental Retardation Syndrome	0.2	1.0	0.0
+MYZAP	Juvenile arthritis	0.2	1.0	0.107142857142857
+RFX7	Miller-McKusick-Malvaux-Syndrome (3M Syndrome)	2.747267842131E-4	1.0	0.0
+CAPSL	Diabetes Mellitus, Insulin-Dependent	0.0029564820917142	1.0	0.107142857142857
+AVL9	Juvenile arthritis	0.2	1.0	0.107142857142857
+SCARF2	Marden Walker like syndrome	0.400549453568426	1.0	0.0
+LINC01104	Diabetes Mellitus, Insulin-Dependent	0.002407028523288	1.0	0.107142857142857
+MFAP1	Marfan Syndrome	2.747267842131E-4	1.0	0.142857142857143
+MIR555	Poliomyelitis	2.747267842131E-4	1.0	0.0714285714285714
+```
++2711 more lines
+
 ---
 
 Using the user-defined phenotypes and their (grand)children with a maximum distance of 2 with the output sorted based on
@@ -81,6 +97,21 @@ the Disease Pleiotropy Index:
 
 `java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n children -m 2 -s dpi -o results.tsv -p HP:0002996`
 
+Output file:
+
+```
+gene	diseases	highest GDA score	DSI	DPI
+MRXSA	Armfield X-Linked Mental Retardation Syndrome	0.2	1.0	0.0
+SCARF2	Marden Walker like syndrome	0.400549453568426	1.0	0.0
+WDR4	Seckel syndrome	2.747267842131E-4	1.0	0.0
+AFD1	Nager syndrome	0.2	1.0	0.0
+BRKS1	Bruck syndrome 1	0.2	1.0	0.0
+POP7	Inflammatory Bowel Diseases|Ulcerative Colitis|Cartilage-hair hypoplasia	2.747267842131E-4	0.889273091656825	0.0357142857142857
+POP5	Inflammatory Bowel Diseases|Ulcerative Colitis|Cartilage-hair hypoplasia	2.747267842131E-4	0.889273091656825	0.0357142857142857
+SMCP	Scleroatonic muscular dystrophy|melanoma	8.241803526393E-4	0.930139099005312	0.0357142857142857
+SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357142857142857
+```
++974 more lines
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
