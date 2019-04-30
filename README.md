@@ -1,5 +1,5 @@
 # vibe
-Variant Interpretation using Biological Evidence
+Variant Interpretation using Biomedical literature Evidence
 
 ## Requirements
 ### Building/testing
