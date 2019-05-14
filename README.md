@@ -1,7 +1,13 @@
-# vibe
+# VIBE
 Variant Interpretation using Biomedical literature Evidence
 
-## Requirements
+## Quickstart
+* Download [VIBE 1.0](https://github.com/molgenis/vibe/releases/download/v1.0/vibe-1.0.jar)
+* Download and extract [disgenetv5.0-rdf-v5.0.0-dump-TDB.zip](https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN)
+* Make sure you have [Java 8 or higher](https://www.java.com)
+* Open a terminal and run VIBE. `java -jar vibe-1.0.jar -v -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+
+## Detailed instructions
 ### Building/testing
 
 * [Apache Maven][maven_download]
