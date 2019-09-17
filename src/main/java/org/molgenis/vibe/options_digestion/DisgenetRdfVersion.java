@@ -12,7 +12,8 @@ import java.util.regex.Pattern;
  * themselves.
  */
 public enum DisgenetRdfVersion implements EnumTypeDefiner {
-    V5("5");
+    V5("5"),
+    V6("6");
 
     private String id;
 

@@ -48,7 +48,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "{" +
             "SELECT ?source (MAX(?sourceTitleGrouped) AS ?sourceTitle) \n" + // some sources have multiple titles, MAX picks longest title only
             "WHERE { \n" +
-            "?source rdf:type dctypes:Dataset ; \n" +
+            "?source rdf:type dctypes:Dataset , dcat:Distribution ; \n" +
             "dcterms:title ?sourceTitleGrouped . \n" +
             "} \n" +
             "GROUP BY ?source \n" +
@@ -64,16 +64,8 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
     private static final String[] GENES_FOR_PHENOTYPES = {"SELECT DISTINCT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?dsiValue ?dpiValue \n" +
             "WHERE { \n" +
             "VALUES ?hpo ", " \n" + // [0] -> [1]
-            "?hpo rdf:type sio:SIO_010056 . \n" +
-            "{ \n" +
-            "?hpo skos:exactMatch ?disease . \n" +
-            "} \n" +
-            "UNION \n" +
-            "{ \n" +
-            "?pda rdf:type sio:SIO_000897 ; \n" +
-            "sio:SIO_000628 ?hpo , ?disease . \n" +
-            "} \n" +
-            "?disease rdf:type ncit:C7057 . \n" +
+            "?disease rdf:type ncit:C7057 ; \n" +
+            "skos:exactMatch ?hpo ." +
             "?gda sio:SIO_000628 ?disease , ?gene ; \n" +
             "rdf:type ?type . \n" +
             "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
