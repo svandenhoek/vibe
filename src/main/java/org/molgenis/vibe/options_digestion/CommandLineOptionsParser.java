@@ -85,7 +85,7 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .build());
 
         options.addOption(Option.builder("n")
-                .longOpt("ontology")
+                .longOpt("ontology-algorithm")
                 .desc("The ontology algorithm to be used for related HPO retrieval:" + System.lineSeparator() +
                         String.format(argumentOptionsFormat, "children", "Uses child algorithm.") +
                         String.format(argumentOptionsFormat, "distance", "Uses distance algorithm."))
