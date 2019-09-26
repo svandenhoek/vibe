@@ -21,11 +21,6 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     private Set<Phenotype> phenotypes;
 
     /**
-     * {@link Gene}{@code s} storage for further processing.
-     */
-    private Set<Gene> genes = new HashSet<>();
-
-    /**
      * {@link Gene}{@code s} storage for easy retrieval.
      */
     private Map<URI, Gene> genesByUri = new HashMap<>();
@@ -52,35 +47,12 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     @Override
     public void run() {
         retrieveSources();
-        retrieveGenes();
-        retrieveGdasWithDiseases();
+        retrieveData();
     }
 
-    private void retrieveGenes() {
+    private void retrieveData() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes));
-
-        while(query.hasNext()) {
-            QuerySolution result = query.next();
-
-            URI geneUri = URI.create(result.get("gene").asResource().getURI());
-            String geneId = result.get("geneId").asLiteral().getString();
-            String geneTitle= result.get("geneTitle").asLiteral().getString();
-            String geneSymbol = result.get("geneSymbolTitle").asLiteral().getString();
-            double diseaseSpecificityIndex = result.get("dsiValue").asLiteral().getDouble();
-            double diseasePleiotropyIndex = result.get("dpiValue").asLiteral().getDouble();
-
-            Gene gene = new Gene(geneId, geneTitle, geneSymbol, diseaseSpecificityIndex, diseasePleiotropyIndex, geneUri);
-            genes.add(gene);
-            genesByUri.put(geneUri, gene);
-        }
-
-        query.close();
-    }
-
-    private void retrieveGdasWithDiseases() {
-        QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes));
 
         while(query.hasNext()) {
             QuerySolution result = query.next();
@@ -97,9 +69,20 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
                 diseasesByUri.put(diseaseUri, disease);
             }
 
-            // Retrieves gene.
+            // Check if gene is already stored, and if not, stores it (using URI as key).
             URI geneUri = URI.create(result.get("gene").asResource().getURI());
             Gene gene = genesByUri.get(geneUri);
+
+            if(gene == null) {
+                gene = new Gene(result.get("geneId").asLiteral().getString(),
+                        result.get("geneTitle").asLiteral().getString(),
+                        result.get("geneSymbolTitle").asLiteral().getString(),
+                        result.get("dsiValue").asLiteral().getDouble(),
+                        result.get("dpiValue").asLiteral().getDouble(),
+                        geneUri);
+
+                genesByUri.put(geneUri, gene);
+            }
 
             // Retrieves score belonging to the gene-disease combination.
             double score = result.get("gdaScoreNumber").asLiteral().getDouble();

@@ -61,13 +61,17 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />between [1] and [2]: the gene-disease association type (see {@link DisgenetAssociationType})
      */
-    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT DISTINCT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?dsiValue ?dpiValue \n" +
+    private static final String[] GENES_FOR_PHENOTYPES = { "SELECT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?disease ?diseaseId ?diseaseTitle ?dsiValue ?dpiValue ?gdaScoreNumber ?gdaSource ?evidence \n" +
             "WHERE { \n" +
             "VALUES ?hpo ", " \n" + // [0] -> [1]
             "?disease rdf:type ncit:C7057 ; \n" +
-            "skos:exactMatch ?hpo ." +
+            "skos:exactMatch ?hpo ; \n" +
+            "dcterms:identifier ?diseaseId ; \n" +
+            "dcterms:title ?diseaseTitle . \n" +
             "?gda sio:SIO_000628 ?disease , ?gene ; \n" +
-            "rdf:type ?type . \n" +
+            "rdf:type ?type ; \n" +
+            "sio:SIO_000216 ?gdaScore ; \n" +
+            "sio:SIO_000253 ?gdaSource . \n" +
             "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
             "?gene rdf:type ncit:C16612 ; \n" +
             "dcterms:identifier ?geneId ; \n" +
@@ -76,32 +80,12 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "sio:SIO_000216 ?dsi, ?dpi . \n" +
             "?geneSymbol rdf:type ncit:C43568 ; \n" +
             "dcterms:title ?geneSymbolTitle . \n" +
+            "?gdaScore rdf:type ncit:C25338 ; \n" +
+            "sio:SIO_000300 ?gdaScoreNumber . \n" +
             "?dsi rdf:type sio:SIO_001351 ; \n" +
             "sio:SIO_000300 ?dsiValue . \n" +
             "?dpi rdf:type sio:SIO_001352 ; \n" +
             "sio:SIO_000300 ?dpiValue . \n" +
-            "}"
-    };
-
-    /**
-     * <p>Retrieves the genes belonging to certain HPO phenotypes.</p>
-     *
-     * <br />between [0] and [1]: the {@link Gene} URIs to filter on (see {@link #createValuesStringForUris(Set)}
-     * <br />between [1] and [2]: the gene-disease association type (see {@link DisgenetAssociationType})
-     */
-    private static final String[] GDA_WITH_DISEASES_FOR_GENES = {"SELECT ?gene ?disease ?diseaseId ?diseaseTitle ?gdaScoreNumber ?gdaSource ?evidence \n" +
-            "WHERE { \n" +
-            "?gda sio:SIO_000628 ?gene , ?disease ; \n" +
-            "rdf:type ?type ; \n" +
-            "sio:SIO_000216 ?gdaScore ; \n" +
-            "sio:SIO_000253 ?gdaSource . \n" +
-            "VALUES ?gene ", " \n" + // [0] -> [1]
-            "?disease rdf:type ncit:C7057 ; \n" +
-            "dcterms:identifier ?diseaseId ; \n" +
-            "dcterms:title ?diseaseTitle . \n" +
-            "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
-            "?gdaScore rdf:type ncit:C25338 ; \n" +
-            "sio:SIO_000300 ?gdaScoreNumber . \n" +
             "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
             "}"
     };
@@ -117,11 +101,6 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
     public static QueryString getGenesForPhenotypes(Set<Phenotype> phenotypes) {
         return new QueryString(PREFIXES + GENES_FOR_PHENOTYPES[0] + createValuesStringForUris(phenotypes) + GENES_FOR_PHENOTYPES[1] +
         DisgenetAssociationType.GENE_DISEASE.getFormattedId() + GENES_FOR_PHENOTYPES[2]);
-    }
-
-    public static QueryString getGdasWithDiseasesForGenes(Set<Gene> genes) {
-        return new QueryString(PREFIXES + GDA_WITH_DISEASES_FOR_GENES[0] + createValuesStringForUris(genes) + GDA_WITH_DISEASES_FOR_GENES[1] +
-        DisgenetAssociationType.GENE_DISEASE.getFormattedId() + GDA_WITH_DISEASES_FOR_GENES[2]);
     }
 
     /**

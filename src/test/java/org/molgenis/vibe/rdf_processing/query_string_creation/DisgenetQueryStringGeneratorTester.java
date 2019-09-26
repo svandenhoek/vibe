@@ -103,19 +103,19 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
         runQueryTest(queryString, fieldOrder, expectedOutput);
     }
 
-    @Test
-    public void testGdaForGenes() {
-        Set<Gene> genes = new HashSet<>();
-        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", 0.393643700083081E0, 0.75E0, URI.create("http://identifiers.org/ncbigene/1291")));
-
-        String[] fieldOrder = {"gene", "disease", "diseaseId", "diseaseTitle", "gdaScoreNumber", "gdaSource", "evidence"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C1834674", "umls:C1834674", "Bethlem myopathy", "0.68357144819477E0", "http://rdf.disgenet.org/v5.0.0/void/MGD"),
-                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C0026850", "umls:C0026850", "Muscular Dystrophy", "0.214763469460921E0", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/19519726")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
+//    @Test
+//    public void testGdaForGenes() {
+//        Set<Gene> genes = new HashSet<>();
+//        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", 0.393643700083081E0, 0.75E0, URI.create("http://identifiers.org/ncbigene/1291")));
+//
+//        String[] fieldOrder = {"gene", "disease", "diseaseId", "diseaseTitle", "gdaScoreNumber", "gdaSource", "evidence"};
+//
+//        List<List<String>> expectedOutput = Arrays.asList(
+//                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C1834674", "umls:C1834674", "Bethlem myopathy", "0.68357144819477E0", "http://rdf.disgenet.org/v5.0.0/void/MGD"),
+//                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C0026850", "umls:C0026850", "Muscular Dystrophy", "0.214763469460921E0", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/19519726")
+//        );
+//
+//        QueryString queryString = DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes);
+//        runQueryTest(queryString, fieldOrder, expectedOutput);
+//    }
 }
