@@ -65,9 +65,17 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "WHERE { \n" +
             "VALUES ?hpo ", " \n" + // [0] -> [1]
             "?disease rdf:type ncit:C7057 ; \n" +
-            "skos:exactMatch ?hpo ; \n" +
             "dcterms:identifier ?diseaseId ; \n" +
             "dcterms:title ?diseaseTitle . \n" +
+            "{ \n" +
+            "   ?disease skos:exactMatch ?hpo . \n" +
+            "} \n" +
+            "UNION \n" +
+            "{ \n" +
+            "   ?hpo rdf:type sio:SIO_010056 . \n" +
+            "   ?pda rdf:type sio:SIO_000897 ; \n" +
+            "   sio:SIO_000628 ?hpo , ?disease . \n" +
+            "} \n" +
             "?gda sio:SIO_000628 ?disease , ?gene ; \n" +
             "rdf:type ?type ; \n" +
             "sio:SIO_000216 ?gdaScore ; \n" +
