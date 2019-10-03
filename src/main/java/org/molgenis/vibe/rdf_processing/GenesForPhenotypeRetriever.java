@@ -21,11 +21,6 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     private Set<Phenotype> phenotypes;
 
     /**
-     * {@link Gene}{@code s} storage for easy retrieval.
-     */
-    private Map<URI, Gene> genesByUri = new HashMap<>();
-
-    /**
      * {@link Disease}{@code s} storage for easy retrieval.
      */
     private Map<URI, Disease> diseasesByUri = new HashMap<>();
@@ -54,26 +49,19 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes));
 
+        // Create initial variables before while loop.
+        URI prevGeneUri = null;
+        URI prevDiseaseUri = null;
+        Gene gene = null;
+        GeneDiseaseCombination gdc = null;
+
         while(query.hasNext()) {
             QuerySolution result = query.next();
 
-            // Check if disease is already stored, and if not, stores it (using URI as key).
-            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
-            Disease disease = diseasesByUri.get(diseaseUri);
-
-            if(disease == null) {
-                disease = new Disease(result.get("diseaseId").asLiteral().getString(),
-                        result.get("diseaseTitle").asLiteral().getString(),
-                        diseaseUri);
-
-                diseasesByUri.put(diseaseUri, disease);
-            }
-
-            // Check if gene is already stored, and if not, stores it (using URI as key).
+            // Check if new gene is being processed and creates new Gene object if this is the case.
+            // Approach requires SPARQL query to be ordered by gene first!
             URI geneUri = URI.create(result.get("gene").asResource().getURI());
-            Gene gene = genesByUri.get(geneUri);
-
-            if(gene == null) {
+            if(geneUri != prevGeneUri) {
                 gene = new Gene(result.get("geneId").asLiteral().getString(),
                         result.get("geneTitle").asLiteral().getString(),
                         result.get("geneSymbolTitle").asLiteral().getString(),
@@ -81,22 +69,40 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
                         result.get("dpiValue").asLiteral().getDouble(),
                         geneUri);
 
-                genesByUri.put(geneUri, gene);
+                prevGeneUri = geneUri;
             }
 
-            // Retrieves score belonging to the gene-disease combination.
-            double score = result.get("gdaScoreNumber").asLiteral().getDouble();
+            // Checks if new disease is being processed. If not, skips certain unnecessary steps.
+            // Approach requires SPARQL query to be ordered by disease second (and gene first)!
+            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
+            if(diseaseUri != prevDiseaseUri) {
+                // Check if disease is already stored, and if not, stores it (using URI as key).
+                Disease disease = diseasesByUri.get(diseaseUri);
 
-            // The gene-disease combination belonging to the single query result.
-            GeneDiseaseCombination comparisonGdc = new GeneDiseaseCombination(gene, disease, score);
+                if(disease == null) {
+                    disease = new Disease(result.get("diseaseId").asLiteral().getString(),
+                            result.get("diseaseTitle").asLiteral().getString(),
+                            diseaseUri);
 
-            // Retrieves it from the collection (if it already exists).
-            GeneDiseaseCombination gdc = geneDiseaseCollection.get(comparisonGdc);
+                    diseasesByUri.put(diseaseUri, disease);
+                }
 
-            // If the gene-disease combination is not present yet, uses the comparison gdc and also adds it to the collection.
-            if(gdc == null) {
-                gdc = comparisonGdc;
-                geneDiseaseCollection.add(gdc);
+                // Retrieves score belonging to the gene-disease combination.
+                double score = result.get("gdaScoreNumber").asLiteral().getDouble();
+
+                // The gene-disease combination belonging to the single query result.
+                GeneDiseaseCombination comparisonGdc = new GeneDiseaseCombination(gene, disease, score);
+
+                // Retrieves it from the collection (if it already exists).
+                gdc = geneDiseaseCollection.get(comparisonGdc);
+
+                // If the gene-disease combination is not present yet, uses the comparison gdc and also adds it to the collection.
+                if(gdc == null) {
+                    gdc = comparisonGdc;
+                    geneDiseaseCollection.add(gdc);
+                }
+
+                prevDiseaseUri = diseaseUri;
             }
 
             // Retrieves source belonging to match. If this causes an error, this might indicate a corrupt database (as

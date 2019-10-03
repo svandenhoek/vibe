@@ -95,7 +95,8 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
             "?dpi rdf:type sio:SIO_001352 ; \n" +
             "sio:SIO_000300 ?dpiValue . \n" +
             "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
-            "}"
+            "} \n" +
+            "ORDER BY ?gene ?disease"
     };
 
     public static String getPrefixes() {
