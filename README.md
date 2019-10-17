@@ -1,7 +1,11 @@
 # VIBE
 Variant Interpretation using Biomedical literature Evidence
 
-## Quickstart
+## Web app
+* Available at: http://molgenis.org/vibe
+* Source code: https://github.com/molgenis/molgenis-app-vibe
+
+## Installation quickstart
 * Download [VIBE 1.0](https://github.com/molgenis/vibe/releases/download/v1.0/vibe-1.0.jar)
 * Download and extract [disgenetv5.0-rdf-v5.0.0-dump-TDB.zip](https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN)
 * Make sure you have [Java 8 or higher](https://www.java.com)
