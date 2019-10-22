@@ -11,6 +11,7 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 - [DisGeNET RDF v6 dump][disgenet_rdf_v6_dump]
 - [DisGeNET RDF v5 pda][disgenet_rdf_v5_pda]
 - [DisGeNET RDF v5 phenotype][disgenet_rdf_v5_phenotype]
+- [DisGeNET RDF v5 void][disgenet_rdf_v5_void]
 - [Semanticscience Integrated Ontology (SIO)][sio_owl]
 - [HPO - ORDO Ontological Module (RDF/XML-format)][hoom]
 
@@ -18,11 +19,9 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 
 1. Download the data.
 2. Rename `owlapi.xrdf` to `owlapi.xml` (otherwise `tdbloader2` will give `org.apache.jena.riot.RiotException: Failed to determine the content type`)
-3. Run `tdbloader2 --loc /path/to/initial/TDB /path/to/disgenet_v6/dump/*.ttl /path/to/disgenet_v5/pda.ttl /path/to/disgenet_v5/phenotype.ttl  /path/to/sio-release.owl /path/to/owlapi.xml`
+3. Run `tdbloader2 --loc /path/to/initial/TDB /path/to/disgenet_v6/dump/*.ttl /path/to/disgenet_v5/pda.ttl /path/to/disgenet_v5/phenotype.ttl  /path/to/disgenet_v5/void.ttl /path/to/sio-release.owl /path/to/owlapi.xml`
 
 ## Creating optimized TDB
-
-Work in progress.
 
 1. Create a directory to store optimized `.ttl` files in.
 2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
@@ -40,6 +39,7 @@ Work in progress.
 [disgenet_rdf_v6_dump]: http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
 [disgenet_rdf_v5_pda]: http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz
 [disgenet_rdf_v5_phenotype]: http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz
+[disgenet_rdf_v5_void]: http://rdf.disgenet.org/download/v5.0.0/void.ttl.tar.gz
 [sio_owl]: http://semanticscience.org/ontology/sio.owl
-
 [hoom]: http://data.bioontology.org/ontologies/HOOM/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf
+
