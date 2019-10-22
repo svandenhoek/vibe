@@ -31,10 +31,11 @@ PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet
 CONSTRUCT {
 	?hpo rdf:type sio:SIO_010056 ;
 	skos:exactMatch ?directMatchDisease ;
-	sio:SIO_000001 ?pda , ?orphanet . # possibly other predicate should be used?
+	sio:SIO_000212 ?pda ;
+	sio:SIO_000001 ?orphanet . # possibly other predicate should be used?
 
 	?pda rdf:type sio:SIO_000897 ;
-	sio:SIO_000628 ?pdaDisease ;
+	sio:SIO_000628 ?pdaDisease ; # ?hpo removed for data optimalization (already stored there through sio:SIO_000212)
 	sio:SIO_000253 ?pdaSource .
 
 	?orphanet rdfs:subClassOf hoom:Orpha_Num ;
