@@ -11,7 +11,11 @@ A tool to generate prioritized genes using phenotype information.
 
 ## Detailed instructions
 
-###Requirements
+### For developers
+
+Instructions regarding building/testing the app can be found [here](./app/README.md) and how to create a TDB for the app can be found [here](./database/README.md).
+
+### Requirements
 
 * [Java 8 or higher][java_download]
 * [A local TDB dataset][tdb_download]
