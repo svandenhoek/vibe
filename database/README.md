@@ -18,11 +18,18 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 
 1. Download the data.
 2. Rename `owlapi.xrdf` to `owlapi.xml` (otherwise `tdbloader2` will give `org.apache.jena.riot.RiotException: Failed to determine the content type`)
-3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet_v6/dump/*.ttl /path/to/disgenet_v5/pda.ttl /path/to/disgenet_v5/phenotype.ttl  /path/to/sio-release.owl /path/to/owlapi.xml`
+3. Run `tdbloader2 --loc /path/to/initial/TDB /path/to/disgenet_v6/dump/*.ttl /path/to/disgenet_v5/pda.ttl /path/to/disgenet_v5/phenotype.ttl  /path/to/sio-release.owl /path/to/owlapi.xml`
 
 ## Creating optimized TDB
 
 Work in progress.
+
+1. Create a directory to store optimized `.ttl` files in.
+2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
+3. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/disease.rq 1> /path/to/optimized/ttl/disease.ttl`
+4. Run `tdbquery --time --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
+5. Run `tdbquery --time --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
+6. Run `tdbloader2 --loc /path/to/store/optimized/TDB /path/to/optimized/ttl/*.ttl  /path/to/sio-release.owl`
 
 
 
