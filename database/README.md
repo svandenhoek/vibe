@@ -1,6 +1,6 @@
 # Database creation
 
-VIBE needs an optimized TDB to run. To create this, several steps are needed, as explained below. Note that the initial TDB should not be used in combination with VIBE, but only the optimized one! This is because certain information is left out in the optimized TDB to reduce the database size. The SPARQL-queries within VIBE therefore should not be used with the regular TDB as this could result in unusual results or possibly even errors.
+VIBE needs an optimized TDB to run. To create this, several steps are needed, as explained below. **Note that the initial TDB should not be used in combination with VIBE, but only the optimized one!** This is because certain information is left out in the optimized TDB to reduce the database size. Using VIBE with the initial TDB could result in unusual results or possibly even errors!
 
 ## Requirements
 
