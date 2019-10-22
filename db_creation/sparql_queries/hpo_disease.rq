@@ -57,7 +57,7 @@ WHERE {
 		FILTER EXISTS { ?pda rdf:type sio:SIO_000897 . }
 		FILTER EXISTS { ?hpo rdf:type sio:SIO_010056 . }
 		FILTER EXISTS { ?pdaDisease rdf:type ncit:C7057 . }
-		#FILTER EXISTS { ?pdaSource rdf:type dctypes:Dataset , dcat:Distribution . } # add DisGeNET v5.0 void.ttl
+		FILTER EXISTS { ?pdaSource rdf:type dctypes:Dataset , dcat:Distribution . }
 		FILTER ( STRSTARTS(str(?pda), str(pda:)) ) # As vda's also have an sio:SIO_000628 to diseases and are rdf:type sio:SIO_010056, explicit filter is needed.
 	}
 	UNION
