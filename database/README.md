@@ -34,12 +34,13 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 
 
 
+
+
 [jena_download]: https://jena.apache.org/download/index.cgi
-[jena_configure]: https://jena.apache.org/documentation/tdb/commands.html#scripts
+[jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [disgenet_rdf_v6_dump]: http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
 [disgenet_rdf_v5_pda]: http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz
 [disgenet_rdf_v5_phenotype]: http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz
 [disgenet_rdf_v5_void]: http://rdf.disgenet.org/download/v5.0.0/void.ttl.tar.gz
 [sio_owl]: http://semanticscience.org/ontology/sio.owl
 [hoom]: http://data.bioontology.org/ontologies/HOOM/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf
-

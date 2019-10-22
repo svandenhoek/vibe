@@ -1,59 +1,31 @@
 # VIBE
-Variant Interpretation using Biomedical literature Evidence
+
+A tool to generate prioritized genes using phenotype information.
 
 ## Quickstart
-* Download [VIBE 1.0](https://github.com/molgenis/vibe/releases/download/v1.0/vibe-1.0.jar)
-* Download and extract [disgenetv5.0-rdf-v5.0.0-dump-TDB.zip](https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN)
-* Make sure you have [Java 8 or higher](https://www.java.com)
+
+* Download [vibe .jar file][vibe_download]
+* Download and extract [TDB][tdb_download]
+* Make sure you have [Java 8 or higher][java_download]
 * Open a terminal and run VIBE. `java -jar vibe-1.0.jar -v -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ## Detailed instructions
-### Building/testing
 
-* [Apache Maven][maven_download]
-* [Apache Jena v3.6.0][jena_download]
-* Vibe test resources archive (automatically downloaded and extracted by `TestNGPreprocessing.sh`)
+###Requirements
 
-### Generating a local TDB dataset needed by the application
+* [Java 8 or higher][java_download]
+* [A local TDB dataset][tdb_download]
+* [Human Phenotype Ontology (HPO)][hpo_owl] *
 
-* [Apache Jena v3.6.0][jena_download]
-* [DisGeNET RDF v5 dump][disgenet_rdf_v5_dump]
-* [Semanticscience Integrated Ontology (SIO)][sio_owl]
+\* = Only required when certain arguments are used.
 
-### Running the application
-
-* [Java 8][java_download]
-* [Human Phenotype Ontology (HPO)][hpo_owl]
-* A local TDB dataset ([see above](#generating-a-local-tdb-dataset-needed-by-the-application))
-
-## Preparations
-If certain software is already installed, certain steps can be skipped.
-
-### Creating an executable jar
-
-1. [Download][maven_download] and [install][maven_install] Apache Maven
-2. Run `mvn clean install` from the git repository directory.
-
-### Preperations for unit-testing
-
-1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
-2. Run `TestNGPreprocessing.sh` (optionally with extra arguments required for certain tests).
-
-
-### Creating a local TDB dataset
-
-1. [Download][jena_download] and [configure][jena_configure] the environment so that the Jena scripts can be used.
-2. Download the required files ([DisGeNET][disgenet_rdf_v5_dump], [SIO][sio_owl]).
-3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl`
-
-## Running the application
 ### Usage
 
 `java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...`
 
 ### Examples
-Using only the user-defined phenotypes with the output being sorted based on the highest gene-disease association score
-present per gene:
+
+Using only the user-defined phenotypes with the output being sorted based on the highest gene-disease association score present per gene:
 
 `java -jar vibe-with-dependencies.jar -v -t TDB/ -s gda_max -o results.tsv -p HP:0002996 -p HP:0001377`
 
@@ -119,9 +91,9 @@ SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357
 ```
 +974 more lines
 
+[vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
-[maven_download]:https://maven.apache.org/download.cgi
-[maven_install]:https://maven.apache.org/install.html
+[tdb_download]: https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]:https://jena.apache.org/documentation/tdb/commands.html#scripts
 [disgenet_rdf_v5_dump]:http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
