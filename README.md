@@ -99,7 +99,8 @@ SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357
 [java_download]:https://www.java.com/download
 [tdb_download]: https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN
 [jena_download]:https://jena.apache.org/download/index.cgi
-[jena_configure]:https://jena.apache.org/documentation/tdb/commands.html#scripts
-[disgenet_rdf_v5_dump]:http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
-[sio_owl]:http://semanticscience.org/ontology/sio.owl
+
+[jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
+
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
+
