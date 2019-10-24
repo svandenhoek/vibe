@@ -32,13 +32,15 @@ CONSTRUCT {
 	?gda rdf:type ?gdaType ;
 	sio:SIO_000628 ?gene ; # ?disease removed for data optimalization (already stored there through sio:SIO_000212)
 	sio:SIO_000216 ?gdaScoreNumber ; # skips intermediate step, unsafe when multiple different scores are kept! (reduces n triples, though perhaps not best practice design-wise)
-	sio:SIO_000253 ?gdaSource .
+	sio:SIO_000253 ?gdaSource ;
+	sio:SIO_000772 ?evidence .
 }
 WHERE {
 	?gda rdf:type ?gdaType ;
 	sio:SIO_000628 ?disease , ?gene ;
 	sio:SIO_000216 ?gdaScore ;
 	sio:SIO_000253 ?gdaSource .
+	OPTIONAL { ?gda sio:SIO_000772 ?evidence }
 
 	?gdaScore sio:SIO_000300 ?gdaScoreNumber .
 
