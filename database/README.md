@@ -26,9 +26,10 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 1. Create a directory to store optimized `.ttl` files in.
 2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
 3. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/disease.rq 1> /path/to/optimized/ttl/disease.ttl`
-4. Run `tdbquery --time --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
-5. Run `tdbquery --time --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
-6. Run `tdbloader2 --loc /path/to/store/optimized/TDB /path/to/optimized/ttl/*.ttl  /path/to/sio-release.owl`
+4. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
+5. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
+6. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/source.rq 1> /path/to/optimized/ttl/source.ttl`
+7. Run `tdbloader2 --loc /path/to/store/optimized/TDB /path/to/optimized/ttl/*.ttl  /path/to/sio-release.owl`
 
 
 
