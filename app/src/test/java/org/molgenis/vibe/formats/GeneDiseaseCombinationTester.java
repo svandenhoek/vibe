@@ -14,8 +14,8 @@ public class GeneDiseaseCombinationTester {
     private Gene gene = new Gene("ncbigene:0");
     private Disease disease = new Disease("umls:C01234567");
     private double score = 0.123456789;
-    private Source source1 = new Source("ORPHANET");
-    private Source source2 = new Source("BEFREE");
+    private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"));
+    private Source source2 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"));
 
     private GeneDiseaseCombination geneDiseaseCombo;
 

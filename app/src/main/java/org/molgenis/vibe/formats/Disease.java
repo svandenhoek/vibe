@@ -5,7 +5,9 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import java.net.URI;
 
 /**
- * A disease. Note that equality is based on the id only.
+ * A disease. Note that equality is determined through {@link URI}{@code s} from the domain
+ * <a href="http://linkedlifedata.com">http://linkedlifedata.com</a> describing an identifier from the
+ * Unified Medical Language System (UMLS).
  */
 public class Disease extends BiologicalEntity {
     private static final String ID_PREFIX = "umls:";
@@ -35,6 +37,10 @@ public class Disease extends BiologicalEntity {
 
     public Disease(String id) {
         super(id);
+    }
+
+    public Disease(URI uri) {
+        super(uri);
     }
 
     public Disease(String id, String name, URI uri) throws InvalidStringFormatException {

@@ -9,6 +9,12 @@ import static java.util.Objects.requireNonNull;
 
 /**
  * Describes the source (the database) for a specific piece of information. Based on the <a href="http://www.disgenet.org/web/DisGeNET/menu/dbinfo#sources">DisGeNET sources/levels</a>.
+ * <br /><br />
+ * Note that different versions of DisGeNET could refer to the same source, but have a different IRI to that source
+ * (for example due to using a different version of that database). To provide interoperability between different versions,
+ * The IRI's are therefore used as identifiers. The name could be identical and for the end-user the difference might not
+ * be that big, but from a design perspective these are treated as different @{@link Source}{@code s}, though in practice
+ * it might be the same source (or even the same version of that source).
  */
 public class Source implements ResourceUri {
     /**
@@ -52,10 +58,10 @@ public class Source implements ResourceUri {
 
     /**
      * Simple constructor allowing for easy comparison of collections.
-     * @param name
+     * @param uri
      */
-    public Source(String name) {
-        this.name = requireNonNull(name);
+    public Source(URI uri) {
+        this.uri = requireNonNull(uri);
     }
 
     /**
@@ -97,12 +103,12 @@ public class Source implements ResourceUri {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Source source = (Source) o;
-        return Objects.equals(name, source.name);
+        return Objects.equals(uri, source.uri);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(name);
+        return Objects.hash(uri);
     }
 
     /**

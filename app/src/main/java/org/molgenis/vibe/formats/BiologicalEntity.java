@@ -165,12 +165,12 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         BiologicalEntity that = (BiologicalEntity) o;
-        return Objects.equals(id, that.id);
+        return Objects.equals(uri, that.uri);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return Objects.hash(uri);
     }
 
     @Override

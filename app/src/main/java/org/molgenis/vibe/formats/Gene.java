@@ -7,8 +7,10 @@ import static java.util.Objects.requireNonNull;
 import java.net.URI;
 
 /**
- * A gene. Note that equality is based on the NCBI gene id only (as multiple objects with the same id but a different
- * name/symbol should be regarded as invalid and not as multiple DIFFERENT genes).
+ * A gene. Note that equality is determined through {@link URI}{@code s} from the domain
+ * <a href="http://identifiers.org">http://identifiers.org</a> describing NCBI Entrez gene identifiers. This was done
+ * as DisGeNET converted other gene-identifiers (such as HGNC symbols) into NCBI Entrez gene identifiers
+ * (<a href="http://disgenet.org/dbinfo#section41>http://disgenet.org/dbinfo#section41">source</a>) within the database.
  */
 public class Gene extends BiologicalEntity {
     private static final String ID_PREFIX = "ncbigene:";
@@ -71,6 +73,10 @@ public class Gene extends BiologicalEntity {
 
     public Gene(String id) {
         super(id);
+    }
+
+    public Gene(URI uri) {
+        super(uri);
     }
 
     /**
