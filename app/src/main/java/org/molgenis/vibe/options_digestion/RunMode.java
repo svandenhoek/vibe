@@ -66,7 +66,7 @@ public enum RunMode {
 
     protected ModelReader loadDisgenetDatabase() throws IOException {
         getAppOptions().printVerbose("# Preparing DisGeNET TDB.");
-        ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDisgenetDataDir());
+        ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDatabase());
         printElapsedTime();
 
         return disgenetReader;
