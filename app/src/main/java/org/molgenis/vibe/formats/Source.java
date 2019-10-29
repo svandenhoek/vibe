@@ -66,11 +66,11 @@ public class Source implements ResourceUri {
 
     /**
      * A constructor for describing a source with an {@link URI} id from an RDF database.
+     * @param uri
      * @param name
      * @param level
-     * @param uri
      */
-    public Source(String name, Level level, URI uri) {
+    public Source(URI uri, String name, Level level) {
         this.name = requireNonNull(name);
         this.level = requireNonNull(level);
         this.uri = requireNonNull(uri);
@@ -78,12 +78,12 @@ public class Source implements ResourceUri {
 
     /**
      * A constructor for describing a source with an {@link URI} id from an RDF database.
+     * @param uri
      * @param name
      * @param level
-     * @param uri
      * @throws InvalidStringFormatException if {@code level} could not be converted into an appropriate {@link Level}
      */
-    public Source(String name, String level, URI uri) throws InvalidStringFormatException {
+    public Source(URI uri, String name, String level) throws InvalidStringFormatException {
         this.name = requireNonNull(name);
         this.level = Level.retrieveLevelByDisgenetVoidString(level);
         this.uri = requireNonNull(uri);

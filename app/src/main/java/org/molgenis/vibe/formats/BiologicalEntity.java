@@ -110,7 +110,7 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         this.name = requireNonNull(name);
     }
 
-    public BiologicalEntity(String id, String name, URI uri) throws InvalidStringFormatException {
+    public BiologicalEntity(URI uri, String id, String name) throws InvalidStringFormatException {
         this.id = retrieveIdFromString(requireNonNull(id));
         this.name = requireNonNull(name);
         this.uri = requireNonNull(uri);

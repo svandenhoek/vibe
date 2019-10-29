@@ -8,54 +8,54 @@ import java.net.URI;
 
 public class GeneTester {
     @Test
-    public void useValidGeneIdWithPrefix() throws InvalidStringFormatException {
+    public void useValidIdWithLowercasePrefix() throws InvalidStringFormatException {
         Gene gene = new Gene("ncbigene:1234");
-        testValidGene(gene);
+        testIfValid(gene);
     }
 
     @Test
-    public void useValidGeneIdWithUpperCasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithUppercasePrefix() throws InvalidStringFormatException {
         Gene gene = new Gene("NCBIGENE:1234");
-        testValidGene(gene);
+        testIfValid(gene);
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useUriAsIdInput() {
-        new Gene("http://identifiers.org/ncbigene/1234");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidGeneIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
+    public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Gene("Ncbigene:1234");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidGeneIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
+    public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
         new Gene("nCbigene:1234");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidGeneIdWithoutPrefix() throws InvalidStringFormatException {
+    public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
+        new Gene("ncbi:1234");
+    }
+
+    @Test(expectedExceptions = InvalidStringFormatException.class)
+    public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
         new Gene("1234");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidGeneIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new Gene("ncbi:1234");
+    public void useUriAsIdInput() throws InvalidStringFormatException {
+        new Gene("http://identifiers.org/ncbigene/1234");
     }
 
     @Test
-    public void useValidGeneUri() throws InvalidStringFormatException {
+    public void useValidUri() {
         Gene gene = new Gene(URI.create("http://identifiers.org/ncbigene/1234"));
-        testValidGene(gene);
+        testIfValid(gene);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
-    public void useInvalidGeneUri() throws InvalidStringFormatException {
+    public void useInvalidUri() {
         Gene gene = new Gene(URI.create("http://identifiers.org/ncbi/1234"));
     }
 
-    public void testValidGene(Gene gene) {
+    private void testIfValid(Gene gene) {
         Assert.assertEquals(gene.getId(), "1234");
         Assert.assertEquals(gene.getFormattedId(), "ncbigene:1234");
         Assert.assertEquals(gene.getUri(), URI.create("http://identifiers.org/ncbigene/1234"));

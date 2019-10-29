@@ -21,7 +21,7 @@ public class Gene extends BiologicalEntity {
     /**
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
-    private String symbol;
+    private String symbol; // Currently unused.
 
     /**
      * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
@@ -80,18 +80,13 @@ public class Gene extends BiologicalEntity {
     }
 
     /**
-     *
-     * @param id unique NCBI gene ID
-     * @param name {@link BiologicalEntity#name}
-     * @param symbol HUGO Gene Nomenclature Committee (HGNC) name
+     * @param uri {@link BiologicalEntity#uri}
      * @param dsi diseaseSpecificityIndex
      * @param dpi diseasePleiotropyIndex
-     * @param uri {@link BiologicalEntity#uri}
      * @throws InvalidStringFormatException
      */
-    public Gene(String id, String name, String symbol, Double dsi, Double dpi, URI uri) throws InvalidStringFormatException {
-        super(id, name, uri);
-        this.symbol = requireNonNull(symbol);
+    public Gene(URI uri, Double dsi, Double dpi) throws InvalidStringFormatException {
+        super(uri);
         this.diseaseSpecificityIndex = requireNonNull(dsi);
         this.diseasePleiotropyIndex = requireNonNull(dpi);
     }
@@ -102,7 +97,7 @@ public class Gene extends BiologicalEntity {
     @Override
     public String toString() {
         return "Gene{" +
-                "symbol='" + symbol + '\'' +
+//                "symbol='" + symbol + '\'' +
                 ", diseaseSpecificityIndex=" + diseaseSpecificityIndex +
                 ", diseasePleiotropyIndex=" + diseasePleiotropyIndex +
                 "} " + super.toString();
