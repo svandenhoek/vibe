@@ -89,7 +89,9 @@ runTestPreparations() {
 
     # Downloads test data.
     echo "\n\n$SEP_SIDE Downloading data $SEP_SIDE\n\n" # local test: disable
-    wget "$TEST_RESOURCES_DOWNLOAD" -P "$TMP_DIR" # local test: disable
+    cd "$TMP_DIR"
+    curl -O "$TEST_RESOURCES_DOWNLOAD" # local test: disable
+    cd ../
 
     # Extracts archive (overrides if exists).
     echo "\n\n$SEP_SIDE Extracting data $SEP_SIDE\n\n"
