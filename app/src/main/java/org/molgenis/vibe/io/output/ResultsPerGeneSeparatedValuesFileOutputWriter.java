@@ -81,8 +81,10 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         BufferedWriter writer = getWriter();
 
         // Writes header.
-        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score" +
-                getSeparator() + "DSI" + getSeparator() + "DPI");
+        // Currently dsi & dpi are not retrieved.
+//        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score" +
+//                getSeparator() + "DSI" + getSeparator() + "DPI");
+        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score");
         writer.newLine();
 
         // Goes through all ordered genes.
@@ -122,8 +124,10 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
 //                }
             }
 
-            writer.write(getSeparator() + Double.toString(highestScore) + getSeparator() +
-                    gene.getDiseaseSpecificityIndex() + getSeparator() + gene.getDiseasePleiotropyIndex());
+            // Currently dsi & dpi are not retrieved.
+//            writer.write(getSeparator() + Double.toString(highestScore) + getSeparator() +
+//                    gene.getDiseaseSpecificityIndex() + getSeparator() + gene.getDiseasePleiotropyIndex());
+            writer.write(getSeparator() + Double.toString(highestScore));
             writer.newLine();
         }
 
