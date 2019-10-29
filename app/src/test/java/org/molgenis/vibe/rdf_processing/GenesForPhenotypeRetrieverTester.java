@@ -28,7 +28,7 @@ public class GenesForPhenotypeRetrieverTester {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
+        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
 
     }
 
@@ -38,59 +38,111 @@ public class GenesForPhenotypeRetrieverTester {
     }
 
     @Test
-    public void retrieveGeneDiseaseCollectionForMultiplePhenotypes() {
-        Gene[] genes = new Gene[]{
-                new Gene("ncbigene:1311", "cartilage oligomeric matrix protein", "COMP", 0.507872279859934E0, 0.607142857142857E0, URI.create("http://identifiers.org/ncbigene/1311")), // umls:C0410538
-                new Gene("ncbigene:10082", "glypican 6", "GPC6", 0.596109001438773E0, 0.5E0, URI.create("http://identifiers.org/ncbigene/10082")), // umls:C1850318 & umls:C1968605
-                new Gene("ncbigene:960", "CD44 molecule (Indian blood group)", "CD44", 0.383591614803352E0, 0.821428571428571E0, URI.create("http://identifiers.org/ncbigene/960")), // umls:C1850318
-                new Gene("ncbigene:10075", "HECT, UBA and WWE domain containing 1, E3 ubiquitin protein ligase", "HUWE1", 0.625716589831481E0, 0.5E0, URI.create("http://identifiers.org/ncbigene/10075")), // umls:C1867103
-                new Gene("ncbigene:2261", "fibroblast growth factor receptor 3", "FGFR3", 0.366634840656414E0, 0.821428571428571E0, URI.create("http://identifiers.org/ncbigene/2261")), // umls:C1867103
+    public void retrieveGeneDiseaseCollectionForHpo0008438() {
+        /**
+         * obo:HP_0008438  a        sio:SIO_010056 ;
+         *         sio:SIO_000001   ordo:Orphanet_85184 ;
+         *         sio:SIO_000212   pda:DGN8a0e701b56199eca12831b38431d7959 ;
+         *         skos:exactMatch  umls:C1835764 .
+         */
+        Disease[] diseases = new Disease[]{
+                new Disease("umls:C0265292"), // ordo:Orphanet_85184
+                new Disease("umls:C0220687"), // pda:DGN8a0e701b56199eca12831b38431d7959
+                new Disease("umls:C1835764"), // skos:exactMatch
         };
 
-        Disease[] diseases = new Disease[]{
-                new Disease("umls:C0410538", "Pseudoachondroplasia", URI.create("http://linkedlifedata.com/resource/umls/id/C0410538")), // pda.ttl
-                new Disease("umls:C1850318", "Omodysplasia type 1", URI.create("http://linkedlifedata.com/resource/umls/id/C1850318")), // pda.ttl
-                new Disease("umls:C1867103", "Limited elbow extension", URI.create("http://linkedlifedata.com/resource/umls/id/C1867103")), // phenotype.ttl -> exactMatch
-                new Disease("umls:C1968605", "Limited elbow flexion/extension", URI.create("http://linkedlifedata.com/resource/umls/id/C1968605")) // phenotype.ttl -> exactMatch
+        Gene[] genes = new Gene[]{
+                new Gene("ncbigene:479"),
+                new Gene("ncbigene:56172"),
+                new Gene("ncbigene:286"),
+                new Gene("ncbigene:2697"),
+                new Gene("ncbigene:29123"),
         };
 
         GeneDiseaseCombination[] geneDiseaseCombinations = new GeneDiseaseCombination[]{
-                new GeneDiseaseCombination(genes[0], diseases[0], 0.702671298020428E0),
-                new GeneDiseaseCombination(genes[1], diseases[1], 0.400824180352639E0),
-                new GeneDiseaseCombination(genes[2], diseases[1], 2.747267842131E-4),
-                new GeneDiseaseCombination(genes[3], diseases[2], 0.2E0),
-                new GeneDiseaseCombination(genes[4], diseases[2], 0.2E0),
-                new GeneDiseaseCombination(genes[1], diseases[3], 0.2E0)
+                // GDAs umls:C0265292
+                new GeneDiseaseCombination(genes[0], diseases[0], 0.02E0),
+                new GeneDiseaseCombination(genes[1], diseases[0], 0.37E0),
+                new GeneDiseaseCombination(genes[2], diseases[0], 0.03E0),
+                new GeneDiseaseCombination(genes[3], diseases[0], 0.31E0),
+
+                // GDAs umls:C0220687
+                new GeneDiseaseCombination(genes[4], diseases[1], 0.8E0), // [4]
+
+                // GDAs umls:C1835764
+                new GeneDiseaseCombination(genes[4], diseases[2], 0.1E0), // [5]
         };
 
         Source[] sources = new Source[] {
-                new Source("UniProt 2017 Dataset Distribution", Source.Level.CURATED, URI.create("http://rdf.disgenet.org/v5.0.0/void/UNIPROT")),
-                new Source("CTD_human 2017 Dataset Distribution", Source.Level.CURATED, URI.create("http://rdf.disgenet.org/v5.0.0/void/CTD_human")),
-                new Source("BeFree 2017 Dataset Distribution", Source.Level.LITERATURE, URI.create("http://rdf.disgenet.org/v5.0.0/void/BEFREE")),
-                new Source("HPO", Source.Level.CURATED, URI.create("http://rdf.disgenet.org/v5.0.0/void/HPO"))
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "BeFree 2017 Dataset Distribution", Source.Level.LITERATURE),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"), "Orphanet 2017 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CLINVAR"), "ClinVar 2017 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/UNIPROT"), "UniProt 2017 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CTD_human"), "CTD_human 2017 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/HPO"), "HPO", Source.Level.CURATED),
         };
 
-        geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/11565064"));
-        geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/21922596"));
-        geneDiseaseCombinations[1].add(sources[1], URI.create("http://identifiers.org/pubmed/19481194"));
-        geneDiseaseCombinations[2].add(sources[2], URI.create("http://identifiers.org/pubmed/19481194"));
-        geneDiseaseCombinations[3].add(sources[3]);
-        geneDiseaseCombinations[4].add(sources[3]);
-        geneDiseaseCombinations[5].add(sources[3]);
+        // GDAs umls:C0265292
+        geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/8630510"));
+        geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/7678608"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/16462526"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/20943778"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/20358596"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/19257826"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/21149338"));
+        geneDiseaseCombinations[2].add(sources[0], URI.create("http://identifiers.org/pubmed/16462526"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/26820766"));
+        geneDiseaseCombinations[1].add(sources[1]);
+        geneDiseaseCombinations[3].add(sources[1]);
+        geneDiseaseCombinations[3].add(sources[0], URI.create("http://identifiers.org/pubmed/23951358"));
+        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/20186813"));
+        geneDiseaseCombinations[2].add(sources[0], URI.create("http://identifiers.org/pubmed/19257826"));
+        geneDiseaseCombinations[2].add(sources[0], URI.create("http://identifiers.org/pubmed/21149338"));
 
+        // GDAs umls:C0220687
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/25413698"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/28250421"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/23369839"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/25741868"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/15523620"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/27900361"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/15378538"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/21782149"));
+        geneDiseaseCombinations[4].add(sources[3], URI.create("http://identifiers.org/pubmed/21782149"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/23184435"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/25424714"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/22307766"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/21782149"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/27667800"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/29565525"));
+        geneDiseaseCombinations[4].add(sources[4]);
+        geneDiseaseCombinations[4].add(sources[3], URI.create("http://identifiers.org/pubmed/25413698"));
+        geneDiseaseCombinations[4].add(sources[2]);
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/25464108"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/28708303"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/25125236"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/25187894"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/24838796"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/24088041"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/25125236"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/29224748"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/23463723"));
+        geneDiseaseCombinations[4].add(sources[0], URI.create("http://identifiers.org/pubmed/23494856"));
+        geneDiseaseCombinations[4].add(sources[2], URI.create("http://identifiers.org/pubmed/26633545"));
+        geneDiseaseCombinations[4].add(sources[1]);
+
+        // GDAs umls:C1835764
+        geneDiseaseCombinations[5].add(sources[5]);
+
+        // Create collection.
         GeneDiseaseCollection expectedCollection = new GeneDiseaseCollection();
         expectedCollection.addAll(Arrays.asList(geneDiseaseCombinations));
 
-        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0001377"), new Phenotype("hp:0005060"))));
+        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0007469"))));
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 
         assertGeneDiseaseCombination(actualCollection, expectedCollection);
-    }
-
-    @Test
-    public void retrieveGeneDiseaseCollectionWithDiseaseNotDirectlyLinkedToPhenotype() {
-
     }
 
     private void assertGeneDiseaseCombination(GeneDiseaseCollection actualCollection, GeneDiseaseCollection expectedCollection) {
