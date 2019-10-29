@@ -13,9 +13,9 @@ public class DiseasePleiotropyIndexGenePrioritizerTester {
     @Test
     public void testOrdering() {
         List<Gene> genes = new ArrayList<>( Arrays.asList(
-                new Gene("ncbigene:1", "name1", "symbol1", 0.3, 0.3, URI.create("http://identifiers.org/ncbigene/1")),
-                new Gene("ncbigene:2", "name2", "symbol2", 0.2, 0.9, URI.create("http://identifiers.org/ncbigene/2")),
-                new Gene("ncbigene:3", "name3", "symbol3", 0.1, 0.5, URI.create("http://identifiers.org/ncbigene/3"))
+                new Gene(URI.create("http://identifiers.org/ncbigene/1"), 0.3, 0.3),
+                new Gene(URI.create("http://identifiers.org/ncbigene/2"), 0.2, 0.9),
+                new Gene(URI.create("http://identifiers.org/ncbigene/3"), 0.1, 0.5)
         ));
 
         List<Gene> expectedPriority = new ArrayList<>( Arrays.asList(
