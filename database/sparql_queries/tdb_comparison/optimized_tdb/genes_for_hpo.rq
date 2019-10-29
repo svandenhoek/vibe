@@ -48,7 +48,8 @@ WHERE {
 
 	?disease sio:SIO_000212 ?gda .
 	
-	?gda sio:SIO_000628 ?gene ;
+	?gda rdf:type/rdfs:subClassOf* sio:SIO_000983 ;
+	sio:SIO_000628 ?gene ;
 	sio:SIO_000216 ?gdaScoreNumber ;
 	sio:SIO_000253 ?gdaSource .
 	OPTIONAL { ?gda sio:SIO_000772 ?evidence }
