@@ -59,18 +59,12 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <p>The {@code GROUP BY} will group the results per source, where MAX(sourceTitleGr) will use the longest title. Other items need to be grouped
      * as well (even if not needed) because otherwise a "{@code Non-group key variable in SELECT}" error is thrown.</p>
      */
-    private static final String SOURCES = "SELECT DISTINCT ?source ?sourceTitle ?sourceLevel \n" + // DISTINCT forces unique results only
-            "WHERE { \n" +
-            "?source wi:evidence ?sourceLevel . \n" +
-            "{" +
-            "SELECT ?source (MAX(?sourceTitleGrouped) AS ?sourceTitle) \n" + // some sources have multiple titles, MAX picks longest title only
-            "WHERE { \n" +
-            "?source rdf:type dctypes:Dataset , dcat:Distribution ; \n" +
-            "dcterms:title ?sourceTitleGrouped . \n" +
-            "} \n" +
-            "GROUP BY ?source \n" +
-            "} \n" +
-            "} \n";
+    private static final String SOURCES = "SELECT ?source ?sourceTitle ?sourceLevel \n" +
+            "WHERE {\n" +
+            "\t?source rdf:type dctypes:Dataset , dcat:Distribution ;\n" +
+            "\twi:evidence ?sourceLevel ;\n" +
+            "\tdcterms:title ?sourceTitle .\n" +
+            "}";
 
     /**
      * <p>Retrieves the genes belonging to certain HPO phenotypes.</p>
@@ -78,32 +72,31 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />between [1] and [2]: the gene-disease association type (see {@link DisgenetAssociationType})
      */
-    private static final String[] GENES_FOR_PHENOTYPES = { "SELECT ?gene ?geneId ?geneTitle ?geneSymbolTitle ?disease ?diseaseId ?diseaseTitle ?dsiValue ?dpiValue ?gdaScoreNumber ?gdaSource ?evidence \n" +
-            "WHERE { \n" +
-            "VALUES ?hpo ", " \n" + // [0] -> [1]
-            "?disease rdf:type ncit:C7057 ; \n" +
-            "skos:exactMatch ?hpo ; \n" +
-            "dcterms:identifier ?diseaseId ; \n" +
-            "dcterms:title ?diseaseTitle . \n" +
-            "?gda sio:SIO_000628 ?disease , ?gene ; \n" +
-            "rdf:type ?type ; \n" +
-            "sio:SIO_000216 ?gdaScore ; \n" +
-            "sio:SIO_000253 ?gdaSource . \n" +
-            "?type rdfs:subClassOf* ", " . \n" + // [1] -> [2]
-            "?gene rdf:type ncit:C16612 ; \n" +
-            "dcterms:identifier ?geneId ; \n" +
-            "dcterms:title ?geneTitle ; \n" +
-            "sio:SIO_000205 ?geneSymbol ; \n" +
-            "sio:SIO_000216 ?dsi, ?dpi . \n" +
-            "?geneSymbol rdf:type ncit:C43568 ; \n" +
-            "dcterms:title ?geneSymbolTitle . \n" +
-            "?gdaScore rdf:type ncit:C25338 ; \n" +
-            "sio:SIO_000300 ?gdaScoreNumber . \n" +
-            "?dsi rdf:type sio:SIO_001351 ; \n" +
-            "sio:SIO_000300 ?dsiValue . \n" +
-            "?dpi rdf:type sio:SIO_001352 ; \n" +
-            "sio:SIO_000300 ?dpiValue . \n" +
-            "OPTIONAL { ?gda sio:SIO_000772 ?evidence } \n" +
+    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?gene ?gdaScoreNumber ?gdaSource ?evidence\n" +
+            "WHERE {\n" +
+            "\tVALUES ?hpo { ", " }\n" + // [0] -> [1]
+            "\t{\n" +
+            "\t\t# Diseases that are UMLS phenotypes.\n" +
+            "\t\t?hpo skos:exactMatch ?disease .\n" +
+            "\t}\n" +
+            "\tUNION\n" +
+            "\t{\n" +
+            "\t\t# Diseases found through phenotype-disease associations.\n" +
+            "\t\t?hpo sio:SIO_000212/sio:SIO_000628 ?disease .\n" +
+            "\t}\n" +
+            "\tUNION\n" +
+            "\t{\n" +
+            "\t\t# Diseases found through Orphanet (HPO - ORDO Ontological Module).\n" +
+            "\t\t?hpo sio:SIO_000001/skos:exactMatch ?disease .\n" +
+            "\t}\n" +
+            "\n" +
+            "\t?disease sio:SIO_000212 ?gda .\n" +
+            "\t\n" +
+            "\t?gda rdf:type/rdfs:subClassOf* ", " ;\n" + // [1] -> [2]
+            "\tsio:SIO_000628 ?gene ;\n" +
+            "\tsio:SIO_000216 ?gdaScoreNumber ;\n" +
+            "\tsio:SIO_000253 ?gdaSource .\n" +
+            "\tOPTIONAL { ?gda sio:SIO_000772 ?evidence }\n" +
             "}"
     };
 

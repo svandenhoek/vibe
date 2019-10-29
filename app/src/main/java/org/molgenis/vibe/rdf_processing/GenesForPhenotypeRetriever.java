@@ -62,9 +62,8 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             Disease disease = diseasesByUri.get(diseaseUri);
 
             if(disease == null) {
-                disease = new Disease(result.get("diseaseId").asLiteral().getString(),
-                        result.get("diseaseTitle").asLiteral().getString(),
-                        diseaseUri);
+                disease = new Disease(diseaseUri,
+                        result.get("diseaseTitle").asLiteral().getString());
 
                 diseasesByUri.put(diseaseUri, disease);
             }
@@ -74,12 +73,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             Gene gene = genesByUri.get(geneUri);
 
             if(gene == null) {
-                gene = new Gene(result.get("geneId").asLiteral().getString(),
-                        result.get("geneTitle").asLiteral().getString(),
-                        result.get("geneSymbolTitle").asLiteral().getString(),
-                        result.get("dsiValue").asLiteral().getDouble(),
-                        result.get("dpiValue").asLiteral().getDouble(),
-                        geneUri);
+                gene = new Gene(geneUri);
 
                 genesByUri.put(geneUri, gene);
             }

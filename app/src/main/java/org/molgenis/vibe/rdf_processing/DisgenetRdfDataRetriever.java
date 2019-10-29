@@ -59,9 +59,9 @@ public abstract class DisgenetRdfDataRetriever {
 
             URI sourceUri = URI.create(result.get("source").asResource().getURI());
             sources.put(sourceUri,
-                    new Source(result.get("sourceTitle").asLiteral().getString(),
-                            result.get("sourceLevel").asResource().getURI(),
-                            sourceUri)
+                    new Source(sourceUri,
+                            result.get("sourceTitle").asLiteral().getString(),
+                            result.get("sourceLevel").asResource().getURI())
             );
         }
         query.close();
