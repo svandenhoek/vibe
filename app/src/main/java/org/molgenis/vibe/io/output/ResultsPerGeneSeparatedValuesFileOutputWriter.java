@@ -88,7 +88,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         // Goes through all ordered genes.
         for(Gene gene : priority) {
             // Writes gene symbol to file.
-            writer.write(gene.getSymbol() + getSeparator());
+            writer.write(gene.getId() + getSeparator());
 
             // Stores the highest DisGeNET score for this gene.
             double highestScore = 0;

@@ -37,10 +37,10 @@ public class OrderedGenesOutputWriter extends FileOutputWriter {
 
         // Writes all genes except last one (with added separator).
         for(int i = 0; i < priority.size()-1; i++) {
-            writer.write(priority.get(i).getSymbol() + separator);
+            writer.write(priority.get(i).getId() + separator);
         }
         // Writes last gene (without added separator).
-        writer.write(priority.get(priority.size()-1).getSymbol());
+        writer.write(priority.get(priority.size()-1).getId());
 
         closeWriter();
     }
