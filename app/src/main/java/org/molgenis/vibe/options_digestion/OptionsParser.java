@@ -35,14 +35,9 @@ public abstract class OptionsParser {
     private Path hpoOntology;
 
     /**
-     * Path to the directory storing all required files for creating a SPARQL searchable DisGeNET model.
+     * Path to the directory storing the main database to use.
      */
-    private Path disgenetDataDir;
-
-    /**
-     * The DisGeNET RDF version.
-     */
-    private DisgenetRdfVersion disgenetRdfVersion;
+    private Path database;
 
     /**
      * The phenotype(s) to be used within the application.
@@ -50,7 +45,7 @@ public abstract class OptionsParser {
     private Set<Phenotype> phenotypes = new HashSet<>();
 
     /**
-     * The file to write the output to.
+     * The path to write the output to.
      */
     private Path outputFile;
 
@@ -113,61 +108,20 @@ public abstract class OptionsParser {
         }
     }
 
-    protected void setDisgenet(String disgenetDataDir, String disgenetRdfVersion) throws InvalidPathException, IOException {
-        setDisgenetDataDir(disgenetDataDir);
-        setDisgenetRdfVersion(disgenetRdfVersion);
+    public Path getDatabase() {
+        return database;
     }
 
-    protected void setDisgenet(String disgenetDataDir, DisgenetRdfVersion disgenetRdfVersion) throws InvalidPathException, IOException {
-        setDisgenetDataDir(disgenetDataDir);
-        setDisgenetRdfVersion(disgenetRdfVersion);
+    protected void setDatabase(String database) throws InvalidPathException, IOException {
+        setDatabase(Paths.get(database));
     }
 
-    public Path getDisgenetDataDir() {
-        return disgenetDataDir;
-    }
-
-    /**
-     * @param disgenetDataDir a {@link String} containing the path to the directory containing the data required to
-     *                       create a model from the DisGeNET data
-     * @throws InvalidPathException if {@link Paths#get(String, String...)}} fails to convert a {@link String} to {@link Path}
-     * @throws IOException see {@link #setDisgenetDataDir(Path)}
-     */
-    private void setDisgenetDataDir (String disgenetDataDir) throws InvalidPathException, IOException {
-        setDisgenetDataDir(Paths.get(disgenetDataDir));
-    }
-
-    /**
-     * @param disgenetDataDir a {@link Path} containing the path to the directory containing the data required to
-     *                       create a model from the DisGeNET data
-     * @throws IOException if {@code disgenetDump} is not a readable file
-     */
-    private void setDisgenetDataDir(Path disgenetDataDir) throws IOException {
-        if(checkIfPathIsDir(disgenetDataDir)) {
-            this.disgenetDataDir = disgenetDataDir;
+    protected void setDatabase(Path database) throws IOException {
+        if(checkIfPathIsDir(database)) {
+            this.database = database;
         } else {
-            throw new IOException(disgenetDataDir.getFileName() + " is not a directory.");
+            throw new IOException(database.getFileName() + " is not a directory.");
         }
-    }
-
-    public DisgenetRdfVersion getDisgenetRdfVersion() {
-        return disgenetRdfVersion;
-    }
-
-    /**
-     * @param disgenetRdfVersion a {@link String} defining the DisGeNET RDF version
-     * @throws InvalidStringFormatException see {@link DisgenetRdfVersion#retrieve(String)}
-     * @see DisgenetRdfVersion#retrieve(String)
-     */
-    private void setDisgenetRdfVersion(String disgenetRdfVersion) throws InvalidStringFormatException {
-        this.disgenetRdfVersion = DisgenetRdfVersion.retrieve(disgenetRdfVersion);
-    }
-
-    /**
-     * @param disgenetRdfVersion a {@link DisgenetRdfVersion}
-     */
-    private void setDisgenetRdfVersion(DisgenetRdfVersion disgenetRdfVersion) {
-        this.disgenetRdfVersion = disgenetRdfVersion;
     }
 
     public Set<Phenotype> getPhenotypes() {
@@ -293,7 +247,7 @@ public abstract class OptionsParser {
         // With RunMode.NONE there are no requirements.
         if(!runMode.equals(RunMode.NONE)) {
             // Check if DisGeNET data is set.
-            if (disgenetDataDir == null || disgenetRdfVersion == null) {
+            if (database == null) {
                 return false;
             }
             // Check if an output file was given.

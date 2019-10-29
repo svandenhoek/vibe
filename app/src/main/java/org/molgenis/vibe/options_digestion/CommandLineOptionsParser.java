@@ -190,10 +190,10 @@ public class CommandLineOptionsParser extends OptionsParser {
             setVerbose(true);
         }
 
-        // REQUIRED: DisGeNET TDB.
+        // REQUIRED: TDB.
         if(commandLine.hasOption("t")) {
             try {
-                setDisgenet(commandLine.getOptionValue("t"), DisgenetRdfVersion.V5);
+                setDatabase(commandLine.getOptionValue("t"));
             } catch (InvalidPathException | IOException e) {
                 errors.add(e.getMessage());
             }
