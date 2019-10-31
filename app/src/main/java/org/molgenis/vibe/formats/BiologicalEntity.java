@@ -47,6 +47,11 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
     private String id;
 
     /**
+     * Value used for comparing {@link BiologicalEntity}{@code s} ({@link #compareTo(BiologicalEntity)}).
+     */
+    private int compareValue;
+
+    /**
      * The name.
      */
     private String name;
@@ -71,6 +76,14 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         return getIdPrefix() + id;
     }
 
+    protected int getCompareValue() {
+        return compareValue;
+    }
+
+    protected void setCompareValue(int compareValue) {
+        this.compareValue = requireNonNull(compareValue);
+    }
+
     protected void setId(String id) {
         this.id = requireNonNull(id);
     }
@@ -91,6 +104,7 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
     public BiologicalEntity(String id) {
         this.id = retrieveIdFromString(requireNonNull(id));
         uri = URI.create( getUriPrefix() + this.id );
+        generateCompareValue();
     }
 
     public BiologicalEntity(URI uri) {
@@ -98,16 +112,19 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         String uriString = this.uri.toString();
         validateUri(uriString);
         id = uriString.split(getUriPrefix())[1];
+        generateCompareValue();
     }
 
     public BiologicalEntity(String id, String name) {
         this(id);
         this.name = requireNonNull(name);
+        generateCompareValue();
     }
 
     public BiologicalEntity(URI uri, String name) {
         this(uri);
         this.name = requireNonNull(name);
+        generateCompareValue();
     }
 
     public BiologicalEntity(URI uri, String id, String name) throws InvalidStringFormatException {
@@ -116,6 +133,7 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         this.uri = requireNonNull(uri);
         validateUri(this.uri.toString());
         checkIfIdAndUriAreEqual(this.id, this.uri);
+        generateCompareValue();
     }
 
     private void validateUri(String uriString) {
@@ -173,8 +191,14 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
         return Objects.hash(uri);
     }
 
+    /**
+     * Converts a piece of information defining the {@link BiologicalEntity} into an {@code int} and stores this for easy
+     * comparison of {@link BiologicalEntity}{@code s}.
+     */
+    protected abstract void generateCompareValue();
+
     @Override
     public int compareTo(BiologicalEntity o) {
-        return getUri().compareTo(o.getUri());
+        return getCompareValue() - o.getCompareValue();
     }
 }

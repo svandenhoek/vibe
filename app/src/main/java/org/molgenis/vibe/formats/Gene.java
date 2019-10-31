@@ -91,6 +91,11 @@ public class Gene extends BiologicalEntity {
         this.diseasePleiotropyIndex = requireNonNull(dpi);
     }
 
+    @Override
+    protected void generateCompareValue() {
+        setCompareValue(Integer.parseInt(getId()));
+    }
+
     /**
      * {@inheritDoc}
      */

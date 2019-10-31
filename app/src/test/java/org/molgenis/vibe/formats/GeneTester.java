@@ -5,6 +5,10 @@ import org.testng.Assert;
 import org.testng.annotations.Test;
 
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 public class GeneTester {
     @Test
@@ -53,6 +57,24 @@ public class GeneTester {
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void useInvalidUri() {
         Gene gene = new Gene(URI.create("http://identifiers.org/ncbi/1234"));
+    }
+
+    @Test
+    public void testSort() {
+        List<Gene> actualOrder = new ArrayList<>( Arrays.asList(
+                new Gene("ncbigene:3"),
+                new Gene("ncbigene:8"),
+                new Gene("ncbigene:1")
+        ));
+
+        List<Gene> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(2),
+                actualOrder.get(0),
+                actualOrder.get(1)
+        ));
+
+        Collections.sort(actualOrder);
+        Assert.assertEquals(actualOrder, expectedOrder);
     }
 
     private void testIfValid(Gene gene) {
