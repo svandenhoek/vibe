@@ -25,7 +25,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     private Map<T2, Set<T3>> combinationsByT2 = new HashMap<>();
 
     public T3 get(T3 t3) {
-        return  combinationsMap.get(t3);
+        return combinationsMap.get(t3);
     }
 
     public Set<T1> getT1() {
