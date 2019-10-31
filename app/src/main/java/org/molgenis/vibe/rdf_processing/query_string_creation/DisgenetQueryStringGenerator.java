@@ -74,7 +74,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      */
     private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?gene ?gdaScoreNumber ?gdaSource ?evidence\n" +
             "WHERE {\n" +
-            "\tVALUES ?hpo { ", " }\n" + // [0] -> [1]
+            "\tVALUES ?hpo ", "\n" + // [0] -> [1]
             "\t{\n" +
             "\t\t# Diseases that are UMLS phenotypes.\n" +
             "\t\t?hpo skos:exactMatch ?disease .\n" +
