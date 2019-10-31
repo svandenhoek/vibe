@@ -138,7 +138,7 @@ public class GenesForPhenotypeRetrieverTester {
         GeneDiseaseCollection expectedCollection = new GeneDiseaseCollection();
         expectedCollection.addAll(Arrays.asList(geneDiseaseCombinations));
 
-        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0007469"))));
+        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 
