@@ -2,7 +2,6 @@ package org.molgenis.vibe.rdf_processing.query_string_creation;
 
 import org.apache.jena.query.ResultSetFormatter;
 import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.ModelReader;
 import org.molgenis.vibe.io.TripleStoreDbReader;
@@ -12,7 +11,6 @@ import org.testng.Assert;
 import org.testng.annotations.*;
 
 import java.io.IOException;
-import java.net.URI;
 import java.util.*;
 
 /**
@@ -33,36 +31,27 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
 
     @BeforeClass
     public void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB_MINI.getDir());
+        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
     }
 
-    @AfterClass(alwaysRun = true)
+    @AfterClass
     public void afterClass() {
         reader.close();
     }
 
-    @AfterMethod(alwaysRun = true)
+    @AfterMethod
     public void afterMethod() {
         runner.close();
     }
 
-    private void runQueryTest(QueryString queryString, String[] fieldOrder, List<List<String>> expectedOutput) {
-        runQueryTest(queryString, fieldOrder, expectedOutput, true);
+    @Test(groups = {"noTest"})
+    public void showSourcesQuery() {
+        System.out.println(DisgenetQueryStringGenerator.getSources().getQuery());
     }
 
-    private void runQueryTest(QueryString queryString, String[] fieldOrder, List<List<String>> expectedOutput, boolean verbose) {
-        if(verbose) {
-            System.out.println(queryString.getQuery());
-        }
-
-        runner = new QueryRunnerRewindable(reader.getModel(), queryString);
-
-        if(verbose) {
-            ResultSetFormatter.out(System.out, runner.getResultSet());
-            runner.reset();
-        }
-
-        assertRunnerOutput(runner, fieldOrder, expectedOutput);
+    @Test(groups = {"noTest"})
+    public void showGenesForPhenotypeQuery() {
+        System.out.println(DisgenetQueryStringGenerator.getGenesForPhenotypes(new HashSet<>(Arrays.asList(new Phenotype("hp:0007469")))).getQuery());
     }
 
     @Test
@@ -82,40 +71,5 @@ public class DisgenetQueryStringGeneratorTester extends QueryTester {
             }
             sources.add(source);
         }
-
     }
-
-    @Test
-    public void testGenesForPhenotypes() {
-        Set<Phenotype> phenotypes = new HashSet<>();
-        phenotypes.add(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0002996")));
-
-        String[] fieldOrder = {"gene", "geneId", "geneTitle", "geneSymbolTitle"};
-
-        List<List<String>> expectedOutput = Arrays.asList(
-                Arrays.asList("http://identifiers.org/ncbigene/1280", "ncbigene:1280", "collagen type II alpha 1 chain", "COL2A1"),
-                Arrays.asList("http://identifiers.org/ncbigene/8243", "ncbigene:8243", "structural maintenance of chromosomes 1A", "SMC1A"),
-                Arrays.asList("http://identifiers.org/ncbigene/1291", "ncbigene:1291", "collagen type VI alpha 1 chain", "COL6A1"),
-                Arrays.asList("http://identifiers.org/ncbigene/1292", "ncbigene:1292", "collagen type VI alpha 2 chain", "COL6A2")
-        );
-
-        QueryString queryString = DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes);
-        runQueryTest(queryString, fieldOrder, expectedOutput);
-    }
-
-//    @Test
-//    public void testGdaForGenes() {
-//        Set<Gene> genes = new HashSet<>();
-//        genes.add(new Gene("ncbigene:1291", "collagen type II alpha 1 chain", "COL2A1", 0.393643700083081E0, 0.75E0, URI.create("http://identifiers.org/ncbigene/1291")));
-//
-//        String[] fieldOrder = {"gene", "disease", "diseaseId", "diseaseTitle", "gdaScoreNumber", "gdaSource", "evidence"};
-//
-//        List<List<String>> expectedOutput = Arrays.asList(
-//                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C1834674", "umls:C1834674", "Bethlem myopathy", "0.68357144819477E0", "http://rdf.disgenet.org/v5.0.0/void/MGD"),
-//                Arrays.asList("http://identifiers.org/ncbigene/1291", "http://linkedlifedata.com/resource/umls/id/C0026850", "umls:C0026850", "Muscular Dystrophy", "0.214763469460921E0", "http://rdf.disgenet.org/v5.0.0/void/BEFREE", "http://identifiers.org/pubmed/19519726")
-//        );
-//
-//        QueryString queryString = DisgenetQueryStringGenerator.getGdasWithDiseasesForGenes(genes);
-//        runQueryTest(queryString, fieldOrder, expectedOutput);
-//    }
 }
