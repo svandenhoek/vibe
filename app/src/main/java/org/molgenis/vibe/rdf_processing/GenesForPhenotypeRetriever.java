@@ -23,12 +23,12 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     /**
      * {@link Gene}{@code s} storage for easy retrieval.
      */
-    private Map<URI, Gene> genesByUri = new HashMap<>();
+    private Map<Gene, Gene> genes = new HashMap<>();
 
     /**
      * {@link Disease}{@code s} storage for easy retrieval.
      */
-    private Map<URI, Disease> diseasesByUri = new HashMap<>();
+    private Map<Disease, Disease> diseases = new HashMap<>();
 
     /**
      * The final output to be retrieved for further usage after querying.
@@ -57,25 +57,18 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         while(query.hasNext()) {
             QuerySolution result = query.next();
 
-            // Check if disease is already stored, and if not, stores it (using URI as key).
-            URI diseaseUri = URI.create(result.get("disease").asResource().getURI());
-            Disease disease = diseasesByUri.get(diseaseUri);
-
+            // Store new disease, or retrieves existing disease instance if already exists.
+            Disease retrievedDisease = new Disease(URI.create(result.get("disease").asResource().getURI()));
+            Disease disease = diseases.put(retrievedDisease, retrievedDisease);
             if(disease == null) {
-                disease = new Disease(diseaseUri,
-                        result.get("diseaseTitle").asLiteral().getString());
-
-                diseasesByUri.put(diseaseUri, disease);
+                disease = retrievedDisease;
             }
 
-            // Check if gene is already stored, and if not, stores it (using URI as key).
-            URI geneUri = URI.create(result.get("gene").asResource().getURI());
-            Gene gene = genesByUri.get(geneUri);
-
+            // Store new gene, or retrieves existing disease instance if already exists.
+            Gene retrievedGene = new Gene(URI.create(result.get("gene").asResource().getURI()));
+            Gene gene = genes.put(retrievedGene, retrievedGene);
             if(gene == null) {
-                gene = new Gene(geneUri);
-
-                genesByUri.put(geneUri, gene);
+                gene = retrievedGene;
             }
 
             // Retrieves score belonging to the gene-disease combination.
