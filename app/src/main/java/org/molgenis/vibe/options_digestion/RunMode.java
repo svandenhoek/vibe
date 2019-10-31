@@ -65,7 +65,7 @@ public enum RunMode {
     }
 
     protected ModelReader loadDisgenetDatabase() throws IOException {
-        getAppOptions().printVerbose("# Preparing DisGeNET TDB.");
+        getAppOptions().printVerbose("# Preparing main dataset.");
         ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDatabase());
         printElapsedTime();
 
@@ -73,7 +73,7 @@ public enum RunMode {
     }
 
     protected GeneDiseaseCollection retrieveDisgenetData(ModelReader disgenetReader, Set<Phenotype> phenotypes) {
-        getAppOptions().printVerbose("# Retrieving data from DisGeNET dataset.");
+        getAppOptions().printVerbose("# Retrieving data from main dataset.");
         GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(
                 disgenetReader, phenotypes
         );
