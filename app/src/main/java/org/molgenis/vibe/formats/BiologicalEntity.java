@@ -175,6 +175,6 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
 
     @Override
     public int compareTo(BiologicalEntity o) {
-        return getFormattedId().compareTo(o.getFormattedId());
+        return getUri().compareTo(o.getUri());
     }
 }
