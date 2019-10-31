@@ -1,5 +1,6 @@
 package org.molgenis.vibe.formats;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -29,6 +30,15 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
      */
     public Set<GeneDiseaseCombination> getGeneDiseaseCombinations() {
         return getT3();
+    }
+
+    /**
+     *
+     * @return all {@link GeneDiseaseCombination}{@code s}.
+     * @see #getT3Ordered()
+     */
+    public List<GeneDiseaseCombination> getGeneDiseaseCombinationsOrdered() {
+        return getT3Ordered();
     }
 
     /**

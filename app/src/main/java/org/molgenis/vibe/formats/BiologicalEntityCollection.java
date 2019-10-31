@@ -41,6 +41,19 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     }
 
     /**
+     * Uses {@link #getT3()} to create an ordered {@link List} first ordered based on {@link T1} and then ordered based
+     * on {@link T2}.
+     * @return ordered {@link List} of {@link T3}
+     */
+    public List<T3> getT3Ordered() {
+        List<T3> orderedList = new ArrayList<>();
+        orderedList.addAll(combinationsMap.keySet());
+        orderedList.sort(Comparator.comparing(T3::getT1).thenComparing(T3::getT2));
+
+        return orderedList;
+    }
+
+    /**
      * Get all {@link T3} belonging to a single {@link T1}.
      * @param t1
      * @return all {@link T3} belonging to {@code t1}
