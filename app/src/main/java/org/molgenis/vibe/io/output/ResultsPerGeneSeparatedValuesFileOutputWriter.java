@@ -84,7 +84,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         // Currently dsi & dpi are not retrieved.
 //        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score" +
 //                getSeparator() + "DSI" + getSeparator() + "DPI");
-        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score");
+        writer.write("gene (NCBI)" + getSeparator() + "diseases (UMLS)" + getSeparator() + "highest GDA score");
         writer.newLine();
 
         // Goes through all ordered genes.
@@ -114,7 +114,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
                 }
 
                 // Writes the disease name surrouned by quotes.
-                writer.write(gdc.getDisease().getName());
+                writer.write(gdc.getDisease().getId());
 
 //                // If there is evidence, writes these as well.
 //                if(gdc.getAllEvidence().size() > 0) {
