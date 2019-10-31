@@ -145,15 +145,33 @@ public class GenesForPhenotypeRetrieverTester {
         assertGeneDiseaseCombination(actualCollection, expectedCollection);
     }
 
+    /**
+     * Compares if the actual collection is correct. Note that TestNG assumes a {@link Collection} is sorted (it has
+     * {@link Map} and {@link Set} specific methods but others will de defaulted to the {@link Collection} method instead
+     * of having their specific methods. For this reason, a direct comparisong using Assert.assertEquals could result in
+     * a fail due to no guarantee is given in {@link BiologicalEntityCollection} that the iterator returns a sorted {@link Iterator}.
+     * <br /><br />
+     * To cite <A href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html">https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html</A>:
+     *
+     * <pre><a href="../../java/util/Iterator.html" title="interface in java.util">Iterator</a>&lt;<a href="../../java/util/Collection.html" title="type parameter in Collection">E</a>&gt;&nbsp;iterator()</pre>
+     * <div class="block">Returns an iterator over the elements in this collection.  There are no
+     *  guarantees concerning the order in which the elements are returned
+     *  (unless this collection is an instance of some class that provides a
+     *  guarantee).</div>
+     * @param actualCollection
+     * @param expectedCollection
+     */
     private void assertGeneDiseaseCombination(GeneDiseaseCollection actualCollection, GeneDiseaseCollection expectedCollection) {
-        // General comparison (does not compare all content)
-        Assert.assertEquals(actualCollection, expectedCollection);
+        Assert.assertEquals(actualCollection.getGeneDiseaseCombinations(), expectedCollection.getGeneDiseaseCombinations());
+        Assert.assertEquals(actualCollection.getDiseases(), expectedCollection.getDiseases());
+        Assert.assertEquals(actualCollection.getGenes(), expectedCollection.getGenes());
 
         // Above assert only compares equals. Certain classes might store additional data that should not play a role
         // when validating equality but should be checked on whether they were loaded from the database correctly. An
         // example of this would be a score belonging to a Gene. While it should not make it a "different" Gene, it does
         // describe the Gene. For this reason, toString() is used as extra validation (with the assumption that these
         // extra fields are mentioned in toString()).
-        Assert.assertEquals(actualCollection.toString(), expectedCollection.toString());
+        Assert.assertEquals(actualCollection.getGeneDiseaseCombinationsOrdered().toString(),
+                expectedCollection.getGeneDiseaseCombinationsOrdered().toString());
     }
 }
