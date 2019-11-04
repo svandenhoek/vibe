@@ -35,4 +35,7 @@ target/
 app/src/test/resources/
 
 # Files stored in TMP dir.
-TMP/
+app/TMP/
+
+# Files generated for database tests.
+database/test/*.tsv
