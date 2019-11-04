@@ -1,4 +1,6 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file;
+
+import org.molgenis.vibe.io.output.ValuesSeparator;
 
 import java.nio.file.Path;
 

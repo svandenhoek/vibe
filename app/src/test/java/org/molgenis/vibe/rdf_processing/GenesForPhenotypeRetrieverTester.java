@@ -2,8 +2,8 @@ package org.molgenis.vibe.rdf_processing;
 
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.*;
-import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.io.input.ModelReader;
+import org.molgenis.vibe.io.input.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeClass;

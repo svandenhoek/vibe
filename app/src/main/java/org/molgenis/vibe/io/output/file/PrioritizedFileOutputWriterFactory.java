@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file;
 
 import org.molgenis.vibe.formats.BiologicalEntity;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;

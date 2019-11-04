@@ -1,6 +1,8 @@
 package org.molgenis.vibe.query_output_digestion.prioritization;
 
 import org.molgenis.vibe.formats.Gene;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.DiseaseSpecificityIndexGenePrioritizer;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

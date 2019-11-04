@@ -1,4 +1,4 @@
-package org.molgenis.vibe.query_output_digestion.prioritization;
+package org.molgenis.vibe.query_output_digestion.prioritization.gene;
 
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;

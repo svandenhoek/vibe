@@ -1,8 +1,11 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file.gene_prioritized;
 
 
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.io.output.file.PrioritizedFileOutputWriterFactory;
+import org.molgenis.vibe.io.output.ValuesSeparator;
+import org.molgenis.vibe.io.output.file.FileOutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import java.nio.file.Path;

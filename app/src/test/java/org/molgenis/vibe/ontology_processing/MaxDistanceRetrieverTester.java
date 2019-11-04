@@ -5,7 +5,7 @@ import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
 import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
-import org.molgenis.vibe.io.OntologyModelFilesReader;
+import org.molgenis.vibe.io.input.OntologyModelFilesReader;
 import org.testng.Assert;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.BeforeMethod;

@@ -2,6 +2,9 @@ package org.molgenis.vibe.io;
 
 import org.apache.jena.rdf.model.Model;
 import org.molgenis.vibe.TestData;
+import org.molgenis.vibe.io.input.ModelFilesReader;
+import org.molgenis.vibe.io.input.ModelReader;
+import org.molgenis.vibe.io.input.TripleStoreDbReader;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;

@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

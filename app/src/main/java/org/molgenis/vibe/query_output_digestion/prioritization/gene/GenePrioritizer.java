@@ -1,6 +1,7 @@
-package org.molgenis.vibe.query_output_digestion.prioritization;
+package org.molgenis.vibe.query_output_digestion.prioritization.gene;
 
 import org.molgenis.vibe.formats.Gene;
+import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import java.util.List;
 import java.util.Set;

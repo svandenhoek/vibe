@@ -1,10 +1,13 @@
-package org.molgenis.vibe.options_digestion;
+package org.molgenis.vibe.io.options_digestion;
 
+import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.io.output.GenePrioritizedFileOutputWriterFactory;
+import org.molgenis.vibe.io.output.file.gene_prioritized.GenePrioritizedFileOutputWriterFactory;
+import org.molgenis.vibe.io.output.file.FileOutputWriter;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
-import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -50,7 +53,7 @@ public abstract class OptionsParser {
     private Path outputFile;
 
     /**
-     * Defines the {@link org.molgenis.vibe.io.output.FileOutputWriter} to be used.
+     * Defines the {@link FileOutputWriter} to be used.
      */
     private GenePrioritizedFileOutputWriterFactory genePrioritizedFileOutputWriterFactory;
 
@@ -230,7 +233,7 @@ public abstract class OptionsParser {
     }
 
     /**
-     * @param name the {@link String} describing the {@link org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer}
+     * @param name the {@link String} describing the {@link GenePrioritizer}
      *             to be used
      * @throws EnumConstantNotPresentException if {@code name} is not an accepted possibility.
      */

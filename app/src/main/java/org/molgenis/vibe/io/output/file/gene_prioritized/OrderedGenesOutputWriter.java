@@ -1,6 +1,8 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file.gene_prioritized;
 
 import org.molgenis.vibe.formats.Gene;
+import org.molgenis.vibe.io.output.ValuesSeparator;
+import org.molgenis.vibe.io.output.file.FileOutputWriter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

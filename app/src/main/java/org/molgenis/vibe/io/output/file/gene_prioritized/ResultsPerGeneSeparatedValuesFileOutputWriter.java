@@ -1,9 +1,10 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.io.output.file.gene_prioritized;
 
-import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.GeneDiseaseCombination;
+import org.molgenis.vibe.io.output.ValuesSeparator;
+import org.molgenis.vibe.io.output.file.SeparatedValuesFileOutputWriter;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

@@ -4,7 +4,7 @@ import static java.util.Objects.requireNonNull;
 
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.formats.*;
-import org.molgenis.vibe.io.ModelReader;
+import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
 import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
 

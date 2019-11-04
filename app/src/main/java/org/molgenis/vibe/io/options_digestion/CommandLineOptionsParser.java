@@ -1,12 +1,13 @@
-package org.molgenis.vibe.options_digestion;
+package org.molgenis.vibe.io.options_digestion;
 
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
+import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.io.output.GenePrioritizedFileOutputWriterFactory;
-import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
+import org.molgenis.vibe.io.output.file.gene_prioritized.GenePrioritizedFileOutputWriterFactory;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

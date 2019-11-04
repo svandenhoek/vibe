@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io;
+package org.molgenis.vibe.io.input;
 
 import org.apache.jena.query.Dataset;
 import org.apache.jena.query.ReadWrite;

@@ -1,15 +1,16 @@
-package org.molgenis.vibe.options_digestion;
+package org.molgenis.vibe;
 
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.io.OntologyModelFilesReader;
-import org.molgenis.vibe.io.output.FileOutputWriter;
-import org.molgenis.vibe.io.ModelReader;
-import org.molgenis.vibe.io.TripleStoreDbReader;
+import org.molgenis.vibe.io.input.OntologyModelFilesReader;
+import org.molgenis.vibe.io.options_digestion.CommandLineOptionsParser;
+import org.molgenis.vibe.io.options_digestion.OptionsParser;
+import org.molgenis.vibe.io.output.file.FileOutputWriter;
+import org.molgenis.vibe.io.input.ModelReader;
+import org.molgenis.vibe.io.input.TripleStoreDbReader;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
-import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizer;
-import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
+import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
 import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
