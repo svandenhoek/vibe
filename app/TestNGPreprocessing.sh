@@ -19,7 +19,7 @@ Arguments:
                     If given, a symbolic link will be generated (required for some tests).
 
 IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
-            See https://jena.apache.org/documentation/tdb/commands.html for more information.
+            See https://jena.apache.org/documentation/tools/#setting-up-your-environment for more information.
 "
 
 # Side of text for echo when displaying which phase is executed.
