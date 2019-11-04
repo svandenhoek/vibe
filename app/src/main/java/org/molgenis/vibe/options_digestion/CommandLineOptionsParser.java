@@ -5,7 +5,7 @@ import static java.util.Objects.requireNonNull;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.io.output.FileOutputWriterFactory;
+import org.molgenis.vibe.io.output.GenePrioritizedFileOutputWriterFactory;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
 
 import java.io.IOException;
@@ -264,9 +264,9 @@ public class CommandLineOptionsParser extends OptionsParser {
                 errors.add(e.getMessage());
             }
             if(commandLine.hasOption("l")) {
-                setFileOutputWriterFactory(FileOutputWriterFactory.SIMPLE);
+                setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory.SIMPLE);
             } else {
-                setFileOutputWriterFactory(FileOutputWriterFactory.REGULAR);
+                setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory.REGULAR);
             }
         } else {
             missing.add("-o");

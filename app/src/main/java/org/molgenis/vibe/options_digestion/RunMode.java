@@ -31,7 +31,7 @@ public enum RunMode {
             PhenotypesRetriever hpoRetriever = retrieveAssociatedPhenotypes(ontologyReader);
             ModelReader disgenetReader = loadDisgenetDatabase();
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
-            Prioritizer prioritizer = orderGenes(geneDiseaseCollection);
+            GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
             writeToFile(geneDiseaseCollection, prioritizer);
         }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
@@ -39,7 +39,7 @@ public enum RunMode {
         protected void runMode() throws Exception {
             ModelReader disgenetReader = loadDisgenetDatabase();
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, getAppOptions().getPhenotypes());
-            Prioritizer prioritizer = orderGenes(geneDiseaseCollection);
+            GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
             writeToFile(geneDiseaseCollection, prioritizer);
         }
     };
@@ -83,7 +83,7 @@ public enum RunMode {
         return genesForPhenotypeRetriever.getGeneDiseaseCollection();
     }
 
-    protected Prioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
+    protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
         getAppOptions().printVerbose("# Ordering genes based on priority.");
         GenePrioritizer prioritizer = getAppOptions().getGenePrioritizerFactory().create(geneDiseaseCollection);
         prioritizer.run();
@@ -92,9 +92,9 @@ public enum RunMode {
         return prioritizer;
     }
 
-    protected void writeToFile(GeneDiseaseCollection geneDiseaseCollection, Prioritizer prioritizer) throws IOException {
+    protected void writeToFile(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
         getAppOptions().printVerbose("# Writing genes to file.");
-        FileOutputWriter outputWriter = getAppOptions().getFileOutputWriterFactory().create(getAppOptions().getOutputFile(), geneDiseaseCollection, prioritizer);
+        FileOutputWriter outputWriter = getAppOptions().getGenePrioritizedFileOutputWriterFactory().create(getAppOptions().getOutputFile(), geneDiseaseCollection, prioritizer);
         outputWriter.run();
         printElapsedTime();
     }

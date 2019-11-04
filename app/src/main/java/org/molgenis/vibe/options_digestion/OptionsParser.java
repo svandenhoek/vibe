@@ -2,7 +2,7 @@ package org.molgenis.vibe.options_digestion;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.io.output.FileOutputWriterFactory;
+import org.molgenis.vibe.io.output.GenePrioritizedFileOutputWriterFactory;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 import org.molgenis.vibe.query_output_digestion.prioritization.GenePrioritizerFactory;
 
@@ -52,7 +52,7 @@ public abstract class OptionsParser {
     /**
      * Defines the {@link org.molgenis.vibe.io.output.FileOutputWriter} to be used.
      */
-    private FileOutputWriterFactory fileOutputWriterFactory;
+    private GenePrioritizedFileOutputWriterFactory genePrioritizedFileOutputWriterFactory;
 
     /**
      * Defines the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever} to be used.
@@ -184,12 +184,12 @@ public abstract class OptionsParser {
         this.outputFile = outputFile;
     }
 
-    public FileOutputWriterFactory getFileOutputWriterFactory() {
-        return fileOutputWriterFactory;
+    public GenePrioritizedFileOutputWriterFactory getGenePrioritizedFileOutputWriterFactory() {
+        return genePrioritizedFileOutputWriterFactory;
     }
 
-    protected void setFileOutputWriterFactory(FileOutputWriterFactory fileOutputWriterFactory) {
-        this.fileOutputWriterFactory = fileOutputWriterFactory;
+    protected void setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory genePrioritizedFileOutputWriterFactory) {
+        this.genePrioritizedFileOutputWriterFactory = genePrioritizedFileOutputWriterFactory;
     }
 
     public PhenotypesRetrieverFactory getPhenotypesRetrieverFactory() {
@@ -255,7 +255,7 @@ public abstract class OptionsParser {
                 return false;
             }
             // Checks if an output factory was given.
-            if (fileOutputWriterFactory == null) {
+            if (genePrioritizedFileOutputWriterFactory == null) {
                 return false;
             }
             // Checks whether a gene prioritizer was selected.
