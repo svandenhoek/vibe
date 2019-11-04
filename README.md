@@ -103,7 +103,7 @@ SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357
 
 **Q:** It takes forever to retrieve information from the TDB.
 
-**A:** Depending on the how much information needs to get retrieved from the TDB based on the input genes, this process can indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
+**A:** Depending on the how much information needs to be retrieved from the TDB based on the input genes, this process may indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
 
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
