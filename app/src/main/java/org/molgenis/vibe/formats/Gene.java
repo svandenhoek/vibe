@@ -21,7 +21,7 @@ public class Gene extends BiologicalEntity {
     /**
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
-    private String symbol; // Currently unused.
+//    private String symbol; // Currently unused.
 
     /**
      * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
@@ -39,9 +39,9 @@ public class Gene extends BiologicalEntity {
      */
     private Double diseasePleiotropyIndex;
 
-    public String getSymbol() {
-        return symbol;
-    }
+//    public String getSymbol() {
+//        return symbol;
+//    }
 
     public Double getDiseaseSpecificityIndex() {
         return diseaseSpecificityIndex;
