@@ -31,8 +31,8 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source2);
         geneDiseaseCombo.add(source1);
 
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), new Integer(3));
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), new Integer(1));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), Integer.valueOf(3));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), Integer.valueOf(1));
     }
 
     @Test
@@ -45,8 +45,8 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source2, source2Evidence.get(0));
         geneDiseaseCombo.add(source2, source2Evidence.get(1));
 
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), new Integer(2));
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), new Integer(2));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), Integer.valueOf(2));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), Integer.valueOf(2));
 
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), source1Evidence);
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source2), source2Evidence);
@@ -65,8 +65,8 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1);
         geneDiseaseCombo.add(source2, source2Evidence.get(1));
 
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), new Integer(3));
-        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), new Integer(4));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source1), Integer.valueOf(3));
+        Assert.assertEquals(geneDiseaseCombo.getSourcesCount().get(source2), Integer.valueOf(4));
 
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), source1Evidence);
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source2), source2Evidence);
