@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_processing.query_string_creation;
+package org.molgenis.vibe.tdb_processing.query_string_creation;
 
 import org.testng.Assert;
 import org.testng.annotations.Test;

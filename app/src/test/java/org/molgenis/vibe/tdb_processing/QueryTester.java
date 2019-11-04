@@ -1,8 +1,8 @@
-package org.molgenis.vibe.rdf_processing;
+package org.molgenis.vibe.tdb_processing;
 
 import org.apache.jena.query.QuerySolution;
 import org.apache.jena.rdf.model.RDFNode;
-import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
+import org.molgenis.vibe.tdb_processing.query_runner.QueryRunner;
 import org.testng.Assert;
 
 import java.util.*;

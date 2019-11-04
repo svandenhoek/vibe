@@ -11,7 +11,7 @@ import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
-import org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetriever;
+import org.molgenis.vibe.tdb_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
 import java.util.Set;

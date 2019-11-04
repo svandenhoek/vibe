@@ -1,4 +1,4 @@
-package org.molgenis.vibe.rdf_processing;
+package org.molgenis.vibe.tdb_processing;
 
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.*;

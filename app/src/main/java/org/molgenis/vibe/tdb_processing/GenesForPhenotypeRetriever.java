@@ -1,12 +1,12 @@
-package org.molgenis.vibe.rdf_processing;
+package org.molgenis.vibe.tdb_processing;
 
 import static java.util.Objects.requireNonNull;
 
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.input.ModelReader;
-import org.molgenis.vibe.rdf_processing.query_string_creation.DisgenetQueryStringGenerator;
-import org.molgenis.vibe.rdf_processing.querying.QueryRunner;
+import org.molgenis.vibe.tdb_processing.query_string_creation.QueryStringGenerator;
+import org.molgenis.vibe.tdb_processing.query_runner.QueryRunner;
 
 import java.net.URI;
 import java.util.*;
@@ -52,7 +52,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
     private void retrieveData() {
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
-                DisgenetQueryStringGenerator.getGenesForPhenotypes(phenotypes));
+                QueryStringGenerator.getGenesForPhenotypes(phenotypes));
 
         while(query.hasNext()) {
             QuerySolution result = query.next();

@@ -1,6 +1,6 @@
-package org.molgenis.vibe.rdf_processing.query_string_creation;
+package org.molgenis.vibe.tdb_processing.query_string_creation;
 
-import org.molgenis.vibe.formats.Gene;
+import org.molgenis.vibe.formats.GeneDiseaseCombinationType;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.ResourceUri;
 
@@ -11,7 +11,7 @@ import java.util.Set;
 /**
  * Generates SPARQL queries specific for the DisGeNET RDF dataset.
  */
-public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
+public final class QueryStringGenerator {
     /**
      * Default DisGeNET prefixes. See "DisGeNET NAMESPACES" on <a href=http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries>http://www.disgenet.org/web/DisGeNET/menu/rdf#sparql-queries</a>
      * <br />Some namespaces contained 1 or more additional "http://". These were removed.
@@ -70,7 +70,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
      * <p>Retrieves the genes belonging to certain HPO phenotypes.</p>
      *
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
-     * <br />between [1] and [2]: the gene-disease association type (see {@link DisgenetAssociationType})
+     * <br />between [1] and [2]: the gene-disease association type (see {@link GeneDiseaseCombinationType})
      */
     private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?gene ?gdaScoreNumber ?gdaSource ?evidence\n" +
             "WHERE {\n" +
@@ -110,7 +110,7 @@ public final class DisgenetQueryStringGenerator extends QueryStringGenerator {
 
     public static QueryString getGenesForPhenotypes(Set<Phenotype> phenotypes) {
         return new QueryString(PREFIXES + GENES_FOR_PHENOTYPES[0] + createValuesStringForUris(phenotypes) + GENES_FOR_PHENOTYPES[1] +
-        DisgenetAssociationType.GENE_DISEASE.getFormattedId() + GENES_FOR_PHENOTYPES[2]);
+        GeneDiseaseCombinationType.GENE_DISEASE.getFormattedId() + GENES_FOR_PHENOTYPES[2]);
     }
 
     /**

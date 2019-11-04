@@ -1,9 +1,9 @@
-package org.molgenis.vibe.rdf_processing.querying;
+package org.molgenis.vibe.tdb_processing.query_runner;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.query.*;
 import org.apache.jena.rdf.model.Model;
-import org.molgenis.vibe.rdf_processing.query_string_creation.QueryString;
+import org.molgenis.vibe.tdb_processing.query_string_creation.QueryString;
 
 import java.util.Iterator;
 
