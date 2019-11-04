@@ -51,6 +51,7 @@ If certain software is already installed, certain steps can be skipped.
 3. Run `tdbloader2 --loc /path/to/store/TDB /path/to/disgenet/dump/*.ttl /path/to/sio-release.owl`
 
 ## Running the application
+
 ### Usage
 
 `java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...`
@@ -122,6 +123,12 @@ SMCP	Scleroatonic muscular dystrophy|melanoma	8.241803526393E-4	0.93013909900531
 SUCO	Schizophrenia|Osteogenesis Imperfecta, Type V	0.08	0.930139099005312	0.0357142857142857
 ```
 +974 more lines
+
+## F.A.Q.
+
+**Q:** It takes forever to retrieve information from the TDB.
+
+**A:** Depending on the how much information needs to be retrieved from the TDB based on the input genes, this process may indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
 
 [java_download]:https://www.java.com/download
 [maven_download]:https://maven.apache.org/download.cgi
