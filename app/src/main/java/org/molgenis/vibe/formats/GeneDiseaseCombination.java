@@ -83,7 +83,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @return an unmodifiable {@link List} containing evidence {@link URI}{@code s}, or {@code null} if {@link Source} does not have any evidence
      */
     public List<URI> getEvidenceForSource(Source source) {
-        List evidence = sourcesEvidence.get(source);
+        List<URI> evidence = sourcesEvidence.get(source);
         if(evidence != null) {
             evidence = Collections.unmodifiableList(evidence);
         }
