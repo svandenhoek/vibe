@@ -1,4 +1,4 @@
-package org.molgenis.vibe.tdb_processing.query_string_creation;
+package org.molgenis.vibe.formats;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.GeneDiseaseCombinationType;

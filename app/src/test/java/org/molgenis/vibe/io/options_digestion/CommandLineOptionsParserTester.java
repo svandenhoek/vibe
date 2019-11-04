@@ -1,10 +1,9 @@
-package org.molgenis.vibe.options_digestion;
+package org.molgenis.vibe.io.options_digestion;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.RunMode;
 import org.testng.Assert;
 import org.testng.annotations.*;
