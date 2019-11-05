@@ -59,7 +59,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
      * @return all {@link T3} belonging to {@code t1}
      */
     public Set<T3> getByT1(T1 t1) {
-        return Collections.unmodifiableSet(combinationsByT1.get(t1));
+        return (combinationsByT1.get(t1) == null) ? null : (Collections.unmodifiableSet(combinationsByT1.get(t1)));
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
      * @return all {@link T3} belonging to {@code t2}
      */
     public Set<T3> getByT2(T2 t2) {
-        return Collections.unmodifiableSet(combinationsByT2.get(t2));
+        return ((combinationsByT2.get(t2) == null) ? null : Collections.unmodifiableSet(combinationsByT2.get(t2)));
     }
 
     public BiologicalEntityCollection() {
@@ -139,11 +139,14 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean remove(Object o) {
-        // Removes item from general collection.
         Object object = combinationsMap.remove(o);
-        // Goes through the set of every key to remove the item.
+
         combinationsByT1.values().forEach(s->s.remove(o));
         combinationsByT2.values().forEach(s->s.remove(o));
+
+        removeEmptySets(combinationsByT1);
+        removeEmptySets(combinationsByT2);
+
         // object is null if combinationsMap.remove(o) did NOT remove something.
         return !Objects.isNull(object);
     }
@@ -169,7 +172,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     @Override
     public boolean removeAll(Collection<?> c) {
         boolean changed = combinationsMap.keySet().removeAll(c);
-        // Goes through the set of every key to remove the items.
+
         combinationsByT1.values().forEach(s->s.removeAll(c));
         combinationsByT2.values().forEach(s->s.removeAll(c));
 
@@ -192,10 +195,19 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     }
 
     private void removeEmptySets(Map<? extends BiologicalEntity, Set<T3>> combinationsByKey) {
+        // Stores keys to be removed.
+        Set<BiologicalEntity> keysWithEmptySet = new HashSet<>();
+
+        // Goes through all keys to see if there are any keys with an empty Set.
         for(BiologicalEntity key:combinationsByKey.keySet()) {
             if(combinationsByKey.get(key).isEmpty()) {
-                combinationsByKey.remove(key);
+                keysWithEmptySet.add(key);
             }
+        }
+
+        // Removes Keys that have an empty set.
+        for(BiologicalEntity key:keysWithEmptySet) {
+            combinationsByKey.remove(key);
         }
     }
 
