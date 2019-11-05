@@ -216,10 +216,19 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     }
 
     private void removeEmptySets(Map<? extends BiologicalEntity, Set<T3>> combinationsByKey) {
+        // Stores keys to be removed.
+        Set<BiologicalEntity> keysWithEmptySet = new HashSet<>();
+
+        // Goes through all keys to see if there are any keys with an empty Set.
         for(BiologicalEntity key:combinationsByKey.keySet()) {
             if(combinationsByKey.get(key).isEmpty()) {
-                combinationsByKey.remove(key);
+                keysWithEmptySet.add(key);
             }
+        }
+
+        // Removes Keys that have an empty set.
+        for(BiologicalEntity key:keysWithEmptySet) {
+            combinationsByKey.remove(key);
         }
     }
 
