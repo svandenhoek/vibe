@@ -59,7 +59,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
      * @return all {@link T3} belonging to {@code t1}
      */
     public Set<T3> getByT1(T1 t1) {
-        return Collections.unmodifiableSet(combinationsByT1.get(t1));
+        return (combinationsByT1.get(t1) == null) ? null : (Collections.unmodifiableSet(combinationsByT1.get(t1)));
     }
 
     /**
@@ -68,7 +68,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
      * @return all {@link T3} belonging to {@code t2}
      */
     public Set<T3> getByT2(T2 t2) {
-        return Collections.unmodifiableSet(combinationsByT2.get(t2));
+        return ((combinationsByT2.get(t2) == null) ? null : Collections.unmodifiableSet(combinationsByT2.get(t2)));
     }
 
     public BiologicalEntityCollection() {
@@ -139,13 +139,39 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean remove(Object o) {
+        // Casts Object to T3.
+        T3 t3 = (T3) o;
+
         // Removes item from general collection.
-        Object object = combinationsMap.remove(o);
-        // Goes through the set of every key to remove the item.
-        combinationsByT1.values().forEach(s->s.remove(o));
-        combinationsByT2.values().forEach(s->s.remove(o));
-        // object is null if combinationsMap.remove(o) did NOT remove something.
-        return !Objects.isNull(object);
+        Object removeObject = combinationsMap.remove(t3);
+
+        // removeObject is null if combinationsMap.remove(o) did NOT remove something.
+        boolean removedSomething = !Objects.isNull(removeObject);
+
+        // If something was removed, makes sure it is also removed from Maps grouped by T1/T2.
+        if(removedSomething) {
+            removeCombinationFromT1Map(t3, combinationsByT1);
+            removeCombinationFromT2Map(t3, combinationsByT2);
+        }
+
+        // Returns whether something was removed.
+        return removedSomething;
+    }
+
+    private void removeCombinationFromT1Map(T3 t3, Map<T1, Set<T3>> combinationsMap) {
+        Set<T3> valueSet = combinationsMap.get(t3.getT1());
+        valueSet.remove(t3);
+        if(valueSet.size() == 0) {
+            combinationsMap.remove(t3.getT1());
+        }
+    }
+
+    private void removeCombinationFromT2Map(T3 t3, Map<T2, Set<T3>> combinationsMap) {
+        Set<T3> valueSet = combinationsMap.get(t3.getT2());
+        valueSet.remove(t3);
+        if(valueSet.size() == 0) {
+            combinationsMap.remove(t3.getT2());
+        }
     }
 
     @Override
@@ -168,15 +194,13 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        boolean changed = combinationsMap.keySet().removeAll(c);
-        // Goes through the set of every key to remove the items.
-        combinationsByT1.values().forEach(s->s.removeAll(c));
-        combinationsByT2.values().forEach(s->s.removeAll(c));
-
-        removeEmptySets(combinationsByT1);
-        removeEmptySets(combinationsByT2);
-
-        return changed;
+        boolean removedSomething = false;
+        for(Object o:c) {
+            if(remove(o)) {
+                removedSomething = true;
+            }
+        }
+        return removedSomething;
     }
 
     @Override
