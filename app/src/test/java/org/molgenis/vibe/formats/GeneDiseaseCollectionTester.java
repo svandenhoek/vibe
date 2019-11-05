@@ -147,4 +147,22 @@ public class GeneDiseaseCollectionTester {
         Assert.assertEquals(collection.getByDisease(diseases[1]), new HashSet<>(Arrays.asList(gdcs[2])));
         Assert.assertEquals(collection.getByDisease(diseases[2]), new HashSet<>(Arrays.asList(gdcs[3])));
     }
+
+    @Test
+    public void testRetainAll() {
+        collection.addAll(Arrays.asList(gdcs));
+        collection.retainAll(Arrays.asList(gdcs[2]));
+
+        // Validate if full collection is correct.
+        Assert.assertEquals(collection, new HashSet<>(Arrays.asList(gdcs[2])));
+
+        // Validate if grouped by gene is correct.
+        Assert.assertEquals(collection.getByGene(genes[0]), null);
+        Assert.assertEquals(collection.getByGene(genes[1]), new HashSet<>(Arrays.asList(gdcs[2])));
+
+        // Validate if grouped by disease is correct.
+        Assert.assertEquals(collection.getByDisease(diseases[0]), null);
+        Assert.assertEquals(collection.getByDisease(diseases[1]), new HashSet<>(Arrays.asList(gdcs[2])));
+        Assert.assertEquals(collection.getByDisease(diseases[2]), null);
+    }
 }
