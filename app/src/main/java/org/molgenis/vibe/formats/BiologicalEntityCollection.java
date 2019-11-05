@@ -139,39 +139,16 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean remove(Object o) {
-        // Casts Object to T3.
-        T3 t3 = (T3) o;
+        Object object = combinationsMap.remove(o);
 
-        // Removes item from general collection.
-        Object removeObject = combinationsMap.remove(t3);
+        combinationsByT1.values().forEach(s->s.remove(o));
+        combinationsByT2.values().forEach(s->s.remove(o));
 
-        // removeObject is null if combinationsMap.remove(o) did NOT remove something.
-        boolean removedSomething = !Objects.isNull(removeObject);
+        removeEmptySets(combinationsByT1);
+        removeEmptySets(combinationsByT2);
 
-        // If something was removed, makes sure it is also removed from Maps grouped by T1/T2.
-        if(removedSomething) {
-            removeCombinationFromT1Map(t3, combinationsByT1);
-            removeCombinationFromT2Map(t3, combinationsByT2);
-        }
-
-        // Returns whether something was removed.
-        return removedSomething;
-    }
-
-    private void removeCombinationFromT1Map(T3 t3, Map<T1, Set<T3>> combinationsMap) {
-        Set<T3> valueSet = combinationsMap.get(t3.getT1());
-        valueSet.remove(t3);
-        if(valueSet.size() == 0) {
-            combinationsMap.remove(t3.getT1());
-        }
-    }
-
-    private void removeCombinationFromT2Map(T3 t3, Map<T2, Set<T3>> combinationsMap) {
-        Set<T3> valueSet = combinationsMap.get(t3.getT2());
-        valueSet.remove(t3);
-        if(valueSet.size() == 0) {
-            combinationsMap.remove(t3.getT2());
-        }
+        // object is null if combinationsMap.remove(o) did NOT remove something.
+        return !Objects.isNull(object);
     }
 
     @Override
@@ -194,13 +171,15 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public boolean removeAll(Collection<?> c) {
-        boolean removedSomething = false;
-        for(Object o:c) {
-            if(remove(o)) {
-                removedSomething = true;
-            }
-        }
-        return removedSomething;
+        boolean changed = combinationsMap.keySet().removeAll(c);
+
+        combinationsByT1.values().forEach(s->s.removeAll(c));
+        combinationsByT2.values().forEach(s->s.removeAll(c));
+
+        removeEmptySets(combinationsByT1);
+        removeEmptySets(combinationsByT2);
+
+        return changed;
     }
 
     @Override
