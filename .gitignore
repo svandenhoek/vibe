@@ -32,7 +32,10 @@ target/
 *.iml
 
 # Test resources which should be downloaded externally
-src/test/resources/
+app/src/test/resources/
 
 # Files stored in TMP dir.
-TMP/
+app/TMP/
+
+# Files generated for database tests.
+database/test/*.tsv
