@@ -92,8 +92,6 @@ public class GeneDiseaseCollectionTester {
         Assert.assertEquals(collection.getByDisease(diseases[1]), null);
     }
 
-    //TODO: More tests for basic java.util.Collection functionalities!
-
     @Test
     public void testRemoveWithoutTriggeringRemovingEmptySet() {
         collection.addAll(Arrays.asList(gdcs));
