@@ -1,5 +1,6 @@
 package org.molgenis.vibe.io.output.file.gene_prioritized;
 
+import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.GeneDiseaseCombination;
@@ -82,10 +83,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         BufferedWriter writer = getWriter();
 
         // Writes header.
-        // Currently dsi & dpi are not retrieved.
-//        writer.write("gene" + getSeparator() + "diseases" + getSeparator() + "highest GDA score" +
-//                getSeparator() + "DSI" + getSeparator() + "DPI");
-        writer.write("gene (NCBI)" + getSeparator() + "diseases (UMLS)" + getSeparator() + "highest GDA score");
+        writer.write("gene (NCBI)" + getSeparator() + "diseases (UMLS) with sources per disease" + getSeparator() + "highest GDA score");
         writer.newLine();
 
         // Goes through all ordered genes.
@@ -93,42 +91,35 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
             // Writes gene symbol to file.
             writer.write(gene.getId() + getSeparator());
 
-            // Stores the highest DisGeNET score for this gene.
-            double highestScore = 0;
+            // The gene-disease combinations for this gene.
+            List<GeneDiseaseCombination> geneDiseaseCombinations = collection.getByGeneOrderedByGdaScore(gene);
 
-            // Used for key-value pair separator.
-            boolean firstDisease = true;
+            // Goes through the available gda's and writes the information to the file.
+            for(int i = 0; i < geneDiseaseCombinations.size(); i++) {
+                // The current gene-disease combination.
+                GeneDiseaseCombination gdc = geneDiseaseCombinations.get(i);
 
-            // Processes/writes gene data.
-            for(GeneDiseaseCombination gdc : collection.getByGene(gene)) {
-                // Selects highest DisGeNET score available for the gene.
-                if(gdc.getDisgenetScore() > highestScore) {
-                    highestScore = gdc.getDisgenetScore();
-                }
 
-                // Checks whether this is the first disease. If not, adds a key-value pair separator before the next
-                // disease data is written.
-                if(!firstDisease) {
+                if(i == 0) { // If first disease for this gene, write score as "highest GDA score".
+                    writer.write(Double.toString(gdc.getDisgenetScore()) + getSeparator());
+                } else { // If not first disease for this gene, adds separator.
                     writer.write(keyValuePairSeparator.toString());
-                } else {
-                    firstDisease = false;
                 }
 
-                // Writes the disease name surrouned by quotes.
+                // Writes the disease id.
                 writer.write(gdc.getDisease().getId());
 
-//                // If there is evidence, writes these as well.
-//                if(gdc.getAllEvidence().size() > 0) {
-//                    // Merges the evidence URIs with as separator the values separator.
-//                    String evidence = StringUtils.join(gdc.getAllEvidence(), valuesSeparator.toString());
-//                    writer.write(keyValueSeparator + evidence);
-//                }
+                // Writes gda score.
+                writer.write(" (" + gdc.getDisgenetScore() + ")");
+
+                // If there is evidence, writes these as well.
+                if(gdc.getAllEvidence().size() > 0) {
+                    // Merges the evidence URIs with as separator the values separator.
+                    String evidence = StringUtils.join(gdc.getAllEvidenceSimplified(), valuesSeparator.toString());
+                    writer.write(keyValueSeparator + evidence);
+                }
             }
 
-            // Currently dsi & dpi are not retrieved.
-//            writer.write(getSeparator() + Double.toString(highestScore) + getSeparator() +
-//                    gene.getDiseaseSpecificityIndex() + getSeparator() + gene.getDiseasePleiotropyIndex());
-            writer.write(getSeparator() + Double.toString(highestScore));
             writer.newLine();
         }
 

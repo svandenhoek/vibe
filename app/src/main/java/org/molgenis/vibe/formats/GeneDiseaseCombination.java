@@ -104,6 +104,24 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * Wrapper for {@code #getAllEvidence} where {@link URI}{@code s} starting with {@code http://identifiers.org/pubmed/}
+     * are reduced to only the number behind it. If a source starts with a different {@link URI}, the full {@link URI} is
+     * still returned (though after being converted to a {@link String}).
+     * @return a {@link Set} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
+     * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     */
+    public Set<String> getAllEvidenceSimplified() {
+        Set<String> simplifiedSources = new HashSet<>();
+        Set<URI> allSourceUris = this.getAllEvidence();
+        for(URI source : allSourceUris) {
+            String sourceString = source.toString();
+            simplifiedSources.add((sourceString.startsWith("http://identifiers.org/pubmed/") ? sourceString.substring(30) : sourceString));
+        }
+
+        return simplifiedSources;
+    }
+
+    /**
      * Simple constructor allowing for easy comparison of collections.
      * @param gene
      * @param disease

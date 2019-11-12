@@ -1,5 +1,7 @@
 package org.molgenis.vibe.formats;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -66,5 +68,21 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
 
     public GeneDiseaseCollection(Set<GeneDiseaseCombination> combinationsMap) {
         super(combinationsMap);
+    }
+
+    public List<GeneDiseaseCombination> getByGeneOrderedByGdaScore(Gene gene) {
+        return getByBiologicalEntityOrderedByGdaScore(getByGene(gene));
+    }
+
+    public List<GeneDiseaseCombination> getByDiseaseOrderedByGdaScore(Disease disease) {
+        return getByBiologicalEntityOrderedByGdaScore(getByDisease(disease));
+    }
+
+    private List<GeneDiseaseCombination> getByBiologicalEntityOrderedByGdaScore(Set<GeneDiseaseCombination> geneDiseaseCombinationSet) {
+        List<GeneDiseaseCombination> orderedList = new ArrayList<>();
+        orderedList.addAll(geneDiseaseCombinationSet);
+        orderedList.sort(Comparator.comparing(GeneDiseaseCombination::getDisgenetScore).reversed());
+
+        return orderedList;
     }
 }
