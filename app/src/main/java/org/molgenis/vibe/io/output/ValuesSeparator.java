@@ -1,7 +1,7 @@
 package org.molgenis.vibe.io.output;
 
 /**
- * Defines the possible {@code separators} for {@link SeparatedValuesFileOutputWriter}{@code s}.
+ * Defines possible {@code separators} to be used.
  */
 public enum ValuesSeparator {
     COMMA(","),
