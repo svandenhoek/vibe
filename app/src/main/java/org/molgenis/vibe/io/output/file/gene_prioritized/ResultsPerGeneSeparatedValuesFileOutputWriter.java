@@ -83,7 +83,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         BufferedWriter writer = getWriter();
 
         // Writes header.
-        writer.write("gene (NCBI)" + getSeparator() + "diseases (UMLS) with sources per disease" + getSeparator() + "highest GDA score");
+        writer.write("gene (NCBI)" + getSeparator() + "highest GDA score" + getSeparator() + "diseases (UMLS) with sources per disease");
         writer.newLine();
 
         // Goes through all ordered genes.
@@ -115,7 +115,7 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
                 // If there is evidence, writes these as well.
                 if(gdc.getAllEvidence().size() > 0) {
                     // Merges the evidence URIs with as separator the values separator.
-                    String evidence = StringUtils.join(gdc.getAllEvidenceSimplified(), valuesSeparator.toString());
+                    String evidence = StringUtils.join(gdc.getAllEvidenceSimplifiedOrdered(), valuesSeparator.toString());
                     writer.write(keyValueSeparator + evidence);
                 }
             }
