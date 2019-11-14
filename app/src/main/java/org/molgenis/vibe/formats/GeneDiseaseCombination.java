@@ -136,7 +136,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @param simplifiedSources where the (simplified) sources should be stored in as {@link String}
      * @param allSourceUris the {@link Set} that should be simplified
      */
-    private void simplifyEvidence(Set<URI> allSourceUris, Collection simplifiedSources) {
+    private void simplifyEvidence(Set<URI> allSourceUris, Collection<String> simplifiedSources) {
         for(URI source : allSourceUris) {
             String sourceString = source.toString();
             simplifiedSources.add((sourceString.startsWith("http://identifiers.org/pubmed/") ? sourceString.substring(30) : sourceString));
