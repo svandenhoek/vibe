@@ -33,44 +33,42 @@ Instructions regarding building/testing the app can be found [here](./app/README
 
 ### Examples
 
-Using only the user-defined phenotypes with the output being sorted based on the highest gene-disease association score present per gene:
+Using only the user-defined phenotypes:
 
 `java -jar vibe-with-dependencies.jar -v -t TDB/ -s gda_max -o results.tsv -p HP:0002996 -p HP:0001377`
 
-Output file:
+---
 
-```
+Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 1:
 
-```
-+630 more lines
+`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n distance -m 1 -o results.tsv -p HP:0002996`
 
 ---
 
-Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 1 with the output
- sorted based on the Disease Specificity Index:
+Using the user-defined phenotypes and their (grand)children with a maximum distance of 2:
 
-`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n distance -m 1 -s dsi -o results.tsv -p HP:0002996`
+`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n children -m 2 -o results.tsv -p HP:0002996`
 
-Output file:
+### Output format
 
-```
-
-```
-+2711 more lines
-
----
-
-Using the user-defined phenotypes and their (grand)children with a maximum distance of 2 with the output sorted based on
-the Disease Pleiotropy Index:
-
-`java -jar vibe-with-dependencies.jar -v -t TDB/ -w hp.owl -n children -m 2 -s dpi -o results.tsv -p HP:0002996`
-
-Output file:
+There are currently 2 options for the output. By default the output will look something like:
 
 ```
+gene (NCBI)	highest GDA score	diseases (UMLS) with sources per disease
+29123	0.8	C0220687 (0.8):15378538,15523620,21782149,22307766,23184435,23369839,23463723,23494856,24088041,24838796,25125236,25187894,25413698,25424714,25464108,25741868,26633545,27667800,27900361,28250421,28708303,29224748,29565525|C1835764 (0.1)
+56172	0.37	C0265292 (0.37):16462526,19257826,20186813,20358596,20943778,21149338,26820766
+2697	0.31	C0265292 (0.31):23951358
+```
+
+Here, each row represents a gene. Each row consists out of several (tab-seperated) fields. First is the NCBI gene id, then the highest found gene-disease association score found in DisGeNET for that gene, and finally all found associated diseases with the gene-disease association score specific for that gene-disease combination followed by the evidence IDs (pubmed if no URL is shown) for it.
+
+Alternatively, the option `-l` can be added when running the tool. If this is done, the output will only contain the genes (separated by comma's). The example output above would look like:
 
 ```
-+974 more lines
+29123,56172,2697
+```
+
+
 
 ## F.A.Q.
 
