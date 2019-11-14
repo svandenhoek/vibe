@@ -122,6 +122,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * {@link Set}.
      * @return a {@link List} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
      * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     * @see #getAllEvidenceSimplified()
      */
     public List<String> getAllEvidenceSimplifiedOrdered() {
         List<String> simplifiedSources = new ArrayList<>();
