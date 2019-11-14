@@ -112,13 +112,35 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      */
     public Set<String> getAllEvidenceSimplified() {
         Set<String> simplifiedSources = new HashSet<>();
-        Set<URI> allSourceUris = this.getAllEvidence();
+        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
+
+        return simplifiedSources;
+    }
+
+    /**
+     * The same as {@link #getAllEvidenceSimplified()}, only returns an alphabetically ordered {@link List} instead of a
+     * {@link Set}.
+     * @return a {@link List} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
+     * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     */
+    public List<String> getAllEvidenceSimplifiedOrdered() {
+        List<String> simplifiedSources = new ArrayList<>();
+        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
+        Collections.sort(simplifiedSources);
+
+        return simplifiedSources;
+    }
+
+    /**
+     * Goes through all source {@link URI}{@code s} given and stores them (if possible simplifified) in the given {@link Collection}.
+     * @param simplifiedSources where the (simplified) sources should be stored in as {@link String}
+     * @param allSourceUris the {@link Set} that should be simplified
+     */
+    private void simplifyEvidence(Set<URI> allSourceUris, Collection simplifiedSources) {
         for(URI source : allSourceUris) {
             String sourceString = source.toString();
             simplifiedSources.add((sourceString.startsWith("http://identifiers.org/pubmed/") ? sourceString.substring(30) : sourceString));
         }
-
-        return simplifiedSources;
     }
 
     /**
