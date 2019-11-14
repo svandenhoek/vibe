@@ -81,7 +81,7 @@ public abstract class BiologicalEntity implements ResourceUri, Comparable<Biolog
     }
 
     protected void setCompareValue(int compareValue) {
-        this.compareValue = requireNonNull(compareValue);
+        this.compareValue = compareValue;
     }
 
     protected void setId(String id) {

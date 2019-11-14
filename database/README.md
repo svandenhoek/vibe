@@ -15,6 +15,10 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 - [Semanticscience Integrated Ontology (SIO)][sio_owl]
 - [HPO - ORDO Ontological Module (RDF/XML-format)][hoom]
 
+## Important note for Windows users
+
+While `tdbloader2` is preferred (as it creates a smaller TDB), it relies on Unix system utilities. Windows users should therefore use `tdbloader` instead. As `tdbloader` and `tdbloader2` use the same command line arguments, the only thing that should be different is the actual tool that is called (and the resulting TDB is larger).
+
 ## Creating initial TDB
 
 1. Download the data.
@@ -24,22 +28,24 @@ VIBE needs an optimized TDB to run. To create this, several steps are needed, as
 ## Creating optimized TDB
 
 1. Create a directory to store optimized `.ttl` files in.
-2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
-3. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/disease.rq 1> /path/to/optimized/ttl/disease.ttl`
-4. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
-5. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
-6. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/db_creation/sparql_queries/source.rq 1> /path/to/optimized/ttl/source.ttl`
+2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
+3. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/disease.rq 1> /path/to/optimized/ttl/disease.ttl`
+4. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
+5. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
+6. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/source.rq 1> /path/to/optimized/ttl/source.ttl`
 7. Run `tdbloader2 --loc /path/to/store/optimized/TDB /path/to/optimized/ttl/*.ttl  /path/to/sio-release.owl`
 
+## F.A.Q.
 
+**Q:** Why do I get an `org.apache.jena.atlas.RuntimeIOException: java.nio.charset.MalformedInputException: Input length = 1` error when trying to create a TDB from the generated `.ttl` files?
 
-
+**A:** This might be caused by the generated `.ttl` files having an incorrect file encoding. Please make sure the generated `.ttl` files have the encoding `UTF-8`. If this is not the case, manually change it to  `UTF_8`.
 
 
 
 [jena_download]: https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
-[disgenet_rdf_v6_dump]: http://rdf.disgenet.org/download/v5.0.0/disgenetv5.0-rdf-v5.0.0-dump.tar.gz
+[disgenet_rdf_v6_dump]: http://rdf.disgenet.org/download/v6.0.0/disgenetv6.0-rdf-v6.0.0-dump.tgz
 [disgenet_rdf_v5_pda]: http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz
 [disgenet_rdf_v5_phenotype]: http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz
 [disgenet_rdf_v5_void]: http://rdf.disgenet.org/download/v5.0.0/void.ttl.tar.gz
