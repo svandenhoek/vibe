@@ -11,7 +11,7 @@ A tool to generate prioritized genes using phenotype information.
 * Download [vibe .jar file][vibe_download]
 * Download and extract [TDB][tdb_download]
 * Make sure you have [Java 8 or higher][java_download]
-* Open a terminal and run VIBE. `java -jar vibe-1.0.jar -v -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+* Open a terminal and run VIBE. `java -jar vibe-with-dependencies.jar -v -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ## Detailed instructions
 
@@ -77,7 +77,7 @@ Alternatively, the option `-l` can be added when running the tool. If this is do
 
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
-[tdb_download]: https://drive.google.com/open?id=1EGWuNFH_xLLBzykjXyqUuAnmO61TIaSN
+[tdb_download]: http://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
