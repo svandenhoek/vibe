@@ -71,7 +71,7 @@ public abstract class OptionsParser {
     /**
      * Sets the gene prioritizer to be used.
      */
-    private GenePrioritizerFactory genePrioritizerFactory;
+    private GenePrioritizerFactory genePrioritizerFactory = GenePrioritizerFactory.HIGHEST_DISGENET_SCORE;
 
     public boolean isVerbose() {
         return verbose;
@@ -226,19 +226,6 @@ public abstract class OptionsParser {
 
     public GenePrioritizerFactory getGenePrioritizerFactory() {
         return genePrioritizerFactory;
-    }
-
-    protected void setGenePrioritizerFactory(GenePrioritizerFactory genePrioritizerFactory) {
-        this.genePrioritizerFactory = genePrioritizerFactory;
-    }
-
-    /**
-     * @param name the {@link String} describing the {@link GenePrioritizer}
-     *             to be used
-     * @throws EnumConstantNotPresentException if {@code name} is not an accepted possibility.
-     */
-    protected void setGenePrioritizerFactory(String name) throws EnumConstantNotPresentException {
-        this.genePrioritizerFactory = GenePrioritizerFactory.retrieve(name);
     }
 
     /**

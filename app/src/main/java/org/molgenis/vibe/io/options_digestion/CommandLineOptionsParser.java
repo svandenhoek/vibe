@@ -115,20 +115,6 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .argName("FILE")
                 .build());
 
-        options.addOption(Option.builder("s")
-                .longOpt("sort")
-                .desc("The output sorting algorithm to be used:" + System.lineSeparator() +
-                        String.format(argumentOptionsFormat, "gda_max", "Sorts genes based on highest") +
-                        String.format(argumentOptionsFormat, "", "gene-disease association score") +
-                        String.format(argumentOptionsFormat, "", "(DEFAULT).") +
-                        String.format(argumentOptionsFormat, "dsi", "Sorts genes based on highest Disease") +
-                        String.format(argumentOptionsFormat, "", "Specificity Index.") +
-                        String.format(argumentOptionsFormat, "dpi", "Sorts genes based on lowest Disease") +
-                        String.format(argumentOptionsFormat, "", "Pleiotropy Index."))
-                .hasArg()
-                .argName("NAME")
-                .build());
-
         options.addOption(Option.builder("l")
                 .longOpt("simple-output")
                 .desc("Simple output format (file only contains separated gene symbols)")
@@ -139,7 +125,7 @@ public class CommandLineOptionsParser extends OptionsParser {
      * Prints the help message to stdout.
      */
     public static void printHelpMessage() {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-l] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -271,17 +257,6 @@ public class CommandLineOptionsParser extends OptionsParser {
             }
         } else {
             missing.add("-o");
-        }
-
-        // OPTIONAL: Sorting algorithm.
-        if(commandLine.hasOption("s")) {
-            try {
-                setGenePrioritizerFactory(commandLine.getOptionValue("s"));
-            } catch(EnumConstantNotPresentException e) {
-                errors.add(e.getMessage());
-            }
-        } else {
-            setGenePrioritizerFactory(GenePrioritizerFactory.HIGHEST_DISGENET_SCORE);
         }
 
         // Processes missing and errors and throws an Exception if any errors were present.

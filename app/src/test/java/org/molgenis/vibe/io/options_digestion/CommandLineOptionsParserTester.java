@@ -30,11 +30,6 @@ public class CommandLineOptionsParserTester {
 
     private final String[] NON_EXISTING_OUTPUT_FILE = new String[]{"-o", TestData.NON_EXISTING.getFiles()[0]};
 
-    private final String[] GENE_SORTING_1 = new String[]{"-s", "gda_max"};
-    private final String[] GENE_SORTING_2 = new String[]{"-s", "dsi"};
-    private final String[] GENE_SORTING_3 = new String[]{"-s", "dpi"};
-    private final String[] GENE_SORTING_INVALID = new String[]{"-s", "myCustomName"};
-
     @Test
     public void noArguments() throws IOException, ParseException {
         String[] args = new String[]{};
@@ -77,30 +72,6 @@ public class CommandLineOptionsParserTester {
     @Test(expectedExceptions = IOException.class)
     public void validSingleHpoWithInvalidHpoAlgorithm() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        testWithErrorPrint(args);
-    }
-
-    @Test
-    public void validSingleHpoWithSortAlgorithm1() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        testWithErrorPrint(args);
-    }
-
-    @Test
-    public void validSingleHpoWithSortAlgorithm2() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_2, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        testWithErrorPrint(args);
-    }
-
-    @Test
-    public void validSingleHpoWithSortAlgorithm3() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_3, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
-        testWithErrorPrint(args);
-    }
-
-    @Test(expectedExceptions = IOException.class)
-    public void validSingleHpoWithInvalidSortAlgorithm() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, GENE_SORTING_INVALID, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 

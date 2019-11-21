@@ -62,19 +62,17 @@ digestCommandLine() {
 	# Checks if usage is requested.
 	if [[ ${help} == TRUE ]]; then echo "$USAGE"; exit 0; fi
 
-	# Checks if TDB variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
-	if [[ ${TDB_original+isset} == isset ]]
-	then
-        # Checks if given argument is an existing directory.
-        if [ ! -d "$TDB_original" ]; then errcho "Path to TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
-    fi
+	# Checks if variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
+	if [[ ! ${TDB_original+isset} == isset ]]; then errcho "Missing required argument: -or/--original <DIR>\n\n$USAGE"; exit 1; fi
 
-	# Checks if TDB variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
-	if [[ ${TDB_optimized+isset} == isset ]]
-	then
-        # Checks if given argument is an existing directory.
-        if [ ! -d "$TDB_optimized" ]; then errcho "Path to TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
-    fi
+	# Checks if variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
+	if [[ ! ${TDB_optimized+isset} == isset ]]; then errcho "Missing required argument: -op/--optimized <DIR>\n\n$USAGE"; exit 1; fi
+
+	# Checks if given argument is an existing directory.
+	if [ ! -d "$TDB_original" ]; then errcho "Path to original TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
+
+	# Checks if given argument is an existing directory.
+	if [ ! -d "$TDB_optimized" ]; then errcho "Path to optimized TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
 }
 
 runTests() {

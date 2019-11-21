@@ -5,10 +5,7 @@ import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 import java.net.URI;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 public class GeneDiseaseCombinationTester {
     private Gene gene = new Gene("ncbigene:0");
@@ -37,8 +34,8 @@ public class GeneDiseaseCombinationTester {
 
     @Test
     public void addingMultipleSourcesWithEvidence() {
-        List<URI> source1Evidence = Arrays.asList(URI.create("http://pubmed1.id"), URI.create("http://pubmed2.id"));
-        List<URI> source2Evidence = Arrays.asList(URI.create("http://pubmed3.id"), URI.create("http://pubmed4.id"));
+        List<URI> source1Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"), URI.create("http://identifiers.org/pubmed/2"));
+        List<URI> source2Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/3"), URI.create("http://identifiers.org/pubmed/4"));
 
         geneDiseaseCombo.add(source1, source1Evidence.get(0));
         geneDiseaseCombo.add(source1, source1Evidence.get(1));
@@ -54,8 +51,8 @@ public class GeneDiseaseCombinationTester {
 
     @Test
     public void addingMultipleSourcesWithAndWithoutEvidence() {
-        List<URI> source1Evidence = Arrays.asList(URI.create("http://pubmed1.id"));
-        List<URI> source2Evidence = Arrays.asList(URI.create("http://pubmed2.id"), URI.create("http://pubmed3.id"));
+        List<URI> source1Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"));
+        List<URI> source2Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
 
         geneDiseaseCombo.add(source2);
         geneDiseaseCombo.add(source1);
@@ -90,5 +87,29 @@ public class GeneDiseaseCombinationTester {
     @Test
     public void retrieveEvidenceForNonExistingSource() {
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), null);
+    }
+
+    @Test
+    public void testGetAllEvidenceSimplified() {
+        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
+                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+
+        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
+
+        Assert.assertEquals(geneDiseaseCombo.getAllEvidenceSimplified(), new HashSet<>(Arrays.asList("1","https://www.ncbi.nlm.nih.gov/pubmed/2", "3")));
+    }
+
+    @Test
+    public void testGetAllEvidenceSimplifiedOrdered() {
+        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
+                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+
+        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
+
+        Assert.assertEquals(geneDiseaseCombo.getAllEvidenceSimplifiedOrdered(), new ArrayList<>(Arrays.asList("1","3","https://www.ncbi.nlm.nih.gov/pubmed/2")));
     }
 }

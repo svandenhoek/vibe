@@ -104,6 +104,47 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * Wrapper for {@code #getAllEvidence} where {@link URI}{@code s} starting with {@code http://identifiers.org/pubmed/}
+     * are reduced to only the number behind it. If a source starts with a different {@link URI}, the full {@link URI} is
+     * still returned (though after being converted to a {@link String}).
+     * @return a {@link Set} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
+     * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     */
+    public Set<String> getAllEvidenceSimplified() {
+        Set<String> simplifiedSources = new HashSet<>();
+        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
+
+        return simplifiedSources;
+    }
+
+    /**
+     * The same as {@link #getAllEvidenceSimplified()}, only returns an alphabetically ordered {@link List} instead of a
+     * {@link Set}.
+     * @return a {@link List} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
+     * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     * @see #getAllEvidenceSimplified()
+     */
+    public List<String> getAllEvidenceSimplifiedOrdered() {
+        List<String> simplifiedSources = new ArrayList<>();
+        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
+        Collections.sort(simplifiedSources);
+
+        return simplifiedSources;
+    }
+
+    /**
+     * Goes through all source {@link URI}{@code s} given and stores them (if possible simplifified) in the given {@link Collection}.
+     * @param simplifiedSources where the (simplified) sources should be stored in as {@link String}
+     * @param allSourceUris the {@link Set} that should be simplified
+     */
+    private void simplifyEvidence(Set<URI> allSourceUris, Collection<String> simplifiedSources) {
+        for(URI source : allSourceUris) {
+            String sourceString = source.toString();
+            simplifiedSources.add((sourceString.startsWith("http://identifiers.org/pubmed/") ? sourceString.substring(30) : sourceString));
+        }
+    }
+
+    /**
      * Simple constructor allowing for easy comparison of collections.
      * @param gene
      * @param disease

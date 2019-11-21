@@ -1,5 +1,7 @@
 package org.molgenis.vibe.formats;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
@@ -66,5 +68,43 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
 
     public GeneDiseaseCollection(Set<GeneDiseaseCombination> combinationsMap) {
         super(combinationsMap);
+    }
+
+    /**
+     * Wrapper for {@link #getByGene(Gene)} that returns an ordered {@link List} based on
+     * {@link GeneDiseaseCombination#getDisgenetScore()} (high->low) instead of a {@link Set}.
+     * @param gene
+     * @return {@link #getByDisease(Disease)} as ordered {@link List} based on
+     * {@link GeneDiseaseCombination#getDisgenetScore()} (high->low)
+     * @see #getByGene(Gene)
+     */
+    public List<GeneDiseaseCombination> getByGeneOrderedByGdaScore(Gene gene) {
+        return getByBiologicalEntityOrderedByGdaScore(getByGene(gene));
+    }
+
+    /**
+     * Wrapper for {@link #getByDisease(Disease)} that returns an ordered {@link List} based on
+     * {@link GeneDiseaseCombination#getDisgenetScore()} (high->low) instead of a {@link Set}.
+     * @param disease
+     * @return {@link #getByDisease(Disease)} as ordered {@link List} based on
+     * {@link GeneDiseaseCombination#getDisgenetScore()} (high->low)
+     * @see #getByDisease(Disease)
+     */
+    public List<GeneDiseaseCombination> getByDiseaseOrderedByGdaScore(Disease disease) {
+        return getByBiologicalEntityOrderedByGdaScore(getByDisease(disease));
+    }
+
+    /**
+     * Creates an ordered {@link List} based on {@link GeneDiseaseCombination#getDisgenetScore()} using the data from the
+     * given {@link Set} containing {@link GeneDiseaseCombination}{@code s}.
+     * @param geneDiseaseCombinationSet the {@link Set} to be turned into a ordered {@link List}
+     * @return an ordered {@link List} containing {@link GeneDiseaseCombination}{@code s}
+     */
+    private List<GeneDiseaseCombination> getByBiologicalEntityOrderedByGdaScore(Set<GeneDiseaseCombination> geneDiseaseCombinationSet) {
+        List<GeneDiseaseCombination> orderedList = new ArrayList<>();
+        orderedList.addAll(geneDiseaseCombinationSet);
+        orderedList.sort(Comparator.comparing(GeneDiseaseCombination::getDisgenetScore).reversed());
+
+        return orderedList;
     }
 }
