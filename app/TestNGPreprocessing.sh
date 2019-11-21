@@ -98,11 +98,11 @@ runTestPreparations() {
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
     echo "\n\n$SEP_SIDE Generating TDB without DisGeNET Association Type Ontology $SEP_SIDE\n\n"
-    tdbloader2 --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
+    tdbloader --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
     echo "\n\n$SEP_SIDE Generating TDB with DisGeNET Association Type Ontology $SEP_SIDE\n\n"
-    tdbloader2 --loc "$disgenet_mini_tdb" "$disgenet_mini"/*
+    tdbloader --loc "$disgenet_mini_tdb" "$disgenet_mini"/*
 
     # Generates symlink to full DisGeNET TDB.
     if [[ ${DISGENET_FULL+isset} == isset ]]
