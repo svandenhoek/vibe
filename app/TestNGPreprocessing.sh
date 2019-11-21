@@ -3,15 +3,14 @@
 #########################################################################
 #Name:     TestNGPreprocessing.sh                                       #
 #Function: Automation script for unit test preperations.                #
-#                                                                       #
-#Usage:    TestNGPreprocessing.sh                                       #
+#Usage:    See usage below.                                             #
 #########################################################################
 
 # Defines error echo.
 errcho() { echo "$@" 1>&2; }
 
 # Describes usage.
-readonly USAGE="Usage: disgenet-data-formatter.sh [-h] [-d <DIR>]
+readonly USAGE="Usage: TestNGPreprocessing.sh [-h] [-d <DIR>]
 Description: Runs preparations for unit testing.
 Arguments:
 -h --help           Shows this help message.
