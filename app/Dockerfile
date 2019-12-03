@@ -17,6 +17,14 @@ RUN mvn -e -B clean package
 # Final image for usage.
 FROM adoptopenjdk:11-jre-hotspot
 
+# Downloads TDB.
+ADD http://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip .
+
 # Retrieves jar to be used.
 COPY --from=build app/target/dependency-jars .
 COPY --from=build app/target/vibe.jar .
+
+# Runs java app.
+#ENTRYPOINT ["java", "-jar", "vibe.jar"]
+#CMD ["--help"]
+CMD ["java", "--version"]
