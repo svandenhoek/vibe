@@ -17,6 +17,9 @@ RUN mvn -e -B clean package
 # Final image for usage.
 FROM adoptopenjdk:11-jre-hotspot
 
+# Downloads required data.
+ADD https://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip /vibe_data/
+
 # Changes workdir.
 WORKDIR app
 
