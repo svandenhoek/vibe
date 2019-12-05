@@ -9,7 +9,7 @@ COPY pom.xml .
 RUN mvn dependency:go-offline -B
 
 # Copies source and builds jar.
-COPY src/main/ .
+COPY src/main/ src/main/
 RUN mvn -e -B clean package
 
 ######## ######## ########
@@ -17,14 +17,13 @@ RUN mvn -e -B clean package
 # Final image for usage.
 FROM adoptopenjdk:11-jre-hotspot
 
-# Downloads TDB.
-ADD http://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip .
+# Changes workdir.
+WORKDIR app
 
 # Retrieves jar to be used.
-COPY --from=build app/target/dependency-jars .
+COPY --from=build app/target/dependency-jars/ dependency-jars/
 COPY --from=build app/target/vibe.jar .
 
 # Runs java app.
-#ENTRYPOINT ["java", "-jar", "vibe.jar"]
-#CMD ["--help"]
-CMD ["java", "--version"]
+ENTRYPOINT ["java", "-jar", "/app/vibe.jar"]
+CMD ["--help"]
