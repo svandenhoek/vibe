@@ -17,16 +17,22 @@ RUN mvn -e -B clean package
 # Final image for usage.
 FROM adoptopenjdk:11-jre-hotspot
 
-# Downloads required data.
-ADD https://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip /vibe_data/
-
 # Changes workdir.
 WORKDIR app
+
+# Downloads & prepares TDB.
+ARG vibe_tdb_archive=vibe-v2_0_0-tdb.tar.gz
+RUN curl -O -L https://molgenis.org/downloads/vibe/${vibe_tdb_archive} \
+&& tar -xzf ${vibe_tdb_archive} \
+&& mv ${vibe_tdb_archive} TDB
+
+# Downloads hpo.owl file.
+RUN curl -O -L http://purl.obolibrary.org/obo/hp.owl
 
 # Retrieves jar to be used.
 COPY --from=build app/target/dependency-jars/ dependency-jars/
 COPY --from=build app/target/vibe.jar .
 
 # Runs java app.
-ENTRYPOINT ["java", "-jar", "/app/vibe.jar"]
+ENTRYPOINT ["java", "-jar", "/app/vibe.jar", "-t TDB/"]
 CMD ["--help"]
