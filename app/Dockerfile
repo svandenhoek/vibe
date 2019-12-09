@@ -27,7 +27,7 @@ RUN curl -O -L https://molgenis.org/downloads/vibe/${vibe_tdb_archive} \
 && mv ${vibe_tdb_archive} TDB
 
 # Downloads hpo.owl file.
-RUN curl -O -L http://purl.obolibrary.org/obo/hp.owl
+RUN curl -O -L https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/v2019-11-08/hp.owl
 
 # Retrieves jar to be used.
 COPY --from=build app/target/dependency-jars/ dependency-jars/
