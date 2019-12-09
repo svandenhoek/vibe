@@ -21,10 +21,11 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR app
 
 # Downloads & prepares TDB.
-ARG vibe_tdb_archive=vibe-v2_0_0-tdb.tar.gz
+ARG vibe_tdb_archive=vibe-v2_0_0-tdb.tgz
 RUN curl -O -L https://molgenis.org/downloads/vibe/${vibe_tdb_archive} \
 && tar -xzf ${vibe_tdb_archive} \
-&& mv ${vibe_tdb_archive} TDB
+&& rm ${vibe_tdb_archive} \
+&& mv ${vibe_tdb_archive%.tgz} TDB
 
 # Downloads hpo.owl file.
 RUN curl -O -L https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/v2019-11-08/hp.owl
@@ -34,5 +35,5 @@ COPY --from=build app/target/dependency-jars/ dependency-jars/
 COPY --from=build app/target/vibe.jar .
 
 # Runs java app.
-ENTRYPOINT ["java", "-jar", "/app/vibe.jar", "-t TDB/"]
+ENTRYPOINT ["java", "-jar", "/app/vibe.jar", "-t", "TDB/", "-o", "output.tsv"]
 CMD ["--help"]
