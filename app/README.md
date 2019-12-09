@@ -23,8 +23,8 @@ You can now use `target/vibe-with-dependencies.jar`.
 
 ### How-to
 
-1. Download vibe test resources through running `TestNGPreprocessing.sh` (certain optional arguments might be required for specific tests).
-2. Run unit-tests using preferred IDE.
+1. Download vibe test resources through running `TestNGPreprocessing.sh -d /path/to/optimized/TDB`.
+2. Run unit-tests using preferred IDE using `testng.xml`.
 
 
 

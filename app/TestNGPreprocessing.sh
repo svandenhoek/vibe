@@ -3,15 +3,14 @@
 #########################################################################
 #Name:     TestNGPreprocessing.sh                                       #
 #Function: Automation script for unit test preperations.                #
-#                                                                       #
-#Usage:    TestNGPreprocessing.sh                                       #
+#Usage:    See usage below.                                             #
 #########################################################################
 
 # Defines error echo.
 errcho() { echo "$@" 1>&2; }
 
 # Describes usage.
-readonly USAGE="Usage: disgenet-data-formatter.sh [-h] [-d <DIR>]
+readonly USAGE="Usage: TestNGPreprocessing.sh [-h] [-d <DIR>]
 Description: Runs preparations for unit testing.
 Arguments:
 -h --help           Shows this help message.
@@ -99,11 +98,11 @@ runTestPreparations() {
 
     # Generates TDB dataset from mini DisGeNET dataset without ontology data.
     echo "\n\n$SEP_SIDE Generating TDB without DisGeNET Association Type Ontology $SEP_SIDE\n\n"
-    tdbloader2 --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
+    tdbloader --loc "$disgenet_mini_tdb_no_ontology" "$disgenet_mini"/*.ttl
 
     # Generates TDB dataset from mini DisGeNET dataset.
     echo "\n\n$SEP_SIDE Generating TDB with DisGeNET Association Type Ontology $SEP_SIDE\n\n"
-    tdbloader2 --loc "$disgenet_mini_tdb" "$disgenet_mini"/*
+    tdbloader --loc "$disgenet_mini_tdb" "$disgenet_mini"/*
 
     # Generates symlink to full DisGeNET TDB.
     if [[ ${DISGENET_FULL+isset} == isset ]]
