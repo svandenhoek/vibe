@@ -44,7 +44,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/**.xml'
+                    //junit '**/target/surefire-reports/**.xml'
                     container('maven') {
                     	dir('app') {
 	                        sh "curl -s https://codecov.io/bash | bash -s - -c -F unit -K -C ${GIT_COMMIT}"
@@ -72,7 +72,7 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/surefire-reports/**.xml'
+                    //junit '**/target/surefire-reports/**.xml'
                     container('maven') {
                     	dir('app') {
 	                        sh "curl -s https://codecov.io/bash | bash -s - -c -F unit -K -C ${GIT_COMMIT}"
