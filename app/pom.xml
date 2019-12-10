@@ -6,7 +6,7 @@
 
     <groupId>org.molgenis</groupId>
     <artifactId>vibe</artifactId>
-    <version>2.0.0</version>
+    <version>2.1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
     <scm>
@@ -18,21 +18,30 @@
     </scm>
 
     <properties>
+        <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
+        <vibe-tdb.version>v2_0_0</vibe-tdb.version>
+        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tgz</vibe-tdb.archive>
+        <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
+
+        <!-- used hpo.owl github tag -->
+        <hpo-owl.tag>v2019-11-08</hpo-owl.tag>
+        <hpo-owl.download>https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/${hpo-owl.tag}/hp.owl</hpo-owl.download>
+
+        <!-- defines created jar names -->
+        <jar.skinny>vibe-${project.version}</jar.skinny>
+        <jar.fat>vibe-with-dependencies-${project.version}</jar.fat>
+
+        <!-- defines java version of code -->
+        <java.version>1.8</java.version>
+
+        <!-- artifact publish properties -->
+        <sonatype.id>sonatype-nexus-staging</sonatype.id>
+
+        <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <dockerfile.tag>${project.version}</dockerfile.tag>
-        <dockerfile.repository>registry.hub.docker.com/molgenis/vibe</dockerfile.repository>
+        <!-- check -->
         <dockerfile.warfile.version>${project.version}</dockerfile.warfile.version>
-        <dockerfile.warfile>target/${project.artifactId}-${dockerfile.warfile.version}.war</dockerfile.warfile>
-
-        <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
-        <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
-        <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
-        <release-maven-plugin.version>2.5.3</release-maven-plugin.version>
-        <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
-        <sonar-maven-plugin.version>3.5.0.1254</sonar-maven-plugin.version>
-
-        <sonatype.id>sonatype-nexus-staging</sonatype.id>
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>molgenis</sonar.organization>
         <sonar.github.repository>molgenis/vibe</sonar.github.repository>
@@ -52,124 +61,26 @@
     </distributionManagement>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>${jacoco-maven-plugin.version}</version>
-                </plugin>
-                <!-- sign artifacts -->
-                <plugin>
-                    <groupId>org.kohsuke</groupId>
-                    <artifactId>pgp-maven-plugin</artifactId>
-                    <version>${pgp-maven-plugin.version}</version>
-                </plugin>
-                <!-- deploy to sonatype nexus -->
-                <plugin>
-                    <groupId>org.sonatype.plugins</groupId>
-                    <artifactId>nexus-staging-maven-plugin</artifactId>
-                    <version>${nexus-staging-maven-plugin.version}</version>
-                    <extensions>true</extensions>
-                    <configuration>
-                        <serverId>${sonatype.id}</serverId>
-                        <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-                        <!-- closing the repo in the build fails miserably with a connection reset error -->
-                        <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
-                    </configuration>
-                </plugin>
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-release-plugin</artifactId>
-                    <version>${release-maven-plugin.version}</version>
-                    <configuration>
-                        <scmCommentPrefix>[ci skip] [maven-release-plugin]${line.separator}</scmCommentPrefix>
-                    </configuration>
-                </plugin>
-            </plugins>
-        </pluginManagement>
-
         <plugins>
-            <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>pre-unit-test</id>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    <execution>
-                        <id>post-unit-test</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>${sonar-maven-plugin.version}</version>
-            </plugin>
-
-            <plugin>
-                <!-- sign in a non-interactive way -->
-                <groupId>org.kohsuke</groupId>
-                <artifactId>pgp-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>sign-artifacts</id>
-                        <phase>deploy</phase>
-                        <goals>
-                            <goal>sign</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
-            </plugin>
-
-            <!-- Docker image containing the warfile -->
-            <!-- Does not run by default but you can explicitly call dockerfile:build dockerfile:tag dockerfile:push -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${dockerfile-maven-plugin.version}</version>
-                <configuration>
-                    <repository>${dockerfile.repository}</repository>
-                    <tag>${dockerfile.tag}</tag>
-                    <buildArgs>
-                        <WAR_FILE>${dockerfile.warfile}</WAR_FILE>
-                    </buildArgs>
-                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-                </configuration>
-            </plugin>
-
-            <!-- use java 1.8 -->
+            <!-- define java version -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.8.1</version>
                 <configuration>
-                    <source>1.8</source>
-                    <target>1.8</target>
+                    <source>${java.version}</source>
+                    <target>${java.version}</target>
                     <compilerArguments>
                         <Xlint/>
                     </compilerArguments>
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-assembly-plugin</artifactId>
-                <version>3.2.0</version>
-            </plugin>
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-assembly-plugin</artifactId>-->
+<!--                <version>3.2.0</version>-->
+<!--            </plugin>-->
 
             <!-- create skinny jar -->
             <plugin>
@@ -177,7 +88,7 @@
                 <artifactId>maven-jar-plugin</artifactId>
                 <version>3.2.0</version>
                 <configuration>
-                    <finalName>vibe</finalName>
+                    <finalName>${jar.skinny}</finalName>
                     <archive>
                         <manifest>
                             <addClasspath>true</addClasspath>
@@ -231,12 +142,31 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
                             </transformers>
                             <!-- file name of shaded jar -->
-                            <finalName>vibe-with-dependencies</finalName>
+                            <finalName>${jar.fat}</finalName>
                             <!-- excludes all classes of dependencies that are not used (also excludes non-specified classes) -->
                             <!-- <minimizeJar>true</minimizeJar> -->
                         </configuration>
                     </execution>
                 </executions>
+            </plugin>
+
+            <!-- Generating Docker image -->
+            <!-- Does not run by default but you can explicitly call dockerfile:build dockerfile:tag dockerfile:push -->
+            <plugin>
+                <groupId>com.spotify</groupId>
+                <artifactId>dockerfile-maven-plugin</artifactId>
+                <version>1.4.10</version>
+                <configuration>
+                    <repository>registry.hub.docker.com/molgenis/vibe</repository>
+                    <tag>${project.version}</tag>
+                    <buildArgs>
+                        <jar_file>${jar.fat}.jar</jar_file>
+                        <vibe_tdb_archive>${vibe-tdb.archive}</vibe_tdb_archive>
+                        <vibe_tdb_download>${vibe-tdb.download}</vibe_tdb_download>
+                        <hpo_owl_download>${hpo-owl.download}</hpo_owl_download>
+                    </buildArgs>
+                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                </configuration>
             </plugin>
 
             <!-- Sets parameters for unit testing -->
@@ -247,6 +177,74 @@
                 <configuration>
                     <argLine>-Xmx1g</argLine>
                 </configuration>
+            </plugin>
+
+            <!-- JAva COde COverage -->
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.2</version>
+                <executions>
+                    <execution>
+                        <id>pre-unit-test</id>
+                        <goals>
+                            <goal>prepare-agent</goal>
+                        </goals>
+                    </execution>
+                    <execution>
+                        <id>post-unit-test</id>
+                        <phase>test</phase>
+                        <goals>
+                            <goal>report</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!-- deploy to sonatype nexus -->
+            <plugin>
+                <groupId>org.sonatype.plugins</groupId>
+                <artifactId>nexus-staging-maven-plugin</artifactId>
+                <version>1.6.8</version>
+                <extensions>true</extensions>
+                <configuration>
+                    <serverId>${sonatype.id}</serverId>
+                    <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                    <!-- closing the repo in the build fails miserably with a connection reset error -->
+                    <skipStagingRepositoryClose>true</skipStagingRepositoryClose>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.5.0.1254</version>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-release-plugin</artifactId>
+                <version>2.5.3</version>
+                <configuration>
+                    <scmCommentPrefix>[ci skip] [maven-release-plugin]${line.separator}</scmCommentPrefix>
+                </configuration>
+            </plugin>
+
+            <!-- sign artifacts -->
+            <plugin>
+                <!-- sign in a non-interactive way -->
+                <groupId>org.kohsuke</groupId>
+                <artifactId>pgp-maven-plugin</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>sign-artifacts</id>
+                        <phase>deploy</phase>
+                        <goals>
+                            <goal>sign</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
@@ -285,6 +283,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 
 </project>

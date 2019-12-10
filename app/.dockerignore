@@ -1,2 +1,3 @@
 target/
+!target/vibe-with-dependencies-*.jar
 src/test/

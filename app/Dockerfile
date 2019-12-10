@@ -1,19 +1,3 @@
-# Defines build image to use.
-FROM maven:3.6.3-jdk-11-slim AS build
-
-# Changes workdir.
-WORKDIR app
-
-# Copies pom file and builds all dependencies for offline use.
-COPY pom.xml .
-RUN mvn dependency:go-offline -B
-
-# Copies source and builds jar.
-COPY src/main/ src/main/
-RUN mvn -e -B clean package
-
-######## ######## ########
-
 # Final image for usage.
 FROM adoptopenjdk:11-jre-hotspot
 
@@ -21,19 +5,25 @@ FROM adoptopenjdk:11-jre-hotspot
 WORKDIR app
 
 # Downloads & prepares TDB.
-ARG vibe_tdb_archive=vibe-v2_0_0-tdb.tgz
-RUN curl -O -L https://molgenis.org/downloads/vibe/${vibe_tdb_archive} \
+ARG vibe_tdb_download
+ARG vibe_tdb_archive
+RUN curl -O -L ${vibe_tdb_download} \
 && tar -xzf ${vibe_tdb_archive} \
 && rm ${vibe_tdb_archive} \
 && mv ${vibe_tdb_archive%.tgz} TDB
 
 # Downloads hpo.owl file.
-RUN curl -O -L https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/v2019-11-08/hp.owl
+ARG hpo_owl_download
+RUN curl -O -L ${hpo_owl_download}
 
-# Retrieves jar to be used.
-COPY --from=build app/target/dependency-jars/ dependency-jars/
-COPY --from=build app/target/vibe.jar .
+# Retrieves jar file.
+ARG jar_file
+ADD target/${jar_file} .
+
+# Workaround for env variables & supporting custom arguments when running container.
+# https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
+RUN echo "java -jar ${jar_file} -t TDB/ -o output.tsv \$@" > run.sh
 
 # Runs java app.
-ENTRYPOINT ["java", "-jar", "/app/vibe.jar", "-t", "TDB/", "-o", "output.tsv"]
+ENTRYPOINT ["/bin/bash", "run.sh"]
 CMD ["--help"]
