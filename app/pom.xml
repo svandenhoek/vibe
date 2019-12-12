@@ -18,8 +18,11 @@
     </scm>
 
     <properties>
+        <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
-        <vibe-tdb.version>v2_0_0</vibe-tdb.version>
+        <vibe-tdb.version>2.0.0</vibe-tdb.version>
         <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tgz</vibe-tdb.archive>
         <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
 
@@ -37,11 +40,7 @@
         <!-- artifact publish properties -->
         <sonatype.id>sonatype-nexus-staging</sonatype.id>
 
-        <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
-        <!-- check -->
-        <dockerfile.warfile.version>${project.version}</dockerfile.warfile.version>
+        <!-- sonar configuration -->
         <sonar.host.url>https://sonarcloud.io</sonar.host.url>
         <sonar.organization>molgenis</sonar.organization>
         <sonar.github.repository>molgenis/vibe</sonar.github.repository>
@@ -75,12 +74,6 @@
                     </compilerArguments>
                 </configuration>
             </plugin>
-
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-assembly-plugin</artifactId>-->
-<!--                <version>3.2.0</version>-->
-<!--            </plugin>-->
 
             <!-- create skinny jar -->
             <plugin>
@@ -169,7 +162,7 @@
                 </configuration>
             </plugin>
 
-            <!-- Sets parameters for unit testing -->
+            <!-- sets parameters for unit testing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
@@ -177,6 +170,13 @@
                 <configuration>
                     <argLine>-Xmx1g</argLine>
                 </configuration>
+            </plugin>
+
+            <!-- integrates SonarQube -->
+            <plugin>
+                <groupId>org.sonarsource.scanner.maven</groupId>
+                <artifactId>sonar-maven-plugin</artifactId>
+                <version>3.5.0.1254</version>
             </plugin>
 
             <!-- JAva COde COverage -->
@@ -215,12 +215,7 @@
                 </configuration>
             </plugin>
 
-            <plugin>
-                <groupId>org.sonarsource.scanner.maven</groupId>
-                <artifactId>sonar-maven-plugin</artifactId>
-                <version>3.5.0.1254</version>
-            </plugin>
-
+            <!-- plugin for releasing -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -283,5 +278,4 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
 </project>
