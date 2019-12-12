@@ -34,6 +34,9 @@
         <jar.skinny>vibe-${project.version}</jar.skinny>
         <jar.fat>vibe-with-dependencies-${project.version}</jar.fat>
 
+        <!-- thin jar dependencies directory -->
+        <jar.skinny.dependency-dir>dependency-jars</jar.skinny.dependency-dir>
+
         <!-- defines java version of code -->
         <java.version>1.8</java.version>
 
@@ -86,7 +89,7 @@
                         <manifest>
                             <addClasspath>true</addClasspath>
                             <mainClass>org.molgenis.vibe.VibeApplication</mainClass>
-                            <classpathPrefix>dependency-jars/</classpathPrefix>
+                            <classpathPrefix>${jar.skinny.dependency-dir}</classpathPrefix>
                         </manifest>
                     </archive>
                 </configuration>
@@ -105,7 +108,7 @@
                             <goal>copy-dependencies</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${project.build.directory}/dependency-jars/</outputDirectory>
+                            <outputDirectory>${project.build.directory}/${jar.skinny.dependency-dir}/</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
@@ -159,6 +162,41 @@
                         <hpo_owl_download>${hpo-owl.download}</hpo_owl_download>
                     </buildArgs>
                     <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
+                </configuration>
+            </plugin>
+
+            <!-- checksum creation -->
+            <plugin>
+                <groupId>net.nicoulaj.maven.plugins</groupId>
+                <artifactId>checksum-maven-plugin</artifactId>
+                <version>1.8</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>files</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <fileSets>
+                        <fileSet>
+                            <directory>target</directory>
+                            <includes>
+                                <include>${jar.skinny}.jar</include>
+                                <include>${jar.fat}.jar</include>
+                                <!--<include>${jar.skinny.dependency-dir}/*</include>-->
+                            </includes>
+                        </fileSet>
+                    </fileSets>
+                    <algorithms>
+                        <!-- see: https://en.wikipedia.org/wiki/Secure_Hash_Algorithms -->
+                        <algorithm>MD5</algorithm>
+                        <algorithm>SHA-512</algorithm>
+                        <algorithm>SHA3-512</algorithm>
+                    </algorithms>
+                    <csvSummary>true</csvSummary> <!-- creates csv summary file with all checksums -->
+                    <individualFiles>true</individualFiles> <!-- individual file per checksum and per artifact -->
+                    <individualFilesOutputDirectory>checksums</individualFilesOutputDirectory> <!-- dir for individual files -->
                 </configuration>
             </plugin>
 
