@@ -3,11 +3,13 @@ package org.molgenis.vibe.io.options_digestion;
 import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.io.output.file.gene_prioritized.GenePrioritizedFileOutputWriterFactory;
-import org.molgenis.vibe.io.output.file.FileOutputWriter;
+import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
+import org.molgenis.vibe.io.output.target.FileOutputWriter;
+import org.molgenis.vibe.io.output.target.OutputWriter;
+import org.molgenis.vibe.io.output.target.StdoutOutputWriter;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -48,14 +50,14 @@ public abstract class OptionsParser {
     private Set<Phenotype> phenotypes = new HashSet<>();
 
     /**
-     * The path to write the output to.
+     * Defines the {@link OutputWriter} to be used.
      */
-    private Path outputFile;
+    private OutputWriter outputWriter;
 
     /**
-     * Defines the {@link FileOutputWriter} to be used.
+     * Defines the {@link PrioritizedOutputFormatWriter} to be used (currently for genes only).
      */
-    private GenePrioritizedFileOutputWriterFactory genePrioritizedFileOutputWriterFactory;
+    private GenePrioritizedOutputFormatWriterFactory genePrioritizedOutputFormatWriterFactory;
 
     /**
      * Defines the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever} to be used.
@@ -173,26 +175,45 @@ public abstract class OptionsParser {
         addPhenotype(new Phenotype(phenotype));
     }
 
-    public Path getOutputFile() {
-        return outputFile;
-    }
-    protected void setOutputFile(String outputFile) throws InvalidPathException, FileAlreadyExistsException {
-        setOutputFile(Paths.get(outputFile));
+    public OutputWriter getOutputWriter() {
+        return outputWriter;
     }
 
-    protected void setOutputFile(Path outputFile) throws FileAlreadyExistsException {
+    /**
+     * Wrapper for {@link #setFileOutputWriter(Path)}.
+     * @param outputFile the file path to write the output to
+     * @throws InvalidPathException if {@code outputFile} could not be converted to {@link Path}
+     * @throws FileAlreadyExistsException if file already exists
+     */
+    protected void setFileOutputWriter(String outputFile) throws InvalidPathException, FileAlreadyExistsException {
+        setFileOutputWriter(Paths.get(outputFile));
+    }
+
+    /**
+     * Sets the {@link OutputWriter} to a {@link FileOutputWriter}. Overrides any previously set {@link OutputWriter}.
+     * @param outputFile the file path to write the output to
+     * @throws FileAlreadyExistsException if file already exists
+     */
+    protected void setFileOutputWriter(Path outputFile) throws FileAlreadyExistsException {
         if(checkIfPathIsReadableFile(outputFile)) {
             throw new FileAlreadyExistsException(outputFile.getFileName() + " already exists.");
         }
-        this.outputFile = outputFile;
+        this.outputWriter = new FileOutputWriter(outputFile);
     }
 
-    public GenePrioritizedFileOutputWriterFactory getGenePrioritizedFileOutputWriterFactory() {
-        return genePrioritizedFileOutputWriterFactory;
+    /**
+     * Sets the {@link OutputWriter} to an {@link StdoutOutputWriter}. Overrides any previously set {@link OutputWriter}.
+     */
+    protected void setStdoutOutputWriter() {
+        this.outputWriter = new StdoutOutputWriter();
     }
 
-    protected void setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory genePrioritizedFileOutputWriterFactory) {
-        this.genePrioritizedFileOutputWriterFactory = genePrioritizedFileOutputWriterFactory;
+    public GenePrioritizedOutputFormatWriterFactory getGenePrioritizedOutputFormatWriterFactory() {
+        return genePrioritizedOutputFormatWriterFactory;
+    }
+
+    protected void setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory genePrioritizedOutputFormatWriterFactory) {
+        this.genePrioritizedOutputFormatWriterFactory = genePrioritizedOutputFormatWriterFactory;
     }
 
     public PhenotypesRetrieverFactory getPhenotypesRetrieverFactory() {
@@ -241,11 +262,11 @@ public abstract class OptionsParser {
                 return false;
             }
             // Check if an output file was given.
-            if (outputFile == null) {
+            if (outputWriter == null) {
                 return false;
             }
-            // Checks if an output factory was given.
-            if (genePrioritizedFileOutputWriterFactory == null) {
+            // Checks if a gene prioritized output format factory was given.
+            if (genePrioritizedOutputFormatWriterFactory == null) {
                 return false;
             }
             // Checks whether a gene prioritizer was selected.

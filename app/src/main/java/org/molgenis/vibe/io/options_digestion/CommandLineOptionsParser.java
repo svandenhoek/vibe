@@ -6,8 +6,7 @@ import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.io.output.file.gene_prioritized.GenePrioritizedFileOutputWriterFactory;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
+import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;
@@ -243,20 +242,22 @@ public class CommandLineOptionsParser extends OptionsParser {
             missing.add("-p");
         }
 
-        // REQUIRED: Output file.
+        // If given, sets output file. Otherwise writes to stdout.
         if(commandLine.hasOption("o")) {
             try {
-                setOutputFile(commandLine.getOptionValue("o"));
+                setFileOutputWriter(commandLine.getOptionValue("o"));
             } catch(InvalidPathException | FileAlreadyExistsException e) {
                 errors.add(e.getMessage());
             }
-            if(commandLine.hasOption("l")) {
-                setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory.SIMPLE);
-            } else {
-                setGenePrioritizedFileOutputWriterFactory(GenePrioritizedFileOutputWriterFactory.REGULAR);
-            }
         } else {
-            missing.add("-o");
+            setStdoutOutputWriter();
+        }
+
+        // Defines output format.
+        if(commandLine.hasOption("l")) {
+            setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.SIMPLE);
+        } else {
+            setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.REGULAR);
         }
 
         // Processes missing and errors and throws an Exception if any errors were present.
