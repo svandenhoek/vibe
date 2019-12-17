@@ -21,6 +21,22 @@
         <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
+        <!-- authentication for release scm plugin -->
+        <project.scm.id>github</project.scm.id>
+
+        <!-- defines java version of code -->
+        <java.version>1.8</java.version>
+
+        <!-- artifact publish properties -->
+        <sonatype.id>sonatype-nexus-staging</sonatype.id>
+
+        <!-- sonar configuration -->
+        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
+        <sonar.organization>molgenis</sonar.organization>
+        <sonar.github.repository>molgenis/vibe</sonar.github.repository>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
+        <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
+
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
         <vibe-tdb.version>2.0.0</vibe-tdb.version>
         <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tgz</vibe-tdb.archive>
@@ -36,19 +52,6 @@
 
         <!-- thin jar dependencies directory -->
         <jar.skinny.dependency-dir>dependency-jars</jar.skinny.dependency-dir>
-
-        <!-- defines java version of code -->
-        <java.version>1.8</java.version>
-
-        <!-- artifact publish properties -->
-        <sonatype.id>sonatype-nexus-staging</sonatype.id>
-
-        <!-- sonar configuration -->
-        <sonar.host.url>https://sonarcloud.io</sonar.host.url>
-        <sonar.organization>molgenis</sonar.organization>
-        <sonar.github.repository>molgenis/vibe</sonar.github.repository>
-        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-        <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
     </properties>
 
     <distributionManagement>
