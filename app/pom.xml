@@ -212,6 +212,10 @@
                 <version>3.0.0-M3</version>
                 <configuration>
                     <argLine>-Xmx1g</argLine>
+                    <suiteXmlFiles>
+                        <suiteXmlFile>testng.xml</suiteXmlFile>
+                    </suiteXmlFiles>
+                    <groups>ValidationTests</groups>
                 </configuration>
             </plugin>
 
