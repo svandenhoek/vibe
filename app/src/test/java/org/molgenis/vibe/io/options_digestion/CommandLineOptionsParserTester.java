@@ -130,12 +130,6 @@ public class CommandLineOptionsParserTester {
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingOutputFile() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO);
-        testWithErrorPrint(args);
-    }
-
-    @Test(expectedExceptions = IOException.class)
     public void invalidTdbDir() throws IOException, ParseException {
         String[] args = stringArraysMerger(INVALID_TDB_DIR, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
