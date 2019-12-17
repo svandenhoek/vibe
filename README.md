@@ -29,7 +29,7 @@ Instructions regarding building/testing the app can be found [here](./app/README
 
 ### Usage
 
-`java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] -o <FILE> [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...`
+`java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] [-o <FILE>] [-s <NAME>] [-l] -p <HPO ID> [-p <HPO ID>]...`
 
 ### Examples
 
