@@ -33,13 +33,8 @@ PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET
 CONSTRUCT {
 	?gene rdf:type ncit:C16612 ;
 	dcterms:identifier ?geneId ;
-	sio:SIO_000216 ?dsi, ?dpi .
-
-	?dsi rdf:type sio:SIO_001351 ;
-	sio:SIO_000300 ?dsiValue .
-	
-	?dpi rdf:type sio:SIO_001352 ;
-	sio:SIO_000300 ?dpiValue .
+	sio:SIO_001351 ?dsiValue ;
+	sio:SIO_001352 ?dpiValue .
 }
 WHERE {
 	?gene dcterms:identifier ?geneId ;
