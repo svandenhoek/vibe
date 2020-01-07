@@ -11,16 +11,17 @@
 errcho() { echo "$@" 1>&2; }
 
 # Describes usage.
-readonly USAGE="Usage: GenerateDatabase.sh [-h] -1|-2|-3|-4
+readonly USAGE="Usage: GenerateDatabase.sh [-h] [-1] [-2] [-3] [-4]
 Description: Generates database for vibe.
-The process is split into multiple phases which can be chosen as starting point.
+The process is split into multiple phases which can be chosen individually.
+If no phase is given, simply runs all phases one after another.
 
 Arguments:
 -h	--help		Shows this help message.
--1				Starts from downloading sources.
--2				Starts from initial TDB creation.
--3				Starts from optimized TTL file creation.
--4				Starts from optimized TDB creation.
+-1				Download sources.
+-2				Create initial TDB.
+-3				Create optimized TTL files.
+-4				Create optimized TDB.
 
 IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
             See https://jena.apache.org/documentation/tools/#setting-up-your-environment for more information.
@@ -43,57 +44,35 @@ readonly FINAL_TDB_DIR=vibe-${VIBE_VERSION}-tdb
 
 main() {
 	digestCommandLine $@
-	clearDirectories
+	
+	if [[ ${doDownload} == true ]]
+	then
+		prepareData
+	fi
 
-	if (( ${startPhase} == 1))
+    if [[ ${doOriginalTdb} == true ]]
     then
-        prepareData
-    fi
+    	createInitialTdb
+	fi
 
-    if (( ${startPhase} <= 2))
+    if [[ ${doOptimizedTtl} == true ]]
     then
-        createInitialTdb
-    fi
+    	createOptimizedTtlFiles
+	fi
 
-    if (( ${startPhase} <= 3))
+    if [[ ${doOptimizedTdb} == true ]]
     then
-        createOptimizedTtlFiles
-    fi
-
-    if (( ${startPhase} <= 4))
-    then
-        createOptimizedTdb
-    fi
-
-    copyLicensesToDir
-}
-
-clearDirectories() {
-	# Done separately so that first all necessary directories are removed before anything is actually done.
-	if (( ${startPhase} == 1))
-    then
-    	rm -r ${SOURCES_DIR}
-    fi
-
-    if (( ${startPhase} <= 2))
-    then
-    	rm -r ${INITIAL_TDB_DIR}
-    fi
-
-    if (( ${startPhase} <= 3))
-    then
-    	rm -r ${TTL_DIR}
-    fi
-
-    if (( ${startPhase} <= 4))
-    then
-    	rm -r ${FINAL_TDB_DIR}
-    fi
+    	createOptimizedTdb
+    	copyLicensesToDir
+	fi
 }
 
 digestCommandLine() {
-	# Checks if any arguments were given.
-	if [ $# -eq 0 ]; then errcho "No arguments were given.\n\n$USAGE"; exit 1; fi
+	# Sets defaults for phases.
+	doDownload=false
+	doOriginalTdb=false
+	doOptimizedTtl=false
+	doOptimizedTdb=false
 
 	#Digests the command line arguments.
 	while [[ $# -gt 0 ]]
@@ -101,31 +80,23 @@ digestCommandLine() {
 		key="$1"
 		case $key in
 			-1)
-			# Gives error message if startPhase is already set.
-			if [[ ${startPhase+isset} == isset ]]; then errcho "Only a single argument (-1, -2, -3 or -4) is allowed.\n\n$USAGE"; exit 1; fi
-			readonly startPhase=1
+			doDownload=true
 			shift # argument
 			;;
 			-2)
-			# Gives error message if startPhase is already set.
-			if [[ ${startPhase+isset} == isset ]]; then errcho "Only a single argument (-1, -2, -3 or -4) is allowed.\n\n$USAGE"; exit 1; fi
-			readonly startPhase=2
+			doOriginalTdb=true
 			shift # argument
 			;;
 			-3)
-			# Gives error message if startPhase is already set.
-			if [[ ${startPhase+isset} == isset ]]; then errcho "Only a single argument (-1, -2, -3 or -4) is allowed.\n\n$USAGE"; exit 1; fi
-			readonly startPhase=3
+			doOptimizedTtl=true
 			shift # argument
 			;;
 			-4)
-			# Gives error message if startPhase is already set.
-			if [[ ${startPhase+isset} == isset ]]; then errcho "Only a single argument (-1, -2, -3 or -4) is allowed.\n\n$USAGE"; exit 1; fi
-			readonly startPhase=4
+			doOptimizedTdb=true
 			shift # argument
 			;;
 			-h|--help)
-			local help=TRUE
+			local help=true
 			shift # argument
 			;;
 			*)    # unknown option
@@ -135,10 +106,61 @@ digestCommandLine() {
 	done
 
 	# Checks if usage is requested.
-	if [[ ${help} == TRUE ]]; then echo "$USAGE"; exit 0; fi
+	if [[ ${help} == true ]]; then echo "$USAGE"; exit 0; fi
 
-	# Checks if variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
-	if [[ ! ${startPhase+isset} == isset ]]; then errcho "Missing required argument: -1, -2, -3 or -4."; exit 1; fi
+	# If no phase is set, defaults all to true.
+	if [[ ${doDownload} == false ]] && [[ ${doOriginalTdb} == false ]] && [[ ${doOptimizedTtl} == false ]] && [[ ${doOptimizedTdb} == false ]]
+	then
+		doDownload=true
+		doOriginalTdb=true
+		doOptimizedTtl=true
+		doOptimizedTdb=true
+	fi
+
+	# Make phase variables readonly.
+	readonly doDownload=${doDownload}
+	readonly doOriginalTdb=${doOriginalTdb}
+	readonly doOptimizedTtl=${doOptimizedTtl}
+	readonly doOptimizedTdb=${doOptimizedTdb}
+
+	# Prints for each phase whether it will be run.
+	echo "### Selected phases -> download:${doDownload}, initial TDB:${doOriginalTdb}, optimized TTL:${doOptimizedTtl}, optimized TDB:${doOptimizedTdb}"
+
+	# Check whether directories might already exist.
+	validateDirectories
+}
+
+validateDirectories() {
+	echo "### Checking whether directories for selected phases already exist."
+	# Done separately (instead of integrated into main) so that first all necessary directories are
+	# checked whether they already exist before anything is actually done.
+	
+	# Boolean for when a directory which should be created already exists. 
+	local directoryExists=false 
+
+	# Checks directories for the different phases.
+	if [[ ${doDownload} == true ]]
+    then
+		if [ -d "$SOURCES_DIR" ]; then directoryExists=true; errcho "${SOURCES_DIR} already exists."; fi
+    fi
+
+    if [[ ${doOriginalTdb} == true ]]
+    then
+		if [ -d "$INITIAL_TDB_DIR" ]; then directoryExists=true; errcho "${INITIAL_TDB_DIR} already exists."; fi
+    fi
+
+    if [[ ${doOptimizedTtl} == true ]]
+    then
+		if [ -d "$TTL_DIR" ]; then directoryExists=true; errcho "${TTL_DIR} already exists."; fi
+    fi
+
+    if [[ ${doOptimizedTdb} == true ]]
+    then
+		if [ -d "$FINAL_TDB_DIR" ]; then directoryExists=true; errcho "${FINAL_TDB_DIR} already exists."; fi
+    fi
+
+	# If a directory already exists, exits script.
+	if [[ ${directoryExists} == true ]]; then errcho "Exiting."; exit 1; fi
 }
 
 prepareData() {
@@ -165,7 +187,7 @@ validateDownloads() {
 	shasum -a 256 -c ${BASE_PATH}sources_checksums.txt
 	if (($? != 0))
 	then
-		errcho "Checksum failed. Exiting."
+		errcho "Checksum for downloaded sources failed. Exiting."
 		exit 1
 	fi
 }
