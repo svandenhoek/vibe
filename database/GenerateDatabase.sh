@@ -63,7 +63,7 @@ main() {
     if [[ ${doOptimizedTdb} == true ]]
     then
     	createOptimizedTdb
-    	copyLicensesToDir
+    	copyLicensesToTdbDir
 	fi
 }
 
