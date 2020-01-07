@@ -226,12 +226,12 @@ createOptimizedTtlFiles() {
 
 createOptimizedTdb() {
 	echo "######## ######## ######## Creating optimized TDB ######## ######## ########"
-	tdbloader2 --loc ${FINAL_TDB_DIR} ${TTL_DIR}*.ttl ${SOURCES_DIR}sio-release.owl
+	tdbloader2 --loc ${FINAL_TDB_DIR} ${TTL_DIR}/*.ttl ${SOURCES_DIR}/sio-release.owl
 }
 
 copyLicensesToTdbDir() {
 	echo "######## ######## ######## Adding licenses file to optimized TDB ######## ######## ########"
-	cp ${BASE_PATH}LICENSES.md ${FINAL_TDB_DIR}
+	cp ${BASE_PATH}/LICENSES.md ${FINAL_TDB_DIR}
 }
 
 main $@
