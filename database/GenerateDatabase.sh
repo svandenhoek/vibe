@@ -63,7 +63,7 @@ main() {
     if [[ ${doOptimizedTdb} == true ]]
     then
     	createOptimizedTdb
-    	copyLicensesToDir
+    	copyLicensesToTdbDir
 	fi
 }
 
@@ -124,14 +124,15 @@ digestCommandLine() {
 	readonly doOptimizedTdb=${doOptimizedTdb}
 
 	# Prints for each phase whether it will be run.
-	echo "### Selected phases -> download:${doDownload}, initial TDB:${doOriginalTdb}, optimized TTL:${doOptimizedTtl}, optimized TDB:${doOptimizedTdb}"
+	echo "######## ######## ######## Selected phases ######## ######## ########"
+	echo "download:${doDownload}\ninitial TDB:${doOriginalTdb}\noptimized TTL:${doOptimizedTtl}\noptimized TDB:${doOptimizedTdb}"
 
 	# Check whether directories might already exist.
 	validateDirectories
 }
 
 validateDirectories() {
-	echo "### Checking whether directories for selected phases already exist."
+	echo "######## ######## ######## Checking existence phase-specific directories ######## ######## ########"
 	# Done separately (instead of integrated into main) so that first all necessary directories are
 	# checked whether they already exist before anything is actually done.
 	
@@ -173,7 +174,7 @@ prepareData() {
 }
 
 DownloadData() {
-	echo "### Downloading files."
+	echo "######## ######## ######## Downloading files ######## ######## ########"
 	curl -O 'http://rdf.disgenet.org/download/v6.0.0/disgenetv6.0-rdf-v6.0.0-dump.tgz'
 	curl -O 'http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz'
 	curl -O 'http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz'
@@ -183,7 +184,7 @@ DownloadData() {
 }
 
 validateDownloads() {
-	echo "### Validating downloaded files."
+	echo "######## ######## ######## Validating downloaded files ######## ######## ######## "
 	shasum -a 256 -c ${BASE_PATH}sources_checksums.txt
 	if (($? != 0))
 	then
@@ -193,7 +194,7 @@ validateDownloads() {
 }
 
 unpackDownloadedArchives() {
-	echo "### Unpacking archives."
+	echo "######## ######## ######## Unpacking archives ######## ######## ########"
 	mkdir disgenet_v6
 	mkdir disgenet_v5
 	tar -xvzf disgenetv6.0-rdf-v6.0.0-dump.tgz -C disgenet_v6
@@ -203,12 +204,12 @@ unpackDownloadedArchives() {
 }
 
 createInitialTdb() {
-	echo "### Creating initial TDB."
+	echo "######## ######## ######## Creating initial TDB ######## ######## ########"
 	tdbloader2 --loc ${INITIAL_TDB_DIR} ${SOURCES_DIR}/disgenet_v6/*.ttl ${SOURCES_DIR}/disgenet_v5/*.ttl ${SOURCES_DIR}/sio-release.owl ${SOURCES_DIR}/owlapi.xml
 }
 
 createOptimizedTtlFiles() {
-	echo "### Creating optimized TTL files."
+	echo "######## ######## ######## Creating optimized TTL files ######## ######## ########"
 	mkdir ${TTL_DIR}
 
 	echo "Generating: hpo.ttl"
@@ -224,13 +225,13 @@ createOptimizedTtlFiles() {
 }
 
 createOptimizedTdb() {
-	echo "### Creating optimized TDB."
-	tdbloader2 --loc ${FINAL_TDB_DIR} ${TTL_DIR}*.ttl ${SOURCES_DIR}sio-release.owl
+	echo "######## ######## ######## Creating optimized TDB ######## ######## ########"
+	tdbloader2 --loc ${FINAL_TDB_DIR} ${TTL_DIR}/*.ttl ${SOURCES_DIR}/sio-release.owl
 }
 
 copyLicensesToTdbDir() {
-	echo "### Adding licenses file to optimized TDB."
-	cp ${BASE_PATH}LICENSES.md ${FINAL_TDB_DIR}
+	echo "######## ######## ######## Adding licenses file to optimized TDB ######## ######## ########"
+	cp ${BASE_PATH}/LICENSES.md ${FINAL_TDB_DIR}
 }
 
 main $@
