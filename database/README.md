@@ -20,6 +20,12 @@ In case adjustments are made to the TDB creation process, a new TDB can be creat
 
 Currently there isn't a bat script that offers automated TDB creation. Please use the already created TDB as available on [the molgenis download server][tdb_download].
 
+## F.A.Q.
+
+**Q:** Why do I get an `org.apache.jena.atlas.RuntimeIOException: java.nio.charset.MalformedInputException: Input length = 1` error when trying to create a TDB from the generated `.ttl` files?
+
+**A:** This might be caused by the generated `.ttl` files having an incorrect file encoding. Please make sure the generated `.ttl` files have the encoding `UTF-8`. If this is not the case, manually change it to  `UTF_8`.
+
 [jena_download]: https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [tdb_download]: http://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip
