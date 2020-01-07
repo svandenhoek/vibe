@@ -43,12 +43,6 @@ public class Gene extends BiologicalEntity {
 //        return symbol;
 //    }
 
-    public Double getDiseaseSpecificityIndex() {
-        return diseaseSpecificityIndex;
-    }
-
-    public Double getDiseasePleiotropyIndex() {
-        return diseasePleiotropyIndex;
     }
 
     @Override
@@ -79,16 +73,6 @@ public class Gene extends BiologicalEntity {
         super(uri);
     }
 
-    /**
-     * @param uri {@link BiologicalEntity#uri}
-     * @param dsi diseaseSpecificityIndex
-     * @param dpi diseasePleiotropyIndex
-     * @throws InvalidStringFormatException
-     */
-    public Gene(URI uri, Double dsi, Double dpi) throws InvalidStringFormatException {
-        super(uri);
-        this.diseaseSpecificityIndex = requireNonNull(dsi);
-        this.diseasePleiotropyIndex = requireNonNull(dpi);
     }
 
     @Override
@@ -103,8 +87,6 @@ public class Gene extends BiologicalEntity {
     public String toString() {
         return "Gene{" +
 //                "symbol='" + symbol + '\'' +
-                ", diseaseSpecificityIndex=" + diseaseSpecificityIndex +
-                ", diseasePleiotropyIndex=" + diseasePleiotropyIndex +
                 "} " + super.toString();
     }
 }
