@@ -21,7 +21,7 @@ public class Gene extends BiologicalEntity {
     /**
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
-//    private String symbol; // Currently unused.
+    private GeneSymbol symbol;
 
     /**
      * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
@@ -39,10 +39,8 @@ public class Gene extends BiologicalEntity {
      */
     private Double diseasePleiotropyIndex;
 
-//    public String getSymbol() {
-//        return symbol;
-//    }
-
+    public GeneSymbol getSymbol() {
+        return symbol;
     }
 
     @Override
@@ -65,19 +63,14 @@ public class Gene extends BiologicalEntity {
         return URI_PREFIX;
     }
 
-    public Gene(String id) {
+    public Gene(String id, GeneSymbol symbol) {
         super(id);
+        this.symbol = requireNonNull(symbol);
     }
 
-    public Gene(URI uri) {
+    public Gene(URI uri, GeneSymbol symbol) {
         super(uri);
-    }
-
-    }
-
-    @Override
-    protected void generateCompareValue() {
-        setCompareValue(Integer.parseInt(getId()));
+        this.symbol = requireNonNull(symbol);
     }
 
     /**
@@ -86,7 +79,7 @@ public class Gene extends BiologicalEntity {
     @Override
     public String toString() {
         return "Gene{" +
-//                "symbol='" + symbol + '\'' +
+                "symbol='" + symbol + '\'' +
                 "} " + super.toString();
     }
 }

@@ -83,13 +83,13 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Prioritized
 
     public void generateOutput() throws IOException {
         // Writes header.
-        getOutputWriter().write("gene (NCBI)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
+        getOutputWriter().write("gene (NCBI)" + primarySeparator + "gene symbol (HGNC)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
         getOutputWriter().writeNewLine();
 
         // Goes through all ordered genes.
         for(Gene gene : getPrioritizer().getPriority()) {
             // Writes gene symbol to file.
-            getOutputWriter().write(gene.getId() + primarySeparator);
+            getOutputWriter().write(gene.getId() + primarySeparator + gene.getSymbol().getId() + primarySeparator);
 
             // The gene-disease combinations for this gene.
             List<GeneDiseaseCombination> geneDiseaseCombinations = collection.getByGeneOrderedByGdaScore(gene);

@@ -24,6 +24,7 @@ PREFIX umls: <http://linkedlifedata.com/resource/umls/id/> # DisGeNET
 PREFIX ncbigene: <http://identifiers.org/ncbigene/> # DisGeNET
 PREFIX pda: <http://rdf.disgenet.org/resource/pda/> # DisGeNET
 PREFIX gda: <http://rdf.disgenet.org/resource/gda/> # DisGeNET
+PREFIX hgnc: <http://identifiers.org/hgnc.symbol/> # DisGeNET
 PREFIX ordo: <http://www.orpha.net/ORDO/> # DisGeNET / Orphanet
 PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet
 

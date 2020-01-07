@@ -48,11 +48,6 @@ public class Disease extends BiologicalEntity {
     }
 
     @Override
-    protected void generateCompareValue() {
-        setCompareValue(Integer.parseInt(getId().substring(1)));
-    }
-
-    @Override
     public String toString() {
         return "Disease{} " + super.toString();
     }

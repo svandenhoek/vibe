@@ -52,11 +52,11 @@ public class GenesForPhenotypeRetrieverTester {
         };
 
         Gene[] genes = new Gene[]{
-                new Gene("ncbigene:479"),
-                new Gene("ncbigene:56172"),
-                new Gene("ncbigene:286"),
-                new Gene("ncbigene:2697"),
-                new Gene("ncbigene:29123"),
+                new Gene("ncbigene:479", new GeneSymbol("hgnc:ATP12A")),
+                new Gene("ncbigene:56172", new GeneSymbol("hgnc:ANKH")),
+                new Gene("ncbigene:286", new GeneSymbol("hgnc:ANK1")),
+                new Gene("ncbigene:2697", new GeneSymbol("hgnc:GJA1")),
+                new Gene("ncbigene:29123", new GeneSymbol("hgnc:ANKRD11")),
         };
 
         GeneDiseaseCombination[] geneDiseaseCombinations = new GeneDiseaseCombination[]{
