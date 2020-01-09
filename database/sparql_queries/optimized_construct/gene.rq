@@ -33,19 +33,12 @@ PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET
 CONSTRUCT {
 	?gene rdf:type ncit:C16612 ;
 	dcterms:identifier ?geneId ;
-	sio:SIO_000205 ?symbol ; # "is represented by"
-	sio:SIO_001351 ?dsiValue ;
-	sio:SIO_001352 ?dpiValue .
+	sio:SIO_000205 ?symbol . # "is represented by"
 }
 WHERE {
 	?gene dcterms:identifier ?geneId ;
 	sio:SIO_000205 ?symbol;
-	sio:SIO_000216 ?dsi, ?dpi .
-	OPTIONAL { ?dsi sio:SIO_000300 ?dsiValue . } # some ncbigene's are missing this score
-	OPTIONAL { ?dpi sio:SIO_000300 ?dpiValue . } # some ncbigene's are missing this score
 
-	FILTER EXISTS {?gene rdf:type ncit:C16612}
-	FILTER EXISTS {?symbol rdf:type ncit:C43568}
-	FILTER EXISTS {?dsi rdf:type sio:SIO_001351}
-	FILTER EXISTS {?dpi rdf:type sio:SIO_001352}
+	FILTER EXISTS { ?gene rdf:type ncit:C16612 }
+	FILTER EXISTS { ?symbol rdf:type ncit:C43568 }
 }
