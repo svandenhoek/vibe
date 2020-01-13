@@ -193,12 +193,13 @@ prepareData() {
 }
 
 DownloadData() {
+    # Links to specific versions instead of latest. If changed, validate if licenses still are correct (and adjust LICENSES.md if needed).
     echo "######## ######## ######## Downloading files ######## ######## ########"
     curl -O 'http://rdf.disgenet.org/download/v6.0.0/disgenetv6.0-rdf-v6.0.0-dump.tgz'
     curl -O 'http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz'
     curl -O 'http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz'
     curl -O 'http://rdf.disgenet.org/download/v5.0.0/void.ttl.tar.gz'
-    curl -O 'https://raw.githubusercontent.com/MaastrichtU-IDS/semanticscience/e2cae5ef1737a182c6ca8b451f35d689171c2c83/ontology/sio/release/sio-release.owl'
+    curl -O 'https://raw.githubusercontent.com/MaastrichtU-IDS/semanticscience/e8231fe010279bec32423c74c9a8b8d685c56a12/ontology/sio/release/sio-release.owl'
     curl -o owlapi.xml 'http://data.bioontology.org/ontologies/HOOM/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf'
 }
 
