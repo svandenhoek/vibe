@@ -74,11 +74,11 @@ public class GenesForPhenotypeRetrieverTester {
         };
 
         Source[] sources = new Source[] {
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "BeFree 2017 Dataset Distribution", Source.Level.LITERATURE),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "BeFree 2018 Dataset Distribution", Source.Level.LITERATURE),
                 new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"), "Orphanet 2017 Dataset Distribution", Source.Level.CURATED),
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CLINVAR"), "ClinVar 2017 Dataset Distribution", Source.Level.CURATED),
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/UNIPROT"), "UniProt 2017 Dataset Distribution", Source.Level.CURATED),
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CTD_human"), "CTD_human 2017 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CLINVAR"), "ClinVar 2018 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/UNIPROT"), "UniProt 2018 Dataset Distribution", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CTD_human"), "CTD_human 2018 Dataset Distribution", Source.Level.CURATED),
                 new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/HPO"), "HPO", Source.Level.CURATED),
         };
 
