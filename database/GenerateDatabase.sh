@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 
 #########################################################################
-#Name:     GenerateDatabase.sh                                          #
-#Function: Generates a TDB for usage with vibe.                         #
+# Name:     GenerateDatabase.sh                                         #
+# Function: Generates database for vibe.                                #
 #                                                                       #
-#Usage:    GenerateDatabase.sh                                          #
+# Usage:    see USAGE variable below or use the -h option               #
 #########################################################################
 
 # Defines error echo.
