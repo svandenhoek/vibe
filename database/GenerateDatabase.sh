@@ -14,7 +14,7 @@ errcho() { echo "$@" 1>&2; }
 readonly USAGE="Usage: GenerateDatabase.sh [-h] [-1] [-2] [-3] [-4]
 Description: Generates database for vibe.
 The process is split into multiple phases which can be chosen individually.
-If no phase is given, simply runs all phases one after another.
+If no phase is given, runs phase 1-4 one after another.
 
 Arguments:
 -h	--help		Shows this help message.
@@ -22,6 +22,7 @@ Arguments:
 -2				Create initial TDB.
 -3				Create optimized TTL files.
 -4				Create optimized TDB.
+-5				Create optimized TDB archive.
 
 IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
             See https://jena.apache.org/documentation/tools/#setting-up-your-environment for more information.
@@ -41,6 +42,7 @@ readonly SOURCES_DIR=vibe-${VIBE_VERSION}-sources
 readonly INITIAL_TDB_DIR=vibe-${VIBE_VERSION}-sources-tdb
 readonly TTL_DIR=vibe-${VIBE_VERSION}-ttl
 readonly FINAL_TDB_DIR=vibe-${VIBE_VERSION}-tdb
+readonly FINAL_TDB_ARCHIVE=${FINAL_TDB_DIR}.tar.gz
 
 main() {
 	digestCommandLine $@
@@ -65,6 +67,11 @@ main() {
     	createOptimizedTdb
     	copyLicensesToTdbDir
 	fi
+
+	if [[ ${doTdbArchive} == true ]]
+    then
+    	createArchive
+	fi
 }
 
 digestCommandLine() {
@@ -73,6 +80,7 @@ digestCommandLine() {
 	doOriginalTdb=false
 	doOptimizedTtl=false
 	doOptimizedTdb=false
+	doTdbArchive=false
 
 	#Digests the command line arguments.
 	while [[ $# -gt 0 ]]
@@ -95,6 +103,10 @@ digestCommandLine() {
 			doOptimizedTdb=true
 			shift # argument
 			;;
+			-5)
+			doTdbArchive=true
+			shift # argument
+			;;
 			-h|--help)
 			local help=true
 			shift # argument
@@ -109,12 +121,13 @@ digestCommandLine() {
 	if [[ ${help} == true ]]; then echo "$USAGE"; exit 0; fi
 
 	# If no phase is set, defaults all to true.
-	if [[ ${doDownload} == false ]] && [[ ${doOriginalTdb} == false ]] && [[ ${doOptimizedTtl} == false ]] && [[ ${doOptimizedTdb} == false ]]
+	if [[ ${doDownload} == false ]] && [[ ${doOriginalTdb} == false ]] && [[ ${doOptimizedTtl} == false ]] && [[ ${doOptimizedTdb} == false ]] && [[ ${doTdbArchive} == false ]]
 	then
 		doDownload=true
 		doOriginalTdb=true
 		doOptimizedTtl=true
 		doOptimizedTdb=true
+		# doTdbArchive stays false
 	fi
 
 	# Make phase variables readonly.
@@ -122,10 +135,11 @@ digestCommandLine() {
 	readonly doOriginalTdb=${doOriginalTdb}
 	readonly doOptimizedTtl=${doOptimizedTtl}
 	readonly doOptimizedTdb=${doOptimizedTdb}
+	readonly doTdbArchive=${doTdbArchive}
 
 	# Prints for each phase whether it will be run.
 	echo "######## ######## ######## Selected phases ######## ######## ########"
-	echo "download:${doDownload}\ninitial TDB:${doOriginalTdb}\noptimized TTL:${doOptimizedTtl}\noptimized TDB:${doOptimizedTdb}"
+	echo "download:${doDownload}\ninitial TDB:${doOriginalTdb}\noptimized TTL:${doOptimizedTtl}\noptimized TDB:${doOptimizedTdb}\narchive:${doTdbArchive}"
 
 	# Check whether directories might already exist.
 	validateDirectories
@@ -158,6 +172,11 @@ validateDirectories() {
     if [[ ${doOptimizedTdb} == true ]]
     then
 		if [ -d "$FINAL_TDB_DIR" ]; then directoryExists=true; errcho "${FINAL_TDB_DIR} already exists."; fi
+    fi
+
+	if [[ ${doTdbArchive} == true ]]
+    then
+		if [ -d "$FINAL_TDB_ARCHIVE" ]; then directoryExists=true; errcho "${FINAL_TDB_ARCHIVE} already exists."; fi
     fi
 
 	# If a directory already exists, exits script.
@@ -232,6 +251,11 @@ createOptimizedTdb() {
 copyLicensesToTdbDir() {
 	echo "######## ######## ######## Adding licenses file to optimized TDB ######## ######## ########"
 	cp ${BASE_PATH}/LICENSES.md ${FINAL_TDB_DIR}
+}
+
+createArchive() {
+	echo "######## ######## ######## Creating archive from optimized TDB ######## ######## ########"
+	tar -czvf ${FINAL_TDB_ARCHIVE} ${FINAL_TDB_DIR}
 }
 
 main $@
