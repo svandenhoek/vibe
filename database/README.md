@@ -1,39 +1,74 @@
 # Database creation
 
-VIBE needs an optimized TDB to run. To create this, several steps are needed, as explained below. **Note that the initial TDB should not be used in combination with VIBE, but only the optimized one!** This is because certain information is left out in the optimized TDB to reduce the database size. Using VIBE with the initial TDB could result in unusual results or possibly even errors!
+VIBE needs an optimized TDB to run. While a downloadable version is available (see [here](../README.md#quickstart)), it is possible to generate an archive as well. To do this, go to the directory in which the TDB should be created and run the following command:
+
+```bash
+/path/to/vibe/database/GenerateDatabase.sh
+```
+
+Do **NOT** move the bash script from it's original position, as it uses the `pom.xml` file from the `app` directory for adding the version to the TDB which was used to create it.
+
+The script consists of different phases which are ran one after another. It is also possible to run a selection of the phases. Please view the `-h` option for more information about this.
+
+**Note that the initial TDB should not be used in combination with VIBE, but only the optimized one!** This is because certain information is left out in the optimized TDB to reduce the database size. Using VIBE with the initial TDB could result in unusual results or possibly even errors!
 
 ## Requirements
 
 - Apache Jena ([download][jena_download] and [configure][jena_configure])
 
-## Data
+## Windows users
 
-- [DisGeNET RDF v6 dump][disgenet_rdf_v6_dump]
-- [DisGeNET RDF v5 pda][disgenet_rdf_v5_pda]
-- [DisGeNET RDF v5 phenotype][disgenet_rdf_v5_phenotype]
-- [DisGeNET RDF v5 void][disgenet_rdf_v5_void]
-- [Semanticscience Integrated Ontology (SIO)][sio_owl]
-- [HPO - ORDO Ontological Module (RDF/XML-format)][hoom]
+Currently there isn't a bat script that offers automated TDB creation. Please use the already created TDB as available on [the molgenis download server][tdb_download].
 
-## Important note for Windows users
+## Updating the TDB
 
-While `tdbloader2` is preferred (as it creates a smaller TDB), it relies on Unix system utilities. Windows users should therefore use `tdbloader` instead. As `tdbloader` and `tdbloader2` use the same command line arguments, the only thing that should be different is the actual tool that is called (and the resulting TDB is larger).
+When updating the TDB, be sure to follow these instructions:
 
-## Creating initial TDB
+1. Check whether any breaking changes were made in the new version of the sources.
 
-1. Download the data.
-2. Rename `owlapi.xrdf` to `owlapi.xml` (otherwise `tdbloader2` will give `org.apache.jena.riot.RiotException: Failed to determine the content type`)
-3. Run `tdbloader2 --loc /path/to/initial/TDB /path/to/disgenet_v6/dump/*.ttl /path/to/disgenet_v5/pda.ttl /path/to/disgenet_v5/phenotype.ttl  /path/to/disgenet_v5/void.ttl /path/to/sio-release.owl /path/to/owlapi.xml`
+   - If there are no breaking changes, simply continue to the next step (minor release).
 
-## Creating optimized TDB
+   - If there are breaking changes, a new major release might be required with adjustments to the java-app and the SPARQL queries in `database/sparql_queries/*`. These steps can still be used as a guideline, but changes might need to be made before actually running them. Be sure to add/update scripts in `database/tdb_comparison/` to reflect the querries used in the vibe-app.
 
-1. Create a directory to store optimized `.ttl` files in.
-2. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/hpo.rq 1> /path/to/optimized/ttl/hpo.ttl`
-3. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/disease.rq 1> /path/to/optimized/ttl/disease.ttl`
-4. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/gene.rq 1> /path/to/optimized/ttl/gene.ttl`
-5. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/gda.rq 1> /path/to/optimized/ttl/gda.ttl`
-6. Run `tdbquery --loc=/path/to/initial/TDB/ --query=/path/to/vibe/database/sparql_queries/optimized_construct/source.rq 1> /path/to/optimized/ttl/source.ttl`
-7. Run `tdbloader2 --loc /path/to/store/optimized/TDB /path/to/optimized/ttl/*.ttl  /path/to/sio-release.owl`
+2. Change the project's `version` and `vibe-tdb.version` in `app/pom.xml` to reflect the new release.
+
+3. Update the links in the `DownloadData()` method from `database/GenerateDatabase.sh`  to the new versions of the used sources.
+
+4. Run `database/GenerateDatabase.sh -1` from a directory where the new database should be created (it will throw an error as the checksums don't match, this will be fixed next).
+
+5. Run `shasum -a 256 -c /path/to/vibe/database/sources_checksums.txt` from the newly created `vibe-<version>-sources` directory.
+
+6. Validate whether `database/LICENSES.md` is still up-to-date, and if not, adjust it.
+
+7. Remove the `vibe-<version>-sources` directory.
+
+8. Run  `database/GenerateDatabase.sh -1 -2 -3 -4` from the database directory.
+
+   - Note that this step can take several hours.
+
+   - If any error is thrown or the generated output files seem incorrect, a breaking change might exist and adjustments should be made to the TDB creation process accordingly.
+
+9. Run `database/test/TestOptimizedQueries.sh`.
+
+   - If it fails, something went wrong in creating the optimized TDB from the original one as they do not return the exact same information. This might be caused by a breaking change which requires an adjustment to the TDB creation process.
+
+10. Run `app/TestNGPreprocessing.sh -d <path/to/new/TDB>` to ensure the java-app uses the new TDB for unit-testing.
+
+11. Run the java-app's unit-tests and check any failing test.
+
+    - If a test fails due to small changes such as a new results (which can be validated by looking this up in the `vibe-<version>-ttl/*.ttl` files generated by `database/GenerateDatabase.sh`), simply fix the unit-test.
+
+    - If larger problems occur, there might be a breaking change and adjustments to the java-app and/or TDB creation might be required. Be sure to add/update scripts in `database/tdb_comparison/` to reflect the querries used in the vibe-app. 
+
+12. Run `database/GenerateDatabase.sh -5` from the database directory.
+
+13. Upload the new TDB archive to the download server.
+
+14. Run `mvn Dockerfile:build` from the `app` directory.
+
+15. Check if the dockerfile functions correctly.
+
+16. Make a pull-request with the changes.
 
 ## F.A.Q.
 
@@ -41,13 +76,6 @@ While `tdbloader2` is preferred (as it creates a smaller TDB), it relies on Unix
 
 **A:** This might be caused by the generated `.ttl` files having an incorrect file encoding. Please make sure the generated `.ttl` files have the encoding `UTF-8`. If this is not the case, manually change it to  `UTF_8`.
 
-
-
 [jena_download]: https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
-[disgenet_rdf_v6_dump]: http://rdf.disgenet.org/download/v6.0.0/disgenetv6.0-rdf-v6.0.0-dump.tgz
-[disgenet_rdf_v5_pda]: http://rdf.disgenet.org/download/v5.0.0/pda.ttl.tar.gz
-[disgenet_rdf_v5_phenotype]: http://rdf.disgenet.org/download/v5.0.0/phenotype.ttl.tar.gz
-[disgenet_rdf_v5_void]: http://rdf.disgenet.org/download/v5.0.0/void.ttl.tar.gz
-[sio_owl]: http://semanticscience.org/ontology/sio.owl
-[hoom]: http://data.bioontology.org/ontologies/HOOM/download?apikey=8b5b7825-538d-40e0-9e9e-5ab9274a9aeb&download_format=rdf
+[tdb_download]: http://molgenis.org/downloads/vibe/vibe-v2_0_0-tdb.zip
