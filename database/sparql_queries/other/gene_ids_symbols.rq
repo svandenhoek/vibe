@@ -1,0 +1,16 @@
+PREFIX rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#>
+PREFIX dcterms: <http://purl.org/dc/terms/>
+PREFIX sio: <http://semanticscience.org/resource/>
+PREFIX ncit: <http://ncicb.nci.nih.gov/xml/owl/EVS/Thesaurus.owl#>
+
+SELECT (REPLACE(?geneId, "ncbigene:", "") AS ?id) (?geneSymbolTitle AS ?symbol)
+WHERE {
+	?gene rdf:type ncit:C16612 ;
+	dcterms:identifier ?geneId ;
+	sio:SIO_000205 ?geneSymbol .
+
+	?geneSymbol rdf:type ncit:C43568 ;
+	dcterms:title ?geneSymbolTitle .
+}
+ORDER BY xsd:nonNegativeInteger(?id)

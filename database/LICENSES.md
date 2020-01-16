@@ -1,6 +1,6 @@
 # About
 
-The database was created using different sources. The information below describes which information was used to create this database, not the exact information that is stored in it after processing. Therefore, some information from these sources might not be present. For more information about how this dataset was created and instructions on how to create it, please see the [README on github](https://github.com/molgenis/vibe/blob/v2.0.0/database/README.md).
+The database was created using different sources. The information below describes which information was used to create this database, not the exact information that is stored in it after processing. Therefore, some information from these sources might not be present. For more information about how this dataset was created and instructions on how to create it, please see the [github repository](https://github.com/molgenis/vibe/tree/master/database) (be sure to select the correct tag).
 
 # Licenses
 
@@ -22,5 +22,5 @@ License: Creative Commons Attribution 4.0 International Public License ([source]
 
 Website: http://sio.semanticscience.org/
 Data: https://github.com/MaastrichtU-IDS/semanticscience/commits/master/ontology/sio/release/sio-release.owl
-Version: 1.43
+Version: 1.43 (commit ID: e8231fe010279bec32423c74c9a8b8d685c56a12)
 License: Creative Commons Attribution 4.0 International Public License ([source](https://raw.githubusercontent.com/MaastrichtU-IDS/semanticscience/e8231fe010279bec32423c74c9a8b8d685c56a12/ontology/sio/release/sio-release.owl) - [full license](http://creativecommons.org/licenses/by/4.0/))
