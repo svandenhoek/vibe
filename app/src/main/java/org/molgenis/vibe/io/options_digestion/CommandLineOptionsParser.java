@@ -79,7 +79,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         options.addOption(Option.builder("w")
                 .longOpt("ontology")
-                .desc("The Human Phenotype Ontology file (.owl).")
+                .desc("The Human Phenotype Ontology file (.owl). Can be given without -n or -m, but has no use then.")
                 .hasArg()
                 .argName("FILE")
                 .build());
@@ -163,6 +163,8 @@ public class CommandLineOptionsParser extends OptionsParser {
         if(commandLine.getOptions().length == 0) {
             setRunMode(RunMode.NONE);
             return; // IMPORTANT: Does not process any other arguments from this point.
+        } else { // Sets default RunMode.
+            setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         }
 
         // OPTIONAL: Only show help message (set RunMode to NONE).
@@ -187,47 +189,35 @@ public class CommandLineOptionsParser extends OptionsParser {
             missing.add("-t");
         }
 
-        // OPTIONAL: HPO ontology file.
+        // OPTIONAL: HPO ontology file. Required for -n & -m.
         if(commandLine.hasOption("w")) {
-            // -w defines RunMode.
-            setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
             try {
                 setHpoOntology(commandLine.getOptionValue("w"));
-            } catch(InvalidPathException | IOException e) {
+            } catch (InvalidPathException | IOException e) {
                 errors.add(e.getMessage());
             }
+        }
 
-            // REQUIRED if -w set: HPO ontology retrieval algorithm.
-            if(commandLine.hasOption("n")) {
+        // OPTIONAL: HPO ontology retrieval algorithm. Both -n and -m need to be provided as well as -w.
+        if(commandLine.hasOption("n") || commandLine.hasOption("m")) {
+            if (commandLine.hasOption("w") && commandLine.hasOption("n") && commandLine.hasOption("m")) {
+                setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
                 try {
                     setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
+                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
                 } catch (EnumConstantNotPresentException e) {
                     errors.add(e.getMessage());
                 }
             } else {
-                missing.add("-n");
-            }
-
-            // REQUIRED if -w set: HPO ontology related retrieval max distance.
-            if(commandLine.hasOption("m")) {
-                try {
-                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
-                } catch (NumberFormatException e) {
-                    errors.add(e.getMessage());
+                if (!commandLine.hasOption("w")) {
+                    missing.add("-w");
                 }
-            } else {
-                missing.add("-m");
-            }
-        } else { // If no -w was given.
-            // -w defines RunMode.
-            setRunMode(RunMode.GENES_FOR_PHENOTYPES);
-
-            // Generates errors if any option was given that requires -w when -w is not given.
-            if(commandLine.hasOption("n")) {
-                errors.add("Missing -w: -n requires -w.");
-            }
-            if(commandLine.hasOption("m")) {
-                errors.add("Missing -w: -m requires -w.");
+                if (!commandLine.hasOption("n")) {
+                    missing.add("-n");
+                }
+                if (!commandLine.hasOption("m")) {
+                    missing.add("-m");
+                }
             }
         }
 
