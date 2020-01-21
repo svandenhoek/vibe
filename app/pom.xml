@@ -38,7 +38,7 @@
         <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
 
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
-        <vibe-tdb.version>2.0.0</vibe-tdb.version>
+        <vibe-tdb.version>3.0.0</vibe-tdb.version>
         <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tgz</vibe-tdb.archive>
         <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
 
