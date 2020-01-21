@@ -12,7 +12,9 @@ Instructions regarding how to build/test the Java application. If you're only in
 
 1. Run `mvn clean install` from the `app` directory in the git repository.
 
-You can now use `target/vibe-with-dependencies.jar`.
+You can now use `target/vibe-<version>-with-dependencies.jar`.
+
+A local docker image can also be created through running `mvn dockerfile:build` afterwards.
 
 ## Run unit-tests
 
