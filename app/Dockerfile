@@ -22,7 +22,7 @@ ADD target/${jar_file} .
 
 # Workaround for env variables & supporting custom arguments when running container.
 # https://stackoverflow.com/questions/49133234/docker-entrypoint-with-env-variable-and-optional-arguments
-RUN echo "java -jar ${jar_file} -t TDB/ -o output.tsv \$@" > run.sh
+RUN echo "java -jar ${jar_file} -t TDB/ -w hp.owl \$@" > run.sh
 
 # Runs java app.
 ENTRYPOINT ["/bin/bash", "run.sh"]

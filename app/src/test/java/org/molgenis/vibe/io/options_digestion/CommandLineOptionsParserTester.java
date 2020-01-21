@@ -106,32 +106,32 @@ public class CommandLineOptionsParserTester {
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void withOntologyMissingHpoAlgorithm() throws IOException, ParseException {
+    public void withOntologyAndDistanceMissingHpoAlgorithm() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void withOntologyMissingHpoMaxDistance() throws IOException, ParseException {
+    public void withOntologyAndAlgorithmMissingHpoMaxDistance() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 
-    @Test(expectedExceptions = IOException.class)
+    @Test
     public void withOntologyMissingHpoAlgorithmAndHpoMaxDistance() throws IOException, ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingPhenotype() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, NON_EXISTING_OUTPUT_FILE);
+    public void withOntologyAlgorithmAndDistanceButNoOntologyFile() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 
     @Test(expectedExceptions = IOException.class)
-    public void missingOutputFile() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, SINGLE_HPO);
+    public void missingPhenotype() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_1, MAX_DISTANCE, NON_EXISTING_OUTPUT_FILE);
         testWithErrorPrint(args);
     }
 

@@ -1,13 +1,15 @@
-package org.molgenis.vibe.io.output.file.gene_prioritized;
+package org.molgenis.vibe.io.output.format.gene_prioritized;
 
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.GeneDiseaseCombination;
 import org.molgenis.vibe.io.output.ValuesSeparator;
-import org.molgenis.vibe.io.output.file.SeparatedValuesFileOutputWriter;
+import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.io.output.target.FileOutputWriter;
+import org.molgenis.vibe.io.output.target.OutputWriter;
+import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashSet;
@@ -20,16 +22,16 @@ import static java.util.Objects.requireNonNull;
  * Writer for writing {@link Gene}{@code} to a CSV file where a single line represent a {@link Gene}. A separate {@link List}
  * defines the order of {@link Gene}{@code s} in the output file.
  */
-public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValuesFileOutputWriter {
+public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends PrioritizedOutputFormatWriter<Gene> {
     /**
      * The data to be written.
      */
     private GeneDiseaseCollection collection;
 
     /**
-     * The order of the {@link Gene}{@code s}.
+     * Separates key-value pairs.
      */
-    private List<Gene> priority;
+    private ValuesSeparator primarySeparator;
 
     /**
      * Separates key-value pairs.
@@ -48,21 +50,21 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
 
     /**
      *
-     * @param path path of file for data to be written to
+     * @param writer writer object to be used to write the data
      * @param collection the data to be written
-     * @param priority defines the order in which the {@link Gene}{@code s} are written to the file
+     * @param prioritizer defines the order in which the {@link Gene}{@code s} are written
      * @param primarySeparator highest level values separator
      * @param keyValuePairSeparator separates different key-value pairs
      * @param keyValueSeparator separates a key and value
      * @param valuesSeparator separates the values from a key-value pair
      * @throws IllegalArgumentException if any separator is equal to another separator
      */
-    public ResultsPerGeneSeparatedValuesFileOutputWriter(Path path, GeneDiseaseCollection collection, List<Gene> priority,
-                                                         ValuesSeparator primarySeparator, ValuesSeparator keyValuePairSeparator,
-                                                         ValuesSeparator keyValueSeparator, ValuesSeparator valuesSeparator) {
-        super(path, primarySeparator);
+    public ResultsPerGeneSeparatedValuesOutputFormatWriter(OutputWriter writer, Prioritizer<Gene> prioritizer, GeneDiseaseCollection collection,
+                                                           ValuesSeparator primarySeparator, ValuesSeparator keyValuePairSeparator,
+                                                           ValuesSeparator keyValueSeparator, ValuesSeparator valuesSeparator) {
+        super(writer, prioritizer);
         this.collection = requireNonNull(collection);
-        this.priority = requireNonNull(priority);
+        this.primarySeparator = requireNonNull(primarySeparator);
         this.keyValuePairSeparator = requireNonNull(keyValuePairSeparator);
         this.keyValueSeparator = requireNonNull(keyValueSeparator);
         this.valuesSeparator = requireNonNull(valuesSeparator);
@@ -79,17 +81,15 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
         }
     }
 
-    public void run() throws IOException {
-        BufferedWriter writer = getWriter();
-
+    public void generateOutput() throws IOException {
         // Writes header.
-        writer.write("gene (NCBI)" + getSeparator() + "highest GDA score" + getSeparator() + "diseases (UMLS) with sources per disease");
-        writer.newLine();
+        getOutputWriter().write("gene (NCBI)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
+        getOutputWriter().writeNewLine();
 
         // Goes through all ordered genes.
-        for(Gene gene : priority) {
+        for(Gene gene : getPrioritizer().getPriority()) {
             // Writes gene symbol to file.
-            writer.write(gene.getId() + getSeparator());
+            getOutputWriter().write(gene.getId() + primarySeparator);
 
             // The gene-disease combinations for this gene.
             List<GeneDiseaseCombination> geneDiseaseCombinations = collection.getByGeneOrderedByGdaScore(gene);
@@ -101,28 +101,26 @@ public class ResultsPerGeneSeparatedValuesFileOutputWriter extends SeparatedValu
 
 
                 if(i == 0) { // If first disease for this gene, write score as "highest GDA score".
-                    writer.write(Double.toString(gdc.getDisgenetScore()) + getSeparator());
+                    getOutputWriter().write(Double.toString(gdc.getDisgenetScore()) + primarySeparator);
                 } else { // If not first disease for this gene, adds separator.
-                    writer.write(keyValuePairSeparator.toString());
+                    getOutputWriter().write(keyValuePairSeparator.toString());
                 }
 
                 // Writes the disease id.
-                writer.write(gdc.getDisease().getId());
+                getOutputWriter().write(gdc.getDisease().getId());
 
                 // Writes gda score.
-                writer.write(" (" + gdc.getDisgenetScore() + ")");
+                getOutputWriter().write(" (" + gdc.getDisgenetScore() + ")");
 
                 // If there is evidence, writes these as well.
                 if(gdc.getAllEvidence().size() > 0) {
                     // Merges the evidence URIs with as separator the values separator.
                     String evidence = StringUtils.join(gdc.getAllEvidenceSimplifiedOrdered(), valuesSeparator.toString());
-                    writer.write(keyValueSeparator + evidence);
+                    getOutputWriter().write(keyValueSeparator + evidence);
                 }
             }
 
-            writer.newLine();
+            getOutputWriter().writeNewLine();
         }
-
-        closeWriter();
     }
 }

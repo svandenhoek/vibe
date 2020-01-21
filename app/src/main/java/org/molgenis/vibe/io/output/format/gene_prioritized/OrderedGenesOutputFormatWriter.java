@@ -1,8 +1,11 @@
-package org.molgenis.vibe.io.output.file.gene_prioritized;
+package org.molgenis.vibe.io.output.format.gene_prioritized;
 
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.io.output.ValuesSeparator;
-import org.molgenis.vibe.io.output.file.FileOutputWriter;
+import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.io.output.target.FileOutputWriter;
+import org.molgenis.vibe.io.output.target.OutputWriter;
+import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -14,7 +17,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * A very basic ordered genes output writer.
  */
-public class OrderedGenesOutputWriter extends FileOutputWriter {
+public class OrderedGenesOutputFormatWriter extends PrioritizedOutputFormatWriter<Gene> {
 
     /**
      * The order of the {@link Gene}{@code s}.
@@ -27,23 +30,18 @@ public class OrderedGenesOutputWriter extends FileOutputWriter {
     private ValuesSeparator separator;
 
 
-    public OrderedGenesOutputWriter(Path path, List<Gene> priority, ValuesSeparator separator) {
-        super(path);
-        this.priority = requireNonNull(priority);
+    public OrderedGenesOutputFormatWriter(OutputWriter writer, Prioritizer<Gene> prioritizer, ValuesSeparator separator) {
+        super(writer, prioritizer);
         this.separator = requireNonNull(separator);
     }
 
     @Override
-    public void run() throws IOException {
-        BufferedWriter writer = getWriter();
-
+    protected void generateOutput() throws IOException {
         // Writes all genes except last one (with added separator).
         for(int i = 0; i < priority.size()-1; i++) {
-            writer.write(priority.get(i).getId() + separator);
+            getOutputWriter().write(priority.get(i).getId() + separator);
         }
         // Writes last gene (without added separator).
-        writer.write(priority.get(priority.size()-1).getId());
-
-        closeWriter();
+        getOutputWriter().write(priority.get(priority.size()-1).getId());
     }
 }

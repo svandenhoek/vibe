@@ -22,7 +22,7 @@
 hs_err_pid*
 
 #Java target folder
-target/
+app/target/
 
 # Mac custom folder attributes
 .DS_Store

@@ -6,7 +6,7 @@ import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.input.OntologyModelFilesReader;
 import org.molgenis.vibe.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.io.options_digestion.OptionsParser;
-import org.molgenis.vibe.io.output.file.FileOutputWriter;
+import org.molgenis.vibe.io.output.format.OutputFormatWriter;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
@@ -33,7 +33,7 @@ public enum RunMode {
             ModelReader disgenetReader = loadDisgenetDatabase();
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
             GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
-            writeToFile(geneDiseaseCollection, prioritizer);
+            writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
         }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
@@ -41,7 +41,7 @@ public enum RunMode {
             ModelReader disgenetReader = loadDisgenetDatabase();
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, getAppOptions().getPhenotypes());
             GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
-            writeToFile(geneDiseaseCollection, prioritizer);
+            writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
         }
     };
 
@@ -93,10 +93,10 @@ public enum RunMode {
         return prioritizer;
     }
 
-    protected void writeToFile(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
-        getAppOptions().printVerbose("# Writing genes to file.");
-        FileOutputWriter outputWriter = getAppOptions().getGenePrioritizedFileOutputWriterFactory().create(getAppOptions().getOutputFile(), geneDiseaseCollection, prioritizer);
-        outputWriter.run();
+    protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
+        getAppOptions().printVerbose("# Writing genes to " + getAppOptions().getOutputWriter().target());
+        OutputFormatWriter outputFormatWriter = getAppOptions().getGenePrioritizedOutputFormatWriterFactory().create(getAppOptions().getOutputWriter(), geneDiseaseCollection, prioritizer);
+        outputFormatWriter.run();
         printElapsedTime();
     }
 
