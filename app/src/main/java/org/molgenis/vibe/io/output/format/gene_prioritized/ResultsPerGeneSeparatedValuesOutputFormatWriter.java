@@ -77,10 +77,6 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
         }
     }
 
-    protected ValuesSeparator getPrimarySeparator() {
-        return primarySeparator;
-    }
-
     public void generateOutput() throws IOException {
         // Writes header.
         getOutputWriter().write("gene (NCBI)" + primarySeparator + "gene symbol (HGNC)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
