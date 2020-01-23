@@ -118,13 +118,19 @@ public class CommandLineOptionsParser extends OptionsParser {
                 .longOpt("simple-output")
                 .desc("Simple output format (file only contains separated gene symbols)")
                 .build());
+
+        options.addOption(Option.builder("u")
+                .longOpt("uri")
+                .desc("Returns uri's instead of id's for certain output fields" + System.lineSeparator() +
+                        "(doesn't work in combination with -l).")
+                .build());
     }
 
     /**
      * Prints the help message to stdout.
      */
     public static void printHelpMessage() {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] [-o <FILE>] [-l] -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> [-w <FILE> -n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = "Molgenis VIBE";
 
@@ -247,7 +253,12 @@ public class CommandLineOptionsParser extends OptionsParser {
         if(commandLine.hasOption("l")) {
             setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.SIMPLE);
         } else {
-            setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.REGULAR);
+            if(commandLine.hasOption("u")) {
+                setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.REGULAR_URI);
+            } else {
+                setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID);
+            }
+
         }
 
         // Processes missing and errors and throws an Exception if any errors were present.
