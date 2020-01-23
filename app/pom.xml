@@ -39,7 +39,7 @@
 
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
         <vibe-tdb.version>3.0.0</vibe-tdb.version>
-        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tgz</vibe-tdb.archive>
+        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tar.gz</vibe-tdb.archive>
         <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
 
         <!-- used hpo.owl github tag -->
