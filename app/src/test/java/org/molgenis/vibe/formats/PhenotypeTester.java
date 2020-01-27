@@ -25,27 +25,27 @@ public class PhenotypeTester {
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        new Gene("Hp:0012345");
+        new Phenotype("Hp:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        new Gene("hP:0012345");
+        new Phenotype("hP:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new Gene("ph:0012345");
+        new Phenotype("ph:0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
-        new Gene("0012345");
+        new Phenotype("0012345");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
-        new Gene("http://purl.obolibrary.org/obo/HP_0012345");
+        new Phenotype("http://purl.obolibrary.org/obo/HP_0012345");
     }
 
     @Test
@@ -56,7 +56,7 @@ public class PhenotypeTester {
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void useInvalidUri() {
-        new Gene(URI.create("http://purl.obolibrary.org/obo/id/HP_0012345"));
+        new Phenotype(URI.create("http://purl.obolibrary.org/obo/id/HP_0012345"));
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)

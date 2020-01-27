@@ -16,8 +16,8 @@ public class GeneDiseaseCollectionTester {
     @BeforeClass
     public void beforeClass() {
         genes = new Gene[]{
-                new Gene("ncbigene:1111111"),
-                new Gene("ncbigene:2222222")
+                new Gene("ncbigene:1111111", new GeneSymbol("hgnc:AAA")),
+                new Gene("ncbigene:2222222", new GeneSymbol("hgnc:BBB"))
         };
 
         diseases = new Disease[]{

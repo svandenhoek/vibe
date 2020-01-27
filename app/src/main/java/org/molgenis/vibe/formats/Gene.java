@@ -21,7 +21,7 @@ public class Gene extends BiologicalEntity {
     /**
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
-//    private String symbol; // Currently unused.
+    private GeneSymbol symbol;
 
     /**
      * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
@@ -39,16 +39,8 @@ public class Gene extends BiologicalEntity {
      */
     private Double diseasePleiotropyIndex;
 
-//    public String getSymbol() {
-//        return symbol;
-//    }
-
-    public Double getDiseaseSpecificityIndex() {
-        return diseaseSpecificityIndex;
-    }
-
-    public Double getDiseasePleiotropyIndex() {
-        return diseasePleiotropyIndex;
+    public GeneSymbol getSymbol() {
+        return symbol;
     }
 
     @Override
@@ -71,29 +63,14 @@ public class Gene extends BiologicalEntity {
         return URI_PREFIX;
     }
 
-    public Gene(String id) {
+    public Gene(String id, GeneSymbol symbol) {
         super(id);
+        this.symbol = requireNonNull(symbol);
     }
 
-    public Gene(URI uri) {
+    public Gene(URI uri, GeneSymbol symbol) {
         super(uri);
-    }
-
-    /**
-     * @param uri {@link BiologicalEntity#uri}
-     * @param dsi diseaseSpecificityIndex
-     * @param dpi diseasePleiotropyIndex
-     * @throws InvalidStringFormatException
-     */
-    public Gene(URI uri, Double dsi, Double dpi) throws InvalidStringFormatException {
-        super(uri);
-        this.diseaseSpecificityIndex = requireNonNull(dsi);
-        this.diseasePleiotropyIndex = requireNonNull(dpi);
-    }
-
-    @Override
-    protected void generateCompareValue() {
-        setCompareValue(Integer.parseInt(getId()));
+        this.symbol = requireNonNull(symbol);
     }
 
     /**
@@ -102,9 +79,7 @@ public class Gene extends BiologicalEntity {
     @Override
     public String toString() {
         return "Gene{" +
-//                "symbol='" + symbol + '\'' +
-                ", diseaseSpecificityIndex=" + diseaseSpecificityIndex +
-                ", diseasePleiotropyIndex=" + diseasePleiotropyIndex +
+                "symbol='" + symbol + '\'' +
                 "} " + super.toString();
     }
 }

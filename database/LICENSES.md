@@ -11,11 +11,11 @@ Data: http://rdf.disgenet.org/download/
 Version: 6.0.0 (all) + 5.0.0 (pda.ttl, phenotype.ttl & void.ttl)
 License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License ([source](http://disgenet.org/legal) - [full license](https://creativecommons.org/licenses/by-nc-sa/4.0/))
 
-## Orphanet
+## Orphadata HOOM
 
 Website: www.orphadata.org/
 Data: http://bioportal.bioontology.org/ontologies/HOOM
-Version: 1.1
+Version: 1.3
 License: Creative Commons Attribution 4.0 International Public License ([source](http://www.orphadata.org/cgi-bin/index.php#legal) - [full license](https://creativecommons.org/licenses/by/4.0/))
 
 ## Semanticscience Integrated Ontology

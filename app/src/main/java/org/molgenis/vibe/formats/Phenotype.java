@@ -42,11 +42,6 @@ public class Phenotype extends BiologicalEntity {
     }
 
     @Override
-    protected void generateCompareValue() {
-        setCompareValue(Integer.parseInt(getId()));
-    }
-
-    @Override
     public String toString() {
         return "Phenotype{} " + super.toString();
     }

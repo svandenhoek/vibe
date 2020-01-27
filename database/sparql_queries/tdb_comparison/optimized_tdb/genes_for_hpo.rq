@@ -24,11 +24,12 @@ PREFIX umls: <http://linkedlifedata.com/resource/umls/id/> # DisGeNET
 PREFIX ncbigene: <http://identifiers.org/ncbigene/> # DisGeNET
 PREFIX pda: <http://rdf.disgenet.org/resource/pda/> # DisGeNET
 PREFIX gda: <http://rdf.disgenet.org/resource/gda/> # DisGeNET
+PREFIX hgnc: <http://identifiers.org/hgnc.symbol/> # DisGeNET
 PREFIX ordo: <http://www.orpha.net/ORDO/> # DisGeNET / Orphanet
 PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet
 
 # Query.
-SELECT ?hpo ?disease ?gene ?gdaScoreNumber ?gdaSource ?evidence
+SELECT ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidence
 WHERE {
 	VALUES ?hpo { <http://purl.obolibrary.org/obo/HP_0000003> }
 	{
@@ -53,6 +54,8 @@ WHERE {
 	sio:SIO_000216 ?gdaScoreNumber ;
 	sio:SIO_000253 ?gdaSource .
 	OPTIONAL { ?gda sio:SIO_000772 ?evidence }
+
+	?gene sio:SIO_000205 ?geneSymbol .
 }
 # Disable if comparing performance, enable if comparing through shasum.
-ORDER BY ?hpo ?disease ?gene ?gdaScoreNumber ?gdaSource ?evidence
+ORDER BY ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidence

@@ -10,78 +10,76 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GeneTester {
-    private static final GeneSymbol symbol = new GeneSymbol("hgnc:ABC");
-
+public class GeneSymbolTester {
     @Test
     public void useValidIdWithLowercasePrefix() throws InvalidStringFormatException {
-        Gene gene = new Gene("ncbigene:1234", symbol);
-        testIfValid(gene);
+        GeneSymbol symbol = new GeneSymbol("hgnc:AB-123");
+        testIfValid(symbol);
     }
 
     @Test
     public void useValidIdWithUppercasePrefix() throws InvalidStringFormatException {
-        Gene gene = new Gene("NCBIGENE:1234", symbol);
-        testIfValid(gene);
+        GeneSymbol symbol = new GeneSymbol("HGNC:AB-123");
+        testIfValid(symbol);
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        new Gene("Ncbigene:1234", symbol);
+        new GeneSymbol("Hgnc:AB-123");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        new Gene("nCbigene:1234", symbol);
+        new GeneSymbol("hGnc:AB-123");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new Gene("ncbi:1234", symbol);
+        new GeneSymbol("hg:AB-123");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
-        new Gene("1234", symbol);
+        new GeneSymbol("AB-123");
     }
 
     @Test(expectedExceptions = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
-        new Gene("http://identifiers.org/ncbigene/1234", symbol);
+        new GeneSymbol("http://identifiers.org/hgnc.symbol/AB-123");
     }
 
     @Test
     public void useValidUri() {
-        Gene gene = new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol);
-        testIfValid(gene);
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"));
+        testIfValid(symbol);
     }
 
     @Test(expectedExceptions = IllegalArgumentException.class)
     public void useInvalidUri() {
-        new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol);
+        new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123"));
     }
 
     @Test
     public void testSort() {
-        List<Gene> actualOrder = new ArrayList<>( Arrays.asList(
-                new Gene("ncbigene:3", symbol),
-                new Gene("ncbigene:8", symbol),
-                new Gene("ncbigene:1", symbol)
+        List<GeneSymbol> actualOrder = new ArrayList<>( Arrays.asList(
+                new GeneSymbol("hgnc:KP3145"),
+                new GeneSymbol("hgnc:AB-123"),
+                new GeneSymbol("hgnc:CS44")
         ));
 
-        List<Gene> expectedOrder = new ArrayList<>( Arrays.asList(
+        List<GeneSymbol> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(1),
                 actualOrder.get(2),
-                actualOrder.get(0),
-                actualOrder.get(1)
+                actualOrder.get(0)
         ));
 
         Collections.sort(actualOrder);
         Assert.assertEquals(actualOrder, expectedOrder);
     }
 
-    private void testIfValid(Gene gene) {
-        Assert.assertEquals(gene.getId(), "1234");
-        Assert.assertEquals(gene.getFormattedId(), "ncbigene:1234");
-        Assert.assertEquals(gene.getUri(), URI.create("http://identifiers.org/ncbigene/1234"));
+    private void testIfValid(GeneSymbol symbol) {
+        Assert.assertEquals(symbol.getId(), "AB-123");
+        Assert.assertEquals(symbol.getFormattedId(), "hgnc:AB-123");
+        Assert.assertEquals(symbol.getUri(), URI.create("http://identifiers.org/hgnc.symbol/AB-123"));
     }
 }

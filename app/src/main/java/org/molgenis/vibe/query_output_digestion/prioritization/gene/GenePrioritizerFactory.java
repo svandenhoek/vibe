@@ -9,18 +9,6 @@ public enum GenePrioritizerFactory implements EnumTypeDefiner{
         public GenePrioritizer create(GeneDiseaseCollection geneDiseaseCollection) {
              return new HighestSingleDisgenetScoreGenePrioritizer(geneDiseaseCollection);
         }
-    },
-    DISEASE_SPECIFICITY_INDEX("dsi") {
-        @Override
-        public GenePrioritizer create(GeneDiseaseCollection geneDiseaseCollection) {
-            return new DiseaseSpecificityIndexGenePrioritizer(geneDiseaseCollection.getGenes());
-        }
-    },
-    DISEASE_PLEIOTROPY_INDEX("dpi") {
-        @Override
-        public GenePrioritizer create(GeneDiseaseCollection geneDiseaseCollection) {
-            return new DiseasePleiotropyIndexGenePrioritizer(geneDiseaseCollection.getGenes());
-        }
     };
 
     private String id;

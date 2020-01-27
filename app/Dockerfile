@@ -14,7 +14,7 @@ ARG vibe_tdb_archive
 RUN curl -O -L ${vibe_tdb_download} \
 && tar -xzf ${vibe_tdb_archive} \
 && rm ${vibe_tdb_archive} \
-&& mv ${vibe_tdb_archive%.tgz} TDB
+&& mv ${vibe_tdb_archive%.tar.gz} TDB
 
 # Retrieves jar file.
 ARG jar_file

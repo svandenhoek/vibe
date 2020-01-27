@@ -19,10 +19,17 @@ public enum GenePrioritizedOutputFormatWriterFactory implements PrioritizedOutpu
             return new OrderedGenesOutputFormatWriter(outputWriter, prioritizer, ValuesSeparator.COMMA);
         }
     },
-    REGULAR {
+    REGULAR_ID {
         @Override
         public OutputFormatWriter create(OutputWriter outputWriter, GeneDiseaseCollection geneDiseaseCollection, Prioritizer<Gene> prioritizer) {
-            return new ResultsPerGeneSeparatedValuesOutputFormatWriter(outputWriter, prioritizer, geneDiseaseCollection,
+            return new ResultsPerGeneSeparatedValuesOutputFormatWriterUsingIds(outputWriter, prioritizer, geneDiseaseCollection,
+                    ValuesSeparator.TAB, ValuesSeparator.VERTICAL_LINE, ValuesSeparator.COLON, ValuesSeparator.COMMA);
+        }
+    },
+    REGULAR_URI {
+        @Override
+        public OutputFormatWriter create(OutputWriter outputWriter, GeneDiseaseCollection geneDiseaseCollection, Prioritizer<Gene> prioritizer) {
+            return new ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris(outputWriter, prioritizer, geneDiseaseCollection,
                     ValuesSeparator.TAB, ValuesSeparator.VERTICAL_LINE, ValuesSeparator.COLON, ValuesSeparator.COMMA);
         }
     };

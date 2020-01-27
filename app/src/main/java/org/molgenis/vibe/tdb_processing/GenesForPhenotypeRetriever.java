@@ -65,7 +65,8 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             }
 
             // Store new gene, or retrieves existing disease instance if already exists.
-            Gene retrievedGene = new Gene(URI.create(result.get("gene").asResource().getURI()));
+            Gene retrievedGene = new Gene(URI.create(result.get("gene").asResource().getURI()),
+                    new GeneSymbol(URI.create(result.get("geneSymbol").asResource().getURI())));
             Gene gene = genes.put(retrievedGene, retrievedGene);
             if(gene == null) {
                 gene = retrievedGene;

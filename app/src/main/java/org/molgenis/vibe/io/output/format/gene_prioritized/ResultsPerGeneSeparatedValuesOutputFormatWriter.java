@@ -1,17 +1,13 @@
 package org.molgenis.vibe.io.output.format.gene_prioritized;
 
 import org.apache.commons.lang3.StringUtils;
-import org.molgenis.vibe.formats.Gene;
-import org.molgenis.vibe.formats.GeneDiseaseCollection;
-import org.molgenis.vibe.formats.GeneDiseaseCombination;
+import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.output.ValuesSeparator;
 import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
-import org.molgenis.vibe.io.output.target.FileOutputWriter;
 import org.molgenis.vibe.io.output.target.OutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -22,7 +18,7 @@ import static java.util.Objects.requireNonNull;
  * Writer for writing {@link Gene}{@code} to a CSV file where a single line represent a {@link Gene}. A separate {@link List}
  * defines the order of {@link Gene}{@code s} in the output file.
  */
-public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends PrioritizedOutputFormatWriter<Gene> {
+public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends PrioritizedOutputFormatWriter<Gene> {
     /**
      * The data to be written.
      */
@@ -83,18 +79,18 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Prioritized
 
     public void generateOutput() throws IOException {
         // Writes header.
-        getOutputWriter().write("gene (NCBI)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
+        getOutputWriter().write("gene (NCBI)" + primarySeparator + "gene symbol (HGNC)" + primarySeparator + "highest GDA score" + primarySeparator + "diseases (UMLS) with sources per disease");
         getOutputWriter().writeNewLine();
 
         // Goes through all ordered genes.
         for(Gene gene : getPrioritizer().getPriority()) {
-            // Writes gene symbol to file.
-            getOutputWriter().write(gene.getId() + primarySeparator);
+            // Writes gene id + symbol.
+            getOutputWriter().write(writeGene(gene) + primarySeparator + writeGeneSymbol(gene) + primarySeparator);
 
             // The gene-disease combinations for this gene.
             List<GeneDiseaseCombination> geneDiseaseCombinations = collection.getByGeneOrderedByGdaScore(gene);
 
-            // Goes through the available gda's and writes the information to the file.
+            // Goes through the available gda's and writes the information.
             for(int i = 0; i < geneDiseaseCombinations.size(); i++) {
                 // The current gene-disease combination.
                 GeneDiseaseCombination gdc = geneDiseaseCombinations.get(i);
@@ -107,7 +103,7 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Prioritized
                 }
 
                 // Writes the disease id.
-                getOutputWriter().write(gdc.getDisease().getId());
+                getOutputWriter().write(writeDisease(gdc.getDisease()));
 
                 // Writes gda score.
                 getOutputWriter().write(" (" + gdc.getDisgenetScore() + ")");
@@ -115,7 +111,7 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Prioritized
                 // If there is evidence, writes these as well.
                 if(gdc.getAllEvidence().size() > 0) {
                     // Merges the evidence URIs with as separator the values separator.
-                    String evidence = StringUtils.join(gdc.getAllEvidenceSimplifiedOrdered(), valuesSeparator.toString());
+                    String evidence = StringUtils.join(writeEvidence(gdc), valuesSeparator.toString());
                     getOutputWriter().write(keyValueSeparator + evidence);
                 }
             }
@@ -123,4 +119,22 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Prioritized
             getOutputWriter().writeNewLine();
         }
     }
+
+    /**
+     * Defines how a {@link Gene} is written.
+     * @param gene the gene to be written
+     * @throws IOException
+     */
+    protected abstract String writeGene(Gene gene) throws IOException;
+
+    protected abstract String writeGeneSymbol(Gene gene) throws IOException;
+
+    /**
+     * Defines how a {@link Disease} is written.
+     * @param disease the disease to be written
+     * @throws IOException
+     */
+    protected abstract String writeDisease(Disease disease) throws IOException;
+
+    protected abstract List<String> writeEvidence(GeneDiseaseCombination gdc) throws IOException;
 }

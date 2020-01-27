@@ -104,6 +104,29 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * Wrapper for {@link #getAllEvidence()} that returns an ordered list.
+     * @return a {@link List} containing all the evidence {@link URI}{@code s}
+     */
+    public List<URI> getAllEvidenceOrdered() {
+        List<URI> sources = new ArrayList<>();
+        sources.addAll(getAllEvidence());
+        Collections.sort(sources);
+
+        return sources;
+    }
+
+    /**
+     * Wrapper for {@link #getAllEvidenceOrdered()} that converts the {@link URI}{@code s} to {@link String}{@code s}.
+     * @return a {@link List} containing all the evidence {@link URI}{@code s} as {@link String}{@code s}
+     */
+    public List<String> getAllEvidenceOrderedStrings() {
+        List<String> stringList = new ArrayList<>();
+        getAllEvidenceOrdered().forEach(uri -> stringList.add(uri.toString()));
+
+        return stringList;
+    }
+
+    /**
      * Wrapper for {@code #getAllEvidence} where {@link URI}{@code s} starting with {@code http://identifiers.org/pubmed/}
      * are reduced to only the number behind it. If a source starts with a different {@link URI}, the full {@link URI} is
      * still returned (though after being converted to a {@link String}).

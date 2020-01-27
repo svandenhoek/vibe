@@ -8,7 +8,7 @@ import java.net.URI;
 import java.util.*;
 
 public class GeneDiseaseCombinationTester {
-    private Gene gene = new Gene("ncbigene:0");
+    private Gene gene = new Gene("ncbigene:0", new GeneSymbol("hgnc:A"));
     private Disease disease = new Disease("umls:C01234567");
     private double score = 0.123456789;
     private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"));
@@ -87,6 +87,32 @@ public class GeneDiseaseCombinationTester {
     @Test
     public void retrieveEvidenceForNonExistingSource() {
         Assert.assertEquals(geneDiseaseCombo.getEvidenceForSource(source1), null);
+    }
+
+    @Test
+    public void testGetAllEvidenceOrdered() {
+        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
+                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+
+        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
+
+        Assert.assertEquals(geneDiseaseCombo.getAllEvidenceOrdered(),
+                new ArrayList<>(Arrays.asList(sourceEvidence.get(0),sourceEvidence.get(2),sourceEvidence.get(1))));
+    }
+
+    @Test
+    public void testGetAllEvidenceOrderedStrings() {
+        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
+                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+
+        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
+        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
+
+        Assert.assertEquals(geneDiseaseCombo.getAllEvidenceOrderedStrings(),
+                new ArrayList<>(Arrays.asList(sourceEvidence.get(0).toString(),sourceEvidence.get(2).toString(),sourceEvidence.get(1).toString())));
     }
 
     @Test
