@@ -9,6 +9,10 @@ A tool to generate prioritized genes using phenotype information.
 * Available at: http://molgenis.org/vibe
 * Source code: https://github.com/molgenis/molgenis-app-vibe
 
+## Benchmark
+
+* Available at: https://github.com/molgenis/vibe-suppl
+
 ## Quickstart
 
 * Download [vibe .jar file][vibe_download]
