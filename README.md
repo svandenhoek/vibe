@@ -1,5 +1,3 @@
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=org.molgenis%3Avibe&metric=alert_status)](https://sonarcloud.io/dashboard?id=org.molgenis%3Avibe)
-
 # VIBE
 
 A tool to generate prioritized genes using phenotype information.
