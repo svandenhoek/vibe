@@ -74,7 +74,7 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
     public BiologicalEntityCollection() {
     }
 
-    public BiologicalEntityCollection(Set<T3> combinations) {
+    public BiologicalEntityCollection(Collection<? extends T3> combinations) {
         addAll(combinations);
     }
 
