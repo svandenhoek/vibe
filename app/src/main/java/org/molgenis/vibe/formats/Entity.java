@@ -36,7 +36,7 @@ public abstract class Entity implements ResourceUri, Comparable<Entity> {
     protected abstract int getRegexIdGroup();
 
     /**
-     * The regular expression describing the URI prefix it should match with.
+     * The String describing the URI prefix it should match with.
      * @return
      */
     protected abstract String getUriPrefix();
@@ -110,23 +110,9 @@ public abstract class Entity implements ResourceUri, Comparable<Entity> {
         this.name = requireNonNull(name);
     }
 
-    public Entity(URI uri, String id, String name) throws InvalidStringFormatException {
-        this.id = retrieveIdFromString(requireNonNull(id));
-        this.name = requireNonNull(name);
-        this.uri = requireNonNull(uri);
-        validateUri(this.uri.toString());
-        checkIfIdAndUriAreEqual(this.id, this.uri);
-    }
-
     private void validateUri(String uriString) {
         if(!uriString.startsWith(getUriPrefix())) {
             throw new IllegalArgumentException("The URI \"" + uriString + "\" does not start with: " + getUriPrefix());
-        }
-    }
-
-    private void checkIfIdAndUriAreEqual(String id, URI uri) {
-        if(!uri.toString().endsWith(id)) {
-            throw new IllegalArgumentException("The URI does not refer to the same Entity as the id.");
         }
     }
 

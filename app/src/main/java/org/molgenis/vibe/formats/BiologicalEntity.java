@@ -32,8 +32,4 @@ public abstract class BiologicalEntity extends Entity {
     public BiologicalEntity(URI uri, String name) {
         super(uri, name);
     }
-
-    public BiologicalEntity(URI uri, String id, String name) throws InvalidStringFormatException {
-        super(uri, id, name);
-    }
 }
