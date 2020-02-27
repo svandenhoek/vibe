@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -25,27 +25,27 @@ public class GeneTester {
         testIfValid(gene);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Gene("Ncbigene:1234", symbol);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
         new Gene("nCbigene:1234", symbol);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
         new Gene("ncbi:1234", symbol);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
         new Gene("1234", symbol);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
         new Gene("http://identifiers.org/ncbigene/1234", symbol);
     }
@@ -56,7 +56,7 @@ public class GeneTester {
         testIfValid(gene);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void useInvalidUri() {
         new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol);
     }
@@ -76,12 +76,12 @@ public class GeneTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(actualOrder, expectedOrder);
+        Assert.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(Gene gene) {
-        Assert.assertEquals(gene.getId(), "1234");
-        Assert.assertEquals(gene.getFormattedId(), "ncbigene:1234");
-        Assert.assertEquals(gene.getUri(), URI.create("http://identifiers.org/ncbigene/1234"));
+        Assert.assertEquals("1234", gene.getId());
+        Assert.assertEquals("ncbigene:1234", gene.getFormattedId());
+        Assert.assertEquals(URI.create("http://identifiers.org/ncbigene/1234"), gene.getUri());
     }
 }

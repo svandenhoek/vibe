@@ -1,28 +1,15 @@
 package org.molgenis.vibe;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public enum TestData {
-    TTL("disgenet_mini/") {
-        @Override
-        public String[] getFiles() {
-            return filterFileArray(super.getFiles(), ".ttl", ".owl");
-        }
-    },
-    TTL_NO_ONTOLOGY("disgenet_mini/") {
-        @Override
-        public String[] getFiles() {
-            return filterFileArray(super.getFiles(), ".ttl");
-        }
-    },
-    ONTOLOGY_FILE("hpo/") {
+    HPO_OWL("") {
         @Override
         public String[] getFiles() {
             return new String[]{getDir() + "hp.owl"};
         }
     },
+    TDB("tdb/"),
     NON_EXISTING("") {
         @Override
         public String[] getFiles() {
@@ -34,9 +21,12 @@ public enum TestData {
             return super.getDir() + "nonExistingDir/";
         }
     },
-    TDB_MINI_NO_ONTOLOGY("disgenet_mini_tdb_no_ontology/"),
-    TDB_MINI("disgenet_mini_tdb/"),
-    TDB_FULL("disgenet_full_tdb/");
+    EXISTING_TSV("") {
+        @Override
+        public String[] getFiles() {
+            return new String[]{super.getDir() + "output.tsv"};
+        }
+    };
 
     /**
      * ClassLoader object to view test resource files. Test files can be retrieved using {@code getResource()}, where an
@@ -58,7 +48,6 @@ public enum TestData {
      * Returns full path to where the test directory is located.
      * @return {@link String}
      * @exception NullPointerException if directories were not present in the resources folder before running the tests
-     * (run the TestNGPreprocessing.sh BEFORE running any tests!)
      */
     @SuppressWarnings("unchecked")
     public String getDir() {
@@ -72,20 +61,5 @@ public enum TestData {
             fileNames[i] = getDir() + "/" + fileNames[i];
         }
         return fileNames;
-    }
-
-    private static String[] filterFileArray(String[] fileNames, String... fileTypeFilter) {
-        List<String> filteredFileNames = new ArrayList<>();
-
-        for(int i = 0; i < fileNames.length; i++) {
-            String fileName = fileNames[i];
-            for(int j = 0; j < fileTypeFilter.length; j++) {
-                if( fileName.endsWith(fileTypeFilter[j]) ) {
-                    filteredFileNames.add(fileName);
-                }
-            }
-        }
-
-        return filteredFileNames.toArray(new String[filteredFileNames.size()]);
     }
 }

@@ -1,13 +1,12 @@
 package org.molgenis.vibe.tdb_processing;
 
+import org.junit.Assert;
+import org.junit.BeforeClass;
+import org.junit.Test;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
-import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.Test;
 
 import java.io.IOException;
 import java.net.URI;
@@ -23,18 +22,11 @@ import java.util.*;
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
 public class GenesForPhenotypeRetrieverTester {
-    private ModelReader reader;
-    private GenesForPhenotypeRetriever retriever;
+    private static ModelReader reader;
 
     @BeforeClass
-    public void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
-
-    }
-
-    @AfterMethod(alwaysRun = true)
-    public void afterMethod() {
-        retriever = null;
+    public static void beforeClass() throws IOException {
+        reader = new TripleStoreDbReader(TestData.TDB.getDir());
     }
 
     @Test
@@ -138,11 +130,11 @@ public class GenesForPhenotypeRetrieverTester {
         GeneDiseaseCollection expectedCollection = new GeneDiseaseCollection();
         expectedCollection.addAll(Arrays.asList(geneDiseaseCombinations));
 
-        retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
+        GenesForPhenotypeRetriever retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 
-        assertGeneDiseaseCombination(actualCollection, expectedCollection);
+        assertGeneDiseaseCombination(expectedCollection, actualCollection);
     }
 
     /**
@@ -158,20 +150,19 @@ public class GenesForPhenotypeRetrieverTester {
      *  guarantees concerning the order in which the elements are returned
      *  (unless this collection is an instance of some class that provides a
      *  guarantee).</div>
-     * @param actualCollection
      * @param expectedCollection
+     * @param actualCollection
      */
-    private void assertGeneDiseaseCombination(GeneDiseaseCollection actualCollection, GeneDiseaseCollection expectedCollection) {
-        Assert.assertEquals(actualCollection.getGeneDiseaseCombinations(), expectedCollection.getGeneDiseaseCombinations());
-        Assert.assertEquals(actualCollection.getDiseases(), expectedCollection.getDiseases());
-        Assert.assertEquals(actualCollection.getGenes(), expectedCollection.getGenes());
+    private void assertGeneDiseaseCombination(GeneDiseaseCollection expectedCollection, GeneDiseaseCollection actualCollection) {
+        Assert.assertEquals(expectedCollection.getGeneDiseaseCombinations(), actualCollection.getGeneDiseaseCombinations());
+        Assert.assertEquals(expectedCollection.getDiseases(), actualCollection.getDiseases());
+        Assert.assertEquals(expectedCollection.getGenes(), actualCollection.getGenes());
 
         // Above assert only compares equals. Certain classes might store additional data that should not play a role
         // when validating equality but should be checked on whether they were loaded from the database correctly. An
         // example of this would be a score belonging to a Gene. While it should not make it a "different" Gene, it does
         // describe the Gene. For this reason, toString() is used as extra validation (with the assumption that these
         // extra fields are mentioned in toString()).
-        Assert.assertEquals(actualCollection.getGeneDiseaseCombinationsOrdered().toString(),
-                expectedCollection.getGeneDiseaseCombinationsOrdered().toString());
+        Assert.assertEquals(expectedCollection.getGeneDiseaseCombinationsOrdered().toString(), actualCollection.getGeneDiseaseCombinationsOrdered().toString());
     }
 }

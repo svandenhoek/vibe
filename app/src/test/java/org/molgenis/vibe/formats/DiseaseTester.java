@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,27 +23,27 @@ public class DiseaseTester {
         testIfValid(disease);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Disease("Umls:C0123456");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
         new Disease("uMls:C0123456");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
         new Disease("ulms:C0123456");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
         new Disease("C0123456");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
         new Disease("http://linkedlifedata.com/resource/umls/id/C0123456");
     }
@@ -54,7 +54,7 @@ public class DiseaseTester {
         testIfValid(disease);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void useInvalidUri() {
         new Disease(URI.create("http://linkedlifedata.com/resource/umls/C0123456"));
     }
@@ -74,12 +74,12 @@ public class DiseaseTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(actualOrder, expectedOrder);
+        Assert.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(Disease disease) {
-        Assert.assertEquals(disease.getId(), "C0123456");
-        Assert.assertEquals(disease.getFormattedId(), "umls:C0123456");
-        Assert.assertEquals(disease.getUri(), URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"));
+        Assert.assertEquals("C0123456", disease.getId());
+        Assert.assertEquals("umls:C0123456", disease.getFormattedId());
+        Assert.assertEquals(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"), disease.getUri());
     }
 }

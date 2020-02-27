@@ -1,87 +1,63 @@
 package org.molgenis.vibe.formats;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.formats.GeneDiseaseCombinationType;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 public class GeneDiseaseCombinationTypeTester {
     @Test
-    public void useValidSioWithFullPrefix() throws InvalidStringFormatException {
+    public void useValidSioWithPrefixLowerCase() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("sio:SIO_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
+        Assert.assertEquals("SIO_000983", type.getId());
+        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
     }
 
     @Test
-    public void useValidSioWithFullPrefixCaseReversed() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("SIO:sio_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
-    }
-
-    @Test
-    public void useValidSioWithFullPrefixUpperCase() throws InvalidStringFormatException {
+    public void useValidSioWithPrefixUpperCase() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("SIO:SIO_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
+        Assert.assertEquals("SIO_000983", type.getId());
+        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
+    }
+
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithPrefixLowerCase1() {
+        GeneDiseaseCombinationType.retrieve("sio:sio_000983");
+    }
+
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithPrefixUpperCase1() {
+        GeneDiseaseCombinationType.retrieve("SIO:sio_000983");
+    }
+
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithPrefixLowerCase2() {
+        GeneDiseaseCombinationType.retrieve("sio:SIO_1");
+    }
+
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithPrefixUpperCase2() {
+        GeneDiseaseCombinationType.retrieve("SIO:SIO_1");
     }
 
     @Test
-    public void useValidSioWithFullPrefixLowerCase() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("sio:sio_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
-    }
-
-    @Test
-    public void useValidSioWithPartialPrefix() throws InvalidStringFormatException {
+    public void useValidSioWithoutPrefix() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("SIO_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
+        Assert.assertEquals("SIO_000983", type.getId());
+        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
     }
 
-    @Test
-    public void useValidSioWithPartialPrefixLowerCase() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("sio_000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithoutPrefix1() {
+        GeneDiseaseCombinationType.retrieve("sio_000983");
     }
 
-    @Test
-    public void useValidSioWithWithoutPrefix() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("000983");
-        Assert.assertEquals(type.getId(), "000983");
-        Assert.assertEquals(type.getFormattedId(), "sio:SIO_000983");
+    @Test(expected = InvalidStringFormatException.class)
+    public void useInvalidSioWithoutPrefix2() {
+        GeneDiseaseCombinationType.retrieve("SIO_1");
     }
 
-    @Test(expectedExceptions = EnumConstantNotPresentException.class)
+    @Test(expected = EnumConstantNotPresentException.class)
     public void useNonExistingSio() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("999999");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidSioWithInvalidPrefix1() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("SII_000983");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useValidSioWithInvalidPrefix2() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("sii:SIO_000983");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useTooShortWithFullPrefix() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("sio:SIO_0012");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useTooShortWithPartialPrefix() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("SIO_0012");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useTooShortWithoutPrefix() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("0012");
+        GeneDiseaseCombinationType.retrieve("SIO_999999");
     }
 }

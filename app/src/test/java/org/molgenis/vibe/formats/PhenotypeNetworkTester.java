@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
-import org.testng.Assert;
-import org.testng.annotations.BeforeMethod;
-import org.testng.annotations.Test;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
 
 import java.util.*;
 
@@ -18,9 +18,11 @@ public class PhenotypeNetworkTester {
     private PhenotypeNetwork phenotypeNetwork;
 
 
-    @BeforeMethod
+    @Before
     public void beforeMethod() {
         phenotypeNetwork = new PhenotypeNetwork(phenotypes[0]);
+
+        // The network as should be created within the class itself with as source phenotypes[0].
         expectedNetwork = new HashMap<>();
         HashSet<Phenotype> phenotypesDistance0 = new HashSet<>();
         phenotypesDistance0.add(phenotypes[0]);
@@ -35,9 +37,9 @@ public class PhenotypeNetworkTester {
         phenotypeNetwork.add(expectedNetwork.get(1), 1);
         phenotypeNetwork.add(expectedNetwork.get(2), 2);
 
-        Assert.assertEquals(phenotypeNetwork.getDistances(), expectedNetwork.keySet());
+        Assert.assertEquals(expectedNetwork.keySet(), phenotypeNetwork.getDistances());
         for(Integer distance : phenotypeNetwork.getDistances()) {
-            Assert.assertEquals(phenotypeNetwork.getByDistance(distance), expectedNetwork.get(distance));
+            Assert.assertEquals(expectedNetwork.get(distance), phenotypeNetwork.getByDistance(distance));
         }
     }
 
@@ -49,11 +51,15 @@ public class PhenotypeNetworkTester {
         phenotypeNetwork.add(phenotypes[1], 3); // 9 should be replaced
         phenotypeNetwork.add(phenotypes[1], 6); // 3 should not be replaced
 
-        Assert.assertEquals(phenotypeNetwork.getDistance(phenotypes[1]), 3);
+        Assert.assertEquals(3, phenotypeNetwork.getDistance(phenotypes[1]));
     }
 
-    //todo: more tests
-
+    /**
+     * Adds phenotypes with the given distance to the {@code expectedNetwork}.
+     * @param phenotypePositions the positions in {@code phenotypes} of the phenotypes that should be added to the
+     * {@code expectedNetwork}
+     * @param distance the distance to which the phenotypes should be added
+     */
     private void addExpectedPhenotypesUsingDistance(int[] phenotypePositions, int distance) {
         HashSet<Phenotype> phenotypesForDistance = new HashSet<>();
         for(int i : phenotypePositions) {

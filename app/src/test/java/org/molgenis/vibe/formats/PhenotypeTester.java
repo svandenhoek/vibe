@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,27 +23,27 @@ public class PhenotypeTester {
         testIfValid(phenotype);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new Phenotype("Hp:0012345");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
         new Phenotype("hP:0012345");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
         new Phenotype("ph:0012345");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
         new Phenotype("0012345");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
         new Phenotype("http://purl.obolibrary.org/obo/HP_0012345");
     }
@@ -54,19 +54,9 @@ public class PhenotypeTester {
         testIfValid(phenotype);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void useInvalidUri() {
         new Phenotype(URI.create("http://purl.obolibrary.org/obo/id/HP_0012345"));
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useTooShortPhenotypeIdWithPrefix() throws InvalidStringFormatException {
-        new Phenotype("hp:0012");
-    }
-
-    @Test(expectedExceptions = InvalidStringFormatException.class)
-    public void useTooShortPhenotypeIdWithoutPrefix() throws InvalidStringFormatException {
-        new Phenotype("0012");
     }
 
     @Test
@@ -84,12 +74,23 @@ public class PhenotypeTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(actualOrder, expectedOrder);
+        Assert.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(Phenotype phenotype) {
-        Assert.assertEquals(phenotype.getId(), "0012345");
-        Assert.assertEquals(phenotype.getFormattedId(), "hp:0012345");
-        Assert.assertEquals(phenotype.getUri(), URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
+        Assert.assertEquals("0012345", phenotype.getId());
+        Assert.assertEquals("hp:0012345", phenotype.getFormattedId());
+        Assert.assertEquals(URI.create("http://purl.obolibrary.org/obo/HP_0012345"), phenotype.getUri());
+    }
+
+    // Specific to Phenotypes as number of digits must be an exact number.
+    @Test(expected = InvalidStringFormatException.class)
+    public void useTooShortPhenotypeIdWithPrefix() throws InvalidStringFormatException {
+        new Phenotype("hp:0012");
+    }
+
+    @Test(expected = InvalidStringFormatException.class)
+    public void useTooShortPhenotypeIdWithoutPrefix() throws InvalidStringFormatException {
+        new Phenotype("0012");
     }
 }

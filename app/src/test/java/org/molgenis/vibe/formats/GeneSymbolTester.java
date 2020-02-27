@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
+import org.junit.Assert;
+import org.junit.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -23,27 +23,27 @@ public class GeneSymbolTester {
         testIfValid(symbol);
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
         new GeneSymbol("Hgnc:AB-123");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
         new GeneSymbol("hGnc:AB-123");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
         new GeneSymbol("hg:AB-123");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
         new GeneSymbol("AB-123");
     }
 
-    @Test(expectedExceptions = InvalidStringFormatException.class)
+    @Test(expected = InvalidStringFormatException.class)
     public void useUriAsIdInput() throws InvalidStringFormatException {
         new GeneSymbol("http://identifiers.org/hgnc.symbol/AB-123");
     }
@@ -54,7 +54,7 @@ public class GeneSymbolTester {
         testIfValid(symbol);
     }
 
-    @Test(expectedExceptions = IllegalArgumentException.class)
+    @Test(expected = IllegalArgumentException.class)
     public void useInvalidUri() {
         new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123"));
     }
@@ -74,12 +74,12 @@ public class GeneSymbolTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(actualOrder, expectedOrder);
+        Assert.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(GeneSymbol symbol) {
-        Assert.assertEquals(symbol.getId(), "AB-123");
-        Assert.assertEquals(symbol.getFormattedId(), "hgnc:AB-123");
-        Assert.assertEquals(symbol.getUri(), URI.create("http://identifiers.org/hgnc.symbol/AB-123"));
+        Assert.assertEquals("AB-123", symbol.getId());
+        Assert.assertEquals("hgnc:AB-123", symbol.getFormattedId());
+        Assert.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/AB-123"), symbol.getUri());
     }
 }

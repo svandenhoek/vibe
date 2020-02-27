@@ -1,14 +1,11 @@
 package org.molgenis.vibe.tdb_processing.query_string_creation;
 
 import org.apache.jena.query.ResultSetFormatter;
+import org.junit.*;
 import org.molgenis.vibe.TestData;
-import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.tdb_processing.QueryTester;
 import org.molgenis.vibe.tdb_processing.query_runner.QueryRunnerRewindable;
-import org.testng.Assert;
-import org.testng.annotations.*;
 
 import java.io.IOException;
 import java.util.*;
@@ -22,36 +19,23 @@ import java.util.*;
  * The full DisGeNET RDF dataset can be downloaded from: http://rdf.disgenet.org/download/
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
-public class QueryStringGeneratorTester extends QueryTester {
-    private static final String delimiter = " - ";
-
-    private ModelReader reader;
-
+public class QueryStringGeneratorTester {
+    private static ModelReader reader;
     private QueryRunnerRewindable runner;
 
     @BeforeClass
-    public void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB_FULL.getDir());
+    public static void beforeClass() throws IOException {
+        reader = new TripleStoreDbReader(TestData.TDB.getDir());
     }
 
     @AfterClass
-    public void afterClass() {
+    public static void afterClass() {
         reader.close();
     }
 
-    @AfterMethod
+    @After
     public void afterMethod() {
         runner.close();
-    }
-
-    @Test(groups = {"noTest"})
-    public void showSourcesQuery() {
-        System.out.println(QueryStringGenerator.getSources().getQuery());
-    }
-
-    @Test(groups = {"noTest"})
-    public void showGenesForPhenotypeQuery() {
-        System.out.println(QueryStringGenerator.getGenesForPhenotypes(new HashSet<>(Arrays.asList(new Phenotype("hp:0007469")))).getQuery());
     }
 
     @Test

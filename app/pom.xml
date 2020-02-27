@@ -215,10 +215,6 @@
                 <version>3.0.0-M3</version>
                 <configuration>
                     <argLine>-Xmx1g</argLine>
-                    <suiteXmlFiles>
-                        <suiteXmlFile>testng.xml</suiteXmlFile>
-                    </suiteXmlFiles>
-                    <groups>ValidationTests</groups>
                 </configuration>
             </plugin>
 
@@ -322,9 +318,9 @@
         </dependency>
 
         <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.0.0</version>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.13</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
