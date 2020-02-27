@@ -113,6 +113,8 @@ public abstract class Entity implements ResourceUri, Comparable<Entity> {
     private void validateUri(String uriString) {
         if(!uriString.startsWith(getUriPrefix())) {
             throw new IllegalArgumentException("The URI \"" + uriString + "\" does not start with: " + getUriPrefix());
+        } else if(uriString.length() == getUriPrefix().length()) {
+            throw new IllegalArgumentException("The URI \"" + uriString + "\" does not contain anything after the prefix.");
         }
     }
 
