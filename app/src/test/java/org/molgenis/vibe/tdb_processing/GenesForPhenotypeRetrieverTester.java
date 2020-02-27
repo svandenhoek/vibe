@@ -1,5 +1,6 @@
 package org.molgenis.vibe.tdb_processing;
 
+import org.junit.AfterClass;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -27,6 +28,13 @@ public class GenesForPhenotypeRetrieverTester {
     @BeforeClass
     public static void beforeClass() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB.getDir());
+    }
+
+    @AfterClass
+    public static void afterClass() {
+        if(reader != null) {
+            reader.close();
+        }
     }
 
     @Test
