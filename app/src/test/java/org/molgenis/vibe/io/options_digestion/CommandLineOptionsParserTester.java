@@ -53,19 +53,10 @@ public class CommandLineOptionsParserTester {
 
     @Test
     public void noArguments() throws IOException, ParseException {
-        String[] args = stringArraysMerger();
+        String[] args = stringArraysMerger(new String[]{""});
         CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
 
         Assert.assertEquals(RunMode.NONE, appOptions.getRunMode());
-    }
-
-    @Test
-    public void verboseSet() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VERBOSE);
-        CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
-
-        Assert.assertEquals(RunMode.NONE, appOptions.getRunMode());
-        Assert.assertEquals(true, appOptions.isVerbose());
     }
 
     @Test
@@ -74,6 +65,19 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser cmdParser = testWithErrorPrint(args);
 
         Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
+        Assert.assertEquals(false, cmdParser.isVerbose());
+        Assert.assertEquals(FileOutputWriter.class, cmdParser.getOutputWriter().getClass());
+        Assert.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), cmdParser.getOutputWriter().target());
+        Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
+    }
+
+    @Test
+    public void validSingleHpoWithoutOntologyUsingDefaultOutputFileWithVerbose() throws IOException, ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_HPO_SINGLE, VALID_OUTPUT_FILE, VERBOSE);
+        CommandLineOptionsParser cmdParser = new CommandLineOptionsParser(args);
+
+        Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
+        Assert.assertEquals(true, cmdParser.isVerbose());
         Assert.assertEquals(FileOutputWriter.class, cmdParser.getOutputWriter().getClass());
         Assert.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), cmdParser.getOutputWriter().target());
         Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
