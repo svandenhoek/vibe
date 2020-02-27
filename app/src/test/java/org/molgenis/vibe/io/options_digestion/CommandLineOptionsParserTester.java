@@ -249,12 +249,9 @@ public class CommandLineOptionsParserTester {
     private CommandLineOptionsParser testWithErrorPrint(String[] args) throws IOException, ParseException {
         try {
             return(new CommandLineOptionsParser(args));
-        } catch(IOException e) {
+        } catch(Exception e) {
             System.out.println(e.getMessage());
-            throw new IOException(e);
-        } catch (ParseException e) {
-            System.out.println(e.getMessage());
-            throw new ParseException(e.getMessage());
+            throw e;
         }
     }
 }
