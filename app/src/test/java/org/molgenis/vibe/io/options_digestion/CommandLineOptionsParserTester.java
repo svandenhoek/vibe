@@ -7,9 +7,7 @@ import org.junit.Assert;
 import org.junit.Test;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.RunMode;
-import org.molgenis.vibe.io.output.format.gene_prioritized.OrderedGenesOutputFormatWriter;
-import org.molgenis.vibe.io.output.format.gene_prioritized.ResultsPerGeneSeparatedValuesOutputFormatWriterUsingIds;
-import org.molgenis.vibe.io.output.format.gene_prioritized.ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris;
+import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.io.output.target.FileOutputWriter;
 import org.molgenis.vibe.io.output.target.StdoutOutputWriter;
 
@@ -76,8 +74,9 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser cmdParser = testWithErrorPrint(args);
 
         Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
-        Assert.assertEquals(ResultsPerGeneSeparatedValuesOutputFormatWriterUsingIds.class, cmdParser.getOutputWriter());
+        Assert.assertEquals(FileOutputWriter.class, cmdParser.getOutputWriter().getClass());
         Assert.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), cmdParser.getOutputWriter().target());
+        Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
     }
 
     @Test
@@ -86,8 +85,9 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser cmdParser = testWithErrorPrint(args);
 
         Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
-        Assert.assertEquals(ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris.class, cmdParser.getOutputWriter());
+        Assert.assertEquals(FileOutputWriter.class, cmdParser.getOutputWriter().getClass());
         Assert.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), cmdParser.getOutputWriter().target());
+        Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_URI, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
     }
 
     @Test
@@ -96,8 +96,9 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser cmdParser = testWithErrorPrint(args);
 
         Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
-        Assert.assertEquals(OrderedGenesOutputFormatWriter.class, cmdParser.getOutputWriter());
+        Assert.assertEquals(FileOutputWriter.class, cmdParser.getOutputWriter().getClass());
         Assert.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), cmdParser.getOutputWriter().target());
+        Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.SIMPLE, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
     }
 
     @Test
@@ -106,8 +107,9 @@ public class CommandLineOptionsParserTester {
         CommandLineOptionsParser cmdParser = testWithErrorPrint(args);
 
         Assert.assertEquals(RunMode.GENES_FOR_PHENOTYPES, cmdParser.getRunMode());
-        Assert.assertEquals(ResultsPerGeneSeparatedValuesOutputFormatWriterUsingIds.class, cmdParser.getOutputWriter());
+        Assert.assertEquals(StdoutOutputWriter.class, cmdParser.getOutputWriter().getClass());
         Assert.assertEquals(new StdoutOutputWriter().target(), cmdParser.getOutputWriter().target()); // StdoutOutputWriter().target() == "stdout"
+        Assert.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, cmdParser.getGenePrioritizedOutputFormatWriterFactory());
     }
 
     @Test
