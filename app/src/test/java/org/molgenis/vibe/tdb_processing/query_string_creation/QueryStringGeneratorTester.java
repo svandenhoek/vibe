@@ -30,7 +30,9 @@ public class QueryStringGeneratorTester {
 
     @AfterClass
     public static void afterClass() {
-        reader.close();
+        if(reader != null) {
+            reader.close();
+        }
     }
 
     @After
