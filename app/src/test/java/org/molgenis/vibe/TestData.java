@@ -10,7 +10,7 @@ public enum TestData {
     TDB {
         @Override
         public String getName() {
-            return "TDB";
+            return "tdb";
         }
     },
     NON_EXISTING_FILE {
