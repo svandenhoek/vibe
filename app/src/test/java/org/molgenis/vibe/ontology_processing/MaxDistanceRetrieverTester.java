@@ -1,9 +1,9 @@
 package org.molgenis.vibe.ontology_processing;
 
 import org.apache.jena.ontology.OntModel;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetwork;
@@ -27,9 +27,9 @@ import java.util.*;
 public class MaxDistanceRetrieverTester {
     private static OntModel model;
 
-    @BeforeClass
-    public static void beforeClass() {
-        OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFiles()[0]);
+    @BeforeAll
+    public static void beforeAll() {
+        OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPath());
         model = reader.getModel();
     }
 
@@ -104,6 +104,6 @@ public class MaxDistanceRetrieverTester {
     public void testRetriever(List<Phenotype> startPhenotypes, int maxDistance, PhenotypeNetworkCollection expectedPhenotypeNetworkCollection) {
         PhenotypesRetriever retriever = new MaxDistanceRetriever(model, startPhenotypes, maxDistance);
         retriever.run();
-        Assert.assertEquals(expectedPhenotypeNetworkCollection, retriever.getPhenotypeNetworkCollection());
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, retriever.getPhenotypeNetworkCollection());
     }
 }

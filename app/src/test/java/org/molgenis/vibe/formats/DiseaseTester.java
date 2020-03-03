@@ -1,7 +1,7 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
@@ -12,40 +12,40 @@ import java.util.List;
 
 public class DiseaseTester {
     @Test
-    public void useValidIdWithLowercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithLowercasePrefix() {
         Disease disease = new Disease("umls:C0123456");
         testIfValid(disease);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithUppercasePrefix() {
         Disease disease = new Disease("UMLS:C0123456");
         testIfValid(disease);
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        new Disease("Umls:C0123456");
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix1() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("Umls:C0123456") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        new Disease("uMls:C0123456");
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix2() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("uMls:C0123456") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new Disease("ulms:C0123456");
+    @Test
+    public void useValidIdWithInvalidPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("ulms:C0123456") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
-        new Disease("C0123456");
+    @Test
+    public void useValidIdWithoutPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("C0123456") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useUriAsIdInput() throws InvalidStringFormatException {
-        new Disease("http://linkedlifedata.com/resource/umls/id/C0123456");
+    @Test
+    public void useUriAsIdInput() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("http://linkedlifedata.com/resource/umls/id/C0123456") );
     }
 
     @Test
@@ -54,9 +54,9 @@ public class DiseaseTester {
         testIfValid(disease);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void useInvalidUri() {
-        new Disease(URI.create("http://linkedlifedata.com/resource/umls/C0123456"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Disease(URI.create("http://linkedlifedata.com/resource/umls/C0123456")) );
     }
 
     @Test
@@ -74,12 +74,14 @@ public class DiseaseTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(expectedOrder, actualOrder);
+        Assertions.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(Disease disease) {
-        Assert.assertEquals("C0123456", disease.getId());
-        Assert.assertEquals("umls:C0123456", disease.getFormattedId());
-        Assert.assertEquals(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"), disease.getUri());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("C0123456", disease.getId()),
+                () -> Assertions.assertEquals("umls:C0123456", disease.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"), disease.getUri())
+        );
     }
 }

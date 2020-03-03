@@ -1,6 +1,7 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
@@ -44,33 +45,33 @@ public class EntityTester {
         }
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void invalidIdWithoutPrefix() {
-        new EntityImpl("a");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("a") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void invalidIdWithPrefix() {
-        new EntityImpl("prefix:a");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("prefix:a") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void invalidPrefixWithValidId() {
-        new EntityImpl("invalid:1");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("invalid:1") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void invalidPrefixWithInValidId() {
-        new EntityImpl("invalid:a");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("invalid:a") );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void invalidUri() {
-        new EntityImpl(URI.create("https://test2.com/path/1"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test2.com/path/1")) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void uriMissingId() {
-        new EntityImpl(URI.create("https://test.com/path/"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test.com/path/")) );
     }
 }

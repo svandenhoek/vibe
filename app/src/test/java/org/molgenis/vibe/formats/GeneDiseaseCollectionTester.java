@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -11,8 +11,8 @@ public class GeneDiseaseCollectionTester {
     private static Gene[] genes;
     private static Disease[] diseases;
 
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         genes = new Gene[]{
                 new Gene("ncbigene:1111111", new GeneSymbol("hgnc:AAA")),
                 new Gene("ncbigene:2222222", new GeneSymbol("hgnc:BBB"))
@@ -42,7 +42,7 @@ public class GeneDiseaseCollectionTester {
         collection.addAll(Arrays.asList(gdcs));
 
         // Validate order.
-        Assert.assertEquals(new ArrayList<>(Arrays.asList(gdcs[4],gdcs[2],gdcs[3],gdcs[5])), collection.getByGeneOrderedByGdaScore(genes[1]));
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList(gdcs[4],gdcs[2],gdcs[3],gdcs[5])), collection.getByGeneOrderedByGdaScore(genes[1]));
     }
 
     @Test
@@ -51,6 +51,6 @@ public class GeneDiseaseCollectionTester {
         collection.addAll(Arrays.asList(gdcs));
 
         // Validate order.
-        Assert.assertEquals(new ArrayList<>(Arrays.asList(gdcs[2],gdcs[1])), collection.getByDiseaseOrderedByGdaScore(diseases[1]));
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList(gdcs[2],gdcs[1])), collection.getByDiseaseOrderedByGdaScore(diseases[1]));
     }
 }

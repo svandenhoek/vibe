@@ -1,37 +1,37 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
 public class EnumTypeDefinerTester {
     @Test
     public void phenotypesRetrieverFactoryChildren() {
-        Assert.assertEquals(PhenotypesRetrieverFactory.CHILDREN, EnumTypeDefiner.retrieve("children", PhenotypesRetrieverFactory.class));
+        Assertions.assertEquals(PhenotypesRetrieverFactory.CHILDREN, EnumTypeDefiner.retrieve("children", PhenotypesRetrieverFactory.class));
     }
 
     @Test
     public void phenotypesRetrieverFactoryDistance() {
-        Assert.assertEquals(PhenotypesRetrieverFactory.DISTANCE, EnumTypeDefiner.retrieve("distance", PhenotypesRetrieverFactory.class));
+        Assertions.assertEquals(PhenotypesRetrieverFactory.DISTANCE, EnumTypeDefiner.retrieve("distance", PhenotypesRetrieverFactory.class));
     }
 
-    @Test(expected = EnumConstantNotPresentException.class)
+    @Test
     public void phenotypesRetrieverFactoryNonExistent() {
-        EnumTypeDefiner.retrieve("iDoNotExist", PhenotypesRetrieverFactory.class);
+        Assertions.assertThrows(EnumConstantNotPresentException.class, () -> EnumTypeDefiner.retrieve("iDoNotExist", PhenotypesRetrieverFactory.class) );
     }
 
-    @Test(expected = EnumConstantNotPresentException.class)
+    @Test
     public void enumDefinerDoubleNull() {
-        EnumTypeDefiner.retrieve(null, PhenotypesRetrieverFactory.class);
+        Assertions.assertThrows(EnumConstantNotPresentException.class, () -> EnumTypeDefiner.retrieve(null, PhenotypesRetrieverFactory.class) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void enumDefinerNullClass() {
-        EnumTypeDefiner.retrieve("distance", null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> EnumTypeDefiner.retrieve("distance", null) );
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void enumDefinerDoubleNullId() {
-        EnumTypeDefiner.retrieve(null, null);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> EnumTypeDefiner.retrieve(null, null) );
     }
 }

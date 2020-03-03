@@ -1,7 +1,7 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.*;
@@ -21,8 +21,10 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source2);
         geneDiseaseCombo.add(source1);
 
-        Assert.assertEquals(Integer.valueOf(3), geneDiseaseCombo.getSourcesCount().get(source1));
-        Assert.assertEquals(Integer.valueOf(1), geneDiseaseCombo.getSourcesCount().get(source2));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(Integer.valueOf(3), geneDiseaseCombo.getSourcesCount().get(source1)),
+                () -> Assertions.assertEquals(Integer.valueOf(1), geneDiseaseCombo.getSourcesCount().get(source2))
+        );
     }
 
     @Test
@@ -36,11 +38,13 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source2, source2Evidence.get(0));
         geneDiseaseCombo.add(source2, source2Evidence.get(1));
 
-        Assert.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source1));
-        Assert.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source2));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source1)),
+                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source2)),
 
-        Assert.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1));
-        Assert.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2));
+                () -> Assertions.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1)),
+                () -> Assertions.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2))
+        );
     }
 
     @Test
@@ -57,35 +61,37 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1);
         geneDiseaseCombo.add(source2, source2Evidence.get(1));
 
-        Assert.assertEquals(Integer.valueOf(3), geneDiseaseCombo.getSourcesCount().get(source1));
-        Assert.assertEquals(Integer.valueOf(4), geneDiseaseCombo.getSourcesCount().get(source2));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(Integer.valueOf(3), geneDiseaseCombo.getSourcesCount().get(source1)),
+                () -> Assertions.assertEquals(Integer.valueOf(4), geneDiseaseCombo.getSourcesCount().get(source2)),
 
-        Assert.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1));
-        Assert.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2));
+                () -> Assertions.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1)),
+                () -> Assertions.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2))
+        );
     }
 
     @Test
     public void retrieveCountsWhenNothingIsStored() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
-        Assert.assertEquals(new HashMap<>(), geneDiseaseCombo.getSourcesCount());
+        Assertions.assertEquals(new HashMap<>(), geneDiseaseCombo.getSourcesCount());
     }
 
     @Test
     public void retrieveSourcesWithEvidenceWhenNothingIsStored() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
-        Assert.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithEvidence());
+        Assertions.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithEvidence());
     }
 
     @Test
     public void retrieveCountForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
-        Assert.assertEquals(0, geneDiseaseCombo.getCountForSource(source1));
+        Assertions.assertEquals(0, geneDiseaseCombo.getCountForSource(source1));
     }
 
     @Test
     public void retrieveEvidenceForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
-        Assert.assertEquals(null, geneDiseaseCombo.getEvidenceForSource(source1));
+        Assertions.assertEquals(null, geneDiseaseCombo.getEvidenceForSource(source1));
     }
 
     @Test
@@ -98,7 +104,7 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assert.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0),sourceEvidence.get(2),sourceEvidence.get(1))),
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0),sourceEvidence.get(2),sourceEvidence.get(1))),
                 geneDiseaseCombo.getAllEvidenceOrdered());
     }
 
@@ -112,7 +118,7 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assert.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0).toString(),sourceEvidence.get(2).toString(),sourceEvidence.get(1).toString())),
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0).toString(),sourceEvidence.get(2).toString(),sourceEvidence.get(1).toString())),
                 geneDiseaseCombo.getAllEvidenceOrderedStrings());
     }
 
@@ -126,7 +132,7 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assert.assertEquals(new HashSet<>(Arrays.asList("1","https://www.ncbi.nlm.nih.gov/pubmed/2", "3")),
+        Assertions.assertEquals(new HashSet<>(Arrays.asList("1","https://www.ncbi.nlm.nih.gov/pubmed/2", "3")),
                 geneDiseaseCombo.getAllEvidenceSimplified());
     }
 
@@ -140,7 +146,7 @@ public class GeneDiseaseCombinationTester {
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assert.assertEquals(new ArrayList<>(Arrays.asList("1","3","https://www.ncbi.nlm.nih.gov/pubmed/2")),
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList("1","3","https://www.ncbi.nlm.nih.gov/pubmed/2")),
                 geneDiseaseCombo.getAllEvidenceSimplifiedOrdered());
     }
 }

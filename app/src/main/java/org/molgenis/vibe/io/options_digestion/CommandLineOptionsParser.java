@@ -210,9 +210,13 @@ public class CommandLineOptionsParser extends OptionsParser {
                 setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
                 try {
                     setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
-                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
                 } catch (EnumConstantNotPresentException e) {
-                    errors.add(e.getMessage());
+                    errors.add(commandLine.getOptionValue("n") + " is not a valid HPO retrieval algorithm.");
+                }
+                try {
+                    setOntologyMaxDistance(commandLine.getOptionValue("m"));
+                } catch (IllegalArgumentException e) {
+                    errors.add(commandLine.getOptionValue("m") + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).");
                 }
             } else {
                 if (!commandLine.hasOption("w")) {

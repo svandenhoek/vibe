@@ -1,9 +1,9 @@
 package org.molgenis.vibe.tdb_processing;
 
-import org.junit.AfterClass;
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.AfterAll;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.input.ModelReader;
@@ -25,13 +25,13 @@ import java.util.*;
 public class GenesForPhenotypeRetrieverTester {
     private static ModelReader reader;
 
-    @BeforeClass
-    public static void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB.getDir());
+    @BeforeAll
+    public static void beforeAll() throws IOException {
+        reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    public static void afterAll() {
         if(reader != null) {
             reader.close();
         }
@@ -142,35 +142,6 @@ public class GenesForPhenotypeRetrieverTester {
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 
-        assertGeneDiseaseCombination(expectedCollection, actualCollection);
-    }
-
-    /**
-     * Compares if the actual collection is correct. Note that TestNG assumes a {@link Collection} is sorted (it has
-     * {@link Map} and {@link Set} specific methods but others will de defaulted to the {@link Collection} method instead
-     * of having their specific methods. For this reason, a direct comparisong using Assert.assertEquals could result in
-     * a fail due to no guarantee is given in {@link BiologicalEntityCollection} that the iterator returns a sorted {@link Iterator}.
-     * <br /><br />
-     * To cite <A href="https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html">https://docs.oracle.com/javase/8/docs/api/java/util/Collection.html</A>:
-     *
-     * <pre><a href="../../java/util/Iterator.html" title="interface in java.util">Iterator</a>&lt;<a href="../../java/util/Collection.html" title="type parameter in Collection">E</a>&gt;&nbsp;iterator()</pre>
-     * <div class="block">Returns an iterator over the elements in this collection.  There are no
-     *  guarantees concerning the order in which the elements are returned
-     *  (unless this collection is an instance of some class that provides a
-     *  guarantee).</div>
-     * @param expectedCollection
-     * @param actualCollection
-     */
-    private void assertGeneDiseaseCombination(GeneDiseaseCollection expectedCollection, GeneDiseaseCollection actualCollection) {
-        Assert.assertEquals(expectedCollection.getGeneDiseaseCombinations(), actualCollection.getGeneDiseaseCombinations());
-        Assert.assertEquals(expectedCollection.getDiseases(), actualCollection.getDiseases());
-        Assert.assertEquals(expectedCollection.getGenes(), actualCollection.getGenes());
-
-        // Above assert only compares equals. Certain classes might store additional data that should not play a role
-        // when validating equality but should be checked on whether they were loaded from the database correctly. An
-        // example of this would be a score belonging to a Gene. While it should not make it a "different" Gene, it does
-        // describe the Gene. For this reason, toString() is used as extra validation (with the assumption that these
-        // extra fields are mentioned in toString()).
-        Assert.assertEquals(expectedCollection.getGeneDiseaseCombinationsOrdered().toString(), actualCollection.getGeneDiseaseCombinationsOrdered().toString());
+        Assertions.assertEquals(expectedCollection, actualCollection);
     }
 }

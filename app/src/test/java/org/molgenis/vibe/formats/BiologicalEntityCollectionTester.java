@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.BeforeClass;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 
 import java.net.URI;
 import java.util.*;
@@ -67,8 +67,8 @@ public class BiologicalEntityCollectionTester {
     }
 
     // Preparing data.
-    @BeforeClass
-    public static void beforeClass() {
+    @BeforeAll
+    public static void beforeAll() {
         array1 = new BiologicalEntityImpl[]{
                 new BiologicalEntityImpl("prefix:1"),
                 new BiologicalEntityImpl("prefix:2")
@@ -97,14 +97,14 @@ public class BiologicalEntityCollectionTester {
     public void addMultipleCombinationsAndRetrieveSingleOne() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
-        Assert.assertEquals(combinations[1], collection.get(combinations[1]));
+        Assertions.assertEquals(combinations[1], collection.get(combinations[1]));
     }
 
     @Test
     public void testGetT3Ordered() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
-        Assert.assertEquals(Arrays.asList(combinations), collection.getT3Ordered());
+        Assertions.assertEquals(Arrays.asList(combinations), collection.getT3Ordered());
     }
 
     @Test
@@ -113,7 +113,7 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
 
         Set<BiologicalEntityCombinationImpl> expectedOutput = new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5]));
-        Assert.assertEquals(expectedOutput, collection.getByT1(array1[1]));
+        Assertions.assertEquals(expectedOutput, collection.getByT1(array1[1]));
     }
 
     @Test
@@ -122,21 +122,21 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
 
         Set<BiologicalEntityCombinationImpl> expectedOutput = new HashSet<>(Arrays.asList(combinations[1],combinations[2]));
-        Assert.assertEquals(expectedOutput, collection.getByT2(array2[1]));
+        Assertions.assertEquals(expectedOutput, collection.getByT2(array2[1]));
     }
 
     @Test
     public void retrieveByNonExistingT1() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
-        Assert.assertEquals(null, collection.getByT1(array1[1]));
+        Assertions.assertEquals(null, collection.getByT1(array1[1]));
     }
 
     @Test
     public void retrieveByNonExistingT2() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
-        Assert.assertEquals(null, collection.getByT2(array2[1]));
+        Assertions.assertEquals(null, collection.getByT2(array2[1]));
     }
 
     @Test
@@ -146,9 +146,11 @@ public class BiologicalEntityCollectionTester {
 
         Set<BiologicalEntityCombinationImpl> expectedOutput = new HashSet<>(Arrays.asList(combinations[0]));
 
-        Assert.assertEquals(combinations[0], collection.get(combinations[0]));
-        Assert.assertEquals(expectedOutput, collection.getByT1(array1[0]));
-        Assert.assertEquals(expectedOutput, collection.getByT2(array2[0]));
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(combinations[0], collection.get(combinations[0])),
+                () -> Assertions.assertEquals(expectedOutput, collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(expectedOutput, collection.getByT2(array2[0]))
+        );
     }
 
     @Test
@@ -157,19 +159,21 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
         collection.remove(combinations[2]);
 
-        // Validate full collection.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1],combinations[3],combinations[4],combinations[5])), collection.getT3());
+        Assertions.assertAll(
+                // Validate full collection.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1],combinations[3],combinations[4],combinations[5])), collection.getT3()),
 
-        // Validate if grouped by gene is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1])), collection.getByT1(array1[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1]));
+                // Validate if grouped by gene is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1])), collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1])),
 
-        // Validate if grouped by disease is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[0])), collection.getByT2(array2[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[1])), collection.getByT2(array2[1]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]));
+                // Validate if grouped by disease is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[0])), collection.getByT2(array2[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[1])), collection.getByT2(array2[1])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]))
+        );
     }
 
     @Test
@@ -178,19 +182,21 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
         collection.remove(combinations[0]);
 
-        // Validate full collection.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[1],combinations[2],combinations[3],combinations[4],combinations[5])), collection.getT3());
+        Assertions.assertAll(
+                // Validate full collection.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[1],combinations[2],combinations[3],combinations[4],combinations[5])), collection.getT3()),
 
-        // Validate if grouped by gene is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[1])), collection.getByT1(array1[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1]));
+                // Validate if grouped by gene is correct.
+                () ->  Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[1])), collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1])),
 
-        // Validate if grouped by disease is correct.
-        Assert.assertEquals(null, collection.getByT2(array2[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[1],combinations[2])), collection.getByT2(array2[1]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]));
+                // Validate if grouped by disease is correct.
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[1],combinations[2])), collection.getByT2(array2[1])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]))
+        );
     }
 
     @Test
@@ -198,19 +204,21 @@ public class BiologicalEntityCollectionTester {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
 
-        // Validate if full collection is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations)), collection.getT3());
+        Assertions.assertAll(
+                // Validate if full collection is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations)), collection.getT3()),
 
-        // Validate if grouped by T1 is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1])), collection.getByT1(array1[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1]));
+                // Validate if grouped by T1 is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[0],combinations[1])), collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1])),
 
-        // Validate if grouped by T2 is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[0])), collection.getByT2(array2[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[1], combinations[2])), collection.getByT2(array2[1]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]));
+                // Validate if grouped by T2 is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[0])), collection.getByT2(array2[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[1], combinations[2])), collection.getByT2(array2[1])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]))
+        );
     }
 
     @Test
@@ -219,19 +227,21 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
         collection.removeAll(Arrays.asList(combinations[0],combinations[1]));
 
-        // Validate if full collection is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getT3());
+        Assertions.assertAll(
+                // Validate if full collection is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getT3()),
 
-        // Validate if grouped by T1 is correct.
-        Assert.assertEquals(null, collection.getByT1(array1[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1]));
+                // Validate if grouped by T1 is correct.
+                () -> Assertions.assertEquals(null, collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2],combinations[3],combinations[4],combinations[5])), collection.getByT1(array1[1])),
 
-        // Validate if grouped by T2 is correct.
-        Assert.assertEquals(null, collection.getByT2(array2[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT2(array2[1]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]));
+                // Validate if grouped by T2 is correct.
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT2(array2[1])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[3])), collection.getByT2(array2[2])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[4])), collection.getByT2(array2[3])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[5])), collection.getByT2(array2[4]))
+        );
     }
 
     @Test
@@ -240,18 +250,20 @@ public class BiologicalEntityCollectionTester {
         collection.addAll(Arrays.asList(combinations));
         collection.retainAll(Arrays.asList(combinations[2]));
 
-        // Validate if full collection is correct.
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getT3());
+        Assertions.assertAll(
+                // Validate if full collection is correct.
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getT3()),
 
-        // Validate if grouped by gene is correct.
-        Assert.assertEquals(null, collection.getByT1(array1[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT1(array1[1]));
+                // Validate if grouped by gene is correct.
+                () -> Assertions.assertEquals(null, collection.getByT1(array1[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT1(array1[1])),
 
-        // Validate if grouped by disease is correct.
-        Assert.assertEquals(null, collection.getByT2(array2[0]));
-        Assert.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT2(array2[1]));
-        Assert.assertEquals(null, collection.getByT2(array2[2]));
-        Assert.assertEquals(null, collection.getByT2(array2[3]));
-        Assert.assertEquals(null, collection.getByT2(array2[4]));
+                // Validate if grouped by disease is correct.
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[0])),
+                () -> Assertions.assertEquals(new HashSet<>(Arrays.asList(combinations[2])), collection.getByT2(array2[1])),
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[2])),
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[3])),
+                () -> Assertions.assertEquals(null, collection.getByT2(array2[4]))
+        );
     }
 }

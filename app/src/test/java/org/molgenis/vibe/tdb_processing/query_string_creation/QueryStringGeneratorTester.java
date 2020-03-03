@@ -1,11 +1,10 @@
 package org.molgenis.vibe.tdb_processing.query_string_creation;
 
-import org.apache.jena.query.ResultSetFormatter;
-import org.junit.*;
+import org.junit.jupiter.api.*;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.tdb_processing.query_runner.QueryRunnerRewindable;
+import org.molgenis.vibe.tdb_processing.query_runner.QueryRunner;
 
 import java.io.IOException;
 import java.util.*;
@@ -21,39 +20,36 @@ import java.util.*;
  */
 public class QueryStringGeneratorTester {
     private static ModelReader reader;
-    private QueryRunnerRewindable runner;
+    private QueryRunner runner;
 
-    @BeforeClass
-    public static void beforeClass() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB.getDir());
+    @BeforeAll
+    public static void beforeAll() throws IOException {
+        reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
     }
 
-    @AfterClass
-    public static void afterClass() {
+    @AfterAll
+    public static void afterAll() {
         if(reader != null) {
             reader.close();
         }
     }
 
-    @After
-    public void afterMethod() {
+    @AfterEach
+    public void afterEach() {
         runner.close();
     }
 
     @Test
     public void testSourcesUnique() {
         QueryString queryString = QueryStringGenerator.getSources();
-        runner = new QueryRunnerRewindable(reader.getModel(), queryString);
+        runner = new QueryRunner(reader.getModel(), queryString);
 
         Set<String> sources = new HashSet<>();
-
-        ResultSetFormatter.out(System.out, runner.getResultSet());
-        runner.reset();
 
         while(runner.hasNext()) {
             String source = runner.next().get("source").asResource().getURI();
             if(sources.contains(source)) {
-                Assert.fail("a source URI was found more than once");
+                Assertions.fail("a source URI was found more than once");
             }
             sources.add(source);
         }

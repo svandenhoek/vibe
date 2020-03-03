@@ -1,7 +1,7 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
@@ -14,40 +14,40 @@ public class GeneTester {
     private static final GeneSymbol symbol = new GeneSymbol("hgnc:ABC");
 
     @Test
-    public void useValidIdWithLowercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithLowercasePrefix() {
         Gene gene = new Gene("ncbigene:1234", symbol);
         testIfValid(gene);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithUppercasePrefix() {
         Gene gene = new Gene("NCBIGENE:1234", symbol);
         testIfValid(gene);
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        new Gene("Ncbigene:1234", symbol);
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix1() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("Ncbigene:1234", symbol) );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        new Gene("nCbigene:1234", symbol);
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix2() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("nCbigene:1234", symbol) );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new Gene("ncbi:1234", symbol);
+    @Test
+    public void useValidIdWithInvalidPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("ncbi:1234", symbol) );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
-        new Gene("1234", symbol);
+    @Test
+    public void useValidIdWithoutPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("1234", symbol) );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useUriAsIdInput() throws InvalidStringFormatException {
-        new Gene("http://identifiers.org/ncbigene/1234", symbol);
+    @Test
+    public void useUriAsIdInput() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("http://identifiers.org/ncbigene/1234", symbol) );
     }
 
     @Test
@@ -56,9 +56,9 @@ public class GeneTester {
         testIfValid(gene);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void useInvalidUri() {
-        new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol);
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol) );
     }
 
     @Test
@@ -76,12 +76,14 @@ public class GeneTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(expectedOrder, actualOrder);
+        Assertions.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(Gene gene) {
-        Assert.assertEquals("1234", gene.getId());
-        Assert.assertEquals("ncbigene:1234", gene.getFormattedId());
-        Assert.assertEquals(URI.create("http://identifiers.org/ncbigene/1234"), gene.getUri());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("1234", gene.getId()),
+                () -> Assertions.assertEquals("ncbigene:1234", gene.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/ncbigene/1234"), gene.getUri())
+        );
     }
 }

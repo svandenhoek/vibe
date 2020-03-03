@@ -1,63 +1,69 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 public class GeneDiseaseCombinationTypeTester {
     @Test
     public void useValidSioWithPrefixLowerCase() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("sio:SIO_000983");
-        Assert.assertEquals("SIO_000983", type.getId());
-        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SIO_000983", type.getId()),
+                () -> Assertions.assertEquals("sio:SIO_000983", type.getFormattedId())
+        );
     }
 
     @Test
     public void useValidSioWithPrefixUpperCase() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("SIO:SIO_000983");
-        Assert.assertEquals("SIO_000983", type.getId());
-        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SIO_000983", type.getId()),
+                () -> Assertions.assertEquals("sio:SIO_000983", type.getFormattedId())
+        );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithPrefixLowerCase1() {
-        GeneDiseaseCombinationType.retrieve("sio:sio_000983");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("sio:sio_000983") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithPrefixUpperCase1() {
-        GeneDiseaseCombinationType.retrieve("SIO:sio_000983");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("SIO:sio_000983") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithPrefixLowerCase2() {
-        GeneDiseaseCombinationType.retrieve("sio:SIO_1");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("sio:SIO_1") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithPrefixUpperCase2() {
-        GeneDiseaseCombinationType.retrieve("SIO:SIO_1");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("SIO:SIO_1") );
     }
 
     @Test
     public void useValidSioWithoutPrefix() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("SIO_000983");
-        Assert.assertEquals("SIO_000983", type.getId());
-        Assert.assertEquals("sio:SIO_000983", type.getFormattedId());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SIO_000983", type.getId()),
+                () -> Assertions.assertEquals("sio:SIO_000983", type.getFormattedId())
+        );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithoutPrefix1() {
-        GeneDiseaseCombinationType.retrieve("sio_000983");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("sio_000983") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
+    @Test
     public void useInvalidSioWithoutPrefix2() {
-        GeneDiseaseCombinationType.retrieve("SIO_1");
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> GeneDiseaseCombinationType.retrieve("SIO_1") );
     }
 
-    @Test(expected = EnumConstantNotPresentException.class)
-    public void useNonExistingSio() throws InvalidStringFormatException {
-        GeneDiseaseCombinationType.retrieve("SIO_999999");
+    @Test
+    public void useNonExistingSio() {
+        Assertions.assertThrows(EnumConstantNotPresentException.class, () -> GeneDiseaseCombinationType.retrieve("SIO_999999") );
     }
 }

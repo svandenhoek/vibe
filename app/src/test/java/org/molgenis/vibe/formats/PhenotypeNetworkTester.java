@@ -1,8 +1,8 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
@@ -18,8 +18,8 @@ public class PhenotypeNetworkTester {
     private PhenotypeNetwork phenotypeNetwork;
 
 
-    @Before
-    public void beforeMethod() {
+    @BeforeEach
+    public void beforeEach() {
         phenotypeNetwork = new PhenotypeNetwork(phenotypes[0]);
 
         // The network as should be created within the class itself with as source phenotypes[0].
@@ -37,10 +37,13 @@ public class PhenotypeNetworkTester {
         phenotypeNetwork.add(expectedNetwork.get(1), 1);
         phenotypeNetwork.add(expectedNetwork.get(2), 2);
 
-        Assert.assertEquals(expectedNetwork.keySet(), phenotypeNetwork.getDistances());
-        for(Integer distance : phenotypeNetwork.getDistances()) {
-            Assert.assertEquals(expectedNetwork.get(distance), phenotypeNetwork.getByDistance(distance));
-        }
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(expectedNetwork.keySet(), phenotypeNetwork.getDistances()),
+                () -> Assertions.assertEquals(expectedNetwork.get(0), phenotypeNetwork.getByDistance(0)),
+                () -> Assertions.assertEquals(expectedNetwork.get(1), phenotypeNetwork.getByDistance(1)),
+                () -> Assertions.assertEquals(expectedNetwork.get(2), phenotypeNetwork.getByDistance(2)),
+                () -> Assertions.assertThrows(NullPointerException.class, () -> phenotypeNetwork.getByDistance(3))
+        );
     }
 
     @Test
@@ -51,7 +54,7 @@ public class PhenotypeNetworkTester {
         phenotypeNetwork.add(phenotypes[1], 3); // 9 should be replaced
         phenotypeNetwork.add(phenotypes[1], 6); // 3 should not be replaced
 
-        Assert.assertEquals(3, phenotypeNetwork.getDistance(phenotypes[1]));
+        Assertions.assertEquals(3, phenotypeNetwork.getDistance(phenotypes[1]));
     }
 
     /**

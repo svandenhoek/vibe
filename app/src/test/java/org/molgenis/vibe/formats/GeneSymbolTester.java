@@ -1,7 +1,7 @@
 package org.molgenis.vibe.formats;
 
-import org.junit.Assert;
-import org.junit.Test;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
@@ -12,40 +12,40 @@ import java.util.List;
 
 public class GeneSymbolTester {
     @Test
-    public void useValidIdWithLowercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithLowercasePrefix() {
         GeneSymbol symbol = new GeneSymbol("hgnc:AB-123");
         testIfValid(symbol);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() throws InvalidStringFormatException {
+    public void useValidIdWithUppercasePrefix() {
         GeneSymbol symbol = new GeneSymbol("HGNC:AB-123");
         testIfValid(symbol);
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix1() throws InvalidStringFormatException {
-        new GeneSymbol("Hgnc:AB-123");
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix1() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("Hgnc:AB-123") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithSingleUpperCasePrefix2() throws InvalidStringFormatException {
-        new GeneSymbol("hGnc:AB-123");
+    @Test
+    public void useValidIdWithSingleUpperCasePrefix2() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("hGnc:AB-123") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithInvalidPrefix() throws InvalidStringFormatException {
-        new GeneSymbol("hg:AB-123");
+    @Test
+    public void useValidIdWithInvalidPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("hg:AB-123") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useValidIdWithoutPrefix() throws InvalidStringFormatException {
-        new GeneSymbol("AB-123");
+    @Test
+    public void useValidIdWithoutPrefix() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("AB-123") );
     }
 
-    @Test(expected = InvalidStringFormatException.class)
-    public void useUriAsIdInput() throws InvalidStringFormatException {
-        new GeneSymbol("http://identifiers.org/hgnc.symbol/AB-123");
+    @Test
+    public void useUriAsIdInput() {
+        Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("http://identifiers.org/hgnc.symbol/AB-123") );
     }
 
     @Test
@@ -54,9 +54,9 @@ public class GeneSymbolTester {
         testIfValid(symbol);
     }
 
-    @Test(expected = IllegalArgumentException.class)
+    @Test
     public void useInvalidUri() {
-        new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123"));
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123")) );
     }
 
     @Test
@@ -74,12 +74,14 @@ public class GeneSymbolTester {
         ));
 
         Collections.sort(actualOrder);
-        Assert.assertEquals(expectedOrder, actualOrder);
+        Assertions.assertEquals(expectedOrder, actualOrder);
     }
 
     private void testIfValid(GeneSymbol symbol) {
-        Assert.assertEquals("AB-123", symbol.getId());
-        Assert.assertEquals("hgnc:AB-123", symbol.getFormattedId());
-        Assert.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/AB-123"), symbol.getUri());
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("AB-123", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:AB-123", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/AB-123"), symbol.getUri())
+        );
     }
 }
