@@ -1,6 +1,8 @@
 package org.molgenis.vibe.tdb_processing.query_string_creation;
 
 import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
@@ -18,17 +20,18 @@ import java.util.*;
  * The full DisGeNET RDF dataset can be downloaded from: http://rdf.disgenet.org/download/
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class QueryStringGeneratorTester {
     private static ModelReader reader;
     private QueryRunner runner;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    public static synchronized void beforeAll() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
     }
 
     @AfterAll
-    public static void afterAll() {
+    public static final synchronized void afterAll() {
         if(reader != null) {
             reader.close();
         }

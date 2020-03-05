@@ -4,6 +4,8 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.parallel.Execution;
+import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.input.ModelReader;
@@ -22,6 +24,7 @@ import java.util.*;
  * The full DisGeNET RDF dataset can be downloaded from: http://rdf.disgenet.org/download/
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
+@Execution(ExecutionMode.SAME_THREAD)
 public class GenesForPhenotypeRetrieverTester {
     private static ModelReader reader;
 
