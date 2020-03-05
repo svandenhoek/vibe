@@ -65,12 +65,6 @@ public class PhenotypeNetwork {
         return items.get(phenotype);
     }
 
-    public void add(Phenotype[] phenotypes, int distance) {
-        for(Phenotype phenotype:phenotypes) {
-            add(phenotype, distance);
-        }
-    }
-
     public void add(Collection<Phenotype> phenotypes, int distance) {
         for (Iterator<Phenotype> it = phenotypes.iterator(); it.hasNext(); ) {
             add(it.next(), distance);
