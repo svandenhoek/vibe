@@ -26,12 +26,12 @@ public class QueryStringGeneratorTester {
     private QueryRunner runner;
 
     @BeforeAll
-    public static synchronized void beforeAll() throws IOException {
+    public static void beforeAll() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
     }
 
     @AfterAll
-    public static final synchronized void afterAll() {
+    public static final void afterAll() {
         if(reader != null) {
             reader.close();
         }
