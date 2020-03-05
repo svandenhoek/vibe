@@ -7,6 +7,8 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import java.net.URI;
 
 public class EntityTester {
+    private static final String validName = "Entity 0";
+
     private class EntityImpl extends Entity {
         public EntityImpl(String id) {
             super(id);
@@ -73,5 +75,27 @@ public class EntityTester {
     @Test
     public void uriMissingId() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test.com/path/")) );
+    }
+
+    @Test
+    public void testIdWithName() {
+        Entity entity = new EntityImpl("prefix:0", validName);
+        Assertions.assertEquals(validName, entity.getName());
+    }
+
+    @Test
+    public void testUriWithName() {
+        Entity entity = new EntityImpl(URI.create("https://test.com/path/0"), validName);
+        Assertions.assertEquals(validName, entity.getName());
+    }
+
+    @Test
+    public void testIdWithNameNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl("prefix:0", null) );
+    }
+
+    @Test
+    public void testUriWithNameNull() {
+        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl(URI.create("https://test.com/path/0"), null) );
     }
 }

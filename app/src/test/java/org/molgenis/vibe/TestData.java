@@ -7,6 +7,12 @@ public enum TestData {
             return "hp.owl";
         }
     },
+    FAKE_HPO_OWL {
+        @Override
+        public String getName() {
+            return "fake_hp.owl";
+        }
+    },
     TDB {
         @Override
         public String getName() {

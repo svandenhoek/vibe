@@ -7,7 +7,7 @@ import org.junit.jupiter.api.Test;
 import java.util.*;
 
 public class PhenotypeNetworkTester {
-    private final Phenotype[] phenotypes= new Phenotype[]{
+    private static final Phenotype[] phenotypes = new Phenotype[]{
             new Phenotype("hp:0000000"),
             new Phenotype("hp:0000001"),
             new Phenotype("hp:0000002"),
@@ -55,6 +55,22 @@ public class PhenotypeNetworkTester {
         phenotypeNetwork.add(phenotypes[1], 6); // 3 should not be replaced
 
         Assertions.assertEquals(3, phenotypeNetwork.getDistance(phenotypes[1]));
+    }
+
+    @Test
+    public void testContainsForSourcePhenotype() {
+        Assertions.assertTrue(phenotypeNetwork.contains(phenotypes[0]));
+    }
+
+    @Test
+    public void testContainsForAddedPhenotype() {
+        phenotypeNetwork.add(phenotypes[1], 3);
+        Assertions.assertTrue(phenotypeNetwork.contains(phenotypes[1]));
+    }
+
+    @Test
+    public void testContainsForNotAddedPhenotype() {
+        Assertions.assertFalse(phenotypeNetwork.contains(phenotypes[1]));
     }
 
     /**
