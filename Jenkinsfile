@@ -44,7 +44,6 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/*-reports/**.xml'
                     container('maven') {
                     	dir('app') {
 	                        sh "mvn -q -B sonar:sonar -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.github.oauth=${env.GITHUB_TOKEN} -Dsonar.pullrequest.base=${CHANGE_TARGET} -Dsonar.pullrequest.branch=${BRANCH_NAME} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.provider=GitHub -Dsonar.pullrequest.github.repository=molgenis/vibe -Dsonar.ws.timeout=120"
@@ -72,7 +71,6 @@ pipeline {
             }
             post {
                 always {
-                    junit '**/target/*-reports/**.xml'
                     container('maven') {
                     	dir('app') {
 	                        sh "mvn -q -B sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.ws.timeout=120"
