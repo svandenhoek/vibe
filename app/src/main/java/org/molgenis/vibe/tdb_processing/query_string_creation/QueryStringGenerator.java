@@ -101,10 +101,6 @@ public final class QueryStringGenerator {
             "}"
     };
 
-    public static String getPrefixes() {
-        return PREFIXES;
-    }
-
     public static QueryString getSources() {
         return new QueryString(PREFIXES + SOURCES);
     }
