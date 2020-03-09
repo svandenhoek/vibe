@@ -24,4 +24,16 @@ public class SourceTest {
         Source source = new Source(URI.create("http://rdf.disgenet.org/v5.0.0/void/MGD"), "MGD 2017 Dataset Distribution", "http://rdf.disgenet.org/v5.0.0/void/source_evidence_predicted");
         Assertions.assertEquals(Source.Level.MODEL, source.getLevel());
     }
+
+    @Test
+    public void testGetName() {
+        Source source = new Source(URI.create("http://rdf.disgenet.org/v5.0.0/void/MGD"), "MGD 2017 Dataset Distribution", "model");
+        Assertions.assertEquals("MGD", source.getName());
+    }
+
+    @Test
+    public void testGetFullName() {
+        Source source = new Source(URI.create("http://rdf.disgenet.org/v5.0.0/void/MGD"), "MGD 2017 Dataset Distribution", "model");
+        Assertions.assertEquals("MGD 2017 Dataset Distribution", source.getFullName());
+    }
 }
