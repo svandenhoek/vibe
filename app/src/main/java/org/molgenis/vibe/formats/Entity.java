@@ -71,10 +71,6 @@ public abstract class Entity implements ResourceUri, Comparable<Entity> {
         return getIdPrefix() + id;
     }
 
-    protected void setId(String id) {
-        this.id = requireNonNull(id);
-    }
-
     public String getName() {
         return name;
     }

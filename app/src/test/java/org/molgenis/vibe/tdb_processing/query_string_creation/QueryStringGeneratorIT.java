@@ -6,7 +6,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.TestData;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.tdb_processing.query_runner.QueryRunner;
+import org.molgenis.vibe.tdb_processing.QueryRunner;
 
 import java.io.IOException;
 import java.util.*;

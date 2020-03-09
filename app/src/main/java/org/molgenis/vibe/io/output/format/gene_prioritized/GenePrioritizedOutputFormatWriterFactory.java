@@ -32,5 +32,5 @@ public enum GenePrioritizedOutputFormatWriterFactory implements PrioritizedOutpu
             return new ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris(outputWriter, prioritizer, geneDiseaseCollection,
                     ValuesSeparator.TAB, ValuesSeparator.VERTICAL_LINE, ValuesSeparator.COLON, ValuesSeparator.COMMA);
         }
-    };
+    }
 }
