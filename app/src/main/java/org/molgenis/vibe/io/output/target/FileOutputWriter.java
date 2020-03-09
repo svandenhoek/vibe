@@ -3,6 +3,7 @@ package org.molgenis.vibe.io.output.target;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
@@ -38,7 +39,7 @@ public class FileOutputWriter extends OutputWriter {
     @Override
     public void initialize() throws IOException {
         if(writer == null) {
-            writer = Files.newBufferedWriter(path, Charset.forName("UTF-8"));
+            writer = Files.newBufferedWriter(path, StandardCharsets.UTF_8);
         }
     }
 

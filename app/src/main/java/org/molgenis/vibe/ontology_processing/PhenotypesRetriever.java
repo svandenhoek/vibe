@@ -70,12 +70,7 @@ public abstract class PhenotypesRetriever {
      * if not (can either be a valid or an unexpected non-valid {@link Phenotype} {@link URI})
      */
     protected boolean skippableUri(OntClass phenotypeOC) {
-        String uriString = phenotypeOC.getURI();
-        if(uriString.startsWith("http://purl.obolibrary.org/obo/UPHENO_")) {
-            return true;
-        }
-
-        return false;
+        return phenotypeOC.getURI().startsWith("http://purl.obolibrary.org/obo/UPHENO_");
     }
 
     /**
