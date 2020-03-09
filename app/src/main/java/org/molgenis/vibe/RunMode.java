@@ -28,60 +28,69 @@ public enum RunMode {
     }, GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES("Retrieves genes for input phenotypes and phenotypes associated to input phenotypes.") {
         @Override
         protected void runMode() throws IOException {
-            OntologyModelFilesReader ontologyReader = loadPhenotypeOntology();
-            PhenotypesRetriever hpoRetriever = retrieveAssociatedPhenotypes(ontologyReader);
-            ModelReader disgenetReader = loadDisgenetDatabase();
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
+            PhenotypesRetriever hpoRetriever = retrieveAssociatedPhenotypes();
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes());
             GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
             writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
         }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
         protected void runMode() throws Exception {
-            ModelReader disgenetReader = loadDisgenetDatabase();
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(disgenetReader, getAppOptions().getPhenotypes());
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(getAppOptions().getPhenotypes());
             GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
             writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
         }
     };
 
-    protected OntologyModelFilesReader loadPhenotypeOntology() {
-        getAppOptions().printVerbose("# Preparing HPO dataset.");
-        OntologyModelFilesReader ontologyReader = new OntologyModelFilesReader(getAppOptions().getHpoOntology().toString());
-        printElapsedTime();
+    protected PhenotypesRetriever retrieveAssociatedPhenotypes() {
+        OntologyModelFilesReader ontologyReader = null;
+        try {
+            // Load model.
+            getAppOptions().printVerbose("# Preparing HPO dataset.");
+            ontologyReader = new OntologyModelFilesReader(getAppOptions().getHpoOntology().toString());
+            printElapsedTime();
 
-        return ontologyReader;
+            // Retrieve from model.
+            getAppOptions().printVerbose("# " + getAppOptions().getPhenotypesRetrieverFactory().getDescription());
+            PhenotypesRetriever hpoRetriever = getAppOptions().getPhenotypesRetrieverFactory().create(
+                    ontologyReader.getModel(), getAppOptions().getPhenotypes(), getAppOptions().getOntologyMaxDistance()
+            );
+            hpoRetriever.run();
+            getAppOptions().printVerbose("Retrieved number of phenotypes: " + hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes().size());
+            printElapsedTime();
+
+            return hpoRetriever;
+        } finally {
+            // Close model.
+            if(ontologyReader != null) {
+                ontologyReader.close();
+            }
+        }
     }
 
-    protected PhenotypesRetriever retrieveAssociatedPhenotypes(OntologyModelFilesReader ontologyReader) {
-        getAppOptions().printVerbose("# " + getAppOptions().getPhenotypesRetrieverFactory().getDescription());
-        PhenotypesRetriever hpoRetriever = getAppOptions().getPhenotypesRetrieverFactory().create(
-                ontologyReader.getModel(), getAppOptions().getPhenotypes(), getAppOptions().getOntologyMaxDistance()
-        );
-        hpoRetriever.run();
-        getAppOptions().printVerbose("Retrieved number of phenotypes: " + hpoRetriever.getPhenotypeNetworkCollection().getPhenotypes().size());
-        printElapsedTime();
+    protected GeneDiseaseCollection retrieveDisgenetData(Set<Phenotype> phenotypes) throws IOException {
+        ModelReader disgenetReader = null;
+        try {
+            // Load TDB.
+            getAppOptions().printVerbose("# Preparing main dataset.");
+            disgenetReader = new TripleStoreDbReader(getAppOptions().getDatabase());
+            printElapsedTime();
 
-        return hpoRetriever;
-    }
+            // Retrieve from TDB.
+            getAppOptions().printVerbose("# Retrieving data from main dataset.");
+            GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(
+                    disgenetReader, phenotypes
+            );
+            genesForPhenotypeRetriever.run();
+            printElapsedTime();
 
-    protected ModelReader loadDisgenetDatabase() throws IOException {
-        getAppOptions().printVerbose("# Preparing main dataset.");
-        ModelReader disgenetReader = new TripleStoreDbReader(getAppOptions().getDatabase());
-        printElapsedTime();
-
-        return disgenetReader;
-    }
-
-    protected GeneDiseaseCollection retrieveDisgenetData(ModelReader disgenetReader, Set<Phenotype> phenotypes) {
-        getAppOptions().printVerbose("# Retrieving data from main dataset.");
-        GenesForPhenotypeRetriever genesForPhenotypeRetriever = new GenesForPhenotypeRetriever(
-                disgenetReader, phenotypes
-        );
-        genesForPhenotypeRetriever.run();
-        printElapsedTime();
-
-        return genesForPhenotypeRetriever.getGeneDiseaseCollection();
+            return genesForPhenotypeRetriever.getGeneDiseaseCollection();
+        } finally {
+            // Close TDB.
+            if(disgenetReader != null) {
+                disgenetReader.close();
+            }
+        }
     }
 
     protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
@@ -136,5 +145,8 @@ public enum RunMode {
 
     protected void printElapsedTime() {
         getAppOptions().printVerbose("Elapsed time: " + stopwatch.toString());
+        // Resets stopwatch.
+        stopwatch.reset();
+        stopwatch.start();
     }
 }
