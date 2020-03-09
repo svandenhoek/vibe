@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DiseaseTester {
+public class DiseaseTest {
     @Test
     public void useValidIdWithLowercasePrefix() {
         Disease disease = new Disease("umls:C0123456");

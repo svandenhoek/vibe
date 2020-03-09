@@ -24,7 +24,7 @@ import java.util.*;
  * Please view the README.md in the externally downloadable resources for an overview about how all the HPOs are connected
  * to each other.
  */
-public class MaxDistanceRetrieverTester {
+public class MaxDistanceRetrieverIT {
     private static OntModel model;
 
     @BeforeAll

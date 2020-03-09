@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 
-public class EnumTypeDefinerTester {
+public class EnumTypeDefinerTest {
     @Test
     public void phenotypesRetrieverFactoryChildren() {
         Assertions.assertEquals(PhenotypesRetrieverFactory.CHILDREN, EnumTypeDefiner.retrieve("children", PhenotypesRetrieverFactory.class));

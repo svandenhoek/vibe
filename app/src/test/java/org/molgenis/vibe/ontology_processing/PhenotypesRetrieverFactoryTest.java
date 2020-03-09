@@ -3,7 +3,7 @@ package org.molgenis.vibe.ontology_processing;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class PhenotypesRetrieverFactoryTester {
+public class PhenotypesRetrieverFactoryTest {
     @Test
     public void retrieveChildren() {
         Assertions.assertEquals(PhenotypesRetrieverFactory.CHILDREN, PhenotypesRetrieverFactory.retrieve("children"));

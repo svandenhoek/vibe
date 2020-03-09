@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.*;
 
-public class GeneDiseaseCombinationTester {
+public class GeneDiseaseCombinationTest {
     private Gene gene = new Gene("ncbigene:0", new GeneSymbol("hgnc:A"));
     private Disease disease = new Disease("umls:C01234567");
     private double score = 0.123456789;

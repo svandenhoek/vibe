@@ -3,7 +3,7 @@ package org.molgenis.vibe.tdb_processing.query_string_creation;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class QueryStringPathRangeTester {
+public class QueryStringPathRangeTest {
     @Test
     public void all() {
         Assertions.assertEquals("*", new QueryStringPathRange(0, true).toString());

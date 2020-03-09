@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.TestData;
 
-public class OntologyModelFilesReaderTester {
+public class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;
 
     @AfterEach

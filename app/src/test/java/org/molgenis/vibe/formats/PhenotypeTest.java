@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PhenotypeTester {
+public class PhenotypeTest {
     @Test
     public void useValidIdWithLowercasePrefix() {
         Phenotype phenotype = new Phenotype("hp:0012345");

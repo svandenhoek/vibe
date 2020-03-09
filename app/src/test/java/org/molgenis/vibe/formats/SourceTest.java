@@ -6,7 +6,7 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
 
-public class SourceTester {
+public class SourceTest {
     @Test
     public void useReadableSourceLevelName() {
         Source source = new Source(URI.create("http://rdf.disgenet.org/v5.0.0/void/MGD"), "MGD 2017 Dataset Distribution", "model");

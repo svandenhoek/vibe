@@ -25,7 +25,7 @@ import java.util.*;
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
 @Execution(ExecutionMode.SAME_THREAD)
-public class GenesForPhenotypeRetrieverTester {
+public class GenesForPhenotypeRetrieverIT {
     private static ModelReader reader;
 
     @BeforeAll

@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.net.URI;
 import java.util.*;
 
-public class BiologicalEntityCollectionTester {
+public class BiologicalEntityCollectionTest {
     private static BiologicalEntityImpl[] array1;
     private static BiologicalEntityImpl[] array2;
     private static BiologicalEntityCombinationImpl[] combinations;

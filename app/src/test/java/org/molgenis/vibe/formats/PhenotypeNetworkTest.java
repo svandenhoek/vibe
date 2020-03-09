@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-public class PhenotypeNetworkTester {
+public class PhenotypeNetworkTest {
     private static final Phenotype[] phenotypes = new Phenotype[]{
             new Phenotype("hp:0000000"),
             new Phenotype("hp:0000001"),

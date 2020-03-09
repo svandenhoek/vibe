@@ -10,7 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GeneTester {
+public class GeneTest {
     private static final GeneSymbol symbol = new GeneSymbol("hgnc:ABC");
 
     @Test

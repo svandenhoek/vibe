@@ -7,7 +7,7 @@ import org.molgenis.vibe.TestData;
 
 import java.io.IOException;
 
-public class TripleStoreDbReaderTester {
+public class TripleStoreDbReaderIT {
     private static String tdbDir;
 
     @BeforeAll

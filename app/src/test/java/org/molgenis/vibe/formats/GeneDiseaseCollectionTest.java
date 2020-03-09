@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-public class GeneDiseaseCollectionTester {
+public class GeneDiseaseCollectionTest {
     private static GeneDiseaseCombination[] gdcs;
     private static Gene[] genes;
     private static Disease[] diseases;

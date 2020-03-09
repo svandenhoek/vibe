@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class PhenotypeNetworkCollectionTester {
+public class PhenotypeNetworkCollectionTest {
     private static final Phenotype[] phenotypes1 = new Phenotype[]{
             new Phenotype("hp:0000000"),
             new Phenotype("hp:0000001"),

@@ -6,7 +6,7 @@ import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
 
-public class EntityTester {
+public class EntityTest {
     private static final String validName = "Entity 0";
 
     private class EntityImpl extends Entity {

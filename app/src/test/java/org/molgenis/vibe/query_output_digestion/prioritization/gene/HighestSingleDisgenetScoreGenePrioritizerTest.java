@@ -6,7 +6,7 @@ import org.molgenis.vibe.formats.*;
 
 import java.util.*;
 
-public class HighestSingleDisgenetScoreGenePrioritizerTester {
+public class HighestSingleDisgenetScoreGenePrioritizerTest {
 
     @Test
     public void testOrdering() {

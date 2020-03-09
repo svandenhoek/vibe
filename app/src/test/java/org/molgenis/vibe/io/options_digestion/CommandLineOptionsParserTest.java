@@ -19,7 +19,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class CommandLineOptionsParserTester {
+public class CommandLineOptionsParserTest {
     private final String[] HELP = new String[]{"-h"};
     private final String[] VERBOSE = new String[]{"-v"};
     private final String[] SIMPLIFIED_OUT = new String[]{"-l"};

@@ -4,7 +4,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 
-public class GeneDiseaseCombinationTypeTester {
+public class GeneDiseaseCombinationTypeTest {
     @Test
     public void useValidSioWithPrefixLowerCase() {
         GeneDiseaseCombinationType type = GeneDiseaseCombinationType.retrieve("sio:SIO_000983");
