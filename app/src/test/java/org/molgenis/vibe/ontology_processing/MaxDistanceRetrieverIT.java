@@ -1,6 +1,7 @@
 package org.molgenis.vibe.ontology_processing;
 
 import org.apache.jena.ontology.OntModel;
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -31,6 +32,13 @@ public class MaxDistanceRetrieverIT {
     public static void beforeAll() {
         OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPath());
         model = reader.getModel();
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        if(model != null) {
+            model.close();
+        }
     }
 
     @Test
