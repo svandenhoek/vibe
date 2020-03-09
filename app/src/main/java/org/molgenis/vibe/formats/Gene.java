@@ -1,7 +1,5 @@
 package org.molgenis.vibe.formats;
 
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;

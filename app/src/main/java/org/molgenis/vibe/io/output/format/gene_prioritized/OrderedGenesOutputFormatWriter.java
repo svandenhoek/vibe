@@ -3,14 +3,10 @@ package org.molgenis.vibe.io.output.format.gene_prioritized;
 import org.molgenis.vibe.formats.Gene;
 import org.molgenis.vibe.io.output.ValuesSeparator;
 import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
-import org.molgenis.vibe.io.output.target.FileOutputWriter;
 import org.molgenis.vibe.io.output.target.OutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.nio.file.Path;
-import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
