@@ -66,8 +66,8 @@ public abstract class PhenotypesRetriever {
      * result.
      *
      * @param phenotypeOC the {@link OntClass} representing a {@link Phenotype} that needs to be checked
-     * @return {@code true} if {@link OntClass} can be skipped (expected non-valid {@link Phenotype#uri}), {@code false}
-     * if not (can either be a valid or an unexpected non-valid {@link Phenotype#uri})
+     * @return {@code true} if {@link OntClass} can be skipped (expected non-valid {@link Phenotype} {@link URI}), {@code false}
+     * if not (can either be a valid or an unexpected non-valid {@link Phenotype} {@link URI})
      */
     protected boolean skippableUri(OntClass phenotypeOC) {
         String uriString = phenotypeOC.getURI();

@@ -33,12 +33,6 @@ public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T
         this.t2 = requireNonNull(t2);
     }
 
-    /**
-     * While uniqueness is based on the 2 available {@link BiologicalEntity#id}s (as each combination should only occur
-     * once and data belonging to it should be consistent), {@link #toString()} can be used for testing whether data
-     * retrieval from external sources yielded the expected results.
-     * @return
-     */
     @Override
     public String toString() {
         return "BiologicalEntityCombination{" +
