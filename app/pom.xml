@@ -36,7 +36,7 @@
         <sonar.github.repository>molgenis/vibe</sonar.github.repository>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
-        <sonar.coverage.jacoco.xmlReportPaths>${jacoco.merged-test.xmlFile}</sonar.coverage.jacoco.xmlReportPaths>
+        <sonar.coverage.jacoco.xmlReportPaths>${jacoco.merged-test.outputDir}/jacoco.xml</sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
         <vibe-tdb.version>3.0.0</vibe-tdb.version>
@@ -67,7 +67,6 @@
         <jacoco.merged-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-merged-tests.exec</jacoco.merged-test.destFile>
         <jacoco.merged-test.dataFile>${jacoco.merged-test.destFile}</jacoco.merged-test.dataFile>
         <jacoco.merged-test.outputDir>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</jacoco.merged-test.outputDir>
-        <jacoco.merged-test.xmlFile>${jacoco.merged-test.outputDir}/jacoco.xml</jacoco.merged-test.xmlFile>
         
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
