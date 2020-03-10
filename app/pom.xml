@@ -36,6 +36,7 @@
         <sonar.github.repository>molgenis/vibe</sonar.github.repository>
         <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
         <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
+        <sonar.coverage.jacoco.xmlReportPaths>${jacoco.merged-test.xmlFile}</sonar.coverage.jacoco.xmlReportPaths>
 
         <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
         <vibe-tdb.version>3.0.0</vibe-tdb.version>
