@@ -9,6 +9,8 @@ import java.util.*;
 public class GeneDiseaseCombinationTest {
     private Gene gene = new Gene("ncbigene:0", new GeneSymbol("hgnc:A"));
     private Disease disease = new Disease("umls:C01234567");
+    private Gene gene2 = new Gene("ncbigene:1", new GeneSymbol("hgnc:B"));
+    private Disease disease2 = new Disease("umls:C12345678");
     private double score = 0.123456789;
     private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"));
     private Source source2 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"));
@@ -148,5 +150,28 @@ public class GeneDiseaseCombinationTest {
 
         Assertions.assertEquals(new ArrayList<>(Arrays.asList("1","3","https://www.ncbi.nlm.nih.gov/pubmed/2")),
                 geneDiseaseCombo.getAllEvidenceSimplifiedOrdered());
+    }
+
+    @Test
+    public void assertEqualsWhenEqualWithScore() {
+        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease, score).equals(new GeneDiseaseCombination(gene, disease, score)));
+    }
+
+    @Test
+    public void assertEqualsWhenEqualWithoutScore() {
+        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene, disease)));
+    }
+
+    /**
+     * Equals only checks whether it is the same gene-disease combo.
+     */
+    @Test
+    public void assertEqualsWhenEqualWithDifferentScore() {
+        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease, 0.1).equals(new GeneDiseaseCombination(gene, disease, 0.2)));
+    }
+
+    @Test
+    public void assertEqualsWhenDifferent() {
+        Assertions.assertFalse(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene2, disease2)));
     }
 }

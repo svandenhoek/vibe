@@ -84,4 +84,24 @@ public class GeneSymbolTest {
                 () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/AB-123"), symbol.getUri())
         );
     }
+
+    @Test
+    public void testEqualsIdToEqualId() {
+        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:AB-123")));
+    }
+
+    @Test
+    public void testEqualsUriToEqualUri() {
+        Assertions.assertTrue(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")).equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+    }
+
+    @Test
+    public void testEqualsIdToEqualUri() {
+        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+    }
+
+    @Test
+    public void testEqualsIdToDifferentId() {
+        Assertions.assertFalse(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:CD-456")));
+    }
 }

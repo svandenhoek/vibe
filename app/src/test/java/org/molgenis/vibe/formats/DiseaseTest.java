@@ -84,4 +84,24 @@ public class DiseaseTest {
                 () -> Assertions.assertEquals(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"), disease.getUri())
         );
     }
+
+    @Test
+    public void testEqualsIdToEqualId() {
+        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease("umls:C0123456")));
+    }
+
+    @Test
+    public void testEqualsUriToEqualUri() {
+        Assertions.assertTrue(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")).equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+    }
+
+    @Test
+    public void testEqualsIdToEqualUri() {
+        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+    }
+
+    @Test
+    public void testEqualsIdToDifferentId() {
+        Assertions.assertFalse(new Disease("umls:C0123456").equals(new Disease("umls:C9874565")));
+    }
 }

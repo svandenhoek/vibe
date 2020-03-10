@@ -86,4 +86,24 @@ public class GeneTest {
                 () -> Assertions.assertEquals(URI.create("http://identifiers.org/ncbigene/1234"), gene.getUri())
         );
     }
+
+    @Test
+    public void testEqualsIdToEqualId() {
+        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:1234", symbol)));
+    }
+
+    @Test
+    public void testEqualsUriToEqualUri() {
+        Assertions.assertTrue(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+    }
+
+    @Test
+    public void testEqualsIdToEqualUri() {
+        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+    }
+
+    @Test
+    public void testEqualsIdToDifferentId() {
+        Assertions.assertFalse(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:5678", symbol)));
+    }
 }
