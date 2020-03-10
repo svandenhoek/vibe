@@ -53,6 +53,21 @@
         <!-- thin jar dependencies directory -->
         <jar.skinny.dependency-dir>dependency-jars</jar.skinny.dependency-dir>
 
+        <!-- jacoco configuration -->
+        <jacoco.unit-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-unit-tests.exec</jacoco.unit-test.destFile>
+        <jacoco.unit-test.dataFile>${jacoco.unit-test.destFile}</jacoco.unit-test.dataFile>
+        <jacoco.unit-test.outputDir>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report</jacoco.unit-test.outputDir>
+
+        <jacoco.integration-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-integration-tests.exec</jacoco.integration-test.destFile>
+        <jacoco.integration-test.dataFile>${jacoco.integration-test.destFile}</jacoco.integration-test.dataFile>
+        <jacoco.integration-test.outputDir>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</jacoco.integration-test.outputDir>
+
+        <jacoco.merged-test.fileSetDir>${project.build.directory}/jacoco-output</jacoco.merged-test.fileSetDir>
+        <jacoco.merged-test.destFile>${jacoco.merged-test.fileSetDir}/jacoco-merged-tests.exec</jacoco.merged-test.destFile>
+        <jacoco.merged-test.dataFile>${jacoco.merged-test.destFile}</jacoco.merged-test.dataFile>
+        <jacoco.merged-test.outputDir>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</jacoco.merged-test.outputDir>
+        <jacoco.merged-test.xmlFile>${jacoco.merged-test.outputDir}/jacoco.xml</jacoco.merged-test.xmlFile>
+        
         <!-- plugin versions -->
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
@@ -270,7 +285,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
-                            <destFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</destFile>
+                            <destFile>${jacoco.unit-test.destFile}</destFile>
                         </configuration>
                     </execution>
                     <execution>
@@ -280,8 +295,8 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <dataFile>${project.build.directory}/jacoco-output/jacoco-unit-tests.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-unit-test-coverage-report</outputDirectory>
+                            <dataFile>${jacoco.unit-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.unit-test.outputDir}</outputDirectory>
                         </configuration>
                     </execution>
 
@@ -293,7 +308,7 @@
                             <goal>prepare-agent</goal>
                         </goals>
                         <configuration>
-                            <destFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</destFile>
+                            <destFile>${jacoco.integration-test.destFile}</destFile>
                         </configuration>
                     </execution>
                     <execution>
@@ -303,8 +318,8 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <dataFile>${project.build.directory}/jacoco-output/jacoco-integration-tests.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-integration-test-coverage-report</outputDirectory>
+                            <dataFile>${jacoco.integration-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.integration-test.outputDir}</outputDirectory>
                         </configuration>
                     </execution>
 
@@ -318,13 +333,13 @@
                         <configuration>
                             <fileSets>
                                 <fileSet>
-                                    <directory>${project.build.directory}/jacoco-output/</directory>
+                                    <directory>${jacoco.merged-test.fileSetDir}</directory>
                                     <includes>
                                         <include>*.exec</include>
                                     </includes>
                                 </fileSet>
                             </fileSets>
-                            <destFile>${project.build.directory}/jacoco-output/merged.exec</destFile>
+                            <destFile>${jacoco.merged-test.destFile}</destFile>
                         </configuration>
                     </execution>
                     <execution>
@@ -334,8 +349,8 @@
                             <goal>report</goal>
                         </goals>
                         <configuration>
-                            <dataFile>${project.build.directory}/jacoco-output/merged.exec</dataFile>
-                            <outputDirectory>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</outputDirectory>
+                            <dataFile>${jacoco.merged-test.dataFile}</dataFile>
+                            <outputDirectory>${jacoco.merged-test.outputDir}</outputDirectory>
                         </configuration>
                     </execution>
                 </executions>
