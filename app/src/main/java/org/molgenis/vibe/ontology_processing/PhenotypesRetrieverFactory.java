@@ -16,7 +16,7 @@ public enum PhenotypesRetrieverFactory implements EnumTypeDefiner {
     DISTANCE("distance", "Retrieving connected HPOs.") {
         @Override
         public PhenotypesRetriever create(OntModel model, Collection<Phenotype> inputPhenotypes, int distance) {
-            return new MaxDistanceRetriever2(model, inputPhenotypes, distance);
+            return new MaxDistanceRetriever(model, inputPhenotypes, distance);
         }
     };
 

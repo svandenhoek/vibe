@@ -1,7 +1,5 @@
 package org.molgenis.vibe.formats;
 
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
@@ -22,22 +20,6 @@ public class Gene extends BiologicalEntity {
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
     private GeneSymbol symbol;
-
-    /**
-     * The Disease Specificity Index (DSI) as stored within DisGeNET for a gene.
-     * A higher score indicates a higher specificity (less associated diseases).
-     * A 0 indicates only associations with phenotypes.
-     * @see <a href="http://www.disgenet.org/web/DisGeNET/menu/dbinfo#specificity">http://www.disgenet.org/web/DisGeNET/menu/dbinfo#specificity</a>
-     */
-    private Double diseaseSpecificityIndex;
-
-    /**
-     * The Disease Pleiotropy Index (DPI) as stored within DisGeNET for a gene.
-     * A higher score indicates more disease (MeSH) classes being associated.
-     * A 0 indicates either only associations with phenotypes or the associated diseases do not have a MeSH class.
-     * @see <a href="http://www.disgenet.org/web/DisGeNET/menu/dbinfo#pleiotropy">http://www.disgenet.org/web/DisGeNET/menu/dbinfo#pleiotropy</a>
-     */
-    private Double diseasePleiotropyIndex;
 
     public GeneSymbol getSymbol() {
         return symbol;

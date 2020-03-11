@@ -10,22 +10,22 @@ import java.util.regex.Pattern;
  * Please refer to http://www.disgenet.org/ds/DisGeNET/html/images/ontology.svg for the Ontology overview.
  */
 public enum GeneDiseaseCombinationType implements EnumTypeDefiner {
-    GENE_DISEASE("000983"),
-    THERAPEUTIC("001120"),
-    BIOMARKER("001121"),
-    GENOMIC_ALTERATION("001350"),
-    ALTERED_EXPRESSION("001123"),
-    POST_TRANSLATIONAL_MODIFICATION("001124"),
-    CHROMOSOMAL_REARRANGEMENT("001349"),
-    GENETIC_VARIATION("001122"),
-    FUSION_GENE("001348"),
-    SUSCEPTIBILITY_MUTATION("001343"),
-    CASUAL_MUTATION("001119"),
-    MODIFYING_MUTATION("001342"),
-    SOMATIC_CASUAL_MUTATION("001345"),
-    GERMLINE_CASUAL_MUTATION("001344"),
-    SOMATIC_MODIFYING_MUTATION("001346"),
-    GERMLINE_MODIFYING_MUTATION("001347");
+    GENE_DISEASE("SIO_000983"),
+    THERAPEUTIC("SIO_001120"),
+    BIOMARKER("SIO_001121"),
+    GENOMIC_ALTERATION("SIO_001350"),
+    ALTERED_EXPRESSION("SIO_001123"),
+    POST_TRANSLATIONAL_MODIFICATION("SIO_001124"),
+    CHROMOSOMAL_REARRANGEMENT("SIO_001349"),
+    GENETIC_VARIATION("SIO_001122"),
+    FUSION_GENE("SIO_001348"),
+    SUSCEPTIBILITY_MUTATION("SIO_001343"),
+    CASUAL_MUTATION("SIO_001119"),
+    MODIFYING_MUTATION("SIO_001342"),
+    SOMATIC_CASUAL_MUTATION("SIO_001345"),
+    GERMLINE_CASUAL_MUTATION("SIO_001344"),
+    SOMATIC_MODIFYING_MUTATION("SIO_001346"),
+    GERMLINE_MODIFYING_MUTATION("SIO_001347");
 
     /**
      * The root {@link GeneDiseaseCombinationType} of all association types available in this enum
@@ -35,7 +35,7 @@ public enum GeneDiseaseCombinationType implements EnumTypeDefiner {
     /**
      * The prefix belonging to the association types.
      */
-    private static final String PREFIX = "sio:SIO_";
+    private static final String PREFIX = "sio:";
 
     /**
      * The ID belonging to single association type.
@@ -56,11 +56,11 @@ public enum GeneDiseaseCombinationType implements EnumTypeDefiner {
     }
 
     public static GeneDiseaseCombinationType retrieve(String sio) {
-        Matcher m = Pattern.compile("^(((sio|SIO):)?(sio|SIO)_)?([0-9]{6})$").matcher(sio);
+        Matcher m = Pattern.compile("^((sio|SIO):)?(SIO_[0-9]{6})$").matcher(sio);
         if (m.matches()) {
-            return EnumTypeDefiner.retrieve(m.group(5), GeneDiseaseCombinationType.class);
+            return EnumTypeDefiner.retrieve(m.group(3), GeneDiseaseCombinationType.class);
         } else {
-            throw new InvalidStringFormatException(sio + " does not adhere the required format: ^(((sio|SIO):)?(sio|SIO)_)?([0-9]{6})$");
+            throw new InvalidStringFormatException(sio + " does not adhere the required format: ^((sio|SIO):)?(SIO_[0-9]{6})$");
         }
     }
 }

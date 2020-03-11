@@ -7,16 +7,15 @@ import java.util.*;
  */
 public class PhenotypeNetworkCollection {
     /**
-     * The individual {@link Phenotype}{@code s} collected among all {@link PhenotypeNetwork}{@code s}.
-     */
-    private Set<Phenotype> phenotypes = new HashSet<>();
-
-    /**
      * A collection of {@link PhenotypeNetwork}{@code s} stored by their source ({@link PhenotypeNetwork#getSource()}).
      */
     private Map<Phenotype, PhenotypeNetwork> phenotypeNetworks = new HashMap<>();
 
     public Set<Phenotype> getPhenotypes() {
+        Set<Phenotype> phenotypes =  new HashSet<>();
+        for(PhenotypeNetwork network : phenotypeNetworks.values()) {
+            phenotypes.addAll(network.getPhenotypes());
+        }
         return phenotypes;
     }
 
@@ -36,36 +35,31 @@ public class PhenotypeNetworkCollection {
      */
     public void add(PhenotypeNetwork network) {
         phenotypeNetworks.put(network.getSource(), network);
-        phenotypes.addAll(network.getPhenotypes());
-
     }
 
     /**
      * Removes a {@link PhenotypeNetwork} from the {@link PhenotypeNetworkCollection}.
      * @param network the {@link PhenotypeNetwork} to be removed
-     * @return {@code true} if the {@code network} was removed, otherwise {@code false}
+     * @return {@code true} if it was removed, otherwise {@code false}
      */
     public boolean remove(PhenotypeNetwork network) {
-        boolean removed = phenotypeNetworks.values().remove(network);
-        generatePhenotypes();
-        return removed;
+        return phenotypeNetworks.values().remove(network);
+    }
+
+    /**
+     * Removes a {@link PhenotypeNetwork} from the {@link PhenotypeNetworkCollection}.
+     * @param phenotypeSource the {@link PhenotypeNetwork#getSource()} from the {@link PhenotypeNetwork} to be removed
+     * @return the {@link PhenotypeNetwork} if it was removed, otherwise {@code null}
+     */
+    public PhenotypeNetwork remove(Phenotype phenotypeSource) {
+        return phenotypeNetworks.remove(phenotypeSource);
     }
 
     /**
      * Clears the {@link PhenotypeNetworkCollection}
      */
     public void clear() {
-        phenotypes.clear();
         phenotypeNetworks.clear();
-    }
-
-    /**
-     * Generates the {@code phenotypes} from all stored {@link PhenotypeNetwork}{@code s}.
-     */
-    private void generatePhenotypes() {
-        for(PhenotypeNetwork network : phenotypeNetworks.values()) {
-            phenotypes.addAll(network.getPhenotypes());
-        }
     }
 
     @Override

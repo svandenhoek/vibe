@@ -1,14 +1,12 @@
 package org.molgenis.vibe.query_output_digestion.prioritization.gene;
 
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.formats.*;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
-import org.testng.Assert;
-import org.testng.annotations.Test;
 
 import java.util.*;
 
-public class HighestSingleDisgenetScoreGenePrioritizerTester {
+public class HighestSingleDisgenetScoreGenePrioritizerTest {
 
     @Test
     public void testOrdering() {
@@ -44,6 +42,6 @@ public class HighestSingleDisgenetScoreGenePrioritizerTester {
 
         GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer(new GeneDiseaseCollection(geneDiseaseCombinations));
         prioritizer.run();
-        Assert.assertEquals(prioritizer.getPriority(), expectedPriority);
+        Assertions.assertEquals(expectedPriority, prioritizer.getPriority());
     }
 }

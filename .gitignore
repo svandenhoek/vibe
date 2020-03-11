@@ -32,7 +32,8 @@ app/target/
 *.iml
 
 # Test resources which should be downloaded externally
-app/src/test/resources/
+app/src/test/resources/hp.owl
+app/src/test/resources/tdb
 
 # Files stored in TMP dir.
 app/TMP/

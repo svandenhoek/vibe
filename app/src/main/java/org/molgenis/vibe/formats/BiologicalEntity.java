@@ -1,13 +1,6 @@
 package org.molgenis.vibe.formats;
 
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-
 import java.net.URI;
-import java.util.Objects;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
-
-import static java.util.Objects.requireNonNull;
 
 /**
  * Describes a biological entity (such as a {@link Gene}, {@link Disease} or {@link Phenotype}).
@@ -31,9 +24,5 @@ public abstract class BiologicalEntity extends Entity {
 
     public BiologicalEntity(URI uri, String name) {
         super(uri, name);
-    }
-
-    public BiologicalEntity(URI uri, String id, String name) throws InvalidStringFormatException {
-        super(uri, id, name);
     }
 }

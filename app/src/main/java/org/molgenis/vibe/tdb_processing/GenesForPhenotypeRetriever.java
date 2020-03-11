@@ -6,7 +6,6 @@ import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.formats.*;
 import org.molgenis.vibe.io.input.ModelReader;
 import org.molgenis.vibe.tdb_processing.query_string_creation.QueryStringGenerator;
-import org.molgenis.vibe.tdb_processing.query_runner.QueryRunner;
 
 import java.net.URI;
 import java.util.*;

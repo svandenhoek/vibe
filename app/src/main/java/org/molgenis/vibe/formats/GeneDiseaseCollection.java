@@ -47,7 +47,7 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
      * Get the {@link GeneDiseaseCombination}{@code s} for a single {@link Gene}.
      * @param gene the {@link Gene} to retrieve {@link GeneDiseaseCombination}{@code s} for
      * @return the {@link GeneDiseaseCombination}{@code s} belonging to {@code gene}
-     * @see #getByT1(BiologicalEntity)
+     * @see super#getByT1(BiologicalEntity)
      */
     public Set<GeneDiseaseCombination> getByGene(Gene gene) {
         return getByT1(gene);
@@ -57,7 +57,7 @@ public class GeneDiseaseCollection extends BiologicalEntityCollection<Gene, Dise
      * Get the {@link GeneDiseaseCombination}{@code s} for a single {@link Disease}.
      * @param disease the {@link Disease} to retrieve {@link GeneDiseaseCombination}{@code s} for
      * @return the {@link GeneDiseaseCombination}{@code s} belonging to {@code disease}
-     * @see #getByT2(BiologicalEntity)
+     * @see super#getByT2(BiologicalEntity)
      */
     public Set<GeneDiseaseCombination> getByDisease(Disease disease) {
         return getByT2(disease);

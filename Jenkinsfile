@@ -37,15 +37,17 @@ pipeline {
             steps {
                 container('maven') {
                 	dir('app') {
+                        sh "sh TestsPreprocessor.sh"
                     	sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
                 	}
                 }
             }
             post {
                 always {
-                    //junit '**/target/surefire-reports/**.xml'
                     container('maven') {
                     	dir('app') {
+                            // Fetch the target branch, sonar likes to take a look at it
+                            sh "git fetch --no-tags origin ${CHANGE_TARGET}:refs/remotes/origin/${CHANGE_TARGET}"
 	                        sh "mvn -q -B sonar:sonar -Dsonar.login=${env.SONAR_TOKEN} -Dsonar.github.oauth=${env.GITHUB_TOKEN} -Dsonar.pullrequest.base=${CHANGE_TARGET} -Dsonar.pullrequest.branch=${BRANCH_NAME} -Dsonar.pullrequest.key=${env.CHANGE_ID} -Dsonar.pullrequest.provider=GitHub -Dsonar.pullrequest.github.repository=molgenis/vibe -Dsonar.ws.timeout=120"
 	                        sh "mvn -q -B dockerfile:build dockerfile:tag dockerfile:push -Ddockerfile.tag=${TAG} -Ddockerfile.repository=${LOCAL_REPOSITORY}"
                         }
@@ -64,13 +66,13 @@ pipeline {
                 milestone 1
                 container('maven') {
                 	dir('app') {
+                        sh "sh TestsPreprocessor.sh"
                     	sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
                 	}
                 }
             }
             post {
                 always {
-                    //junit '**/target/surefire-reports/**.xml'
                     container('maven') {
                     	dir('app') {
 	                        sh "mvn -q -B sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.ws.timeout=120"
@@ -90,6 +92,7 @@ pipeline {
                     steps {
                         container('maven') {
 	                        dir('app') {
+                                sh "sh TestsPreprocessor.sh"
 	                            sh "mvn -q -B clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
 	                            sh "mvn -q -B sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.branch.name=${BRANCH_NAME} -Dsonar.ws.timeout=120"
 	                            sh "mvn -q -B dockerfile:tag dockerfile:push -Ddockerfile.tag=latest"

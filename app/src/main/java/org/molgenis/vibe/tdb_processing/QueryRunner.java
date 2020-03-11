@@ -1,4 +1,4 @@
-package org.molgenis.vibe.tdb_processing.query_runner;
+package org.molgenis.vibe.tdb_processing;
 
 import org.apache.jena.atlas.lib.Closeable;
 import org.apache.jena.query.*;

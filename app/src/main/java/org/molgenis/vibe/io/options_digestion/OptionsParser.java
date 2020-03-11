@@ -242,7 +242,11 @@ public abstract class OptionsParser {
     }
 
     protected void setOntologyMaxDistance(int ontologyMaxDistance) {
-        this.ontologyMaxDistance = ontologyMaxDistance;
+        if (ontologyMaxDistance >= 0){
+            this.ontologyMaxDistance = ontologyMaxDistance;
+        } else {
+            throw new IllegalArgumentException("value must be >= 0.");
+        }
     }
 
     public GenePrioritizerFactory getGenePrioritizerFactory() {
