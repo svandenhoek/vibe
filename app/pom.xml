@@ -1,12 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.molgenis</groupId>
     <artifactId>vibe</artifactId>
-    <version>3.0.0-SNAPSHOT</version>
+    <version>3.0.0</version>
     <packaging>jar</packaging>
 
     <scm>
@@ -14,7 +12,7 @@
             scm:git:https://${env.GITHUB_USER}:${env.GITHUB_TOKEN}@github.com/molgenis/vibe.git
         </connection>
         <url>https://github.com/molgenis/vibe</url>
-        <tag>HEAD</tag>
+        <tag>vibe-3.0.0</tag>
     </scm>
 
     <properties>
@@ -113,7 +111,7 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <compilerArguments>
-                        <Xlint/>
+                        <Xlint />
                     </compilerArguments>
                 </configuration>
             </plugin>
@@ -174,7 +172,7 @@
                                         <!-- set main class -->
                                         <Main-Class>org.molgenis.vibe.VibeApplication</Main-Class>
                                         <!-- clears class-path added by maven-jar-plugin -->
-                                        <Class-Path></Class-Path>
+                                        <Class-Path />
                                     </manifestEntries>
                                 </transformer>
                                 <!-- prevent license duplications -->
