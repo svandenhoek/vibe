@@ -122,7 +122,6 @@ pipeline {
                         }
                         container('maven') {
                         	dir('app') {
-	                            sh "mvn -q -B release:perform -Darguments=\"-q -B -Dmaven.test.redirectTestOutputToFile=true\""
 	                            sh "cd target/checkout/app && mvn -q -B dockerfile:build dockerfile:tag dockerfile:push -Ddockerfile.tag=${TAG}"
                             }
                         }
