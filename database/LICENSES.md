@@ -6,21 +6,21 @@ The database was created using different sources. The information below describe
 
 ## DisGeNET
 
-Website: http://disgenet.org
-Data: http://rdf.disgenet.org/download/
-Version: 6.0.0 (all) + 5.0.0 (pda.ttl, phenotype.ttl & void.ttl)
+Website: http://disgenet.org/  
+Data: http://rdf.disgenet.org/download/  
+Version: 6.0.0 (all) + 5.0.0 (pda.ttl, phenotype.ttl & void.ttl)  
 License: Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International Public License ([source](http://disgenet.org/legal) - [full license](https://creativecommons.org/licenses/by-nc-sa/4.0/))
 
 ## Orphadata HOOM
 
-Website: www.orphadata.org/
-Data: http://bioportal.bioontology.org/ontologies/HOOM
-Version: 1.3
+Website: http://www.orphadata.org/  
+Data: http://bioportal.bioontology.org/ontologies/HOOM/  
+Version: 1.3  
 License: Creative Commons Attribution 4.0 International Public License ([source](http://www.orphadata.org/cgi-bin/index.php#legal) - [full license](https://creativecommons.org/licenses/by/4.0/))
 
 ## Semanticscience Integrated Ontology
 
-Website: http://sio.semanticscience.org/
-Data: https://github.com/MaastrichtU-IDS/semanticscience/commits/master/ontology/sio/release/sio-release.owl
-Version: 1.43 (commit ID: e8231fe010279bec32423c74c9a8b8d685c56a12)
-License: Creative Commons Attribution 4.0 International Public License ([source](https://raw.githubusercontent.com/MaastrichtU-IDS/semanticscience/e8231fe010279bec32423c74c9a8b8d685c56a12/ontology/sio/release/sio-release.owl) - [full license](http://creativecommons.org/licenses/by/4.0/))
+Website: http://sio.semanticscience.org/  
+Data: https://github.com/MaastrichtU-IDS/semanticscience/commits/master/ontology/sio/release/sio-release.owl  
+Version: 1.43 (commit ID: e8231fe010279bec32423c74c9a8b8d685c56a12)  
+License: Creative Commons Attribution 4.0 International Public License ([source](https://raw.githubusercontent.com/MaastrichtU-IDS/semanticscience/e8231fe010279bec32423c74c9a8b8d685c56a12/ontology/sio/release/sio-release.owl) - [full license](https://creativecommons.org/licenses/by/4.0/))
