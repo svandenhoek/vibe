@@ -113,7 +113,7 @@
                     <source>${java.version}</source>
                     <target>${java.version}</target>
                     <compilerArguments>
-                        <Xlint/>
+                        <Xlint />
                     </compilerArguments>
                 </configuration>
             </plugin>
@@ -174,7 +174,7 @@
                                         <!-- set main class -->
                                         <Main-Class>org.molgenis.vibe.VibeApplication</Main-Class>
                                         <!-- clears class-path added by maven-jar-plugin -->
-                                        <Class-Path></Class-Path>
+                                        <Class-Path />
                                     </manifestEntries>
                                 </transformer>
                                 <!-- prevent license duplications -->
