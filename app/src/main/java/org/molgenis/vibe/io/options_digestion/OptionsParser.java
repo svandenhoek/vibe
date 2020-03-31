@@ -255,7 +255,7 @@ public abstract class OptionsParser {
 
     /**
      * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
-     * user input if variables are set correctly (based on the specified {@link RunMode}.
+     * user input if variables are set correctly (based on the specified {@link RunMode}).
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
     protected boolean checkConfig() {
@@ -295,7 +295,7 @@ public abstract class OptionsParser {
                     }
                     // NO BREAK: continues!!!
 
-                // Checks for if no associated phenotypes need to be retrieved.
+                // Checks if no associated phenotypes need to be retrieved.
                 case GENES_FOR_PHENOTYPES:
                     // Check if there are any input phenotypes.
                     if (phenotypes.size() == 0) {
