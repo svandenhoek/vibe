@@ -95,7 +95,7 @@ pipeline {
                                 sh "sh TestsPreprocessor.sh"
 	                            sh "mvn -q -B clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
 	                            sh "mvn -q -B sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.branch.name=${BRANCH_NAME} -Dsonar.ws.timeout=120"
-	                            sh "mvn -q -B dockerfile:tag dockerfile:push -Ddockerfile.tag=latest"
+	                            sh "mvn -q -B dockerfile:build dockerfile:tag dockerfile:push -Ddockerfile.tag=latest"
                         	}
                         }
                     }
@@ -122,7 +122,6 @@ pipeline {
                         }
                         container('maven') {
                         	dir('app') {
-	                            sh "mvn -q -B release:perform -Darguments=\"-q -B -Dmaven.test.redirectTestOutputToFile=true\""
 	                            sh "cd target/checkout/app && mvn -q -B dockerfile:build dockerfile:tag dockerfile:push -Ddockerfile.tag=${TAG}"
                             }
                         }
