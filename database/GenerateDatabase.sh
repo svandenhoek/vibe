@@ -240,6 +240,8 @@ createOptimizedTtlFiles() {
     tdbquery --loc=${INITIAL_TDB_DIR} --query=${BASE_PATH}/sparql_queries/optimized_construct/gene.rq 1> ${TTL_DIR}/gene.ttl
     echo "Generating: gda.ttl"
     tdbquery --loc=${INITIAL_TDB_DIR} --query=${BASE_PATH}/sparql_queries/optimized_construct/gda.rq 1> ${TTL_DIR}/gda.ttl
+    echo "Generating: pubmed.ttl"
+    tdbquery --loc=${INITIAL_TDB_DIR} --query=${BASE_PATH}/sparql_queries/optimized_construct/pubmed.rq 1> ${TTL_DIR}/pubmed.ttl
     echo "Generating: source.ttl"
     tdbquery --loc=${INITIAL_TDB_DIR} --query=${BASE_PATH}/sparql_queries/optimized_construct/source.rq 1> ${TTL_DIR}/source.ttl
 }
