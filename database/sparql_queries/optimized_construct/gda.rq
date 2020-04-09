@@ -24,10 +24,12 @@ PREFIX umls: <http://linkedlifedata.com/resource/umls/id/> # DisGeNET
 PREFIX ncbigene: <http://identifiers.org/ncbigene/> # DisGeNET
 PREFIX pda: <http://rdf.disgenet.org/resource/pda/> # DisGeNET
 PREFIX gda: <http://rdf.disgenet.org/resource/gda/> # DisGeNET
+PREFIX hgnc: <http://identifiers.org/hgnc.symbol/> # DisGeNET
 PREFIX ordo: <http://www.orpha.net/ORDO/> # DisGeNET / Orphanet
 PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet
 PREFIX void5: <http://rdf.disgenet.org/v5.0.0/void/> # DisGeNET
 PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET
+PREFIX pmid: <http://identifiers.org/pubmed/> # DisGeNET
 
 # Query.
 CONSTRUCT {
