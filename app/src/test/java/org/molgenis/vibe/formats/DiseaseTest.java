@@ -62,15 +62,17 @@ public class DiseaseTest {
     @Test
     public void testSort() {
         List<Disease> actualOrder = new ArrayList<>( Arrays.asList(
-                new Disease("umls:C3"),
-                new Disease("umls:C8"),
-                new Disease("umls:C1")
+                new Disease("umls:C0000020"),
+                new Disease("umls:C0000003"),
+                new Disease("umls:C0000008"),
+                new Disease("umls:C0000001")
         ));
 
         List<Disease> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(3),
+                actualOrder.get(1),
                 actualOrder.get(2),
-                actualOrder.get(0),
-                actualOrder.get(1)
+                actualOrder.get(0)
         ));
 
         Collections.sort(actualOrder);

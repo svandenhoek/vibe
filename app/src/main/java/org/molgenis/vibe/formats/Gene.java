@@ -21,8 +21,17 @@ public class Gene extends BiologicalEntity {
      */
     private GeneSymbol symbol;
 
+    /**
+     * The id stored as {@code int}.
+     */
+    private int idInt;
+
     public GeneSymbol getSymbol() {
         return symbol;
+    }
+
+    public int getIdInt() {
+        return idInt;
     }
 
     @Override
@@ -47,11 +56,13 @@ public class Gene extends BiologicalEntity {
 
     public Gene(String id, GeneSymbol symbol) {
         super(id);
+        this.idInt = Integer.parseInt(getId());
         this.symbol = requireNonNull(symbol);
     }
 
     public Gene(URI uri, GeneSymbol symbol) {
         super(uri);
+        this.idInt = Integer.parseInt(getId());
         this.symbol = requireNonNull(symbol);
     }
 
@@ -63,5 +74,15 @@ public class Gene extends BiologicalEntity {
         return "Gene{" +
                 "symbol='" + symbol + '\'' +
                 "} " + super.toString();
+    }
+
+    @Override
+    public int compareTo(Entity o) {
+        if (o instanceof Gene) {
+            Gene oGene = (Gene) o;
+            return getIdInt() - oGene.getIdInt();
+        } else {
+            return super.compareTo(o);
+        }
     }
 }

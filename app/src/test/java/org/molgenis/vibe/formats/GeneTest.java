@@ -64,15 +64,17 @@ public class GeneTest {
     @Test
     public void testSort() {
         List<Gene> actualOrder = new ArrayList<>( Arrays.asList(
+                new Gene("ncbigene:20", symbol),
                 new Gene("ncbigene:3", symbol),
                 new Gene("ncbigene:8", symbol),
                 new Gene("ncbigene:1", symbol)
         ));
 
         List<Gene> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(3),
+                actualOrder.get(1),
                 actualOrder.get(2),
-                actualOrder.get(0),
-                actualOrder.get(1)
+                actualOrder.get(0)
         ));
 
         Collections.sort(actualOrder);
