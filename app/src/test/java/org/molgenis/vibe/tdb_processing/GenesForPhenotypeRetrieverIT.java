@@ -49,9 +49,9 @@ public class GenesForPhenotypeRetrieverIT {
          *         skos:exactMatch  umls:C1835764 .
          */
         Disease[] diseases = new Disease[]{
-                new Disease("umls:C0265292"), // ordo:Orphanet_85184
-                new Disease("umls:C0220687"), // pda:DGN8a0e701b56199eca12831b38431d7959
-                new Disease("umls:C1835764"), // skos:exactMatch
+                new Disease("umls:C0265292", "Schwartz-Lelek syndrome"), // ordo:Orphanet_85184
+                new Disease("umls:C0220687", "KBG syndrome"), // pda:DGN8a0e701b56199eca12831b38431d7959
+                new Disease("umls:C1835764", "Vertebral arch anomaly"), // skos:exactMatch
         };
 
         Gene[] genes = new Gene[]{

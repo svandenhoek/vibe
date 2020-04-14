@@ -43,6 +43,10 @@ public class Disease extends BiologicalEntity {
         super(uri);
     }
 
+    public Disease(String id, String name) throws InvalidStringFormatException {
+        super(id, name);
+    }
+
     public Disease(URI uri, String name) throws InvalidStringFormatException {
         super(uri, name);
     }

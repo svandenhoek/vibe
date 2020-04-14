@@ -74,7 +74,7 @@ public final class QueryStringGenerator {
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />between [1] and [2]: the gene-disease association type (see {@link GeneDiseaseCombinationType})
      */
-    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence\n" +
+    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence\n" +
             "WHERE {\n" +
             "\tVALUES ?hpo ", "\n" + // [0] -> [1]
             "\t{\n" +
@@ -92,7 +92,8 @@ public final class QueryStringGenerator {
             "\t\t?hpo sio:SIO_000001/skos:exactMatch ?disease .\n" +
             "\t}\n" +
             "\n" +
-            "\t?disease sio:SIO_000212 ?gda .\n" +
+            "\t?disease sio:SIO_000212 ?gda ;\n" +
+            "\tdcterms:title ?diseaseName ." +
             "\t\n" +
             "\t?gda rdf:type/rdfs:subClassOf* ", " ;\n" + // [1] -> [2]
             "\tsio:SIO_000628 ?gene ;\n" +

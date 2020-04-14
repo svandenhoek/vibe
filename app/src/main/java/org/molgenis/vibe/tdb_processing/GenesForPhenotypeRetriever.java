@@ -55,7 +55,8 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
             // Store new disease, or retrieves existing disease instance if already exists.
             Disease disease = processEntityOnAlreadyFound(
-                new Disease(URI.create(result.get("disease").asResource().getURI())),
+                new Disease(URI.create(result.get("disease").asResource().getURI()),
+                        result.get("diseaseName").asLiteral().getString()),
                 diseases
             );
 

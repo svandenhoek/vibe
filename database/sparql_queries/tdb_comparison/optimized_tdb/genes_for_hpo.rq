@@ -32,7 +32,7 @@ PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET
 PREFIX pmid: <http://identifiers.org/pubmed/> # DisGeNET
 
 # Query.
-SELECT ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence
+SELECT ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence
 WHERE {
 	VALUES ?hpo { <http://purl.obolibrary.org/obo/HP_0000003> }
 	{
@@ -50,7 +50,8 @@ WHERE {
 		?hpo sio:SIO_000001/skos:exactMatch ?disease .
 	}
 
-	?disease sio:SIO_000212 ?gda .
+	?disease sio:SIO_000212 ?gda ;
+	dcterms:title ?diseaseName .
 	
 	?gda rdf:type/rdfs:subClassOf* sio:SIO_000983 ;
 	sio:SIO_000628 ?gene ;
@@ -64,4 +65,4 @@ WHERE {
 	?gene sio:SIO_000205 ?geneSymbol .
 }
 # Disable if comparing performance, enable if comparing through shasum.
-ORDER BY ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence
+ORDER BY ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence
