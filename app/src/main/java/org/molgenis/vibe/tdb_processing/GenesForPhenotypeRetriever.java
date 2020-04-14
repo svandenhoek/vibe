@@ -90,7 +90,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             if(result.get("evidence") != null) {
                 PubmedEvidence pubmedEvidence = processEntityOnAlreadyFound(
                     new PubmedEvidence(URI.create(result.get("evidence").asResource().getURI()),
-                        result.get("evidenceYear").asLiteral().getInt()),
+                        Integer.parseInt(result.get("evidenceYear").asLiteral().getString())),
                     foundPubmedEvidence
                 );
                 gdc.add(source, pubmedEvidence);
