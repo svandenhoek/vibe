@@ -8,9 +8,9 @@ import java.util.*;
 
 public class GeneDiseaseCombinationTest {
     private Gene gene = new Gene("ncbigene:0", new GeneSymbol("hgnc:A"));
-    private Disease disease = new Disease("umls:C01234567");
+    private Disease disease = new Disease("umls:C0123456");
     private Gene gene2 = new Gene("ncbigene:1", new GeneSymbol("hgnc:B"));
-    private Disease disease2 = new Disease("umls:C12345678");
+    private Disease disease2 = new Disease("umls:C1234567");
     private double score = 0.123456789;
     private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"));
     private Source source2 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"));
