@@ -54,14 +54,14 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
             QuerySolution result = query.next();
 
             // Store new disease, or retrieves existing disease instance if already exists.
-            Disease disease = processEntityOnAlreadyFound(
+            Disease disease = processEntityQueryOutput(
                 new Disease(URI.create(result.get("disease").asResource().getURI()),
                         result.get("diseaseName").asLiteral().getString()),
                 diseases
             );
 
             // Store new gene, or retrieves existing disease instance if already exists.
-            Gene gene = processEntityOnAlreadyFound(
+            Gene gene = processEntityQueryOutput(
                 new Gene(URI.create(result.get("gene").asResource().getURI()),
                         new GeneSymbol(URI.create(result.get("geneSymbol").asResource().getURI()))),
                 genes
@@ -88,7 +88,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
             // Adds source to gene-disease combination (with evidence if available).
             if(result.get("evidence") != null) {
-                PubmedEvidence pubmedEvidence = processEntityOnAlreadyFound(
+                PubmedEvidence pubmedEvidence = processEntityQueryOutput(
                     new PubmedEvidence(URI.create(result.get("evidence").asResource().getURI()),
                         Integer.parseInt(result.get("evidenceYear").asLiteral().getString())),
                     foundPubmedEvidence
@@ -102,7 +102,7 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
         query.close();
     }
 
-    private <T extends Entity> T processEntityOnAlreadyFound(T entity, Map<T, T> foundEntities) {
+    private <T extends Entity> T processEntityQueryOutput(T entity, Map<T, T> foundEntities) {
         T foundEntity = foundEntities.get(entity);
         if(foundEntity == null) {
             foundEntities.put(entity, entity);

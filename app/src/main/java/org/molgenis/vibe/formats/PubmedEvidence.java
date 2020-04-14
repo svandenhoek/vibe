@@ -2,7 +2,6 @@ package org.molgenis.vibe.formats;
 
 import java.net.URI;
 import java.util.Comparator;
-import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -15,15 +14,14 @@ public class PubmedEvidence extends Evidence {
     private int year;
     private int idInt;
 
-
     /**
      * Sorts {@link PubmedEvidence} first on {@link #getReleaseYear()} (most recent first) and then by ID
      * (as {@code int}, lowest to highest).
      */
-    public static Comparator<PubmedEvidence> yearComparator;
+    public static Comparator<PubmedEvidence> releaseYearComparator;
 
     static {
-        yearComparator = new Comparator<PubmedEvidence>() {
+        releaseYearComparator = new Comparator<PubmedEvidence>() {
             @Override
             public int compare(PubmedEvidence o1, PubmedEvidence o2) {
                 int diff =  o2.year - o1.year;
@@ -34,8 +32,6 @@ public class PubmedEvidence extends Evidence {
             }
         };
     }
-
-
 
     public PubmedEvidence(String id, int year) {
         super(id);

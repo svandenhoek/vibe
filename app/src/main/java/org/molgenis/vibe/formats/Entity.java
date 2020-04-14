@@ -162,8 +162,6 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
                 Objects.equals(uri, entity.uri);
     }
 
-
-
     @Override
     public int hashCode() {
         return Objects.hash(uri);

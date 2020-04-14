@@ -31,10 +31,6 @@ public class Gene extends BiologicalEntity {
         return symbol;
     }
 
-    public int getIdInt() {
-        return idInt;
-    }
-
     @Override
     protected String getIdPrefix() {
         return ID_PREFIX;
@@ -82,7 +78,7 @@ public class Gene extends BiologicalEntity {
     public int compareTo(Entity o) {
         if (o instanceof Gene) {
             Gene oGene = (Gene) o;
-            return getIdInt() - oGene.getIdInt();
+            return idInt - oGene.idInt;
         } else {
             return super.compareTo(o);
         }

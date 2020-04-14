@@ -60,7 +60,7 @@ public class PubmedEvidenceTest {
     }
 
     @Test
-    public void testSort() {
+    public void testSortId() {
         List<PubmedEvidence> actualOrder = new ArrayList<>( Arrays.asList(
                 new PubmedEvidence("pmid:20", 2002),
                 new PubmedEvidence("pmid:3", 2004),
@@ -76,6 +76,26 @@ public class PubmedEvidenceTest {
         ));
 
         Collections.sort(actualOrder);
+        Assertions.assertEquals(expectedOrder, actualOrder);
+    }
+
+    @Test
+    public void testSortYear() {
+        List<PubmedEvidence> actualOrder = new ArrayList<>( Arrays.asList(
+                new PubmedEvidence("pmid:20", 2002),
+                new PubmedEvidence("pmid:3", 2004),
+                new PubmedEvidence("pmid:8", 2001),
+                new PubmedEvidence("pmid:1", 2003)
+        ));
+
+        List<PubmedEvidence> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(1),
+                actualOrder.get(3),
+                actualOrder.get(0),
+                actualOrder.get(2)
+        ));
+
+        Collections.sort(actualOrder, PubmedEvidence.releaseYearComparator);
         Assertions.assertEquals(expectedOrder, actualOrder);
     }
 
