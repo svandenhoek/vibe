@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param <T1> the first {@link BiologicalEntity} subclass type
  * @param <T2> the second {@link BiologicalEntity} subclass type
  */
-public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> {
+public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> implements allFieldsEquals {
     /**
      * The first {@link BiologicalEntity} subclass object.
      */
@@ -48,6 +48,15 @@ public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T
         BiologicalEntityCombination<?, ?> that = (BiologicalEntityCombination<?, ?>) o;
         return Objects.equals(t1, that.t1) &&
                 Objects.equals(t2, that.t2);
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BiologicalEntityCombination<?, ?> that = (BiologicalEntityCombination<?, ?>) o;
+        return t1.allFieldsEquals(that.t1) &&
+                t2.allFieldsEquals(that.t2);
     }
 
     @Override

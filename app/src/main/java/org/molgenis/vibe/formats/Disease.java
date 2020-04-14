@@ -53,6 +53,6 @@ public class Disease extends BiologicalEntity {
 
     @Override
     public String toString() {
-        return "Disease{} " + super.toString();
+        return "Disease{" + super.toString() + '}';
     }
 }

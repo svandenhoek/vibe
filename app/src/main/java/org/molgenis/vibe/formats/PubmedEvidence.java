@@ -2,6 +2,7 @@ package org.molgenis.vibe.formats;
 
 import java.net.URI;
 import java.util.Comparator;
+import java.util.Objects;
 
 import static java.util.Objects.requireNonNull;
 
@@ -80,5 +81,24 @@ public class PubmedEvidence extends Evidence {
         } else {
             return super.compareTo(o);
         }
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        PubmedEvidence that = (PubmedEvidence) o;
+        return super.allFieldsEquals(o) &&
+                year == that.year &&
+                idInt == that.idInt;
+    }
+
+    @Override
+    public String toString() {
+        return "PubmedEvidence{" +
+                "year=" + year +
+                ' ' + super.toString() +
+                '}';
     }
 }

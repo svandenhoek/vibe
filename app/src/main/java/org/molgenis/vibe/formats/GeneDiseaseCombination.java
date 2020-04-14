@@ -280,6 +280,19 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
                 "disgenetScore=" + disgenetScore +
                 ", sourcesCount=" + sourcesCount +
                 ", pubmedEvidence=" + pubmedEvidence +
-                "} " + super.toString();
+                ' ' + super.toString() +
+                '}';
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        GeneDiseaseCombination that = (GeneDiseaseCombination) o;
+        return super.allFieldsEquals(that) &&
+                Objects.equals(disgenetScore, that.disgenetScore) &&
+                Objects.equals(sourcesCount, that.sourcesCount) &&
+                Objects.equals(pubmedEvidence, that.pubmedEvidence);
     }
 }

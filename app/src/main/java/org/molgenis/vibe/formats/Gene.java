@@ -3,6 +3,7 @@ package org.molgenis.vibe.formats;
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * A gene. Note that equality is determined through {@link URI}{@code s} from the domain
@@ -73,7 +74,8 @@ public class Gene extends BiologicalEntity {
     public String toString() {
         return "Gene{" +
                 "symbol='" + symbol + '\'' +
-                "} " + super.toString();
+                ' ' + super.toString() +
+                '}';
     }
 
     @Override
@@ -84,5 +86,16 @@ public class Gene extends BiologicalEntity {
         } else {
             return super.compareTo(o);
         }
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Gene gene = (Gene) o;
+        return super.allFieldsEquals(gene) &&
+                idInt == gene.idInt &&
+                symbol.allFieldsEquals(gene.symbol);
     }
 }

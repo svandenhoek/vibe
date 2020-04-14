@@ -145,6 +145,11 @@ public class GenesForPhenotypeRetrieverIT {
         retriever.run();
         GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
 
-        Assertions.assertEquals(expectedCollection, actualCollection);
+        System.out.println(actualCollection.toString());
+
+        Assertions.assertAll(
+            () -> Assertions.assertEquals(expectedCollection, actualCollection),
+            () -> Assertions.assertTrue(expectedCollection.allFieldsEquals(actualCollection))
+        );
     }
 }
