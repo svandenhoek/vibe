@@ -58,7 +58,7 @@ WHERE {
 	sio:SIO_000253 ?gdaSource .
 	OPTIONAL {
 		?gda sio:SIO_000772 ?evidence .
-		?evidence dcterms:issued ?evidenceYear
+		?evidence dcterms:issued ?evidenceYear .
 	}
 
 	?gene sio:SIO_000205 ?geneSymbol .

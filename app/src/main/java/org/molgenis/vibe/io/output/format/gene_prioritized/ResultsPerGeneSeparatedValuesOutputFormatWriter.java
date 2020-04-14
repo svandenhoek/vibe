@@ -8,9 +8,7 @@ import org.molgenis.vibe.io.output.target.OutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import java.io.IOException;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 import static java.util.Objects.requireNonNull;
 
@@ -109,9 +107,12 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
                 getOutputWriter().write(" (" + gdc.getDisgenetScore() + ")");
 
                 // If there is evidence, writes these as well.
-                if(gdc.getAllEvidence().size() > 0) {
+                List<PubmedEvidence> pubmedEvidenceList = new ArrayList<>(gdc.getAllPubmedEvidence());
+                if(pubmedEvidenceList.size() > 0) {
+                    // Sorts the pubmed IDs.
+                    Collections.sort(pubmedEvidenceList, PubmedEvidence.yearComparator);
                     // Merges the evidence URIs with as separator the values separator.
-                    String evidence = StringUtils.join(writeEvidence(gdc), valuesSeparator.toString());
+                    String evidence = StringUtils.join(writeEvidence(pubmedEvidenceList), valuesSeparator.toString());
                     getOutputWriter().write(keyValueSeparator + evidence);
                 }
             }
@@ -136,5 +137,5 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
      */
     protected abstract String writeDisease(Disease disease) throws IOException;
 
-    protected abstract List<String> writeEvidence(GeneDiseaseCombination gdc) throws IOException;
+    protected abstract List<String> writeEvidence(List<PubmedEvidence> pubmedEvidenceList) throws IOException;
 }

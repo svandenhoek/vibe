@@ -20,16 +20,6 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     private Set<Phenotype> phenotypes;
 
     /**
-     * {@link Gene}{@code s} storage for easy retrieval.
-     */
-    private Map<Gene, Gene> genes = new HashMap<>();
-
-    /**
-     * {@link Disease}{@code s} storage for easy retrieval.
-     */
-    private Map<Disease, Disease> diseases = new HashMap<>();
-
-    /**
      * The final output to be retrieved for further usage after querying.
      */
     private GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollection();
@@ -50,26 +40,31 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     }
 
     private void retrieveData() {
+        // Variables for storage of already found data (reduces creating identical objects).
+        Map<Gene, Gene> genes = new HashMap<>();
+        Map<Disease, Disease> diseases = new HashMap<>();
+        Map<PubmedEvidence,PubmedEvidence> foundPubmedEvidence = new HashMap<>();
+
+        // Prepares query.
         QueryRunner query = new QueryRunner(getModelReader().getModel(),
                 QueryStringGenerator.getGenesForPhenotypes(phenotypes));
 
+        // Processes query.
         while(query.hasNext()) {
             QuerySolution result = query.next();
 
             // Store new disease, or retrieves existing disease instance if already exists.
-            Disease retrievedDisease = new Disease(URI.create(result.get("disease").asResource().getURI()));
-            Disease disease = diseases.put(retrievedDisease, retrievedDisease);
-            if(disease == null) {
-                disease = retrievedDisease;
-            }
+            Disease disease = processEntityOnAlreadyFound(
+                new Disease(URI.create(result.get("disease").asResource().getURI())),
+                diseases
+            );
 
             // Store new gene, or retrieves existing disease instance if already exists.
-            Gene retrievedGene = new Gene(URI.create(result.get("gene").asResource().getURI()),
-                    new GeneSymbol(URI.create(result.get("geneSymbol").asResource().getURI())));
-            Gene gene = genes.put(retrievedGene, retrievedGene);
-            if(gene == null) {
-                gene = retrievedGene;
-            }
+            Gene gene = processEntityOnAlreadyFound(
+                new Gene(URI.create(result.get("gene").asResource().getURI()),
+                        new GeneSymbol(URI.create(result.get("geneSymbol").asResource().getURI()))),
+                genes
+            );
 
             // Retrieves score belonging to the gene-disease combination.
             double score = result.get("gdaScoreNumber").asLiteral().getDouble();
@@ -92,12 +87,26 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
 
             // Adds source to gene-disease combination (with evidence if available).
             if(result.get("evidence") != null) {
-                gdc.add(source, URI.create(result.get("evidence").asResource().getURI()));
+                PubmedEvidence pubmedEvidence = processEntityOnAlreadyFound(
+                    new PubmedEvidence(URI.create(result.get("evidence").asResource().getURI()),
+                        result.get("evidenceYear").asLiteral().getInt()),
+                    foundPubmedEvidence
+                );
+                gdc.add(source, pubmedEvidence);
             } else {
                 gdc.add(source);
             }
         }
 
         query.close();
+    }
+
+    private <T extends Entity> T processEntityOnAlreadyFound(T entity, Map<T, T> foundEntities) {
+        T foundEntity = foundEntities.get(entity);
+        if(foundEntity == null) {
+            foundEntities.put(entity, entity);
+            foundEntity = entity;
+        }
+        return foundEntity;
     }
 }

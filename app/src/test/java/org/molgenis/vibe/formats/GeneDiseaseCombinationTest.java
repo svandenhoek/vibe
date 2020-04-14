@@ -31,6 +31,33 @@ public class GeneDiseaseCombinationTest {
 
     @Test
     public void addingMultipleSourcesWithEvidence() {
+        List<PubmedEvidence> source1Evidence = Arrays.asList(
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), 2000)
+        );
+        List<PubmedEvidence> source2Evidence = Arrays.asList(
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/4"), 2000)
+        );
+
+        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
+        geneDiseaseCombo.add(source1, source1Evidence.get(0));
+        geneDiseaseCombo.add(source1, source1Evidence.get(1));
+        geneDiseaseCombo.add(source2, source2Evidence.get(0));
+        geneDiseaseCombo.add(source2, source2Evidence.get(1));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source1)),
+                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source2)),
+
+                () -> Assertions.assertEquals(new HashSet<>(source1Evidence), geneDiseaseCombo.getPubmedEvidenceForSource(source1)),
+                () -> Assertions.assertEquals(new HashSet<>(source2Evidence), geneDiseaseCombo.getPubmedEvidenceForSource(source2))
+        );
+    }
+
+    @Test
+    @Deprecated
+    public void addingMultipleSourcesWithEvidenceDeprecated() {
         List<URI> source1Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"), URI.create("http://identifiers.org/pubmed/2"));
         List<URI> source2Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/3"), URI.create("http://identifiers.org/pubmed/4"));
 
@@ -51,8 +78,13 @@ public class GeneDiseaseCombinationTest {
 
     @Test
     public void addingMultipleSourcesWithAndWithoutEvidence() {
-        List<URI> source1Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"));
-        List<URI> source2Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+        List<PubmedEvidence> source1Evidence = Arrays.asList(
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), 2000)
+        );
+        List<PubmedEvidence> source2Evidence = Arrays.asList(
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), 2000)
+        );
 
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         geneDiseaseCombo.add(source2);
@@ -67,8 +99,8 @@ public class GeneDiseaseCombinationTest {
                 () -> Assertions.assertEquals(Integer.valueOf(3), geneDiseaseCombo.getSourcesCount().get(source1)),
                 () -> Assertions.assertEquals(Integer.valueOf(4), geneDiseaseCombo.getSourcesCount().get(source2)),
 
-                () -> Assertions.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1)),
-                () -> Assertions.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2))
+                () -> Assertions.assertEquals(new HashSet<>(source1Evidence), geneDiseaseCombo.getPubmedEvidenceForSource(source1)),
+                () -> Assertions.assertEquals(new HashSet<>(source2Evidence), geneDiseaseCombo.getPubmedEvidenceForSource(source2))
         );
     }
 
@@ -79,6 +111,13 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
+    public void retrieveSourcesWithPubmedEvidenceWhenNothingIsStored() {
+        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
+        Assertions.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithPubmedEvidence());
+    }
+
+    @Test
+    @Deprecated
     public void retrieveSourcesWithEvidenceWhenNothingIsStored() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         Assertions.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithEvidence());
@@ -91,15 +130,23 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
+    public void retrievePubmedEvidenceForNonExistingSource() {
+        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
+        Assertions.assertEquals(null, geneDiseaseCombo.getPubmedEvidenceForSource(source1));
+    }
+
+    @Test
+    @Deprecated
     public void retrieveEvidenceForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         Assertions.assertEquals(null, geneDiseaseCombo.getEvidenceForSource(source1));
     }
 
     @Test
+    @Deprecated
     public void testGetAllEvidenceOrdered() {
         List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
 
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         geneDiseaseCombo.add(source1, sourceEvidence.get(0));
@@ -111,9 +158,10 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
+    @Deprecated
     public void testGetAllEvidenceOrderedStrings() {
         List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
 
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         geneDiseaseCombo.add(source1, sourceEvidence.get(0));
@@ -125,30 +173,32 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
+    @Deprecated
     public void testGetAllEvidenceSimplified() {
         List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
 
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         geneDiseaseCombo.add(source1, sourceEvidence.get(0));
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assertions.assertEquals(new HashSet<>(Arrays.asList("1","https://www.ncbi.nlm.nih.gov/pubmed/2", "3")),
+        Assertions.assertEquals(new HashSet<>(Arrays.asList("1","20", "3")),
                 geneDiseaseCombo.getAllEvidenceSimplified());
     }
 
     @Test
+    @Deprecated
     public void testGetAllEvidenceSimplifiedOrdered() {
         List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("https://www.ncbi.nlm.nih.gov/pubmed/2"), URI.create("http://identifiers.org/pubmed/3"));
+                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
 
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score);
         geneDiseaseCombo.add(source1, sourceEvidence.get(0));
         geneDiseaseCombo.add(source1, sourceEvidence.get(1));
         geneDiseaseCombo.add(source1, sourceEvidence.get(2));
 
-        Assertions.assertEquals(new ArrayList<>(Arrays.asList("1","3","https://www.ncbi.nlm.nih.gov/pubmed/2")),
+        Assertions.assertEquals(new ArrayList<>(Arrays.asList("1","3","20")),
                 geneDiseaseCombo.getAllEvidenceSimplifiedOrdered());
     }
 

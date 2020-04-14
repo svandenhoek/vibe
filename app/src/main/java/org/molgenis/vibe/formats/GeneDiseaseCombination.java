@@ -22,7 +22,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * A {@link Map} storing per {@link Source} the {@link URI}{@code s} to the evidence (if available).
      */
-    private Map<Source, List<URI>> sourcesEvidence = new HashMap<>();
+    private Map<Source, Set<PubmedEvidence>> pubmedEvidence = new HashMap<>();
 
     /**
      * @return the {@link Gene}
@@ -52,6 +52,10 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         return Collections.unmodifiableMap(sourcesCount);
     }
 
+    /**
+     * @deprecated unnecessary method, can be achieved through {@link #getSourcesCount()}{@code .keySet()}.
+     */
+    @Deprecated
     public Set<Source> getSourcesWithCount() {
         return Collections.unmodifiableSet(sourcesCount.keySet());
     }
@@ -70,60 +74,108 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
-     * All {@link Source}{@code s} for this gene-disease combination that have evidence {@link URI}{@code s}.
+     * All {@link Source}{@code s} for this gene-disease combination that have {@link PubmedEvidence}.
      * @return an unmodifiable {@link Set} containing {@link Source}{@code s}
      */
+    public Set<Source> getSourcesWithPubmedEvidence() {
+        return Collections.unmodifiableSet(pubmedEvidence.keySet());
+    }
+
+    /**
+     * All {@link Source}{@code s} for this gene-disease combination that have evidence {@link URI}{@code s}.
+     * Currently only a wrapper for {@link #getSourcesWithPubmedEvidence()}.
+     * @return an unmodifiable {@link Set} containing {@link Source}{@code s}
+     */
+    @Deprecated
     public Set<Source> getSourcesWithEvidence() {
-        return Collections.unmodifiableSet(sourcesEvidence.keySet());
+        return getSourcesWithPubmedEvidence();
+    }
+
+    /**
+     * The {@link PubmedEvidence} for the defined {@link Source}.
+     * @param source
+     * @return an unmodifiable {@link Set} containing {@link PubmedEvidence},
+     * or {@code null} if {@link Source} does not have any evidence
+     */
+    public Set<PubmedEvidence> getPubmedEvidenceForSource(Source source) {
+        Set<PubmedEvidence> evidence = pubmedEvidence.get(source);
+        if(evidence != null) {
+            evidence = Collections.unmodifiableSet(evidence);
+        }
+
+        return evidence;
+    }
+
+    /**
+     * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
+     * @return a {@link Set} containing all the {@link PubmedEvidence}
+     */
+    public Set<PubmedEvidence> getAllPubmedEvidence() {
+        Set<PubmedEvidence> evidence = new HashSet<>();
+        pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        return evidence;
     }
 
     /**
      * The evidence {@link URI}{@code s} for the defined {@link Source}
      * @param source
-     * @return an unmodifiable {@link List} containing evidence {@link URI}{@code s}, or {@code null} if {@link Source} does not have any evidence
+     * @return a sorted {@link List} containing evidence {@link URI}{@code s}, or {@code null} if {@link Source} does not have any evidence
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public List<URI> getEvidenceForSource(Source source) {
-        List<URI> evidence = sourcesEvidence.get(source);
-        if(evidence != null) {
-            evidence = Collections.unmodifiableList(evidence);
+        Set<PubmedEvidence> evidence = getPubmedEvidenceForSource(source);
+
+        if(evidence == null) {
+            return null;
         }
-        return evidence;
+
+        List<URI> outputList = new ArrayList<>();
+        evidence.forEach((item) -> outputList.add(item.getUri()));
+
+        Collections.sort(outputList);
+
+        return outputList;
     }
 
     /**
      * The evidence of all {@link Source}{@code s} combined.
      * @return a {@link Set} containing all the evidence {@link URI}{@code s}
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public Set<URI> getAllEvidence() {
-        Set<URI> allSources = new HashSet<>();
-        for(List<URI> evidenceForSingleSource : sourcesEvidence.values()) {
-            allSources.addAll(evidenceForSingleSource);
-        }
-
-        return allSources;
+        Set<URI> outputSet = new HashSet<>();
+        getAllPubmedEvidence().forEach((item) -> outputSet.add(item.getUri()));
+        return outputSet;
     }
 
     /**
      * Wrapper for {@link #getAllEvidence()} that returns an ordered list.
      * @return a {@link List} containing all the evidence {@link URI}{@code s}
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public List<URI> getAllEvidenceOrdered() {
-        List<URI> sources = new ArrayList<>();
-        sources.addAll(getAllEvidence());
-        Collections.sort(sources);
+        List<PubmedEvidence> pubmedEvidenceList = new ArrayList(getAllPubmedEvidence());
+        Collections.sort(pubmedEvidenceList);
 
-        return sources;
+        List<URI> outputList = new ArrayList<>();
+        pubmedEvidenceList.forEach((item) -> outputList.add(item.getUri()));
+
+        return outputList;
     }
 
     /**
      * Wrapper for {@link #getAllEvidenceOrdered()} that converts the {@link URI}{@code s} to {@link String}{@code s}.
      * @return a {@link List} containing all the evidence {@link URI}{@code s} as {@link String}{@code s}
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public List<String> getAllEvidenceOrderedStrings() {
-        List<String> stringList = new ArrayList<>();
-        getAllEvidenceOrdered().forEach(uri -> stringList.add(uri.toString()));
-
-        return stringList;
+        List<String> outputList = new ArrayList<>();
+        getAllEvidenceOrdered().forEach((item) -> outputList.add(item.toString()));
+        return outputList;
     }
 
     /**
@@ -132,10 +184,12 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * still returned (though after being converted to a {@link String}).
      * @return a {@link Set} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
      * {@link URI}) and for other sources the full {@link URI} as a {@link String}
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public Set<String> getAllEvidenceSimplified() {
         Set<String> simplifiedSources = new HashSet<>();
-        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
+        simplifyEvidence(new ArrayList<>(this.getAllEvidence()), simplifiedSources);
 
         return simplifiedSources;
     }
@@ -146,11 +200,12 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @return a {@link List} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
      * {@link URI}) and for other sources the full {@link URI} as a {@link String}
      * @see #getAllEvidenceSimplified()
+     * @deprecated use evidence-type specific getters instead
      */
+    @Deprecated
     public List<String> getAllEvidenceSimplifiedOrdered() {
         List<String> simplifiedSources = new ArrayList<>();
-        simplifyEvidence(this.getAllEvidence(), simplifiedSources);
-        Collections.sort(simplifiedSources);
+        simplifyEvidence(this.getAllEvidenceOrdered(), simplifiedSources);
 
         return simplifiedSources;
     }
@@ -160,7 +215,8 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @param simplifiedSources where the (simplified) sources should be stored in as {@link String}
      * @param allSourceUris the {@link Set} that should be simplified
      */
-    private void simplifyEvidence(Set<URI> allSourceUris, Collection<String> simplifiedSources) {
+    @Deprecated
+    private void simplifyEvidence(List<URI> allSourceUris, Collection<String> simplifiedSources) {
         for(URI source : allSourceUris) {
             String sourceString = source.toString();
             simplifiedSources.add((sourceString.startsWith("http://identifiers.org/pubmed/") ? sourceString.substring(30) : sourceString));
@@ -185,16 +241,22 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * Adds a {@link Source} to this gene-disease combination with an evidence {@link URI}.
      * @param source
      * @param evidence
+     * @deprecated use {@link #add(Source, PubmedEvidence)} instead, URIs added through this method will have release year "-1".
      */
+    @Deprecated
     public void add(Source source, URI evidence) {
+        add(source, new PubmedEvidence(evidence, -1));
+    }
+
+    public void add(Source source, PubmedEvidence evidence) {
         // Increments counter for source.
         add(source);
 
-        // Stores evidence URI.
-        List<URI> evidenceList = sourcesEvidence.get(source);
+        // Stores PubMed evidence.
+        Set<PubmedEvidence> evidenceList = pubmedEvidence.get(source);
         if(evidenceList == null) {
-            evidenceList = new ArrayList<>();
-            sourcesEvidence.put(source, evidenceList);
+            evidenceList = new HashSet<>();
+            pubmedEvidence.put(source, evidenceList);
         }
         evidenceList.add(evidence);
     }
@@ -217,7 +279,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         return "GeneDiseaseCombination{" +
                 "disgenetScore=" + disgenetScore +
                 ", sourcesCount=" + sourcesCount +
-                ", sourcesEvidence=" + sourcesEvidence +
+                ", pubmedEvidence=" + pubmedEvidence +
                 "} " + super.toString();
     }
 }

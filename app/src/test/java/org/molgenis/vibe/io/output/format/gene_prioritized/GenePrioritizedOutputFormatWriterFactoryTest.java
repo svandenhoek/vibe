@@ -52,9 +52,9 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
                 new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/CLINVAR"), "ClinVar 2018 Dataset Distribution", Source.Level.CURATED),
                 new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/HPO"), "HPO", Source.Level.CURATED)
         };
-        geneDiseaseCombinations[0].add(sources[0], URI.create("http://identifiers.org/pubmed/23951358"));
-        geneDiseaseCombinations[1].add(sources[0], URI.create("http://identifiers.org/pubmed/23494856"));
-        geneDiseaseCombinations[1].add(sources[2], URI.create("http://identifiers.org/pubmed/26633545"));
+        geneDiseaseCombinations[0].add(sources[0], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/23951358"), 2014));
+        geneDiseaseCombinations[1].add(sources[0], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/23494856"), 2013));
+        geneDiseaseCombinations[1].add(sources[2], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/26633545"), 2017));
         geneDiseaseCombinations[1].add(sources[1]);
         geneDiseaseCombinations[2].add(sources[3]);
 
@@ -88,7 +88,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
         OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_ID.create(writer, collection, prioritizer);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +
-                "29123\tANKRD11\t0.8\tC0220687 (0.8):23494856,26633545|C1835764 (0.1)" + System.lineSeparator() +
+                "29123\tANKRD11\t0.8\tC0220687 (0.8):26633545,23494856|C1835764 (0.1)" + System.lineSeparator() +
                 "2697\tGJA1\t0.31\tC0265292 (0.31):23951358" + System.lineSeparator();
         Assertions.assertEquals(expectedOutput, outContent.toString());
     }
@@ -98,7 +98,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
         OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_URI.create(writer, collection, prioritizer);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +
-                "http://identifiers.org/ncbigene/29123\thttp://identifiers.org/hgnc.symbol/ANKRD11\t0.8\thttp://linkedlifedata.com/resource/umls/id/C0220687 (0.8):http://identifiers.org/pubmed/23494856,http://identifiers.org/pubmed/26633545|http://linkedlifedata.com/resource/umls/id/C1835764 (0.1)" + System.lineSeparator() +
+                "http://identifiers.org/ncbigene/29123\thttp://identifiers.org/hgnc.symbol/ANKRD11\t0.8\thttp://linkedlifedata.com/resource/umls/id/C0220687 (0.8):http://identifiers.org/pubmed/26633545,http://identifiers.org/pubmed/23494856|http://linkedlifedata.com/resource/umls/id/C1835764 (0.1)" + System.lineSeparator() +
                 "http://identifiers.org/ncbigene/2697\thttp://identifiers.org/hgnc.symbol/GJA1\t0.31\thttp://linkedlifedata.com/resource/umls/id/C0265292 (0.31):http://identifiers.org/pubmed/23951358" + System.lineSeparator();
         Assertions.assertEquals(expectedOutput, outContent.toString());
     }
