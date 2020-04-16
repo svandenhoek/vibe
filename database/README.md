@@ -64,7 +64,7 @@ When updating the TDB, be sure to follow these instructions:
 
 13. Upload the new TDB archive to the download server.
 
-14. Run `mvn Dockerfile:build` from the `app` directory.
+14. Run `mvn package dockerfile:build -Dmaven.test.skip=true` from the `app` directory.
 
 15. Check if the dockerfile functions correctly.
 
