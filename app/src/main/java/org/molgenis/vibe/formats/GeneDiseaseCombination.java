@@ -290,9 +290,31 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         if (o == null || getClass() != o.getClass()) return false;
         if (!super.equals(o)) return false;
         GeneDiseaseCombination that = (GeneDiseaseCombination) o;
-        return super.allFieldsEquals(that) &&
+
+        if (!(
+                super.allFieldsEquals(that) &&
                 Objects.equals(disgenetScore, that.disgenetScore) &&
                 Objects.equals(sourcesCount, that.sourcesCount) &&
-                Objects.equals(pubmedEvidence, that.pubmedEvidence);
+                Objects.equals(pubmedEvidence, that.pubmedEvidence)
+        )) {
+            return false;
+        }
+
+        // Checks allFieldsEquals() for all items in pubmedEvidence.
+        for (Source source : pubmedEvidence.keySet()) {
+            List<PubmedEvidence> thisPubmedEvidences = new ArrayList<>(pubmedEvidence.get(source));
+            Collections.sort(thisPubmedEvidences);
+
+            List<PubmedEvidence> thatPubmedEvidences = new ArrayList<>(that.pubmedEvidence.get(source));
+            Collections.sort(thatPubmedEvidences);
+
+            for (int i = 0; i < thisPubmedEvidences.size(); i++) {
+                if (!thisPubmedEvidences.get(i).allFieldsEquals(thatPubmedEvidences.get(i))) {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
 }

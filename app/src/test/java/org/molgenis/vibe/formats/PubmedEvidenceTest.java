@@ -126,4 +126,30 @@ public class PubmedEvidenceTest {
     public void testEqualsIdToDifferentId() {
         Assertions.assertFalse(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence("pmid:5678", 2000)));
     }
+
+    @Test
+    public void testAllEqualsEqual() {
+        PubmedEvidence pubmedEvidence1 = new PubmedEvidence("pmid:42", 2000);
+        PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2000);
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertTrue(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
+        );
+    }
+
+    /**
+     * While {@link PubmedEvidence#allFieldsEquals(Object)} should not return {@code false} if {@link PubmedEvidence#equals(Object)},
+     * this test ensures the custom deep equals works correctly for usage in other tests.
+     */
+    @Test
+    public void testAllEqualsNotEqual() {
+        PubmedEvidence pubmedEvidence1 = new PubmedEvidence("pmid:42", 2000);
+        PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2020);
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertFalse(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
+        );
+    }
 }

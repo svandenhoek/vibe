@@ -108,4 +108,30 @@ public class GeneTest {
     public void testEqualsIdToDifferentId() {
         Assertions.assertFalse(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:5678", symbol)));
     }
+
+    @Test
+    public void testAllEqualsEqual() {
+        Gene gene1 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
+        Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertTrue(gene1.allFieldsEquals(gene2))
+        );
+    }
+
+    /**
+     * While {@link Gene#allFieldsEquals(Object)} should not return {@code false} if {@link Gene#equals(Object)},
+     * this test ensures the custom deep equals works correctly for usage in other tests.
+     */
+    @Test
+    public void testAllEqualsNotEqual() {
+        Gene gene1 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
+        Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:DEF"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertFalse(gene1.allFieldsEquals(gene2))
+        );
+    }
 }

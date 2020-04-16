@@ -106,4 +106,30 @@ public class DiseaseTest {
     public void testEqualsIdToDifferentId() {
         Assertions.assertFalse(new Disease("umls:C0123456").equals(new Disease("umls:C9874565")));
     }
+
+    @Test
+    public void testAllEqualsEqual() {
+        Disease disease1 = new Disease("umls:C0123456", "a disease name");
+        Disease disease2 = new Disease("umls:C0123456", "a disease name");
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertTrue(disease1.allFieldsEquals(disease2))
+        );
+    }
+
+    /**
+     * While {@link Disease#allFieldsEquals(Object)} should not return {@code false} if {@link Disease#equals(Object)},
+     * this test ensures the custom deep equals works correctly for usage in other tests.
+     */
+    @Test
+    public void testAllEqualsNotEqual() {
+        Disease disease1 = new Disease("umls:C0123456", "a disease name");
+        Disease disease2 = new Disease("umls:C0123456", "a different disease name");
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertFalse(disease1.allFieldsEquals(disease2))
+        );
+    }
 }
