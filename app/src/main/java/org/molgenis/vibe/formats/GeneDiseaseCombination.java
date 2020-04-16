@@ -85,6 +85,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * All {@link Source}{@code s} for this gene-disease combination that have evidence {@link URI}{@code s}.
      * Currently only a wrapper for {@link #getSourcesWithPubmedEvidence()}.
      * @return an unmodifiable {@link Set} containing {@link Source}{@code s}
+     * @deprecated use {@link #getSourcesWithPubmedEvidence()} instead
      */
     @Deprecated
     public Set<Source> getSourcesWithEvidence() {
@@ -120,7 +121,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * The evidence {@link URI}{@code s} for the defined {@link Source}
      * @param source
      * @return a sorted {@link List} containing evidence {@link URI}{@code s}, or {@code null} if {@link Source} does not have any evidence
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getPubmedEvidenceForSource(Source)} instead
      */
     @Deprecated
     public List<URI> getEvidenceForSource(Source source) {
@@ -141,7 +142,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * The evidence of all {@link Source}{@code s} combined.
      * @return a {@link Set} containing all the evidence {@link URI}{@code s}
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getAllPubmedEvidence()} instead
      */
     @Deprecated
     public Set<URI> getAllEvidence() {
@@ -153,7 +154,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * Wrapper for {@link #getAllEvidence()} that returns an ordered list.
      * @return a {@link List} containing all the evidence {@link URI}{@code s}
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getAllPubmedEvidence()} instead (returns {@link Set} instead of {@link List})
      */
     @Deprecated
     public List<URI> getAllEvidenceOrdered() {
@@ -169,7 +170,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * Wrapper for {@link #getAllEvidenceOrdered()} that converts the {@link URI}{@code s} to {@link String}{@code s}.
      * @return a {@link List} containing all the evidence {@link URI}{@code s} as {@link String}{@code s}
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getAllPubmedEvidence()} instead (returns {@link Set} instead of {@link List})
      */
     @Deprecated
     public List<String> getAllEvidenceOrderedStrings() {
@@ -184,7 +185,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * still returned (though after being converted to a {@link String}).
      * @return a {@link Set} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
      * {@link URI}) and for other sources the full {@link URI} as a {@link String}
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getAllPubmedEvidence()} instead (returns {@link Set} instead of {@link List})
      */
     @Deprecated
     public Set<String> getAllEvidenceSimplified() {
@@ -200,7 +201,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * @return a {@link List} containing numbers for PubMed IDs (starting with {@code http://identifiers.org/pubmed/} as
      * {@link URI}) and for other sources the full {@link URI} as a {@link String}
      * @see #getAllEvidenceSimplified()
-     * @deprecated use evidence-type specific getters instead
+     * @deprecated use {@link #getAllPubmedEvidence()} instead (returns {@link Set} instead of {@link List})
      */
     @Deprecated
     public List<String> getAllEvidenceSimplifiedOrdered() {
@@ -214,6 +215,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      * Goes through all source {@link URI}{@code s} given and stores them (if possible simplifified) in the given {@link Collection}.
      * @param simplifiedSources where the (simplified) sources should be stored in as {@link String}
      * @param allSourceUris the {@link Set} that should be simplified
+     * @deprecated private method not needed anymore when {@link Deprecated} public methods are removed
      */
     @Deprecated
     private void simplifyEvidence(List<URI> allSourceUris, Collection<String> simplifiedSources) {
