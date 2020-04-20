@@ -18,20 +18,16 @@ public class PubmedEvidence extends Evidence {
      * Sorts {@link PubmedEvidence} first on {@link #getReleaseYear()} (most recent first) and then by ID
      * (as {@code int}, lowest to highest).
      */
-    public static Comparator<PubmedEvidence> releaseYearComparator;
-
-    static {
-        releaseYearComparator = new Comparator<PubmedEvidence>() {
-            @Override
-            public int compare(PubmedEvidence o1, PubmedEvidence o2) {
-                int diff =  o2.year - o1.year;
-                if (diff == 0) {
-                    diff = o1.idInt - o2.idInt;
-                }
-                return diff;
+    public static final Comparator<PubmedEvidence> releaseYearComparator = new Comparator<PubmedEvidence>() {
+        @Override
+        public int compare(PubmedEvidence o1, PubmedEvidence o2) {
+            int diff =  o2.year - o1.year;
+            if (diff == 0) {
+                diff = o1.idInt - o2.idInt;
             }
-        };
-    }
+            return diff;
+        }
+    };
 
     public PubmedEvidence(String id, int year) {
         super(id);
