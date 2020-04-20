@@ -1,5 +1,6 @@
 package org.molgenis.vibe.io.input;
 
+import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -11,16 +12,22 @@ import java.io.IOException;
 
 @Execution(ExecutionMode.SAME_THREAD)
 public class TripleStoreDbReaderIT {
-    private static String tdbDir;
+    private static TripleStoreDbReader tdbReader;
 
     @BeforeAll
-    public static void beforeAll() {
-        tdbDir = TestData.TDB.getFullPath();
+    public static void beforeAll() throws IOException {
+        tdbReader = new TripleStoreDbReader(TestData.TDB.getFullPath());
+    }
+
+    @AfterAll
+    public static void afterAll() {
+        if(tdbReader != null) {
+            tdbReader.close();
+        }
     }
 
     @Test
     public void checkIfModelIsNotEmpty() throws IOException {
-        TripleStoreDbReader tdbReader = new TripleStoreDbReader(tdbDir);
         Assertions.assertEquals(false, tdbReader.getModel().isEmpty());
     }
 }
