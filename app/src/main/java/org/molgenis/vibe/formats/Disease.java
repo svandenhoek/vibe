@@ -11,7 +11,7 @@ import java.net.URI;
  */
 public class Disease extends BiologicalEntity {
     private static final String ID_PREFIX = "umls:";
-    private static final String ID_REGEX = "^(umls|UMLS):(C[0-9]+)$";
+    private static final String ID_REGEX = "^(umls|UMLS):(C[0-9]{7})$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://linkedlifedata.com/resource/umls/id/";
 
@@ -43,12 +43,16 @@ public class Disease extends BiologicalEntity {
         super(uri);
     }
 
+    public Disease(String id, String name) throws InvalidStringFormatException {
+        super(id, name);
+    }
+
     public Disease(URI uri, String name) throws InvalidStringFormatException {
         super(uri, name);
     }
 
     @Override
     public String toString() {
-        return "Disease{} " + super.toString();
+        return "Disease{" + super.toString() + '}';
     }
 }

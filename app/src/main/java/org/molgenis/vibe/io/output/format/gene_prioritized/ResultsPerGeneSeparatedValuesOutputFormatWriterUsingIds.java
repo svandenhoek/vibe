@@ -5,8 +5,8 @@ import org.molgenis.vibe.io.output.ValuesSeparator;
 import org.molgenis.vibe.io.output.target.OutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
-import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * A {@link ResultsPerGeneSeparatedValuesOutputFormatWriter} where {@link BiologicalEntity#getId()} is used for generating the output.
@@ -21,22 +21,22 @@ public class ResultsPerGeneSeparatedValuesOutputFormatWriterUsingIds extends Res
     }
 
     @Override
-    protected String writeGene(Gene gene) throws IOException {
+    protected String writeGene(Gene gene) {
         return gene.getId();
     }
 
     @Override
-    protected String writeGeneSymbol(Gene gene) throws IOException {
+    protected String writeGeneSymbol(Gene gene) {
         return gene.getSymbol().getId();
     }
 
     @Override
-    protected String writeDisease(Disease disease) throws IOException {
+    protected String writeDisease(Disease disease) {
         return disease.getId();
     }
 
     @Override
-    protected List<String> writeEvidence(GeneDiseaseCombination gdc) throws IOException {
-        return gdc.getAllEvidenceSimplifiedOrdered();
+    protected List<String> writeEvidence(List<PubmedEvidence> pubmedEvidenceList) {
+        return pubmedEvidenceList.stream().map(PubmedEvidence::getId).collect(Collectors.toList());
     }
 }

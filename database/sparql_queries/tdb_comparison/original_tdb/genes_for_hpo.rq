@@ -27,9 +27,12 @@ PREFIX gda: <http://rdf.disgenet.org/resource/gda/> # DisGeNET
 PREFIX hgnc: <http://identifiers.org/hgnc.symbol/> # DisGeNET
 PREFIX ordo: <http://www.orpha.net/ORDO/> # DisGeNET / Orphanet
 PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet
+PREFIX void5: <http://rdf.disgenet.org/v5.0.0/void/> # DisGeNET
+PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET
+PREFIX pmid: <http://identifiers.org/pubmed/> # DisGeNET
 
 # Query.
-SELECT ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidence
+SELECT ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence
 WHERE {
 	VALUES ?hpo { <http://purl.obolibrary.org/obo/HP_0000003> }
 	{
@@ -65,9 +68,14 @@ WHERE {
 	?gda sio:SIO_000628 ?disease , ?gene ;
 	sio:SIO_000216 ?gdaScore ;
 	sio:SIO_000253 ?gdaSource .
-	OPTIONAL { ?gda sio:SIO_000772 ?evidence }
+	OPTIONAL {
+		?gda sio:SIO_000772 ?evidence .
+		?evidence dcterms:issued ?evidenceYear .
+	}
 
 	?gene sio:SIO_000205 ?geneSymbol .
+
+	?disease dcterms:title ?diseaseName .
 
 	?gdaScore sio:SIO_000300 ?gdaScoreNumber .
 
@@ -77,6 +85,7 @@ WHERE {
 	FILTER EXISTS { ?geneSymbol rdf:type ncit:C43568 }
 	FILTER EXISTS { ?gdaScore rdf:type ncit:C25338 }
 	FILTER EXISTS { ?gdaSource rdf:type dctypes:Dataset , dcat:Distribution }
+	FILTER EXISTS { ?evidence rdf:type ncit:C47902 }
 }
 # Disable if comparing performance, enable if comparing through shasum.
-ORDER BY ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidence
+ORDER BY ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence

@@ -3,6 +3,7 @@ package org.molgenis.vibe.formats;
 import static java.util.Objects.requireNonNull;
 
 import java.net.URI;
+import java.util.Objects;
 
 /**
  * A gene. Note that equality is determined through {@link URI}{@code s} from the domain
@@ -20,6 +21,11 @@ public class Gene extends BiologicalEntity {
      * The HGNC (HUGO Gene Nomenclature Committee) name.
      */
     private GeneSymbol symbol;
+
+    /**
+     * The id stored as {@code int}.
+     */
+    private int idInt;
 
     public GeneSymbol getSymbol() {
         return symbol;
@@ -47,11 +53,13 @@ public class Gene extends BiologicalEntity {
 
     public Gene(String id, GeneSymbol symbol) {
         super(id);
+        this.idInt = Integer.parseInt(getId());
         this.symbol = requireNonNull(symbol);
     }
 
     public Gene(URI uri, GeneSymbol symbol) {
         super(uri);
+        this.idInt = Integer.parseInt(getId());
         this.symbol = requireNonNull(symbol);
     }
 
@@ -62,6 +70,28 @@ public class Gene extends BiologicalEntity {
     public String toString() {
         return "Gene{" +
                 "symbol='" + symbol + '\'' +
-                "} " + super.toString();
+                ' ' + super.toString() +
+                '}';
+    }
+
+    @Override
+    public int compareTo(Entity o) {
+        if (o instanceof Gene) {
+            Gene oGene = (Gene) o;
+            return idInt - oGene.idInt;
+        } else {
+            return super.compareTo(o);
+        }
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+        Gene gene = (Gene) o;
+        return super.allFieldsEquals(gene) &&
+                idInt == gene.idInt &&
+                symbol.allFieldsEquals(gene.symbol);
     }
 }

@@ -62,15 +62,17 @@ public class PhenotypeTest {
     @Test
     public void testSort() {
         List<Phenotype> actualOrder = new ArrayList<>( Arrays.asList(
+                new Phenotype("hp:0000020"),
                 new Phenotype("hp:0000003"),
                 new Phenotype("hp:0000008"),
                 new Phenotype("hp:0000001")
         ));
 
         List<Phenotype> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(3),
+                actualOrder.get(1),
                 actualOrder.get(2),
-                actualOrder.get(0),
-                actualOrder.get(1)
+                actualOrder.get(0)
         ));
 
         Collections.sort(actualOrder);

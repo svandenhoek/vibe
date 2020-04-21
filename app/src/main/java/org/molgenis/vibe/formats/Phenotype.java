@@ -41,6 +41,6 @@ public class Phenotype extends BiologicalEntity {
 
     @Override
     public String toString() {
-        return "Phenotype{} " + super.toString();
+        return "Phenotype{" + super.toString() + '}';
     }
 }

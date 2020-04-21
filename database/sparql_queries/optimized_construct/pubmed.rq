@@ -33,21 +33,14 @@ PREFIX pmid: <http://identifiers.org/pubmed/> # DisGeNET
 
 # Query.
 CONSTRUCT {
-	?source rdf:type ?type ; # Some sources have extra RDF:type objects.
-	wi:evidence ?sourceLevel ;
-	dcterms:title ?sourceTitle .
+	?evidence dcterms:issued ?releaseYear .
 }
 WHERE {
-	?source rdf:type ?type ;
-	wi:evidence ?sourceLevel .
-	{
-		SELECT ?source (MAX(?sourceTitleGroup) AS ?sourceTitle) # Filters duplicate titles to only longest title.
-		WHERE {
-			?source rdf:type dctypes:Dataset , dcat:Distribution ; # Faster than using FILTER EXISTS.
-			dcterms:title ?sourceTitleGroup .
-		}
-		GROUP BY ?source
-	}
+	?gda rdf:type ?gdaType ;
+	sio:SIO_000772 ?evidence .
 
-	?association sio:SIO_000253 ?source . # Makes sure only sources are present that are actually referred to (does increase runtime significantly).
+	?evidence dcterms:issued ?releaseYear .
+
+	FILTER EXISTS { ?gdaType rdfs:subClassOf* sio:SIO_000983 }
+	FILTER EXISTS { ?evidence rdf:type  ncit:C47902 }
 }

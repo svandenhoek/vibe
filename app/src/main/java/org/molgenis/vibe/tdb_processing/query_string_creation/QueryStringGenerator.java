@@ -45,7 +45,10 @@ public final class QueryStringGenerator {
             "PREFIX gda: <http://rdf.disgenet.org/resource/gda/> # DisGeNET\n" +
             "PREFIX hgnc: <http://identifiers.org/hgnc.symbol/> # DisGeNET\n" +
             "PREFIX ordo: <http://www.orpha.net/ORDO/> # DisGeNET / Orphanet\n" +
-            "PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet\n";
+            "PREFIX hoom: <http://www.semanticweb.org/ontology/HOOM#> # Orphanet\n" +
+            "PREFIX void5: <http://rdf.disgenet.org/v5.0.0/void/> # DisGeNET\n" +
+            "PREFIX void6: <http://rdf.disgenet.org/v6.0.0/void/> # DisGeNET\n" +
+            "PREFIX pmid: <http://identifiers.org/pubmed/> # DisGeNET\n";
 
     /**
      * Full collection of all prefixes.
@@ -71,7 +74,7 @@ public final class QueryStringGenerator {
      * <br />between [0] and [1]: the HPO terms (URIs) to filter on (see {@link #createValuesStringForUris(Set)}
      * <br />between [1] and [2]: the gene-disease association type (see {@link GeneDiseaseCombinationType})
      */
-    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidence\n" +
+    private static final String[] GENES_FOR_PHENOTYPES = {"SELECT ?hpo ?disease ?diseaseName ?gene ?geneSymbol ?gdaScoreNumber ?gdaSource ?evidenceYear ?evidence\n" +
             "WHERE {\n" +
             "\tVALUES ?hpo ", "\n" + // [0] -> [1]
             "\t{\n" +
@@ -89,13 +92,17 @@ public final class QueryStringGenerator {
             "\t\t?hpo sio:SIO_000001/skos:exactMatch ?disease .\n" +
             "\t}\n" +
             "\n" +
-            "\t?disease sio:SIO_000212 ?gda .\n" +
+            "\t?disease sio:SIO_000212 ?gda ;\n" +
+            "\tdcterms:title ?diseaseName ." +
             "\t\n" +
             "\t?gda rdf:type/rdfs:subClassOf* ", " ;\n" + // [1] -> [2]
             "\tsio:SIO_000628 ?gene ;\n" +
             "\tsio:SIO_000216 ?gdaScoreNumber ;\n" +
             "\tsio:SIO_000253 ?gdaSource .\n" +
-            "\tOPTIONAL { ?gda sio:SIO_000772 ?evidence }\n" +
+            "\tOPTIONAL {\n" +
+            "\t\t?gda sio:SIO_000772 ?evidence .\n" +
+            "\t\t?evidence dcterms:issued ?evidenceYear .\n" +
+            "\t}\n" +
             "\n" +
             "\t?gene sio:SIO_000205 ?geneSymbol .\n" +
             "}"

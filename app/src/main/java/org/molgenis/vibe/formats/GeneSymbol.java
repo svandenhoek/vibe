@@ -36,5 +36,8 @@ public class GeneSymbol extends Entity {
         super(uri);
     }
 
-
+    @Override
+    public String toString() {
+        return "GeneSymbol{" + super.toString() + '}';
+    }
 }

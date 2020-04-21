@@ -8,7 +8,7 @@ import java.util.*;
  * @param <T2> the second {@link BiologicalEntity} subclass type
  * @param <T3> the {@link BiologicalEntityCombination} combining {@link T1} and {@link T2}
  */
-public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2 extends BiologicalEntity, T3 extends BiologicalEntityCombination<T1,T2>> implements Collection<T3> {
+public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2 extends BiologicalEntity, T3 extends BiologicalEntityCombination<T1,T2>> implements Collection<T3>, allFieldsEquals {
     /**
      * All the {@link BiologicalEntityCombination}{@code s} (retrievable by themselves as key).
      */
@@ -231,6 +231,29 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         if (o == null || getClass() != o.getClass()) return false;
         BiologicalEntityCollection<?, ?, ?> that = (BiologicalEntityCollection<?, ?, ?>) o;
         return Objects.equals(combinationsMap, that.combinationsMap);
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        BiologicalEntityCollection<?, ?, ?> that = (BiologicalEntityCollection<?, ?, ?>) o;
+        if(!(
+                Objects.equals(combinationsMap, that.combinationsMap) &&
+                Objects.equals(combinationsByT1, that.combinationsByT1) &&
+                Objects.equals(combinationsByT2, that.combinationsByT2)
+        )) {
+            return false;
+        }
+
+        // Checks allFieldsEquals() for all items in combinationsMap.
+        for(T3 item : combinationsMap.keySet()) {
+            if(!item.allFieldsEquals(that.combinationsMap.get(item))) {
+                return false;
+            }
+        }
+
+        return true;
     }
 
     @Override

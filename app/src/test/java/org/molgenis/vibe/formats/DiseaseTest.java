@@ -62,15 +62,17 @@ public class DiseaseTest {
     @Test
     public void testSort() {
         List<Disease> actualOrder = new ArrayList<>( Arrays.asList(
-                new Disease("umls:C3"),
-                new Disease("umls:C8"),
-                new Disease("umls:C1")
+                new Disease("umls:C0000020"),
+                new Disease("umls:C0000003"),
+                new Disease("umls:C0000008"),
+                new Disease("umls:C0000001")
         ));
 
         List<Disease> expectedOrder = new ArrayList<>( Arrays.asList(
+                actualOrder.get(3),
+                actualOrder.get(1),
                 actualOrder.get(2),
-                actualOrder.get(0),
-                actualOrder.get(1)
+                actualOrder.get(0)
         ));
 
         Collections.sort(actualOrder);
@@ -103,5 +105,31 @@ public class DiseaseTest {
     @Test
     public void testEqualsIdToDifferentId() {
         Assertions.assertFalse(new Disease("umls:C0123456").equals(new Disease("umls:C9874565")));
+    }
+
+    @Test
+    public void testAllEqualsEqual() {
+        Disease disease1 = new Disease("umls:C0123456", "a disease name");
+        Disease disease2 = new Disease("umls:C0123456", "a disease name");
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertTrue(disease1.allFieldsEquals(disease2))
+        );
+    }
+
+    /**
+     * While {@link Disease#allFieldsEquals(Object)} should not return {@code false} if {@link Disease#equals(Object)},
+     * this test ensures the custom deep equals works correctly for usage in other tests.
+     */
+    @Test
+    public void testAllEqualsNotEqual() {
+        Disease disease1 = new Disease("umls:C0123456", "a disease name");
+        Disease disease2 = new Disease("umls:C0123456", "a different disease name");
+
+        Assertions.assertAll(
+                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertFalse(disease1.allFieldsEquals(disease2))
+        );
     }
 }

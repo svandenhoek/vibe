@@ -17,12 +17,12 @@ public class HighestSingleDisgenetScoreGenePrioritizerTest {
         };
 
         Disease[] diseases = new Disease[]{
-                new Disease("umls:C1"),
-                new Disease("umls:C2"),
-                new Disease("umls:C3"),
-                new Disease("umls:C4"),
-                new Disease("umls:C5"),
-                new Disease("umls:C6")
+                new Disease("umls:C0000001"),
+                new Disease("umls:C0000002"),
+                new Disease("umls:C0000003"),
+                new Disease("umls:C0000004"),
+                new Disease("umls:C0000005"),
+                new Disease("umls:C0000006")
         };
 
         Set<GeneDiseaseCombination> geneDiseaseCombinations = new HashSet<>( Arrays.asList(

@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetrieverTester within the test code for more information.
  *
  */
-public abstract class Entity implements ResourceUri, Comparable<Entity> {
+public abstract class Entity implements ResourceUri, Comparable<Entity>, allFieldsEquals {
     /**
      * The entity prefix.
      * @return a {@link String} containing the prefix.
@@ -150,6 +150,16 @@ public abstract class Entity implements ResourceUri, Comparable<Entity> {
         if (o == null || getClass() != o.getClass()) return false;
         Entity that = (Entity) o;
         return Objects.equals(uri, that.uri);
+    }
+
+    @Override
+    public boolean allFieldsEquals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Entity entity = (Entity) o;
+        return Objects.equals(id, entity.id) &&
+                Objects.equals(name, entity.name) &&
+                Objects.equals(uri, entity.uri);
     }
 
     @Override
