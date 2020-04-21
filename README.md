@@ -84,7 +84,7 @@ The `-u` option changes the output to use URI's instead of ID's for certain fiel
 
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
-[tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.0.0-tdb.tar.gz
+[tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
