@@ -24,7 +24,7 @@ A tool to generate prioritized genes using phenotype information.
 
 ### For developers
 
-Instructions regarding building/testing the app can be found [here](./app/README.md) and how to create a TDB for the app can be found [here](./database/README.md).
+Instructions regarding building/testing the app can be found [here](./vibe-core/README.md) and how to create a TDB for the app can be found [here](./database/README.md).
 
 ### Requirements
 
