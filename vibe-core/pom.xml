@@ -189,25 +189,6 @@
                 </executions>
             </plugin>
 
-            <!-- Generating Docker image -->
-            <!-- Does not run by default but you can explicitly call dockerfile:build dockerfile:tag dockerfile:push -->
-            <plugin>
-                <groupId>com.spotify</groupId>
-                <artifactId>dockerfile-maven-plugin</artifactId>
-                <version>${dockerfile-maven-plugin.version}</version>
-                <configuration>
-                    <repository>registry.hub.docker.com/molgenis/vibe</repository>
-                    <tag>${project.version}</tag>
-                    <buildArgs>
-                        <jar_file>${jar.fat}.jar</jar_file>
-                        <vibe_tdb_archive>${vibe-tdb.archive}</vibe_tdb_archive>
-                        <vibe_tdb_download>${vibe-tdb.download}</vibe_tdb_download>
-                        <hpo_owl_download>${hpo-owl.download}</hpo_owl_download>
-                    </buildArgs>
-                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>
-                </configuration>
-            </plugin>
-
             <!-- checksum creation -->
             <plugin>
                 <groupId>net.nicoulaj.maven.plugins</groupId>
