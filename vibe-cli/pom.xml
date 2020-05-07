@@ -7,8 +7,13 @@
         <artifactId>vibe</artifactId>
         <version>4.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>vibe-core</artifactId>
+    <artifactId>vibe-cli</artifactId>
     <packaging>jar</packaging>
+
+    <properties>
+        <!-- fat jar name -->
+        <jar.fat>vibe-with-dependencies-${project.version}</jar.fat>
+    </properties>
 
     <build>
         <plugins>
@@ -18,10 +23,41 @@
                 <artifactId>maven-compiler-plugin</artifactId>
             </plugin>
 
-            <!-- create skinny jar -->
+            <!-- create fat jar -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
+                <artifactId>maven-shade-plugin</artifactId>
+                <version>${maven-shade-plugin.version}</version>
+                <executions>
+                    <!-- run shade at package phase -->
+                    <execution>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>shade</goal>
+                        </goals>
+                        <configuration>
+                            <transformers>
+                                <!-- manifest file adjustments -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
+                                    <manifestEntries>
+                                        <!-- set main class -->
+                                        <Main-Class>org.molgenis.vibe.VibeApplication</Main-Class>
+                                        <!-- clears class-path added by maven-jar-plugin -->
+                                        <Class-Path />
+                                    </manifestEntries>
+                                </transformer>
+                                <!-- prevent license duplications -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
+                                <!-- manages META_INF/services/ files for usage in shaded jar -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                            </transformers>
+                            <!-- file name of shaded jar -->
+                            <finalName>${jar.fat}</finalName>
+                            <!-- excludes all classes of dependencies that are not used (also excludes non-specified classes) -->
+                            <!-- <minimizeJar>true</minimizeJar> -->
+                        </configuration>
+                    </execution>
+                </executions>
             </plugin>
 
             <!-- checksum creation -->
@@ -30,7 +66,7 @@
                 <artifactId>checksum-maven-plugin</artifactId>
             </plugin>
 
-            <!-- unit testing -->
+            <!-- sets parameters for testing -->
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>${maven-surefire-plugin.version}</version>
@@ -40,7 +76,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-failsafe-plugin</artifactId>
-                <version>${maven-failsafe-plugin.version}</version>
             </plugin>
 
             <!-- integrates SonarQube -->
@@ -53,13 +88,6 @@
             <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
-                <version>${jacoco-maven-plugin.version}</version>
-            </plugin>
-
-            <!-- deploy to sonatype nexus -->
-            <plugin>
-                <groupId>org.sonatype.plugins</groupId>
-                <artifactId>nexus-staging-maven-plugin</artifactId>
             </plugin>
 
             <!-- plugin for releasing -->
@@ -79,24 +107,15 @@
 
     <dependencies>
         <!-- main dependencies -->
-        <!-- Disables 'SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".' warnings, see: https://www.slf4j.org/codes.html#StaticLoggerBinder -->
         <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-nop</artifactId>
-            <version>${slf4j-nop.version}</version>
+            <groupId>org.molgenis</groupId>
+            <artifactId>vibe-core</artifactId>
+            <version>${project.version}</version>
         </dependency>
 
         <dependency>
-            <groupId>org.apache.jena</groupId>
-            <artifactId>apache-jena-libs</artifactId>
-            <version>${apache-jena-libs.version}</version>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.slf4j</groupId>
-                    <artifactId>slf4j-api</artifactId>
-                </exclusion>
-            </exclusions>
-            <type>pom</type>
+            <groupId>commons-cli</groupId>
+            <artifactId>commons-cli</artifactId>
         </dependency>
 
         <!-- test dependencies -->
