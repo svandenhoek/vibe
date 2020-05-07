@@ -22,7 +22,7 @@
 hs_err_pid*
 
 #Java target folder
-vibe-core/target/
+*/target/
 
 # Mac custom folder attributes
 .DS_Store
@@ -34,9 +34,6 @@ vibe-core/target/
 # Test resources which should be downloaded externally
 vibe-core/src/test/resources/hp.owl
 vibe-core/src/test/resources/tdb
-
-# Files stored in TMP dir.
-vibe-core/TMP/
 
 # Files generated for database tests.
 database/test/*.tsv
