@@ -1,6 +1,5 @@
 package org.molgenis.vibe.io.options_digestion;
 
-import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
@@ -19,20 +18,12 @@ import java.util.Set;
 /**
  * Abstract class to be used for options parsing. Includes some basic validations (such as whether input arguments refer
  * to actual files).
- *
- * After processing, implementations should ALWAYS call {@link #checkConfig()} for validation to prevent unexpected errors
- * further into the application.
  */
 public abstract class OptionsParser {
     /**
      * Wether the app should run in verbose modus (extra print statements).
      */
     private boolean verbose = false;
-
-    /**
-     * Defines the exact operation to be done by the application. Default is set to {@link RunMode#NONE}.
-     */
-    private RunMode runMode = RunMode.NONE;
 
     /**
      * Path to the Human Phenotype Oontology .owl file.
@@ -87,14 +78,6 @@ public abstract class OptionsParser {
         if(verbose) {
             System.out.println(text);
         }
-    }
-
-    public RunMode getRunMode() {
-        return runMode;
-    }
-
-    protected void setRunMode(RunMode runMode) {
-        this.runMode = runMode;
     }
 
     public Path getHpoOntology() {
@@ -233,7 +216,7 @@ public abstract class OptionsParser {
         this.phenotypesRetrieverFactory = PhenotypesRetrieverFactory.retrieve(name);
     }
 
-    public int getOntologyMaxDistance() {
+    public Integer getOntologyMaxDistance() {
         return ontologyMaxDistance;
     }
 
@@ -251,60 +234,6 @@ public abstract class OptionsParser {
 
     public GenePrioritizerFactory getGenePrioritizerFactory() {
         return genePrioritizerFactory;
-    }
-
-    /**
-     * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
-     * user input if variables are set correctly (based on the specified {@link RunMode}).
-     * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
-     */
-    protected boolean checkConfig() {
-        // With RunMode.NONE there are no requirements.
-        if(!runMode.equals(RunMode.NONE)) {
-            // Check if DisGeNET data is set.
-            if (database == null) {
-                return false;
-            }
-            // Check if an output file was given.
-            if (outputWriter == null) {
-                return false;
-            }
-            // Checks if a gene prioritized output format factory was given.
-            if (genePrioritizedOutputFormatWriterFactory == null) {
-                return false;
-            }
-            // Checks whether a gene prioritizer was selected.
-            if(genePrioritizerFactory == null) {
-                return false;
-            }
-            // Check config specific settings are set.
-            switch (runMode) {
-                // Additional checks if related HPOs need to be retrieved.
-                case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
-                    // Check if a factory for related HPO retrieval was set.
-                    if(phenotypesRetrieverFactory == null) {
-                        return false;
-                    }
-                    // Check if HPO ontology data is set.
-                    if (hpoOntology == null) {
-                        return false;
-                    }
-                    // Check if a max distance for related HPO retrieval was set.
-                    if(ontologyMaxDistance == null) {
-                        return false;
-                    }
-                    // NO BREAK: continues!!!
-
-                // Checks if no associated phenotypes need to be retrieved.
-                case GENES_FOR_PHENOTYPES:
-                    // Check if there are any input phenotypes.
-                    if (phenotypes.size() == 0) {
-                        return false;
-                    }
-            }
-        }
-
-        return true;
     }
 
     /**

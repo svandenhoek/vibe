@@ -31,7 +31,7 @@ public class QueryStringGeneratorIT {
     }
 
     @AfterAll
-    public static final void afterAll() {
+    public static final void afterAll() throws IOException {
         if(reader != null) {
             reader.close();
         }

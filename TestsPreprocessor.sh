@@ -5,7 +5,7 @@ readonly TDB_ARCHIVE=$(mvn -q help:evaluate -Dexpression=vibe-tdb.archive -Dforc
 readonly TDB_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=vibe-tdb.download -DforceStdout)
 readonly HPO_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=hpo-owl.download -DforceStdout)
 
-cd src/test/resources
+cd shared_testdata
 
 echo "# Removing old data"
 rm -rf tdb
@@ -19,4 +19,4 @@ tar -xzvf ${TDB_ARCHIVE}
 mv ${TDB_ARCHIVE%.tar.gz} tdb
 rm ${TDB_ARCHIVE}
 
-cd ../../../
+cd ../

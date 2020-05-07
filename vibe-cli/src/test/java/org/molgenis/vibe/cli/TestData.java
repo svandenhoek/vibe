@@ -1,4 +1,4 @@
-package org.molgenis.vibe;
+package org.molgenis.vibe.cli;
 
 public enum TestData {
     HPO_OWL {
@@ -7,16 +7,22 @@ public enum TestData {
             return "hp.owl";
         }
     },
-    FAKE_HPO_OWL {
-        @Override
-        public String getName() {
-            return "fake_hp.owl";
-        }
-    },
     TDB {
         @Override
         public String getName() {
             return "tdb";
+        }
+    },
+    NON_EXISTING_FILE {
+        @Override
+        public String getName() {
+            return "myNonExistingFile.txt";
+        }
+    },
+    NON_EXISTING_DIR {
+        @Override
+        public String getName() {
+            return "nonExistingDir";
         }
     },
     EXISTING_TSV {

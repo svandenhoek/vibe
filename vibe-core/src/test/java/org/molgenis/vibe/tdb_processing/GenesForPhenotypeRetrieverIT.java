@@ -34,7 +34,7 @@ public class GenesForPhenotypeRetrieverIT {
     }
 
     @AfterAll
-    public static void afterAll() {
+    public static void afterAll() throws IOException {
         if(reader != null) {
             reader.close();
         }

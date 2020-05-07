@@ -16,6 +16,15 @@
     </properties>
 
     <build>
+        <testResources>
+            <testResource>
+                <directory>src/test/resources</directory>
+            </testResource>
+            <testResource>
+                <directory>../shared_testdata</directory>
+            </testResource>
+        </testResources>
+
         <plugins>
             <!-- define java version -->
             <plugin>
@@ -41,7 +50,7 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <manifestEntries>
                                         <!-- set main class -->
-                                        <Main-Class>org.molgenis.vibe.VibeApplication</Main-Class>
+                                        <Main-Class>org.molgenis.vibe.cli.VibeApplication</Main-Class>
                                         <!-- clears class-path added by maven-jar-plugin -->
                                         <Class-Path />
                                     </manifestEntries>

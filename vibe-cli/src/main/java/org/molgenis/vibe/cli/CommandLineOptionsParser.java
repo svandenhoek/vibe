@@ -1,11 +1,11 @@
-package org.molgenis.vibe.io.options_digestion;
+package org.molgenis.vibe.cli;
 
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
-import org.molgenis.vibe.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.io.options_digestion.OptionsParser;
 import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
 import java.io.IOException;
@@ -17,6 +17,9 @@ import java.util.List;
 
 /**
  * Command line options parser.
+ *
+ *  After processing, implementations should ALWAYS call {@link #checkConfig()} for validation to prevent unexpected errors
+ *  further into the application.
  */
 public class CommandLineOptionsParser extends OptionsParser {
     static {
@@ -40,6 +43,15 @@ public class CommandLineOptionsParser extends OptionsParser {
     private CommandLine commandLine;
 
     /**
+     * The selected mode to use.
+     */
+    private RunMode runMode;
+
+    public RunMode getRunMode() {
+        return runMode;
+    }
+
+    /**
      * Digests the command line options and allows retrieval of useful parameters using getters.
      * @param args the arguments to be digested
      * @throws ParseException see {@link #parseCommandLine(String[])}
@@ -51,7 +63,7 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         parseCommandLine(args);
         digestCommandLine();
-        if(!super.checkConfig()) {
+        if(!checkConfig()) {
             throw new IOException("Something went wrong during app configuration. Please contact the developer.");
         }
     }
@@ -167,15 +179,15 @@ public class CommandLineOptionsParser extends OptionsParser {
 
         // If no arguments were given, RunMode is set to NONE.
         if(commandLine.getOptions().length == 0) {
-            setRunMode(RunMode.NONE);
+            runMode = RunMode.NONE;
             return; // IMPORTANT: Does not process any other arguments from this point.
         } else { // Sets default RunMode.
-            setRunMode(RunMode.GENES_FOR_PHENOTYPES);
+            runMode = RunMode.GENES_FOR_PHENOTYPES;
         }
 
         // OPTIONAL: Only show help message (set RunMode to NONE).
         if(commandLine.hasOption("h")) {
-            setRunMode(RunMode.NONE);
+            runMode = RunMode.NONE;
             return; // IMPORTANT: Does not process any other arguments from this point.
         }
 
@@ -207,7 +219,7 @@ public class CommandLineOptionsParser extends OptionsParser {
         // OPTIONAL: HPO ontology retrieval algorithm. Both -n and -m need to be provided as well as -w.
         if(commandLine.hasOption("n") || commandLine.hasOption("m")) {
             if (commandLine.hasOption("w") && commandLine.hasOption("n") && commandLine.hasOption("m")) {
-                setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
+                runMode = RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES;
                 try {
                     setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
                 } catch (EnumConstantNotPresentException e) {
@@ -272,5 +284,59 @@ public class CommandLineOptionsParser extends OptionsParser {
         if(errors.size() > 0) {
             throw new IOException(StringUtils.join(errors, System.lineSeparator()));
         }
+    }
+
+    /**
+     * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
+     * user input if variables are set correctly (based on the specified {@link RunMode}).
+     * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
+     */
+    protected boolean checkConfig() {
+        // With RunMode.NONE there are no requirements.
+        if(!runMode.equals(RunMode.NONE)) {
+            // Check if DisGeNET data is set.
+            if (getDatabase() == null) {
+                return false;
+            }
+            // Check if an output file was given.
+            if (getOutputWriter() == null) {
+                return false;
+            }
+            // Checks if a gene prioritized output format factory was given.
+            if (getGenePrioritizedOutputFormatWriterFactory() == null) {
+                return false;
+            }
+            // Checks whether a gene prioritizer was selected.
+            if(getGenePrioritizerFactory() == null) {
+                return false;
+            }
+            // Check config specific settings are set.
+            switch (runMode) {
+                // Additional checks if related HPOs need to be retrieved.
+                case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
+                    // Check if a factory for related HPO retrieval was set.
+                    if(getPhenotypesRetrieverFactory() == null) {
+                        return false;
+                    }
+                    // Check if HPO ontology data is set.
+                    if (getHpoOntology() == null) {
+                        return false;
+                    }
+                    // Check if a max distance for related HPO retrieval was set.
+                    if(getOntologyMaxDistance() == null) {
+                        return false;
+                    }
+                    // NO BREAK: continues!!!
+
+                    // Checks if no associated phenotypes need to be retrieved.
+                case GENES_FOR_PHENOTYPES:
+                    // Check if there are any input phenotypes.
+                    if (getPhenotypes().size() == 0) {
+                        return false;
+                    }
+            }
+        }
+
+        return true;
     }
 }

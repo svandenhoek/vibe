@@ -1,6 +1,4 @@
-package org.molgenis.vibe;
-
-import org.molgenis.vibe.io.options_digestion.CommandLineOptionsParser;
+package org.molgenis.vibe.cli;
 
 import java.io.IOException;
 
