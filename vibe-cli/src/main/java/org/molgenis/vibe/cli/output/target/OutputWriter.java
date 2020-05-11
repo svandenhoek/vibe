@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io.output.target;
+package org.molgenis.vibe.cli.output.target;
 
 import java.io.IOException;
 

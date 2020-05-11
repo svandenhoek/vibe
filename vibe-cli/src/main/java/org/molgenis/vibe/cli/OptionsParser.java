@@ -1,12 +1,12 @@
-package org.molgenis.vibe.io.options_digestion;
+package org.molgenis.vibe.cli;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;
-import org.molgenis.vibe.io.output.format.PrioritizedOutputFormatWriter;
-import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
-import org.molgenis.vibe.io.output.target.FileOutputWriter;
-import org.molgenis.vibe.io.output.target.OutputWriter;
-import org.molgenis.vibe.io.output.target.StdoutOutputWriter;
+import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
+import org.molgenis.vibe.cli.output.target.FileOutputWriter;
+import org.molgenis.vibe.cli.output.target.OutputWriter;
+import org.molgenis.vibe.cli.output.target.StdoutOutputWriter;
 import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
 import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
 

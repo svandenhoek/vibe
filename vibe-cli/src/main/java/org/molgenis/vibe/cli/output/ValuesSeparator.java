@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io.output;
+package org.molgenis.vibe.cli.output;
 
 /**
  * Defines possible {@code separators} to be used.

@@ -1,7 +1,7 @@
-package org.molgenis.vibe.io.output.format;
+package org.molgenis.vibe.cli.output.format;
 
 import org.molgenis.vibe.formats.BiologicalEntity;
-import org.molgenis.vibe.io.output.target.OutputWriter;
+import org.molgenis.vibe.cli.output.target.OutputWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
 
 import static java.util.Objects.requireNonNull;

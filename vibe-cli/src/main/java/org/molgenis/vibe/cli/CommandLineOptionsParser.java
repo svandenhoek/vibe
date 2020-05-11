@@ -5,8 +5,7 @@ import static java.util.Objects.requireNonNull;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.io.options_digestion.OptionsParser;
-import org.molgenis.vibe.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
+import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

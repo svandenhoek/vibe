@@ -1,6 +1,6 @@
-package org.molgenis.vibe.io.output.format;
+package org.molgenis.vibe.cli.output.format;
 
-import org.molgenis.vibe.io.output.target.OutputWriter;
+import org.molgenis.vibe.cli.output.target.OutputWriter;
 
 import java.io.IOException;
 

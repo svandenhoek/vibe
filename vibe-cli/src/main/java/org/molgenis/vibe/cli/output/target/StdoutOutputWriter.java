@@ -1,4 +1,4 @@
-package org.molgenis.vibe.io.output.target;
+package org.molgenis.vibe.cli.output.target;
 
 /**
  * Writer for writing output to stdout.

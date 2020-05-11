@@ -6,14 +6,8 @@ import org.molgenis.vibe.PhenotypesRetrievalRunner;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
-import org.molgenis.vibe.io.input.OntologyModelFilesReader;
-import org.molgenis.vibe.io.options_digestion.OptionsParser;
-import org.molgenis.vibe.io.output.format.OutputFormatWriter;
-import org.molgenis.vibe.io.input.ModelReader;
-import org.molgenis.vibe.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.ontology_processing.PhenotypesRetriever;
+import org.molgenis.vibe.cli.output.format.OutputFormatWriter;
 import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizer;
-import org.molgenis.vibe.tdb_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
 import java.util.Set;
