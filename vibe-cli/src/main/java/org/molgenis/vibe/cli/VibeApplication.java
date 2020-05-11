@@ -1,6 +1,7 @@
 package org.molgenis.vibe.cli;
 
 import org.molgenis.vibe.cli.input.CommandLineOptionsParser;
+import org.molgenis.vibe.cli.input.VibeOptions;
 
 import java.io.IOException;
 
@@ -14,20 +15,34 @@ public class VibeApplication {
      */
     public static void main(String[] args) {
         try {
-            CommandLineOptionsParser appOptions = new CommandLineOptionsParser(args);
-            try {
-                appOptions.getRunMode().run(appOptions);
-            } catch (IOException e) {
-                System.err.println(e.getLocalizedMessage());
-            } catch (Exception e) {
-                System.err.println("######## ######## ########");
-                System.err.println("An unexpected exception occurred. Please notify the developer (see https://github.com/molgenis/vibe) and supply the stacktrace as seen below.");
-                System.err.println("######## ######## ########");
-                e.printStackTrace();
+            // Parses user-input.
+            VibeOptions vibeOptions = new VibeOptions();
+            CommandLineOptionsParser.parse(args, vibeOptions);
+
+            // If all input input correctly parsed, runs app.
+            if(vibeOptions.validate()) {
+                try {
+                    vibeOptions.getRunMode().run(vibeOptions);
+                } catch (IOException e) {
+                    System.err.println(e.getLocalizedMessage());
+                } catch (Exception e) { // Errors generated while running the app.
+                    printUnexpectedExceptionOccurred();
+                    e.printStackTrace();
+                }
+            } else { // Errors caused by invalid options configuration.
+                printUnexpectedExceptionOccurred();
+                vibeOptions.toString();
+
             }
-        } catch (Exception e) {
+        } catch (Exception e) { // Errors generated during options parsing.
             System.err.println(e.getLocalizedMessage());
             CommandLineOptionsParser.printHelpMessage();
         }
+    }
+
+    public static void printUnexpectedExceptionOccurred() {
+        System.err.println("######## ######## ########");
+        System.err.println("An unexpected exception occurred. Please notify the developer (see https://github.com/molgenis/vibe) and supply the text as seen below.");
+        System.err.println("######## ######## ########");
     }
 }

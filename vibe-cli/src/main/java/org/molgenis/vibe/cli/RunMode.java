@@ -4,7 +4,7 @@ import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.PhenotypesRetrievalRunner;
 import org.molgenis.vibe.cli.input.CommandLineOptionsParser;
-import org.molgenis.vibe.cli.input.OptionsParser;
+import org.molgenis.vibe.cli.input.VibeOptions;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetworkCollection;
@@ -34,31 +34,35 @@ public enum RunMode {
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
         protected void runMode() throws Exception {
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(getAppOptions().getPhenotypes());
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(retrieveInputPhenotypes());
             GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
             writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
         }
     };
 
     protected PhenotypeNetworkCollection retrieveAssociatedPhenotypes() {
-        getAppOptions().printVerbose("# " + getAppOptions().getPhenotypesRetrieverFactory().getDescription());
-        PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(getAppOptions().getHpoOntology(),
-                getAppOptions().getPhenotypesRetrieverFactory(), getAppOptions().getPhenotypes(),
-                getAppOptions().getOntologyMaxDistance());
+        vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
+        PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(vibeOptions.getHpoOntology(),
+                vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
+                vibeOptions.getOntologyMaxDistance());
         printElapsedTime();
         return runner.call();
     }
 
+    protected Set<Phenotype> retrieveInputPhenotypes() {
+        return vibeOptions.getPhenotypes();
+    }
+
     protected GeneDiseaseCollection retrieveDisgenetData(Set<Phenotype> phenotypes) throws IOException {
-        getAppOptions().printVerbose("# Retrieving data from main dataset.");
-        GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(getAppOptions().getDatabase(), phenotypes);
+        vibeOptions.printVerbose("# Retrieving data from main dataset.");
+        GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(vibeOptions.getVibeTdb(), phenotypes);
         printElapsedTime();
         return runner.call();
     }
 
     protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
-        getAppOptions().printVerbose("# Ordering genes based on priority.");
-        GenePrioritizer prioritizer = getAppOptions().getGenePrioritizerFactory().create(geneDiseaseCollection);
+        vibeOptions.printVerbose("# Ordering genes based on priority.");
+        GenePrioritizer prioritizer = vibeOptions.getGenePrioritizerFactory().create(geneDiseaseCollection);
         prioritizer.run();
         printElapsedTime();
 
@@ -66,25 +70,17 @@ public enum RunMode {
     }
 
     protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
-        getAppOptions().printVerbose("# Writing genes to " + getAppOptions().getOutputWriter().target());
-        OutputFormatWriter outputFormatWriter = getAppOptions().getGenePrioritizedOutputFormatWriterFactory().create(getAppOptions().getOutputWriter(), geneDiseaseCollection, prioritizer);
+        vibeOptions.printVerbose("# Writing genes to " + vibeOptions.getOutputWriter().target());
+        OutputFormatWriter outputFormatWriter = vibeOptions.getGenePrioritizedOutputFormatWriterFactory().create(vibeOptions.getOutputWriter(), geneDiseaseCollection, prioritizer);
         outputFormatWriter.run();
         printElapsedTime();
     }
 
-    private OptionsParser appOptions;
+    private VibeOptions vibeOptions;
 
     private String description;
 
     private Stopwatch stopwatch;
-
-    protected OptionsParser getAppOptions() {
-        return appOptions;
-    }
-
-    protected void setAppOptions(OptionsParser appOptions) {
-        this.appOptions = appOptions;
-    }
 
     protected String getDescription() {
         return description;
@@ -95,11 +91,12 @@ public enum RunMode {
         stopwatch = Stopwatch.createStarted();
     }
 
-    public final void run(OptionsParser appOptions) throws Exception {
+    public final void run(VibeOptions vibeOptions) throws Exception {
         // Sets the OptionsParser.
-        setAppOptions(appOptions);
+        this.vibeOptions = vibeOptions;
+
         // Prints the RunMode description if verbose.
-        getAppOptions().printVerbose(getDescription());
+        this.vibeOptions.printVerbose(getDescription());
         // Runs mode-specific code.
         runMode();
     }
@@ -107,7 +104,7 @@ public enum RunMode {
     protected abstract void runMode() throws Exception;
 
     protected void printElapsedTime() {
-        getAppOptions().printVerbose("Elapsed time: " + stopwatch.toString());
+        vibeOptions.printVerbose("Elapsed time: " + stopwatch.toString());
         // Resets stopwatch.
         stopwatch.reset();
         stopwatch.start();
