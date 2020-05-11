@@ -3,6 +3,8 @@ package org.molgenis.vibe.cli;
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.PhenotypesRetrievalRunner;
+import org.molgenis.vibe.cli.input.CommandLineOptionsParser;
+import org.molgenis.vibe.cli.input.OptionsParser;
 import org.molgenis.vibe.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.formats.PhenotypeNetworkCollection;

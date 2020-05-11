@@ -1,4 +1,4 @@
-package org.molgenis.vibe.cli;
+package org.molgenis.vibe.cli.input;
 
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.formats.Phenotype;

@@ -1,9 +1,10 @@
-package org.molgenis.vibe.cli;
+package org.molgenis.vibe.cli.input;
 
 import static java.util.Objects.requireNonNull;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
+import org.molgenis.vibe.cli.RunMode;
 import org.molgenis.vibe.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 

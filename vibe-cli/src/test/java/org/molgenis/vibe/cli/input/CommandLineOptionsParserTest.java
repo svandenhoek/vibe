@@ -1,10 +1,13 @@
-package org.molgenis.vibe.cli;
+package org.molgenis.vibe.cli.input;
 
 import org.apache.commons.cli.ParseException;
 import org.apache.commons.cli.UnrecognizedOptionException;
 import org.apache.commons.lang3.ArrayUtils;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import org.molgenis.vibe.cli.RunMode;
+import org.molgenis.vibe.cli.TestData;
+import org.molgenis.vibe.cli.input.CommandLineOptionsParser;
 import org.molgenis.vibe.formats.Phenotype;
 import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.output.target.FileOutputWriter;
