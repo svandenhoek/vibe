@@ -59,27 +59,6 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    @Deprecated
-    public void addingMultipleSourcesWithEvidenceDeprecated() {
-        List<URI> source1Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"), URI.create("http://identifiers.org/pubmed/2"));
-        List<URI> source2Evidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/3"), URI.create("http://identifiers.org/pubmed/4"));
-
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        geneDiseaseCombo.add(source1, source1Evidence.get(0));
-        geneDiseaseCombo.add(source1, source1Evidence.get(1));
-        geneDiseaseCombo.add(source2, source2Evidence.get(0));
-        geneDiseaseCombo.add(source2, source2Evidence.get(1));
-
-        Assertions.assertAll(
-                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source1)),
-                () -> Assertions.assertEquals(Integer.valueOf(2), geneDiseaseCombo.getSourcesCount().get(source2)),
-
-                () -> Assertions.assertEquals(source1Evidence, geneDiseaseCombo.getEvidenceForSource(source1)),
-                () -> Assertions.assertEquals(source2Evidence, geneDiseaseCombo.getEvidenceForSource(source2))
-        );
-    }
-
-    @Test
     public void addingMultipleSourcesWithAndWithoutEvidence() {
         List<PubmedEvidence> source1Evidence = Arrays.asList(
                 new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)
@@ -120,13 +99,6 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    @Deprecated
-    public void retrieveSourcesWithEvidenceWhenNothingIsStored() {
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        Assertions.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithEvidence());
-    }
-
-    @Test
     public void retrieveCountForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(0, geneDiseaseCombo.getCountForSource(source1));
@@ -136,73 +108,6 @@ public class GeneDiseaseCombinationTest {
     public void retrievePubmedEvidenceForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(null, geneDiseaseCombo.getPubmedEvidenceForSource(source1));
-    }
-
-    @Test
-    @Deprecated
-    public void retrieveEvidenceForNonExistingSource() {
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        Assertions.assertEquals(null, geneDiseaseCombo.getEvidenceForSource(source1));
-    }
-
-    @Test
-    @Deprecated
-    public void testGetAllEvidenceOrdered() {
-        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
-
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
-
-        Assertions.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0),sourceEvidence.get(2),sourceEvidence.get(1))),
-                geneDiseaseCombo.getAllEvidenceOrdered());
-    }
-
-    @Test
-    @Deprecated
-    public void testGetAllEvidenceOrderedStrings() {
-        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
-
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
-
-        Assertions.assertEquals(new ArrayList<>(Arrays.asList(sourceEvidence.get(0).toString(),sourceEvidence.get(2).toString(),sourceEvidence.get(1).toString())),
-                geneDiseaseCombo.getAllEvidenceOrderedStrings());
-    }
-
-    @Test
-    @Deprecated
-    public void testGetAllEvidenceSimplified() {
-        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
-
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
-
-        Assertions.assertEquals(new HashSet<>(Arrays.asList("1","20", "3")),
-                geneDiseaseCombo.getAllEvidenceSimplified());
-    }
-
-    @Test
-    @Deprecated
-    public void testGetAllEvidenceSimplifiedOrdered() {
-        List<URI> sourceEvidence = Arrays.asList(URI.create("http://identifiers.org/pubmed/1"),
-                URI.create("http://identifiers.org/pubmed/20"), URI.create("http://identifiers.org/pubmed/3"));
-
-        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
-        geneDiseaseCombo.add(source1, sourceEvidence.get(0));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(1));
-        geneDiseaseCombo.add(source1, sourceEvidence.get(2));
-
-        Assertions.assertEquals(new ArrayList<>(Arrays.asList("1","3","20")),
-                geneDiseaseCombo.getAllEvidenceSimplifiedOrdered());
     }
 
     @Test
