@@ -1,10 +1,10 @@
-package org.molgenis.vibe.cli.input;
+package org.molgenis.vibe.cli.io.options_digestion;
 
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.cli.RunMode;
 import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
+import org.molgenis.vibe.cli.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
 import java.io.IOException;
 import java.nio.file.FileAlreadyExistsException;

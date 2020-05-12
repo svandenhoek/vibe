@@ -1,4 +1,4 @@
-package org.molgenis.vibe.cli.output.target;
+package org.molgenis.vibe.cli.io.output.target;
 
 import java.io.BufferedWriter;
 import java.io.IOException;

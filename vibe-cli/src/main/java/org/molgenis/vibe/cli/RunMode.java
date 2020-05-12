@@ -3,12 +3,12 @@ package org.molgenis.vibe.cli;
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.core.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.core.PhenotypesRetrievalRunner;
-import org.molgenis.vibe.cli.input.CommandLineOptionsParser;
-import org.molgenis.vibe.cli.input.VibeOptions;
+import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
+import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.core.formats.PhenotypeNetworkCollection;
-import org.molgenis.vibe.cli.output.format.OutputFormatWriter;
+import org.molgenis.vibe.cli.io.output.format.OutputFormatWriter;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.GenePrioritizer;
 
 import java.io.IOException;

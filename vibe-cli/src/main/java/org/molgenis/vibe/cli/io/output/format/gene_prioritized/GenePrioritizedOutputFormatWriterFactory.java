@@ -1,11 +1,11 @@
-package org.molgenis.vibe.cli.output.format.gene_prioritized;
+package org.molgenis.vibe.cli.io.output.format.gene_prioritized;
 
 
-import org.molgenis.vibe.cli.output.ValuesSeparator;
-import org.molgenis.vibe.cli.output.format.OutputFormatWriter;
-import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriter;
-import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriterFactory;
-import org.molgenis.vibe.cli.output.target.OutputWriter;
+import org.molgenis.vibe.cli.io.output.ValuesSeparator;
+import org.molgenis.vibe.cli.io.output.format.OutputFormatWriter;
+import org.molgenis.vibe.cli.io.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.cli.io.output.format.PrioritizedOutputFormatWriterFactory;
+import org.molgenis.vibe.cli.io.output.target.OutputWriter;
 import org.molgenis.vibe.core.formats.Gene;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;

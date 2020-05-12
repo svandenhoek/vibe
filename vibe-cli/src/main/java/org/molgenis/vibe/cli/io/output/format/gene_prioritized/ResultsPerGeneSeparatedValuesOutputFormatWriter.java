@@ -1,10 +1,10 @@
-package org.molgenis.vibe.cli.output.format.gene_prioritized;
+package org.molgenis.vibe.cli.io.output.format.gene_prioritized;
 
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.core.formats.*;
-import org.molgenis.vibe.cli.output.ValuesSeparator;
-import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriter;
-import org.molgenis.vibe.cli.output.target.OutputWriter;
+import org.molgenis.vibe.cli.io.output.ValuesSeparator;
+import org.molgenis.vibe.cli.io.output.format.PrioritizedOutputFormatWriter;
+import org.molgenis.vibe.cli.io.output.target.OutputWriter;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
 
 import java.io.IOException;
