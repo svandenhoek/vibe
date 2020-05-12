@@ -6,9 +6,9 @@ import org.molgenis.vibe.cli.output.format.OutputFormatWriter;
 import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriter;
 import org.molgenis.vibe.cli.output.format.PrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.output.target.OutputWriter;
-import org.molgenis.vibe.formats.Gene;
-import org.molgenis.vibe.formats.GeneDiseaseCollection;
-import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
+import org.molgenis.vibe.core.formats.Gene;
+import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
+import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
 
 /**
  * A factory for {@link Gene} prioritized {@link PrioritizedOutputFormatWriter}{@code s}.

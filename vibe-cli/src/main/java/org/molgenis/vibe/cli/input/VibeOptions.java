@@ -3,12 +3,12 @@ package org.molgenis.vibe.cli.input;
 import org.molgenis.vibe.cli.RunMode;
 import org.molgenis.vibe.cli.output.target.FileOutputWriter;
 import org.molgenis.vibe.cli.output.target.StdoutOutputWriter;
-import org.molgenis.vibe.exceptions.InvalidStringFormatException;
-import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
+import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.output.target.OutputWriter;
-import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
+import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
+import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -46,7 +46,7 @@ public class VibeOptions {
     private Set<Phenotype> phenotypes = new HashSet<>();
 
     /**
-     * Defines the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever} to be used.
+     * Defines the {@link org.molgenis.vibe.core.ontology_processing.PhenotypesRetriever} to be used.
      */
     private PhenotypesRetrieverFactory phenotypesRetrieverFactory;
 
@@ -147,7 +147,7 @@ public class VibeOptions {
 
     /**
      *
-     * @param name the {@link String} describing the {@link org.molgenis.vibe.ontology_processing.PhenotypesRetriever}
+     * @param name the {@link String} describing the {@link org.molgenis.vibe.core.ontology_processing.PhenotypesRetriever}
      *             to be used
      * @throws EnumConstantNotPresentException if {@code name} is not an accepted possibility.
      */

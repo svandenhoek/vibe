@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.cli.RunMode;
 import org.molgenis.vibe.cli.TestData;
-import org.molgenis.vibe.formats.Phenotype;
+import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.cli.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.output.target.FileOutputWriter;
 import org.molgenis.vibe.cli.output.target.StdoutOutputWriter;
-import org.molgenis.vibe.ontology_processing.PhenotypesRetrieverFactory;
+import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
 import java.nio.file.Paths;

@@ -2,11 +2,11 @@ package org.molgenis.vibe.cli.output.format.gene_prioritized;
 
 import org.junit.jupiter.api.*;
 import org.mockito.Mockito;
-import org.molgenis.vibe.formats.*;
+import org.molgenis.vibe.core.formats.*;
 import org.molgenis.vibe.cli.output.format.OutputFormatWriter;
 import org.molgenis.vibe.cli.output.target.StdoutOutputWriter;
-import org.molgenis.vibe.query_output_digestion.prioritization.Prioritizer;
-import org.molgenis.vibe.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
+import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
+import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
