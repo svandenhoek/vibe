@@ -42,11 +42,14 @@ public enum RunMode {
 
     protected PhenotypeNetworkCollection retrieveAssociatedPhenotypes() {
         vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
-        PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(vibeOptions.getHpoOntology(),
-                vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
-                vibeOptions.getOntologyMaxDistance());
+
+        resetTimer();
+        PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypesRetrievalRunner(
+                vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
+                vibeOptions.getOntologyMaxDistance()).call();
         printElapsedTime();
-        return runner.call();
+
+        return phenotypeNetworkCollection;
     }
 
     protected Set<Phenotype> retrieveInputPhenotypes() {
@@ -55,13 +58,19 @@ public enum RunMode {
 
     protected GeneDiseaseCollection retrieveDisgenetData(Set<Phenotype> phenotypes) throws IOException {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");
-        GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(vibeOptions.getVibeTdb(), phenotypes);
+
+        resetTimer();
+        GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollectionRetrievalRunner(
+                vibeOptions.getVibeTdb(), phenotypes).call();
         printElapsedTime();
-        return runner.call();
+
+        return geneDiseaseCollection;
     }
 
     protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
         vibeOptions.printVerbose("# Ordering genes based on priority.");
+
+        resetTimer();
         GenePrioritizer prioritizer = vibeOptions.getGenePrioritizerFactory().create(geneDiseaseCollection);
         prioritizer.run();
         printElapsedTime();
@@ -71,8 +80,10 @@ public enum RunMode {
 
     protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
         vibeOptions.printVerbose("# Writing genes to " + vibeOptions.getOutputWriter().target());
-        OutputFormatWriter outputFormatWriter = vibeOptions.getGenePrioritizedOutputFormatWriterFactory().create(vibeOptions.getOutputWriter(), geneDiseaseCollection, prioritizer);
-        outputFormatWriter.run();
+
+        resetTimer();
+        vibeOptions.getGenePrioritizedOutputFormatWriterFactory().create(vibeOptions.getOutputWriter(),
+                geneDiseaseCollection, prioritizer).run();
         printElapsedTime();
     }
 
@@ -103,10 +114,12 @@ public enum RunMode {
 
     protected abstract void runMode() throws Exception;
 
-    protected void printElapsedTime() {
-        vibeOptions.printVerbose("Elapsed time: " + stopwatch.toString());
-        // Resets stopwatch.
+    protected void resetTimer() {
         stopwatch.reset();
         stopwatch.start();
+    }
+
+    protected void printElapsedTime() {
+        vibeOptions.printVerbose("Elapsed time: " + stopwatch.toString());
     }
 }
