@@ -1,4 +1,4 @@
-package org.molgenis.vibe;
+package org.molgenis.vibe.core;
 
 public enum TestData {
     HPO_OWL {

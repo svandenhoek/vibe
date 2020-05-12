@@ -3,7 +3,7 @@ package org.molgenis.vibe.core.tdb_processing.query_string_creation;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.molgenis.vibe.TestData;
+import org.molgenis.vibe.core.TestData;
 import org.molgenis.vibe.core.io.input.ModelReader;
 import org.molgenis.vibe.core.io.input.TripleStoreDbReader;
 import org.molgenis.vibe.core.tdb_processing.QueryRunner;

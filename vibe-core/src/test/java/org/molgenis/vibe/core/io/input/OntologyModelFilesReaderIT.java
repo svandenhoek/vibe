@@ -4,7 +4,7 @@ import org.apache.jena.riot.RiotException;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.molgenis.vibe.TestData;
+import org.molgenis.vibe.core.TestData;
 
 public class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;

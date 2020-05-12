@@ -5,7 +5,7 @@ import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
-import org.molgenis.vibe.TestData;
+import org.molgenis.vibe.core.TestData;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.core.formats.PhenotypeNetwork;
 import org.molgenis.vibe.core.formats.PhenotypeNetworkCollection;

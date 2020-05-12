@@ -6,7 +6,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.molgenis.vibe.TestData;
+import org.molgenis.vibe.core.TestData;
 
 import java.io.IOException;
 
