@@ -62,8 +62,12 @@
                             </transformers>
                             <!-- file name of shaded jar -->
                             <finalName>${jar.fat}</finalName>
+                            <!-- can be used instead of finalName to generate artifact with name submodule + postfix-->
+<!--                            <shadedClassifierName>with-dependencies</shadedClassifierName>-->
+                            <!-- due to finalname original artifact is treated as main artifact, this ensure both get a checksum -->
+                            <shadedArtifactAttached>true</shadedArtifactAttached>
                             <!-- excludes all classes of dependencies that are not used (also excludes non-specified classes) -->
-                            <!-- <minimizeJar>true</minimizeJar> -->
+<!--                            <minimizeJar>true</minimizeJar>-->
                         </configuration>
                     </execution>
                 </executions>
