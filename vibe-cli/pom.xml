@@ -51,8 +51,6 @@
                                     <manifestEntries>
                                         <!-- set main class -->
                                         <Main-Class>org.molgenis.vibe.cli.VibeApplication</Main-Class>
-                                        <!-- clears class-path added by maven-jar-plugin -->
-                                        <Class-Path />
                                     </manifestEntries>
                                 </transformer>
                                 <!-- prevent license duplications -->
@@ -68,8 +66,6 @@
 <!--                            <shadedClassifierName>with-dependencies</shadedClassifierName>-->
                             <!-- due to finalname original artifact is treated as main artifact, this ensure both get a checksum -->
                             <shadedArtifactAttached>true</shadedArtifactAttached>
-                            <!-- excludes all classes of dependencies that are not used (also excludes non-specified classes) -->
-<!--                            <minimizeJar>true</minimizeJar>-->
                         </configuration>
                     </execution>
                 </executions>
