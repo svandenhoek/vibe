@@ -59,6 +59,8 @@
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheLicenseResourceTransformer" />
                                 <!-- manages META_INF/services/ files for usage in shaded jar -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ServicesResourceTransformer" />
+                                <!-- prevents only single notice being presents and generates an overarching one instead -->
+                                <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer" />
                             </transformers>
                             <!-- file name of shaded jar -->
                             <finalName>${jar.fat}</finalName>
