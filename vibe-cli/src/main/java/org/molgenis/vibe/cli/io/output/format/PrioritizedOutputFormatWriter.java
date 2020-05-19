@@ -2,7 +2,8 @@ package org.molgenis.vibe.cli.io.output.format;
 
 import org.molgenis.vibe.core.formats.BiologicalEntity;
 import org.molgenis.vibe.cli.io.output.target.OutputWriter;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
+
+import java.util.List;
 
 import static java.util.Objects.requireNonNull;
 
@@ -12,14 +13,14 @@ import static java.util.Objects.requireNonNull;
  * @param <T> the {@link BiologicalEntity} used by the {@link PrioritizedOutputFormatWriter} for prioritizing the output
  */
 public abstract class PrioritizedOutputFormatWriter<T extends BiologicalEntity> extends OutputFormatWriter {
-    private Prioritizer<T> prioritizer;
+    private List<T> priority;
 
-    protected Prioritizer<T> getPrioritizer() {
-        return prioritizer;
+    protected List<T> getPriority() {
+        return priority;
     }
 
-    public PrioritizedOutputFormatWriter(OutputWriter outputWriter, Prioritizer<T> prioritizer) {
+    public PrioritizedOutputFormatWriter(OutputWriter outputWriter, List<T> priority) {
         super(outputWriter);
-        this.prioritizer = requireNonNull(prioritizer);
+        this.priority = requireNonNull(priority);
     }
 }

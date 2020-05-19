@@ -8,7 +8,6 @@ import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.cli.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.io.output.target.OutputWriter;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.GenePrioritizerFactory;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -55,11 +54,6 @@ public class VibeOptions {
      * input Phenotypes.
      */
     private Integer ontologyMaxDistance;
-
-    /**
-     * Defines the specific gene-prioritisation algorithm to use.
-     */
-    private GenePrioritizerFactory genePrioritizerFactory = GenePrioritizerFactory.HIGHEST_DISGENET_SCORE;
 
     /**
      * Defines the gene-prioritised output format to be used.
@@ -181,14 +175,6 @@ public class VibeOptions {
         }
     }
 
-    public GenePrioritizerFactory getGenePrioritizerFactory() {
-        return genePrioritizerFactory;
-    }
-
-    void setGenePrioritizerFactory(GenePrioritizerFactory genePrioritizerFactory) {
-        this.genePrioritizerFactory = genePrioritizerFactory;
-    }
-
     public GenePrioritizedOutputFormatWriterFactory getGenePrioritizedOutputFormatWriterFactory() {
         return genePrioritizedOutputFormatWriterFactory;
     }
@@ -302,10 +288,6 @@ public class VibeOptions {
             if (getGenePrioritizedOutputFormatWriterFactory() == null) {
                 return false;
             }
-            // Checks whether a gene prioritizer was selected.
-            if (getGenePrioritizerFactory() == null) {
-                return false;
-            }
             // Check config specific settings are set.
             switch (runMode) {
                 // Additional checks if related HPOs need to be retrieved.
@@ -343,7 +325,6 @@ public class VibeOptions {
                 ", phenotypes=" + phenotypes +
                 ", phenotypesRetrieverFactory=" + phenotypesRetrieverFactory +
                 ", ontologyMaxDistance=" + ontologyMaxDistance +
-                ", genePrioritizerFactory=" + genePrioritizerFactory +
                 ", genePrioritizedOutputFormatWriterFactory=" + genePrioritizedOutputFormatWriterFactory +
                 ", outputWriter=" + outputWriter +
                 '}';

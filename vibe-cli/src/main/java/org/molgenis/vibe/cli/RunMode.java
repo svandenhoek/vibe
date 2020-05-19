@@ -5,13 +5,15 @@ import org.molgenis.vibe.core.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.core.PhenotypesRetrievalRunner;
 import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
+import org.molgenis.vibe.core.formats.Gene;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.core.formats.PhenotypeNetworkCollection;
-import org.molgenis.vibe.cli.io.output.format.OutputFormatWriter;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.GenePrioritizer;
+import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
 
 import java.io.IOException;
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -28,15 +30,15 @@ public enum RunMode {
         protected void runMode() throws IOException {
             PhenotypeNetworkCollection phenotypeNetworkCollection = retrieveAssociatedPhenotypes();
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(phenotypeNetworkCollection.getPhenotypes());
-            GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
-            writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
+            List<Gene> genePriority = orderGenes(geneDiseaseCollection);
+            writePrioritizedGenesOutput(geneDiseaseCollection, genePriority);
         }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
         protected void runMode() throws Exception {
             GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(retrieveInputPhenotypes());
-            GenePrioritizer prioritizer = orderGenes(geneDiseaseCollection);
-            writePrioritizedGenesOutput(geneDiseaseCollection, prioritizer);
+            List<Gene> genePriority = orderGenes(geneDiseaseCollection);
+            writePrioritizedGenesOutput(geneDiseaseCollection, genePriority);
         }
     };
 
@@ -75,23 +77,23 @@ public enum RunMode {
         }
     }
 
-    protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
+    protected List<Gene> orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
         vibeOptions.printVerbose("# Ordering genes based on priority.");
 
         resetTimer();
-        GenePrioritizer prioritizer = vibeOptions.getGenePrioritizerFactory().create(geneDiseaseCollection);
-        prioritizer.run();
+        GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer();
+        List<Gene> genePriority = prioritizer.sort(geneDiseaseCollection);
         printElapsedTime();
 
-        return prioritizer;
+        return genePriority;
     }
 
-    protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, GenePrioritizer prioritizer) throws IOException {
+    protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, List<Gene> genePriority) throws IOException {
         vibeOptions.printVerbose("# Writing genes to " + vibeOptions.getOutputWriter().target());
 
         resetTimer();
         vibeOptions.getGenePrioritizedOutputFormatWriterFactory().create(vibeOptions.getOutputWriter(),
-                geneDiseaseCollection, prioritizer).run();
+                geneDiseaseCollection, genePriority).run();
         printElapsedTime();
     }
 

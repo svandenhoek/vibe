@@ -5,7 +5,6 @@ import org.molgenis.vibe.core.formats.*;
 import org.molgenis.vibe.cli.io.output.ValuesSeparator;
 import org.molgenis.vibe.cli.io.output.format.PrioritizedOutputFormatWriter;
 import org.molgenis.vibe.cli.io.output.target.OutputWriter;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
 
 import java.io.IOException;
 import java.util.*;
@@ -46,17 +45,17 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
      *
      * @param writer writer object to be used to write the data
      * @param collection the data to be written
-     * @param prioritizer defines the order in which the {@link Gene}{@code s} are written
+     * @param priority defines the order in which the {@link Gene}{@code s} are written
      * @param primarySeparator highest level values separator
      * @param keyValuePairSeparator separates different key-value pairs
      * @param keyValueSeparator separates a key and value
      * @param valuesSeparator separates the values from a key-value pair
      * @throws IllegalArgumentException if any separator is equal to another separator
      */
-    public ResultsPerGeneSeparatedValuesOutputFormatWriter(OutputWriter writer, Prioritizer<Gene> prioritizer, GeneDiseaseCollection collection,
+    public ResultsPerGeneSeparatedValuesOutputFormatWriter(OutputWriter writer, List<Gene> priority, GeneDiseaseCollection collection,
                                                            ValuesSeparator primarySeparator, ValuesSeparator keyValuePairSeparator,
                                                            ValuesSeparator keyValueSeparator, ValuesSeparator valuesSeparator) {
-        super(writer, prioritizer);
+        super(writer, priority);
         this.collection = requireNonNull(collection);
         this.primarySeparator = requireNonNull(primarySeparator);
         this.keyValuePairSeparator = requireNonNull(keyValuePairSeparator);
@@ -81,7 +80,7 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
         getOutputWriter().writeNewLine();
 
         // Goes through all ordered genes.
-        for(Gene gene : getPrioritizer().getPriority()) {
+        for(Gene gene : getPriority()) {
             // Writes gene id + symbol.
             getOutputWriter().write(writeGene(gene) + primarySeparator + writeGeneSymbol(gene) + primarySeparator);
 

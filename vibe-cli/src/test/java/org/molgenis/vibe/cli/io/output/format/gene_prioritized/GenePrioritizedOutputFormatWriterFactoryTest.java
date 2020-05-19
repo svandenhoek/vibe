@@ -1,12 +1,9 @@
 package org.molgenis.vibe.cli.io.output.format.gene_prioritized;
 
 import org.junit.jupiter.api.*;
-import org.mockito.Mockito;
 import org.molgenis.vibe.core.formats.*;
 import org.molgenis.vibe.cli.io.output.format.OutputFormatWriter;
 import org.molgenis.vibe.cli.io.output.target.StdoutOutputWriter;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.gene.HighestSingleDisgenetScoreGenePrioritizer;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -14,6 +11,7 @@ import java.io.PrintStream;
 import java.net.URI;
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 public class GenePrioritizedOutputFormatWriterFactoryTest {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
@@ -21,7 +19,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
 
     private static final StdoutOutputWriter writer = new StdoutOutputWriter();
     private static GeneDiseaseCollection collection;
-    private static Prioritizer<Gene> prioritizer;
+    private static List<Gene> priority;
 
     @BeforeAll
     public static void beforeAll() {
@@ -59,10 +57,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
         geneDiseaseCombinations[2].add(sources[3]);
 
         collection = new GeneDiseaseCollection(new HashSet<>(Arrays.asList(geneDiseaseCombinations)));
-
-        // Mock prioritizer.
-        prioritizer = Mockito.mock(HighestSingleDisgenetScoreGenePrioritizer.class);
-        Mockito.when(prioritizer.getPriority()).thenReturn(Arrays.asList(genes[1], genes[0]));
+        priority = Arrays.asList(genes[1], genes[0]);
     }
 
     @AfterEach
@@ -77,7 +72,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
 
     @Test
     public void testSimple() throws IOException {
-        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.SIMPLE.create(writer, collection, prioritizer);
+        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.SIMPLE.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "29123,2697";
         Assertions.assertEquals(expectedOutput, outContent.toString());
@@ -85,7 +80,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
 
     @Test
     public void testDefaultWithId() throws IOException {
-        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_ID.create(writer, collection, prioritizer);
+        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_ID.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +
                 "29123\tANKRD11\t0.8\tC0220687 (0.8):26633545,23494856|C1835764 (0.1)" + System.lineSeparator() +
@@ -95,7 +90,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
 
     @Test
     public void testDefaultWithUri() throws IOException {
-        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_URI.create(writer, collection, prioritizer);
+        OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_URI.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +
                 "http://identifiers.org/ncbigene/29123\thttp://identifiers.org/hgnc.symbol/ANKRD11\t0.8\thttp://linkedlifedata.com/resource/umls/id/C0220687 (0.8):http://identifiers.org/pubmed/26633545,http://identifiers.org/pubmed/23494856|http://linkedlifedata.com/resource/umls/id/C1835764 (0.1)" + System.lineSeparator() +

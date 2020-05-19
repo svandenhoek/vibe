@@ -3,7 +3,6 @@ package org.molgenis.vibe.cli.io.output.format.gene_prioritized;
 import org.molgenis.vibe.core.formats.*;
 import org.molgenis.vibe.cli.io.output.ValuesSeparator;
 import org.molgenis.vibe.cli.io.output.target.OutputWriter;
-import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
 
 import java.net.URI;
 import java.util.List;
@@ -14,11 +13,11 @@ import java.util.stream.Collectors;
  */
 public class ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris extends ResultsPerGeneSeparatedValuesOutputFormatWriter {
 
-    public ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris(OutputWriter writer, Prioritizer<Gene> prioritizer,
+    public ResultsPerGeneSeparatedValuesOutputFormatWriterUsingUris(OutputWriter writer, List<Gene> priority,
                                                                    GeneDiseaseCollection collection, ValuesSeparator primarySeparator,
                                                                    ValuesSeparator keyValuePairSeparator, ValuesSeparator keyValueSeparator,
                                                                    ValuesSeparator valuesSeparator) {
-        super(writer, prioritizer, collection, primarySeparator, keyValuePairSeparator, keyValueSeparator, valuesSeparator);
+        super(writer, priority, collection, primarySeparator, keyValuePairSeparator, keyValueSeparator, valuesSeparator);
     }
 
     @Override
