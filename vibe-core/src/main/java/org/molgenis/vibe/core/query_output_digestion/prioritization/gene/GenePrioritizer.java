@@ -1,20 +1,15 @@
 package org.molgenis.vibe.core.query_output_digestion.prioritization.gene;
 
 import org.molgenis.vibe.core.formats.Gene;
+import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.query_output_digestion.prioritization.Prioritizer;
 
 import java.util.List;
-import java.util.Set;
 
 /**
- * Generates a priority order for a given collection ({@link List} or {@link Set}) of {@link Gene}{@code s}.
+ * Returns a {@link Gene} priority from a {@link GeneDiseaseCollection}.
  */
-public abstract class GenePrioritizer extends Prioritizer<Gene> {
-    public GenePrioritizer(List<Gene> data) {
-        super(data);
-    }
-
-    public GenePrioritizer(Set<Gene> data) {
-        super(data);
-    }
+public interface GenePrioritizer extends Prioritizer<Gene, GeneDiseaseCollection> {
+    @Override
+    List<Gene> sort(GeneDiseaseCollection collection);
 }

@@ -1,38 +1,20 @@
 package org.molgenis.vibe.core.query_output_digestion.prioritization;
 
 import org.molgenis.vibe.core.formats.BiologicalEntity;
+import org.molgenis.vibe.core.formats.BiologicalEntityCollection;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-import static java.util.Objects.requireNonNull;
 
 /**
- * Generates a priority order of a {@link BiologicalEntity} subclass.
- * @param <T>
+ * Returns a priority of {@code T1} from {@code T2}. {@code T1} should be one of the {@link BiologicalEntity}{@code s}
+ * stored inside {@link T2}.
+ * @param <T1> the returned priority
+ * @param <T2> stores the data of which a priority should be created from
  */
-public abstract class Prioritizer<T extends BiologicalEntity> {
+public interface Prioritizer<T1 extends BiologicalEntity, T2 extends BiologicalEntityCollection> {
     /**
-     * The data from which a priority order should be created from.
+     * Sorts the given list.
+     * @param collection
      */
-    private List<T> data;
-
-    public List<T> getPriority() {
-        return data;
-    }
-
-    protected void setPriority(List<T> data) {
-        this.data = data;
-    }
-
-    public Prioritizer(List<T> data) {
-        this.data = requireNonNull(data);
-    }
-
-    public Prioritizer(Set<T> data) {
-        this.data = new ArrayList<>(requireNonNull(data));
-    }
-
-    public abstract void run();
+    List<T1> sort(T2 collection);
 }
