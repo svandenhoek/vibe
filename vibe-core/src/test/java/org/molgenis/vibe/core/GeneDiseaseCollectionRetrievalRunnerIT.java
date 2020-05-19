@@ -1,15 +1,9 @@
-package org.molgenis.vibe.core.tdb_processing;
+package org.molgenis.vibe.core;
 
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
-import org.molgenis.vibe.core.TestData;
 import org.molgenis.vibe.core.formats.*;
-import org.molgenis.vibe.core.io.input.ModelReader;
-import org.molgenis.vibe.core.io.input.TripleStoreDbReader;
 
 import java.io.IOException;
 import java.net.URI;
@@ -25,23 +19,16 @@ import java.util.*;
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
 @Execution(ExecutionMode.SAME_THREAD)
-public class GenesForPhenotypeRetrieverIT {
-    private static ModelReader reader;
+public class GeneDiseaseCollectionRetrievalRunnerIT {
+    private static GeneDiseaseCollectionRetrievalRunner runner;
 
-    @BeforeAll
-    public static void beforeAll() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
-    }
-
-    @AfterAll
-    public static void afterAll() throws IOException {
-        if(reader != null) {
-            reader.close();
-        }
+    @AfterEach
+    public void afterEach() {
+        runner.close();
     }
 
     @Test
-    public void retrieveGeneDiseaseCollectionForHpo0008438() {
+    public void retrieveGeneDiseaseCollectionForHpo0008438() throws IOException {
         /**
          * obo:HP_0008438  a        sio:SIO_010056 ;
          *         sio:SIO_000001   ordo:Orphanet_85184 ;
@@ -141,9 +128,9 @@ public class GenesForPhenotypeRetrieverIT {
         GeneDiseaseCollection expectedCollection = new GeneDiseaseCollection();
         expectedCollection.addAll(Arrays.asList(geneDiseaseCombinations));
 
-        GenesForPhenotypeRetriever retriever = new GenesForPhenotypeRetriever(reader, new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
-        retriever.run();
-        GeneDiseaseCollection actualCollection = retriever.getGeneDiseaseCollection();
+        runner = new GeneDiseaseCollectionRetrievalRunner(
+                TestData.TDB.getFullPath(), new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
+        GeneDiseaseCollection actualCollection = runner.call();
 
         Assertions.assertAll(
             () -> Assertions.assertEquals(expectedCollection, actualCollection),

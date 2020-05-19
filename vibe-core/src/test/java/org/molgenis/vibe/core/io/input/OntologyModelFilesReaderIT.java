@@ -18,17 +18,17 @@ public class OntologyModelFilesReaderIT {
 
     @Test
     public void testValidModel() {
-        reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPath());
+        reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPathString());
         Assertions.assertEquals(false, reader.getModel().isEmpty());
     }
 
     @Test
     public void testInvalidFileFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.EXISTING_TSV.getFullPath()));
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.EXISTING_TSV.getFullPathString()));
     }
 
     @Test
     public void testInvalidFileUsingCorrectFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.FAKE_HPO_OWL.getFullPath()));
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.FAKE_HPO_OWL.getFullPathString()));
     }
 }

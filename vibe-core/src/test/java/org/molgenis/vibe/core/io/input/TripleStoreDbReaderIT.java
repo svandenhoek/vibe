@@ -16,7 +16,7 @@ public class TripleStoreDbReaderIT {
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        tdbReader = new TripleStoreDbReader(TestData.TDB.getFullPath());
+        tdbReader = new TripleStoreDbReader(TestData.TDB.getFullPathString());
     }
 
     @AfterAll

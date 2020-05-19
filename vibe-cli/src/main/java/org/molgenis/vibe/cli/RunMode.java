@@ -44,12 +44,16 @@ public enum RunMode {
         vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
 
         resetTimer();
-        PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypesRetrievalRunner(
+        PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(
                 vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
-                vibeOptions.getOntologyMaxDistance()).call();
-        printElapsedTime();
+                vibeOptions.getOntologyMaxDistance());
 
-        return phenotypeNetworkCollection;
+        try {
+            return runner.call();
+        } finally {
+            printElapsedTime();
+            runner.close();
+        }
     }
 
     protected Set<Phenotype> retrieveInputPhenotypes() {
@@ -60,11 +64,15 @@ public enum RunMode {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");
 
         resetTimer();
-        GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollectionRetrievalRunner(
-                vibeOptions.getVibeTdb(), phenotypes).call();
-        printElapsedTime();
+        GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(
+                vibeOptions.getVibeTdb(), phenotypes);
 
-        return geneDiseaseCollection;
+        try {
+            return runner.call();
+        } finally {
+            printElapsedTime();
+            runner.close();
+        }
     }
 
     protected GenePrioritizer orderGenes(GeneDiseaseCollection geneDiseaseCollection) {

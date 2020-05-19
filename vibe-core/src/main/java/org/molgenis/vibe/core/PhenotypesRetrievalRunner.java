@@ -6,6 +6,8 @@ import org.molgenis.vibe.core.io.input.OntologyModelFilesReader;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetriever;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.security.InvalidParameterException;
 import java.util.Collection;
@@ -17,11 +19,13 @@ import static java.util.Objects.requireNonNull;
  * Class containing all required logic for retrieving related {@link Phenotype}{@code s} for the input
  * {@link Phenotype}{@code s}.
  */
-public class PhenotypesRetrievalRunner implements Callable<PhenotypeNetworkCollection> {
+public class PhenotypesRetrievalRunner implements Callable<PhenotypeNetworkCollection>, Closeable {
     private Path hpoOntologyFile;
     private PhenotypesRetrieverFactory phenotypesRetrieverFactory;
     private Collection<Phenotype> phenotypes;
     private Integer maxDistance;
+
+    private OntologyModelFilesReader ontologyReader;
 
     public void setPhenotypesRetrieverFactory(PhenotypesRetrieverFactory phenotypesRetrieverFactory) {
         this.phenotypesRetrieverFactory = requireNonNull(phenotypesRetrieverFactory);
@@ -32,6 +36,7 @@ public class PhenotypesRetrievalRunner implements Callable<PhenotypeNetworkColle
     }
 
     public void setMaxDistance(Integer maxDistance) {
+        requireNonNull(maxDistance);
         if(maxDistance < 0) {
             throw new InvalidParameterException("maxDistance must be >= 0: " + maxDistance);
         }
@@ -46,24 +51,25 @@ public class PhenotypesRetrievalRunner implements Callable<PhenotypeNetworkColle
     }
 
     public PhenotypeNetworkCollection call() {
-        OntologyModelFilesReader ontologyReader = null;
-        try {
-            // Load model.
+        // Load model.
+        if(ontologyReader == null) {
             ontologyReader = new OntologyModelFilesReader(hpoOntologyFile.toString());
+        }
 
-            // Retrieve from model.
-            PhenotypesRetriever hpoRetriever = phenotypesRetrieverFactory.create(
-                    ontologyReader.getModel(), phenotypes, maxDistance
-            );
-            hpoRetriever.run();
+        // Retrieve from model.
+        PhenotypesRetriever hpoRetriever = phenotypesRetrieverFactory.create(
+                ontologyReader.getModel(), phenotypes, maxDistance
+        );
+        hpoRetriever.run();
 
-            // Returns results.
-            return hpoRetriever.getPhenotypeNetworkCollection();
-        } finally {
-            // Close model.
-            if (ontologyReader != null) {
-                ontologyReader.close();
-            }
+        // Returns results.
+        return hpoRetriever.getPhenotypeNetworkCollection();
+    }
+
+    @Override
+    public void close() {
+        if (ontologyReader != null) {
+            ontologyReader.close();
         }
     }
 }

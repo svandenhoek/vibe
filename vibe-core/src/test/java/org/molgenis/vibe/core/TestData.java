@@ -1,5 +1,8 @@
 package org.molgenis.vibe.core;
 
+import java.nio.file.Path;
+import java.nio.file.Paths;
+
 public enum TestData {
     HPO_OWL {
         @Override
@@ -36,8 +39,16 @@ public enum TestData {
      * Returns the full path of the test resource.
      * @return {@link String}
      */
-    public String getFullPath() {
+    public String getFullPathString() {
         return mainDir + getName();
+    }
+
+    /**
+     * Returns the full path of the test resource.
+     * @return {@link Path}
+     */
+    public Path getFullPath() {
+        return Paths.get(getFullPathString());
     }
 
     /**

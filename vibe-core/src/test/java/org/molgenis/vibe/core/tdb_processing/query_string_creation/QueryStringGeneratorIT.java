@@ -27,7 +27,7 @@ public class QueryStringGeneratorIT {
 
     @BeforeAll
     public static void beforeAll() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB.getFullPath());
+        reader = new TripleStoreDbReader(TestData.TDB.getFullPathString());
     }
 
     @AfterAll

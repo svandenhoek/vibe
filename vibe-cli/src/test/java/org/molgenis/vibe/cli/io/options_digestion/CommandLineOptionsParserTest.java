@@ -25,13 +25,13 @@ public class CommandLineOptionsParserTest {
     private final String[] SIMPLIFIED_OUT = new String[]{"-l"};
     private final String[] URIS_OUT = new String[]{"-u"};
 
-    private final String[] VALID_TDB = new String[]{"-t", TestData.TDB.getFullPath()};
-    private final String[] INVALID_TDB_DIR = new String[]{"-t", TestData.NON_EXISTING_DIR.getFullPath()};
-    private final String[] INVALID_TDB_FILE = new String[]{"-t", TestData.NON_EXISTING_FILE.getFullPath()};
+    private final String[] VALID_TDB = new String[]{"-t", TestData.TDB.getFullPathString()};
+    private final String[] INVALID_TDB_DIR = new String[]{"-t", TestData.NON_EXISTING_DIR.getFullPathString()};
+    private final String[] INVALID_TDB_FILE = new String[]{"-t", TestData.NON_EXISTING_FILE.getFullPathString()};
 
-    private final String[] VALID_ONTOLOGY = new String[]{"-w", TestData.HPO_OWL.getFullPath()};
-    private final String[] INVALID_ONTOLOGY_FILE = new String[]{"-w", TestData.NON_EXISTING_FILE.getFullPath()};
-    private final String[] INVALID_ONTOLOGY_DIR = new String[]{"-w", TestData.NON_EXISTING_DIR.getFullPath()};
+    private final String[] VALID_ONTOLOGY = new String[]{"-w", TestData.HPO_OWL.getFullPathString()};
+    private final String[] INVALID_ONTOLOGY_FILE = new String[]{"-w", TestData.NON_EXISTING_FILE.getFullPathString()};
+    private final String[] INVALID_ONTOLOGY_DIR = new String[]{"-w", TestData.NON_EXISTING_DIR.getFullPathString()};
 
     private final String[] HPO_ALGORITHM_CHILDREN = new String[]{"-n", "children"};
     private final String[] HPO_ALGORITHM_DISTANCE = new String[]{"-n", "distance"};
@@ -53,8 +53,8 @@ public class CommandLineOptionsParserTest {
             new Phenotype("hp:6543210")
     }));
 
-    private final String[] VALID_OUTPUT_FILE = new String[]{"-o", TestData.NON_EXISTING_FILE.getFullPath()};
-    private final String[] INVALID_OUTPUT_FILE = new String[]{"-o", TestData.EXISTING_TSV.getFullPath()};
+    private final String[] VALID_OUTPUT_FILE = new String[]{"-o", TestData.NON_EXISTING_FILE.getFullPathString()};
+    private final String[] INVALID_OUTPUT_FILE = new String[]{"-o", TestData.EXISTING_TSV.getFullPathString()};
 
     @Test
     public void helpMessage() throws IOException, ParseException {

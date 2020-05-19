@@ -1,33 +1,21 @@
-package org.molgenis.vibe.core.ontology_processing;
+package org.molgenis.vibe.core;
 
-import org.apache.jena.ontology.OntModel;
-import org.junit.jupiter.api.AfterAll;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Test;
-import org.molgenis.vibe.core.TestData;
+import org.junit.jupiter.api.*;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.core.formats.PhenotypeNetwork;
 import org.molgenis.vibe.core.formats.PhenotypeNetworkCollection;
-import org.molgenis.vibe.core.io.input.OntologyModelFilesReader;
+import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
+import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 
-public class PhenotypesRetrieverFactoryIT {
-    private static OntModel model;
+public class PhenotypesRetrievalRunnerIT {
+    private static PhenotypesRetrievalRunner runner;
 
-    @BeforeAll
-    public static void beforeAll() {
-        OntologyModelFilesReader reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPath());
-        model = reader.getModel();
-    }
-
-    @AfterAll
-    public static void afterAll() {
-        if(model != null) {
-            model.close();
-        }
+    @AfterEach
+    public void afterEach() {
+        runner.close();
     }
 
     @Test
@@ -39,8 +27,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.DISTANCE.create(model, startPhenotypes, 0);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.DISTANCE, startPhenotypes, 0);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -55,8 +46,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.DISTANCE.create(model, startPhenotypes, 1);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.DISTANCE, startPhenotypes, 1);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -76,8 +70,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.DISTANCE.create(model, startPhenotypes, 2);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.DISTANCE, startPhenotypes, 2);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -98,8 +95,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.DISTANCE.create(model, startPhenotypes, 3);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.DISTANCE, startPhenotypes, 3);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -111,8 +111,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.CHILDREN.create(model, startPhenotypes, 0);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, 0);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -128,8 +131,11 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.CHILDREN.create(model, startPhenotypes, 1);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, 1);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
     @Test
@@ -148,12 +154,22 @@ public class PhenotypesRetrieverFactoryIT {
         PhenotypeNetworkCollection expectedPhenotypeNetworkCollection = new PhenotypeNetworkCollection();
         expectedPhenotypeNetworkCollection.add(expectedNetwork1);
 
-        PhenotypesRetriever retriever = PhenotypesRetrieverFactory.CHILDREN.create(model, startPhenotypes, 2);
-        testRetriever(retriever, expectedPhenotypeNetworkCollection);
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, 2);
+        PhenotypeNetworkCollection actualPhenotypeNetworkCollection = runner.call();
+
+        Assertions.assertEquals(expectedPhenotypeNetworkCollection, actualPhenotypeNetworkCollection);
     }
 
-    public void testRetriever(PhenotypesRetriever retriever, PhenotypeNetworkCollection expectedPhenotypeNetworkCollection) {
-        retriever.run();
-        Assertions.assertEquals(expectedPhenotypeNetworkCollection, retriever.getPhenotypeNetworkCollection());
+    @Test
+    public void retrieveWithNegativeDistance() {
+        List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
+
+        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, 2);
+        int newMaxDistance = -1;
+
+        Exception exception = Assertions.assertThrows(InvalidParameterException.class, () -> runner.setMaxDistance(newMaxDistance) );
+        Assertions.assertEquals("maxDistance must be >= 0: " + newMaxDistance, exception.getMessage());
     }
 }
