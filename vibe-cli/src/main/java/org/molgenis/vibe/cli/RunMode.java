@@ -22,30 +22,30 @@ import java.util.Set;
 public enum RunMode {
     NONE("none") {
         @Override
-        protected void runMode() {
+        protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) {
             CommandLineOptionsParser.printHelpMessage();
         }
     }, GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES("Retrieves genes for input phenotypes and phenotypes associated to input phenotypes.") {
         @Override
-        protected void runMode() throws IOException {
-            PhenotypeNetworkCollection phenotypeNetworkCollection = retrieveAssociatedPhenotypes();
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(phenotypeNetworkCollection.getPhenotypes());
-            List<Gene> genePriority = orderGenes(geneDiseaseCollection);
-            writePrioritizedGenesOutput(geneDiseaseCollection, genePriority);
+        protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws IOException {
+            PhenotypeNetworkCollection phenotypeNetworkCollection = retrieveAssociatedPhenotypes(vibeOptions, stopwatch);
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(vibeOptions, stopwatch, phenotypeNetworkCollection.getPhenotypes());
+            List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
+            writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
-        protected void runMode() throws Exception {
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(retrieveInputPhenotypes());
-            List<Gene> genePriority = orderGenes(geneDiseaseCollection);
-            writePrioritizedGenesOutput(geneDiseaseCollection, genePriority);
+        protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws Exception {
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(vibeOptions, stopwatch, retrieveInputPhenotypes(vibeOptions));
+            List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
+            writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
     };
 
-    protected PhenotypeNetworkCollection retrieveAssociatedPhenotypes() {
+    private static PhenotypeNetworkCollection retrieveAssociatedPhenotypes(VibeOptions vibeOptions, Stopwatch stopwatch) {
         vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
 
-        resetTimer();
+        resetTimer(stopwatch);
         PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(
                 vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
                 vibeOptions.getOntologyMaxDistance());
@@ -53,48 +53,50 @@ public enum RunMode {
         try {
             return runner.call();
         } finally {
-            printElapsedTime();
+            printElapsedTime(vibeOptions, stopwatch);
             runner.close();
         }
     }
 
-    protected Set<Phenotype> retrieveInputPhenotypes() {
+    private static Set<Phenotype> retrieveInputPhenotypes(VibeOptions vibeOptions) {
         return vibeOptions.getPhenotypes();
     }
 
-    protected GeneDiseaseCollection retrieveDisgenetData(Set<Phenotype> phenotypes) throws IOException {
+    private static GeneDiseaseCollection retrieveDisgenetData(VibeOptions vibeOptions, Stopwatch stopwatch, Set<Phenotype> phenotypes) throws IOException {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");
 
-        resetTimer();
+        resetTimer(stopwatch);
         GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(
                 vibeOptions.getVibeTdb(), phenotypes);
 
         try {
             return runner.call();
         } finally {
-            printElapsedTime();
+            printElapsedTime(vibeOptions, stopwatch);
             runner.close();
         }
     }
 
-    protected List<Gene> orderGenes(GeneDiseaseCollection geneDiseaseCollection) {
+    private static List<Gene> orderGenes(VibeOptions vibeOptions, Stopwatch stopwatch, GeneDiseaseCollection geneDiseaseCollection) {
         vibeOptions.printVerbose("# Ordering genes based on priority.");
 
-        resetTimer();
+        resetTimer(stopwatch);
         GenePrioritizer prioritizer = new HighestSingleDisgenetScoreGenePrioritizer();
         List<Gene> genePriority = prioritizer.sort(geneDiseaseCollection);
-        printElapsedTime();
+        printElapsedTime(vibeOptions, stopwatch);
 
         return genePriority;
     }
 
-    protected void writePrioritizedGenesOutput(GeneDiseaseCollection geneDiseaseCollection, List<Gene> genePriority) throws IOException {
+    private static void writePrioritizedGenesOutput(VibeOptions vibeOptions, Stopwatch stopwatch,
+                                                    GeneDiseaseCollection geneDiseaseCollection,
+                                                    List<Gene> genePriority) throws IOException {
         vibeOptions.printVerbose("# Writing genes to " + vibeOptions.getOutputWriter().target());
 
-        resetTimer();
+        resetTimer(stopwatch);
         vibeOptions.getGenePrioritizedOutputFormatWriterFactory().create(vibeOptions.getOutputWriter(),
                 geneDiseaseCollection, genePriority).run();
-        printElapsedTime();
+        printElapsedTime(vibeOptions, stopwatch);
     }
 
     private VibeOptions vibeOptions;
@@ -109,7 +111,6 @@ public enum RunMode {
 
     RunMode(String description) {
         this.description = description;
-        stopwatch = Stopwatch.createStarted();
     }
 
     public final void run(VibeOptions vibeOptions) throws Exception {
@@ -118,18 +119,22 @@ public enum RunMode {
 
         // Prints the RunMode description if verbose.
         this.vibeOptions.printVerbose(getDescription());
+
+        // Starts stopwatch.
+        this.stopwatch = Stopwatch.createStarted();
+
         // Runs mode-specific code.
-        runMode();
+        runMode(vibeOptions, stopwatch);
     }
 
-    protected abstract void runMode() throws Exception;
+    protected abstract void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws Exception;
 
-    protected void resetTimer() {
+    private static void resetTimer(Stopwatch stopwatch) {
         stopwatch.reset();
         stopwatch.start();
     }
 
-    protected void printElapsedTime() {
+    private static void printElapsedTime(VibeOptions vibeOptions, Stopwatch stopwatch) {
         vibeOptions.printVerbose("Elapsed time: " + stopwatch.toString());
     }
 }
