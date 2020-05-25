@@ -13,11 +13,6 @@ import java.util.List;
 public class PhenotypesRetrievalRunnerIT {
     private static PhenotypesRetrievalRunner runner;
 
-    @AfterEach
-    public void afterEach() {
-        runner.close();
-    }
-
     @Test
     public void retrieveWithDistance0() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0001377"));
@@ -164,12 +159,11 @@ public class PhenotypesRetrievalRunnerIT {
     @Test
     public void retrieveWithNegativeDistance() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
+        int invalidMaxDistance = -1;
 
-        runner = new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
-                PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, 2);
-        int newMaxDistance = -1;
-
-        Exception exception = Assertions.assertThrows(InvalidParameterException.class, () -> runner.setMaxDistance(newMaxDistance) );
-        Assertions.assertEquals("maxDistance must be >= 0: " + newMaxDistance, exception.getMessage());
+        Exception exception = Assertions.assertThrows(InvalidParameterException.class, () ->
+                new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
+                        PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, invalidMaxDistance) );
+        Assertions.assertEquals("maxDistance must be >= 0: " + invalidMaxDistance, exception.getMessage());
     }
 }

@@ -22,11 +22,6 @@ import java.util.*;
 public class GeneDiseaseCollectionRetrievalRunnerIT {
     private static GeneDiseaseCollectionRetrievalRunner runner;
 
-    @AfterEach
-    public void afterEach() {
-        runner.close();
-    }
-
     @Test
     public void retrieveGeneDiseaseCollectionForHpo0008438() throws IOException {
         /**
