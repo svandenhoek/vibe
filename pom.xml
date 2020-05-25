@@ -2,6 +2,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.3.0.RELEASE</version>
+        <relativePath /> <!-- lookup parent from repository -->
+    </parent>
+
     <groupId>org.molgenis</groupId>
     <artifactId>vibe</artifactId>
     <version>4.0.0-SNAPSHOT</version>
@@ -48,9 +55,6 @@
         <hpo-owl.tag>v2019-11-08</hpo-owl.tag>
         <hpo-owl.download>https://raw.githubusercontent.com/obophenotype/human-phenotype-ontology/${hpo-owl.tag}/hp.owl</hpo-owl.download>
 
-        <!-- fix for: https://maven.apache.org/general.html#encoding-warning -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-
         <!-- authentication for release scm plugin -->
         <project.scm.id>github</project.scm.id>
 
@@ -83,14 +87,7 @@
         <jacoco.merged-test.outputDir>${project.reporting.outputDirectory}/jacoco-merged-test-coverage-report</jacoco.merged-test.outputDir>
 
         <!-- plugin versions -->
-        <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
-        <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
-        <maven-dependency-plugin.version>3.1.1</maven-dependency-plugin.version>
-        <maven-shade-plugin.version>3.2.1</maven-shade-plugin.version>
-        <dockerfile-maven-plugin.version>1.4.10</dockerfile-maven-plugin.version>
         <checksum-maven-plugin.version>1.8</checksum-maven-plugin.version>
-        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
-        <maven-failsafe-plugin.version>2.22.2</maven-failsafe-plugin.version>
         <sonar-maven-plugin.version>3.5.0.1254</sonar-maven-plugin.version>
         <jacoco-maven-plugin.version>0.8.2</jacoco-maven-plugin.version>
         <nexus-staging-maven-plugin.version>1.6.8</nexus-staging-maven-plugin.version>
@@ -98,11 +95,8 @@
         <pgp-maven-plugin.version>1.1</pgp-maven-plugin.version>
 
         <!-- dependency versions -->
-        <slf4j-nop.version>1.7.29</slf4j-nop.version>
         <apache-jena-libs.version>3.13.1</apache-jena-libs.version>
         <commons-cli.version>1.4</commons-cli.version>
-        <junit-jupiter.version>5.6.0</junit-jupiter.version>
-        <mockito.version>1.10.19</mockito.version>
     </properties>
 
     <distributionManagement>
@@ -119,36 +113,6 @@
     <build>
         <pluginManagement>
             <plugins>
-                <!-- define java version -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-compiler-plugin</artifactId>
-                    <version>${maven-compiler-plugin.version}</version>
-                    <configuration>
-                        <source>${java.version}</source>
-                        <target>${java.version}</target>
-                        <compilerArguments>
-                            <Xlint />
-                        </compilerArguments>
-                    </configuration>
-                </plugin>
-
-                <!-- create skinny jar -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-jar-plugin</artifactId>
-                    <version>${maven-jar-plugin.version}</version>
-                    <configuration>
-                        <archive>
-                            <manifest>
-                                <addDefaultImplementationEntries>
-                                    true
-                                </addDefaultImplementationEntries>
-                            </manifest>
-                        </archive>
-                    </configuration>
-                </plugin>
-
                 <!-- checksum creation -->
                 <plugin>
                     <groupId>net.nicoulaj.maven.plugins</groupId>
@@ -171,27 +135,6 @@
                         <!-- dir for individual files -->
                         <individualFilesOutputDirectory>checksums</individualFilesOutputDirectory>
                     </configuration>
-                </plugin>
-
-                <!-- unit testing -->
-                <plugin>
-                    <artifactId>maven-surefire-plugin</artifactId>
-                    <version>${maven-surefire-plugin.version}</version>
-                </plugin>
-
-                <!-- integration testing -->
-                <plugin>
-                    <groupId>org.apache.maven.plugins</groupId>
-                    <artifactId>maven-failsafe-plugin</artifactId>
-                    <version>${maven-failsafe-plugin.version}</version>
-                    <executions>
-                        <execution>
-                            <goals>
-                                <goal>integration-test</goal>
-                                <goal>verify</goal>
-                            </goals>
-                        </execution>
-                    </executions>
                 </plugin>
 
                 <!-- integrates SonarQube -->
@@ -332,23 +275,10 @@
 
     <dependencyManagement>
         <dependencies>
-            <!-- Disables 'SLF4J: Failed to load class "org.slf4j.impl.StaticLoggerBinder".' warnings, see: https://www.slf4j.org/codes.html#StaticLoggerBinder -->
-            <dependency>
-                <groupId>org.slf4j</groupId>
-                <artifactId>slf4j-nop</artifactId>
-                <version>${slf4j-nop.version}</version>
-            </dependency>
-
             <dependency>
                 <groupId>org.apache.jena</groupId>
                 <artifactId>apache-jena-libs</artifactId>
                 <version>${apache-jena-libs.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>org.slf4j</groupId>
-                        <artifactId>slf4j-api</artifactId>
-                    </exclusion>
-                </exclusions>
                 <type>pom</type>
             </dependency>
 
@@ -359,28 +289,9 @@
             </dependency>
 
             <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-api</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-engine</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.junit.jupiter</groupId>
-                <artifactId>junit-jupiter-params</artifactId>
-                <version>${junit-jupiter.version}</version>
-                <scope>test</scope>
-            </dependency>
-            <dependency>
-                <groupId>org.mockito</groupId>
-                <artifactId>mockito-all</artifactId>
-                <version>${mockito.version}</version>
-                <scope>test</scope>
+                <groupId>org.molgenis</groupId>
+                <artifactId>vibe-core</artifactId>
+                <version>${project.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
