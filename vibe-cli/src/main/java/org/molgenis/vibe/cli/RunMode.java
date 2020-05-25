@@ -46,16 +46,12 @@ public enum RunMode {
         vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
 
         resetTimer(stopwatch);
-        PhenotypesRetrievalRunner runner = new PhenotypesRetrievalRunner(
-                vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(), vibeOptions.getPhenotypes(),
-                vibeOptions.getOntologyMaxDistance());
+        PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypesRetrievalRunner(
+                vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(),
+                vibeOptions.getPhenotypes(), vibeOptions.getOntologyMaxDistance()).call();
+        printElapsedTime(vibeOptions, stopwatch);
 
-        try {
-            return runner.call();
-        } finally {
-            printElapsedTime(vibeOptions, stopwatch);
-            runner.close();
-        }
+        return phenotypeNetworkCollection;
     }
 
     private static Set<Phenotype> retrieveInputPhenotypes(VibeOptions vibeOptions) {
@@ -66,15 +62,11 @@ public enum RunMode {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");
 
         resetTimer(stopwatch);
-        GeneDiseaseCollectionRetrievalRunner runner = new GeneDiseaseCollectionRetrievalRunner(
-                vibeOptions.getVibeTdb(), phenotypes);
+        GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollectionRetrievalRunner(
+                vibeOptions.getVibeTdb(), phenotypes).call();
+        printElapsedTime(vibeOptions, stopwatch);
 
-        try {
-            return runner.call();
-        } finally {
-            printElapsedTime(vibeOptions, stopwatch);
-            runner.close();
-        }
+        return geneDiseaseCollection;
     }
 
     private static List<Gene> orderGenes(VibeOptions vibeOptions, Stopwatch stopwatch, GeneDiseaseCollection geneDiseaseCollection) {
