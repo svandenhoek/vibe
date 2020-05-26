@@ -10,12 +10,8 @@
     <artifactId>vibe-cli</artifactId>
     <packaging>jar</packaging>
 
-    <properties>
-        <!-- fat jar name -->
-        <jar.fat>vibe-with-dependencies-${project.version}</jar.fat>
-    </properties>
-
     <build>
+        <finalName>vibe-with-dependencies-${project.version}</finalName>
         <testResources>
             <testResource>
                 <directory>src/test/resources</directory>
@@ -60,12 +56,6 @@
                                 <!-- prevents only single notice being presents and generates an overarching one instead -->
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ApacheNoticeResourceTransformer" />
                             </transformers>
-                            <!-- file name of shaded jar -->
-                            <finalName>${jar.fat}</finalName>
-                            <!-- can be used instead of finalName to generate artifact with name submodule + postfix-->
-<!--                            <shadedClassifierName>with-dependencies</shadedClassifierName>-->
-                            <!-- due to finalname original artifact is treated as main artifact, this ensure both get a checksum -->
-                            <shadedArtifactAttached>true</shadedArtifactAttached>
                         </configuration>
                     </execution>
                 </executions>

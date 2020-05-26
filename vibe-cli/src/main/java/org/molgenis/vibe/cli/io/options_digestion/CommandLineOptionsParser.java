@@ -3,6 +3,7 @@ package org.molgenis.vibe.cli.io.options_digestion;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.cli.RunMode;
+import org.molgenis.vibe.cli.properties.VibeProperties;
 import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.cli.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
@@ -133,7 +134,7 @@ public abstract class CommandLineOptionsParser {
     public static void printHelpMessage() {
         String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> -w <FILE> [-n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
-        String helpFooter = "Molgenis VIBE";
+        String helpFooter = VibeProperties.APP_NAME.getValue() + " v" + VibeProperties.APP_VERSION.getValue();
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(80, cmdSyntax, helpHeader, options, helpFooter, false);
