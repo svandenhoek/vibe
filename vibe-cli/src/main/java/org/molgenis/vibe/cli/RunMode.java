@@ -3,7 +3,6 @@ package org.molgenis.vibe.cli;
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
 import org.molgenis.vibe.core.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.core.PhenotypesRetrievalRunner;
-import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
 import org.molgenis.vibe.core.formats.Gene;
 import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
@@ -23,7 +22,6 @@ public enum RunMode {
     NONE("none") {
         @Override
         protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) {
-            CommandLineOptionsParser.printHelpMessage();
         }
     }, GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES("Retrieves genes for input phenotypes and phenotypes associated to input phenotypes.") {
         @Override

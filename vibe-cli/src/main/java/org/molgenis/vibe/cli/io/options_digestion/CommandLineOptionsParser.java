@@ -68,8 +68,18 @@ public abstract class CommandLineOptionsParser {
                 .build());
 
         options.addOption(Option.builder("v")
-                .longOpt("verbose")
-                .desc("Shows text indicating the processes that are being done.")
+                .longOpt("version")
+                .desc("Shows the application version.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("debug")
+                .desc("Shows debug information.")
+                .build());
+
+        options.addOption(Option.builder("f")
+                .longOpt("force")
+                .desc("Overwrite output file if it already exists.")
                 .build());
 
         options.addOption(Option.builder("p")
@@ -132,12 +142,16 @@ public abstract class CommandLineOptionsParser {
      * Prints the help message to stdout.
      */
     public static void printHelpMessage() {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> -w <FILE> [-n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] [-d] [-f] -t <FILE> -w <FILE> [-n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
         String helpFooter = VibeProperties.APP_NAME.getValue() + " v" + VibeProperties.APP_VERSION.getValue();
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(80, cmdSyntax, helpHeader, options, helpFooter, false);
+    }
+
+    public static void printVersion() {
+        System.out.println(VibeProperties.APP_VERSION.getValue());
     }
 
     /**
@@ -179,6 +193,14 @@ public abstract class CommandLineOptionsParser {
         // OPTIONAL: Help message.
         if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
             vibeOptions.setRunMode(RunMode.NONE);
+            printHelpMessage();
+            return; // IMPORTANT: Does not process any other arguments from this point.
+        }
+
+        // OPTIONAL: version
+        if(commandLine.hasOption("v")) {
+            vibeOptions.setRunMode(RunMode.NONE);
+            printVersion();
             return; // IMPORTANT: Does not process any other arguments from this point.
         }
 
@@ -186,7 +208,7 @@ public abstract class CommandLineOptionsParser {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
 
         // OPTIONAL: Verbose
-        if(commandLine.hasOption("v")) {
+        if(commandLine.hasOption("d")) {
             vibeOptions.setVerbose(true);
         }
 
@@ -250,7 +272,11 @@ public abstract class CommandLineOptionsParser {
         // If given, sets output file. Otherwise writes to stdout.
         if(commandLine.hasOption("o")) {
             try {
-                vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
+                if(commandLine.hasOption("f")) {
+                    vibeOptions.setFileOutputWriterForced(commandLine.getOptionValue("o"));
+                } else {
+                    vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
+                }
             } catch(InvalidPathException | FileAlreadyExistsException e) {
                 errors.add(e.getMessage());
             }
