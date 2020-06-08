@@ -6,7 +6,7 @@ import java.util.Comparator;
 import static java.util.Objects.requireNonNull;
 
 public class PubmedEvidence extends Evidence {
-    private static final String ID_PREFIX = "pmid:";
+    public static final String ID_PREFIX = "pmid:";
     private static final String ID_REGEX = "^(pmid|PMID):([0-9]+)$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://identifiers.org/pubmed/";
