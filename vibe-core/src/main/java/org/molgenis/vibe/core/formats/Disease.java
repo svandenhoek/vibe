@@ -10,7 +10,7 @@ import java.net.URI;
  * Unified Medical Language System (UMLS).
  */
 public class Disease extends BiologicalEntity {
-    public static final String ID_PREFIX = "umls:";
+    public static final String ID_PREFIX = "umls";
     private static final String ID_REGEX = "^(umls|UMLS):(C[0-9]{7})$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://linkedlifedata.com/resource/umls/id/";

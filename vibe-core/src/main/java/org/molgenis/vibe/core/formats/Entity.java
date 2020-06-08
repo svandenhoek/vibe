@@ -68,7 +68,7 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
      * @return the {@link Entity} ID with prefix.
      */
     public String getFormattedId() {
-        return getIdPrefix() + id;
+        return getIdPrefix() + ":" + id;
     }
 
     public String getName() {

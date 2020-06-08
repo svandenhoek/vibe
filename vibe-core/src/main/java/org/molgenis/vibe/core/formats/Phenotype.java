@@ -6,7 +6,7 @@ import java.net.URI;
  * Defines a phenotype.
  */
 public class Phenotype extends BiologicalEntity {
-    public static final String ID_PREFIX = "hp:";
+    public static final String ID_PREFIX = "hp";
     private static final String ID_REGEX = "^(hp|HP):([0-9]{7})$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://purl.obolibrary.org/obo/HP_";
