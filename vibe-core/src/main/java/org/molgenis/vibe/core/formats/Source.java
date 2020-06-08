@@ -57,14 +57,6 @@ public class Source implements ResourceUri {
     }
 
     /**
-     * Simple constructor allowing for easy comparison of collections.
-     * @param uri
-     */
-    public Source(URI uri) {
-        this.uri = requireNonNull(uri);
-    }
-
-    /**
      * A constructor for describing a source with an {@link URI} id from an RDF database.
      * @param uri
      * @param name
@@ -128,6 +120,10 @@ public class Source implements ResourceUri {
          * How the {@link Level} is identified within the DisGeNET database.
          */
         private String disgenetVoidUri;
+
+        public String getReadableString() {
+            return readableString;
+        }
 
         Level(String readableString, String disgenetVoidUriEnd) {
             this.readableString = readableString;

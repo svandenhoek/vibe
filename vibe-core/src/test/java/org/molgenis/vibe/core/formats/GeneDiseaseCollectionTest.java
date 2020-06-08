@@ -38,8 +38,8 @@ public class GeneDiseaseCollectionTest {
         };
 
         sources = new Source[]{
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET")),
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"))
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"), "Orphanet", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "Befree", Source.Level.LITERATURE)
         };
     }
 

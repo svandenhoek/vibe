@@ -13,8 +13,8 @@ public class GeneDiseaseCombinationTest {
     private Disease disease2 = new Disease("umls:C1234567");
     private double score1 = 0.42;
     private double score2 = 0.24;
-    private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"));
-    private Source source2 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"));
+    private Source source1 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"), "Orphanet", Source.Level.CURATED);
+    private Source source2 = new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "Befree", Source.Level.LITERATURE);
     private int year1 = 2000;
     private int year2 = 2020;
 
