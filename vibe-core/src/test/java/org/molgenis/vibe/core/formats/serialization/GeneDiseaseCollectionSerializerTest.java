@@ -2,7 +2,6 @@ package org.molgenis.vibe.core.formats.serialization;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.google.gson.JsonElement;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
@@ -27,14 +26,16 @@ public class GeneDiseaseCollectionSerializerTest {
         };
 
         diseases = new Disease[]{
-                new Disease("umls:C1111111"),
-                new Disease("umls:C2222222"),
+                new Disease("umls:C1111111", "a disease name"),
+                new Disease("umls:C2222222", "another disease name"),
+                new Disease("umls:C3333333", "yet another disease")
         };
 
         gdcs = new GeneDiseaseCombination[]{
-                new GeneDiseaseCombination(genes[0], diseases[0], 0.5), // no evidence
+                new GeneDiseaseCombination(genes[0], diseases[0], 0.5), // only counts
                 new GeneDiseaseCombination(genes[0], diseases[1], 0.3), // only counts
-                new GeneDiseaseCombination(genes[1], diseases[1], 0.6) // includes pubmeds
+                new GeneDiseaseCombination(genes[1], diseases[1], 0.6), // includes pubmeds
+                new GeneDiseaseCombination(genes[1], diseases[2], 0.3) // only counts
         };
 
         sources = new Source[]{
@@ -42,10 +43,15 @@ public class GeneDiseaseCollectionSerializerTest {
                 new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "Befree", Source.Level.LITERATURE)
         };
 
+        // Adds counts.
+        gdcs[0].add(sources[0]);
         gdcs[1].add(sources[0]);
+        gdcs[3].add(sources[0]);
 
+        // Adds pubmed sources.
         gdcs[2].add(sources[0]);
         gdcs[2].add(sources[1], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), 2000));
+        gdcs[2].add(sources[1], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), 2001));
         gdcs[2].add(sources[1], new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), 2001));
 
         GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
@@ -65,75 +71,111 @@ public class GeneDiseaseCollectionSerializerTest {
         collection.addAll(Arrays.asList(gdcs));
         String actualOutput = gson.toJson(collection);
 
-        // ### Json arrays ordering ###
-        // gene-disease combinations: gene (first), disease (second)
-        // sources: name
-        // pubmed evidence: year (descending)
-        String expectedOutput = "[\n" +
-                "  {\n" +
-                "    \"gene\": {\n" +
-                "      \"id\": \"ncbigene:1111111\",\n" +
-                "      \"symbol\": \"hgnc:AAA\"\n" +
-                "    },\n" +
-                "    \"disease\": {\n" +
-                "      \"id\": \"umls:C1111111\"\n" +
-                "    },\n" +
-                "    \"disgenet-score\": 0.5,\n" +
-                "    \"sources\": []\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"gene\": {\n" +
-                "      \"id\": \"ncbigene:1111111\",\n" +
-                "      \"symbol\": \"hgnc:AAA\"\n" +
-                "    },\n" +
-                "    \"disease\": {\n" +
-                "      \"id\": \"umls:C2222222\"\n" +
-                "    },\n" +
-                "    \"disgenet-score\": 0.3,\n" +
-                "    \"sources\": [\n" +
-                "      {\n" +
-                "        \"id\": \"Orphanet\",\n" +
-                "        \"type\": \"curated\",\n" +
-                "        \"evidence-count\": 1,\n" +
-                "        \"pubmed\": []\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  },\n" +
-                "  {\n" +
-                "    \"gene\": {\n" +
-                "      \"id\": \"ncbigene:2222222\",\n" +
-                "      \"symbol\": \"hgnc:BBB\"\n" +
-                "    },\n" +
-                "    \"disease\": {\n" +
-                "      \"id\": \"umls:C2222222\"\n" +
-                "    },\n" +
-                "    \"disgenet-score\": 0.6,\n" +
-                "    \"sources\": [\n" +
-                "      {\n" +
-                "        \"id\": \"Befree\",\n" +
-                "        \"type\": \"literature\",\n" +
-                "        \"evidence-count\": 2,\n" +
-                "        \"pubmed\": [\n" +
-                "          {\n" +
-                "            \"uri\": \"http://identifiers.org/pubmed/2\",\n" +
-                "            \"release-year\": 2001\n" +
-                "          },\n" +
-                "          {\n" +
-                "            \"uri\": \"http://identifiers.org/pubmed/1\",\n" +
-                "            \"release-year\": 2000\n" +
-                "          }\n" +
-                "        ]\n" +
-                "      },\n" +
-                "      {\n" +
-                "        \"id\": \"Orphanet\",\n" +
-                "        \"type\": \"curated\",\n" +
-                "        \"evidence-count\": 1,\n" +
-                "        \"pubmed\": []\n" +
-                "      }\n" +
-                "    ]\n" +
-                "  }\n" +
-                "]";
+        // ### Json combinations arrays ordering (integer means ordered as integer, not necessarily output is integer) ###
+        // gene-disease combinations: gene (integer, ascending), disease (string, ascending)
+        // sources: name (string, ascending)
+        // pubmed evidence: year (integer, descending) -> id (integer, ascending)
 
+        // ncbigene, umls & sources JsonObjects were not ordered to reduce required processing power (Set -> List -> sort() ).
+        String expectedOutput = "{\n" +
+                "  \"combinations\": [\n" +
+                "    {\n" +
+                "      \"ncbigene\": \"1111111\",\n" +
+                "      \"umls\": \"C1111111\",\n" +
+                "      \"score\": 0.5,\n" +
+                "      \"sources\": [\n" +
+                "        {\n" +
+                "          \"name\": \"Orphanet\",\n" +
+                "          \"count\": 1,\n" +
+                "          \"pubmed\": []\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"ncbigene\": \"1111111\",\n" +
+                "      \"umls\": \"C2222222\",\n" +
+                "      \"score\": 0.3,\n" +
+                "      \"sources\": [\n" +
+                "        {\n" +
+                "          \"name\": \"Orphanet\",\n" +
+                "          \"count\": 1,\n" +
+                "          \"pubmed\": []\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"ncbigene\": \"2222222\",\n" +
+                "      \"umls\": \"C2222222\",\n" +
+                "      \"score\": 0.6,\n" +
+                "      \"sources\": [\n" +
+                "        {\n" +
+                "          \"name\": \"Befree\",\n" +
+                "          \"count\": 3,\n" +
+                "          \"pubmed\": [\n" +
+                "            {\n" +
+                "              \"uri\": \"http://identifiers.org/pubmed/2\",\n" +
+                "              \"year\": 2001\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"uri\": \"http://identifiers.org/pubmed/3\",\n" +
+                "              \"year\": 2001\n" +
+                "            },\n" +
+                "            {\n" +
+                "              \"uri\": \"http://identifiers.org/pubmed/1\",\n" +
+                "              \"year\": 2000\n" +
+                "            }\n" +
+                "          ]\n" +
+                "        },\n" +
+                "        {\n" +
+                "          \"name\": \"Orphanet\",\n" +
+                "          \"count\": 1,\n" +
+                "          \"pubmed\": []\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    },\n" +
+                "    {\n" +
+                "      \"ncbigene\": \"2222222\",\n" +
+                "      \"umls\": \"C3333333\",\n" +
+                "      \"score\": 0.3,\n" +
+                "      \"sources\": [\n" +
+                "        {\n" +
+                "          \"name\": \"Orphanet\",\n" +
+                "          \"count\": 1,\n" +
+                "          \"pubmed\": []\n" +
+                "        }\n" +
+                "      ]\n" +
+                "    }\n" +
+                "  ],\n" +
+                "  \"ncbigene\": {\n" +
+                "    \"1111111\": {\n" +
+                "      \"hgnc\": \"AAA\"\n" +
+                "    },\n" +
+                "    \"2222222\": {\n" +
+                "      \"hgnc\": \"BBB\"\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"umls\": {\n" +
+                "    \"C2222222\": {\n" +
+                "      \"name\": \"another disease name\"\n" +
+                "    },\n" +
+                "    \"C3333333\": {\n" +
+                "      \"name\": \"yet another disease\"\n" +
+                "    },\n" +
+                "    \"C1111111\": {\n" +
+                "      \"name\": \"a disease name\"\n" +
+                "    }\n" +
+                "  },\n" +
+                "  \"sources\": {\n" +
+                "    \"Orphanet\": {\n" +
+                "      \"level\": \"curated\"\n" +
+                "    },\n" +
+                "    \"Befree\": {\n" +
+                "      \"level\": \"literature\"\n" +
+                "    }\n" +
+                "  }\n" +
+                "}";
+
+        System.out.println(actualOutput);
         Assertions.assertEquals(expectedOutput, actualOutput);
     }
 
