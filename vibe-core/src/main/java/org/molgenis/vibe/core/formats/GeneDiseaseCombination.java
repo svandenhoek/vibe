@@ -89,12 +89,41 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * The {@link PubmedEvidence} for the defined {@link Source}.
+     * @param source
+     * @return a {@link List} ordered through {@link PubmedEvidence#releaseYearComparator} containing
+     * {@link PubmedEvidence}, or {@code null} if {@link Source} does not have any evidence
+     */
+    public List<PubmedEvidence> getPubmedEvidenceForSourceSortedByReleaseDate(Source source) {
+        Set<PubmedEvidence> evidence = pubmedEvidence.get(source);
+        if (evidence != null) {
+            List<PubmedEvidence> evidenceList = new ArrayList<>();
+            evidenceList.addAll(evidence);
+            Collections.sort(evidenceList, PubmedEvidence.releaseYearComparator);
+            return evidenceList;
+        }
+        return null;
+    }
+
+    /**
      * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
      * @return a {@link Set} containing all the {@link PubmedEvidence}
      */
     public Set<PubmedEvidence> getAllPubmedEvidence() {
         Set<PubmedEvidence> evidence = new HashSet<>();
         pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        return evidence;
+    }
+
+    /**
+     * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
+     * @return a {@link List} containing all the {@link PubmedEvidence} ordered through
+     * {@link PubmedEvidence#releaseYearComparator}
+     */
+    public List<PubmedEvidence> getAllPubMedEvidenceSortedByYear() {
+        List<PubmedEvidence> evidence = new ArrayList<>();
+        pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        Collections.sort(evidence, PubmedEvidence.releaseYearComparator);
         return evidence;
     }
 

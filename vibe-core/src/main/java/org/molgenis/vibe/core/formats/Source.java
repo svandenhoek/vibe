@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * be that big, but from a design perspective these are treated as different @{@link Source}{@code s}, though in practice
  * it might be the same source (or even the same version of that source).
  */
-public class Source implements ResourceUri {
+public class Source implements ResourceUri, Comparable<Source> {
     /**
      * The name of the {@link Source}.
      */
@@ -101,6 +101,11 @@ public class Source implements ResourceUri {
     @Override
     public int hashCode() {
         return Objects.hash(uri);
+    }
+
+    @Override
+    public int compareTo(Source o) {
+        return getFullName().compareTo(o.getFullName());
     }
 
     /**

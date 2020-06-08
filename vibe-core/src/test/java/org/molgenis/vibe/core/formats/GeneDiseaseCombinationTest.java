@@ -230,4 +230,41 @@ public class GeneDiseaseCombinationTest {
             () -> Assertions.assertFalse(geneDiseaseCombo1.allFieldsEquals(geneDiseaseCombo2))
         );
     }
+
+    @Test
+    public void testRetrievalYearOrderedPubmedEvidenceForSource() {
+        List<PubmedEvidence> expectedList = new ArrayList<>();
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), year2)); // most recent first
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)); // same year -> lowest number first
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), year1));
+
+        // Adding order should not matter as stored using Set.
+        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
+        geneDiseaseCombo.add(source1, expectedList.get(1));
+        geneDiseaseCombo.add(source1, expectedList.get(2));
+        geneDiseaseCombo.add(source1, expectedList.get(0));
+
+        Assertions.assertEquals(geneDiseaseCombo.getPubmedEvidenceForSourceSortedByReleaseDate(source1),
+                expectedList);
+    }
+
+    @Test
+    public void testRetrievalYearOrderedPubmedEvidence() {
+        List<PubmedEvidence> expectedList = new ArrayList<>();
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/4"), year2)); // most recent first
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)); // same year -> lowest number first
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), year1));
+        expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), year1));
+
+        // Adding order should not matter as stored using Set.
+        // Source should not matter when retrieving all results.
+        GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
+        geneDiseaseCombo.add(source1, expectedList.get(3));
+        geneDiseaseCombo.add(source2, expectedList.get(1));
+        geneDiseaseCombo.add(source2, expectedList.get(2));
+        geneDiseaseCombo.add(source1, expectedList.get(0));
+
+        Assertions.assertEquals(geneDiseaseCombo.getAllPubMedEvidenceSortedByYear(),
+                expectedList);
+    }
 }
