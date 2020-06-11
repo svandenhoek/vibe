@@ -6,17 +6,17 @@ import org.molgenis.vibe.core.formats.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDiseaseCollection> {
+public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJson implements JsonSerializer<GeneDiseaseCollection> {
     @Override
     public JsonElement serialize(GeneDiseaseCollection src, Type typeOfSrc, JsonSerializationContext context) {
         Set<Source> sources = new HashSet<>();
 
         // Object to store all data into.
         JsonObject collectionObject = new JsonObject();
-        collectionObject.add("combinations", generateGeneDiseaseCombinationsArray(src, sources));
-        collectionObject.add(Gene.ID_PREFIX, generateGenesData(src));
-        collectionObject.add(Disease.ID_PREFIX, generateDiseaseData(src));
-        collectionObject.add("sources", generateSourcesData(sources));
+        collectionObject.add(COMBINATIONS_KEY, generateGeneDiseaseCombinationsArray(src, sources));
+        collectionObject.add(GENES_KEY, generateGenesData(src));
+        collectionObject.add(DISEASES_KEY, generateDiseaseData(src));
+        collectionObject.add(SOURCES_KEY, generateSourcesData(sources));
         return collectionObject;
     }
 
@@ -37,13 +37,13 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
             JsonObject combinationObject = new JsonObject();
 
             // Adds gene.
-            combinationObject.addProperty(Gene.ID_PREFIX, gdc.getGene().getId());
+            combinationObject.addProperty(COMBINATION_GENE_KEY, gdc.getGene().getId());
 
             // Adds disease.
-            combinationObject.addProperty(Disease.ID_PREFIX, gdc.getDisease().getId());
+            combinationObject.addProperty(COMBINATION_DISEASE_KEY, gdc.getDisease().getId());
 
             // Adds score.
-            combinationObject.addProperty("score", gdc.getDisgenetScore());
+            combinationObject.addProperty(COMBINATION_DISGENET_SCORE_KEY, gdc.getDisgenetScore());
 
             // Adds sources.
             JsonArray evidenceArray = new JsonArray();
@@ -60,8 +60,8 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
 
                 // sources: Digest source basic data.
                 JsonObject evidenceItemObject = new JsonObject();
-                evidenceItemObject.addProperty("name", source.getName());
-                evidenceItemObject.addProperty("count", gdc.getCountForSource(source));
+                evidenceItemObject.addProperty(COMBINATION_SOURCE_NAME_KEY, source.getName());
+                evidenceItemObject.addProperty(COMBINATION_SOURCE_COUNT_KEY, gdc.getCountForSource(source));
 
                 // sources: Adds pubmed evidence (empty array if no pubmed evidence).
                 JsonArray pubmedEvidenceArray = new JsonArray();
@@ -70,19 +70,19 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
                 if(evidenceList != null) {
                     for (PubmedEvidence pubmedEvidence : evidenceList) {
                         JsonObject pubmedEvidenceObject = new JsonObject();
-                        pubmedEvidenceObject.addProperty("uri", pubmedEvidence.getUri().toString());
-                        pubmedEvidenceObject.addProperty("year", pubmedEvidence.getReleaseYear());
+                        pubmedEvidenceObject.addProperty(COMBINATION_SOURCE_PUBMED_URI_KEY, pubmedEvidence.getUri().toString());
+                        pubmedEvidenceObject.addProperty(COMBINATION_SOURCE_PUBMED_YEAR_KEY, pubmedEvidence.getReleaseYear());
                         pubmedEvidenceArray.add(pubmedEvidenceObject);
                     }
                 }
-                evidenceItemObject.add("pubmed", pubmedEvidenceArray);
+                evidenceItemObject.add(COMBINATION_SOURCE_PUBMEDS_KEY, pubmedEvidenceArray);
 
                 // sources: Adds evidence from single source to array.
                 evidenceArray.add(evidenceItemObject);
             }
 
             // Evidence: Adds array of evidence to combination.
-            combinationObject.add("sources", evidenceArray);
+            combinationObject.add(COMBINATION_SOURCES_KEY, evidenceArray);
 
             // Adds a single gene-disease combination to the array.
             combinationsArray.add(combinationObject);
@@ -102,7 +102,7 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
         // Processes items into JsonObject.
         for(Gene gene : src.getGenes()) {
             JsonObject singleGeneObject = new JsonObject();
-            singleGeneObject.addProperty(GeneSymbol.ID_PREFIX, gene.getSymbol().getId());
+            singleGeneObject.addProperty(GENE_SYMBOL_KEY, gene.getSymbol().getId());
             genesObject.add(gene.getId(), singleGeneObject);
         }
 
@@ -120,7 +120,7 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
         // Processes items into JsonObject.
         for(Disease disease : src.getDiseases()) {
             JsonObject singleDiseaseObject = new JsonObject();
-            singleDiseaseObject.addProperty("name", disease.getName());
+            singleDiseaseObject.addProperty(DISEASE_NAME_KEY, disease.getName());
             diseasesObject.add(disease.getId(), singleDiseaseObject);
         }
 
@@ -139,7 +139,9 @@ public class GeneDiseaseCollectionSerializer implements JsonSerializer<GeneDisea
         // Processes items into JsonObject.
         for(Source source : sourcesSet) {
             JsonObject singleSourceObject = new JsonObject();
-            singleSourceObject.addProperty("level", source.getLevel().getReadableString());
+            singleSourceObject.addProperty(SOURCE_LEVEL_KEY, source.getLevel().getReadableString());
+            singleSourceObject.addProperty(SOURCE_FULL_NAME_KEY, source.getFullName());
+            singleSourceObject.addProperty(SOURCE_URI_KEY, source.getUri().toString());
             sourcesObject.add(source.getName(), singleSourceObject);
         }
 
