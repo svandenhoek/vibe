@@ -167,6 +167,27 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         }
     }
 
+    /**
+     * Set {@code count} for a {@link Source}. To prevent wrongly setting information,
+     * incrementing through {@link #add(Source)} is suggested instead.
+     * @param source the {@link Source} for which the count should be set
+     * @param count the new value for that {@link Source}
+     */
+    void setSourceCount(Source source, int count) {
+        sourcesCount.put(source, count);
+    }
+
+    /**
+     * Set all {@link PubmedEvidence} for {@link Source}. Note that this method does NOT increment evidence count!
+     * To prevent wrongly setting information, adding {@link PubmedEvidence} through
+     * {@link #add(Source, PubmedEvidence)} is suggested instead.
+     * @param source the {@link Source} for which the {@link PubmedEvidence} should be set
+     * @param evidence a {@link Set} containing all {@link PubmedEvidence} for that {@link Source}
+     */
+    void setPubmedEvidenceForSource(Source source, Set<PubmedEvidence> evidence) {
+        pubmedEvidence.put(source, evidence);
+    }
+
     @Override
     public String toString() {
         return "GeneDiseaseCombination{" +
