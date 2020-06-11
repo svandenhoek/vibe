@@ -26,7 +26,7 @@ public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJson i
      *                   combinations
      * @return the {@link GeneDiseaseCombination}{@code s} present in the {@link GeneDiseaseCollection} as {@link JsonArray}
      */
-    private JsonArray generateGeneDiseaseCombinationsArray(GeneDiseaseCollection src, Set allSources) {
+    private JsonArray generateGeneDiseaseCombinationsArray(GeneDiseaseCollection src, Set<Source> allSources) {
         // Array to store all gene-disease combinations in.
         JsonArray combinationsArray = new JsonArray();
 
