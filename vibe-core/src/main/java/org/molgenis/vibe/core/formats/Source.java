@@ -77,7 +77,7 @@ public class Source implements ResourceUri, Comparable<Source> {
      */
     public Source(URI uri, String name, String level) throws InvalidStringFormatException {
         this.name = requireNonNull(name);
-        this.level = Level.retrieveLevelByDisgenetVoidString(level);
+        this.level = Level.retrieveLevelByString(level);
         this.uri = requireNonNull(uri);
     }
 
@@ -141,7 +141,7 @@ public class Source implements ResourceUri, Comparable<Source> {
          * @return a {@link Level} belonging to the {@code levelString}
          * @throws InvalidStringFormatException if no {@link Level} could be defined from the {@code levelString}
          */
-        public static Level retrieveLevelByDisgenetVoidString(String levelString) throws InvalidStringFormatException {
+        public static Level retrieveLevelByString(String levelString) throws InvalidStringFormatException {
             levelString = levelString.toLowerCase();
 
             for(Level level : Level.values()) {
