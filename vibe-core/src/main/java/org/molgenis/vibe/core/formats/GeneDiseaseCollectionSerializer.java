@@ -5,7 +5,7 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
-public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJson implements JsonSerializer<GeneDiseaseCollection> {
+public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJsonSerialization implements JsonSerializer<GeneDiseaseCollection> {
     @Override
     public JsonElement serialize(GeneDiseaseCollection src, Type typeOfSrc, JsonSerializationContext context) {
         Set<Source> sources = new HashSet<>();

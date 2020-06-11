@@ -1,6 +1,6 @@
 package org.molgenis.vibe.core.formats;
 
-public class GeneDiseaseCollectionJson {
+public abstract class GeneDiseaseCollectionJsonSerialization {
     // Primary key for all combinations.
     protected static final String COMBINATIONS_KEY = "combinations";
     protected static final String COMBINATION_GENE_KEY = Gene.ID_PREFIX;

@@ -6,7 +6,7 @@ import java.lang.reflect.Type;
 import java.net.URI;
 import java.util.*;
 
-public class GeneDiseaseCollectionDeserializer extends GeneDiseaseCollectionJson implements JsonDeserializer<GeneDiseaseCollection> {
+public class GeneDiseaseCollectionDeserializer extends GeneDiseaseCollectionJsonSerialization implements JsonDeserializer<GeneDiseaseCollection> {
     @Override
     public GeneDiseaseCollection deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
         JsonObject collectionObject = json.getAsJsonObject();
