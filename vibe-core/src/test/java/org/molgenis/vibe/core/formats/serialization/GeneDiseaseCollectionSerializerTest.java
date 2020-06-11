@@ -178,7 +178,7 @@ public class GeneDiseaseCollectionSerializerTest {
                 "    }\n" +
                 "  }\n" +
                 "}";
-        
+
         Assertions.assertEquals(expectedOutput, actualOutput);
     }
 
