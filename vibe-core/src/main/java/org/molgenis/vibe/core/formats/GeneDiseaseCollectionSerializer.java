@@ -138,9 +138,9 @@ public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJson i
         // Processes items into JsonObject.
         for(Source source : sourcesSet) {
             JsonObject singleSourceObject = new JsonObject();
-            singleSourceObject.addProperty(SOURCE_LEVEL_KEY, source.getLevel().getReadableString());
             singleSourceObject.addProperty(SOURCE_FULL_NAME_KEY, source.getFullName());
             singleSourceObject.addProperty(SOURCE_URI_KEY, source.getUri().toString());
+            singleSourceObject.addProperty(SOURCE_LEVEL_KEY, source.getLevel().getReadableString());
             sourcesObject.add(source.getName(), singleSourceObject);
         }
 
