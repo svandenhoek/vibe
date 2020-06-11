@@ -150,7 +150,7 @@ public class Source implements ResourceUri, Comparable<Source> {
                     return level;
                 }
             }
-            throw new InvalidStringFormatException("Could not generate a Source.Level from given String");
+            throw new InvalidStringFormatException("Could not generate a Source.Level from given String: " + levelString);
         }
     }
 }
