@@ -1,8 +1,4 @@
-package org.molgenis.vibe.core.formats.serialization;
-
-import org.molgenis.vibe.core.formats.Disease;
-import org.molgenis.vibe.core.formats.Gene;
-import org.molgenis.vibe.core.formats.GeneSymbol;
+package org.molgenis.vibe.core.formats;
 
 public class GeneDiseaseCollectionJson {
     // Primary key for all combinations.

@@ -1,7 +1,6 @@
-package org.molgenis.vibe.core.formats.serialization;
+package org.molgenis.vibe.core.formats;
 
 import com.google.gson.*;
-import org.molgenis.vibe.core.formats.*;
 
 import java.lang.reflect.Type;
 import java.util.*;
