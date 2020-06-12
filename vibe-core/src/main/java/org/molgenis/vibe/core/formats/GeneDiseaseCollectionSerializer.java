@@ -5,6 +5,16 @@ import com.google.gson.*;
 import java.lang.reflect.Type;
 import java.util.*;
 
+/**
+ * Serializers a {@link GeneDiseaseCollection} to {@code json}.
+ *
+ * IMPORTANT: Currently the {@link Source#getUri()} is not used as key. This increases the readability of the json file
+ * and reduces file size. In practice this should not cause any issues within a single {@link GeneDiseaseCollection}.
+ * However, if multiple {@link Source}{@code s} have the same {@link Source#getName()}, this would lead to a corrupt
+ * {@code json} output. This could for example be caused when a single {@link GeneDiseaseCollection} contains data from
+ * multiple {@link Source} objects that indicate different versions of the same {@link Source#getFullName()} (which
+ * under normal circumstances should not happen).
+ */
 public class GeneDiseaseCollectionSerializer extends GeneDiseaseCollectionJsonSerialization implements JsonSerializer<GeneDiseaseCollection> {
     @Override
     public JsonElement serialize(GeneDiseaseCollection src, Type typeOfSrc, JsonSerializationContext context) {
