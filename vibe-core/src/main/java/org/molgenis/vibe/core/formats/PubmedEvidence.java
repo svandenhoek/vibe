@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 import static java.util.Objects.requireNonNull;
 
-public class PubmedEvidence extends Evidence {
+public class PubmedEvidence extends Evidence implements EntityWithIntId {
     public static final String ID_PREFIX = "pmid";
     private static final String ID_REGEX = "^(pmid|PMID):([0-9]+)$";
     private static final int REGEX_ID_GROUP = 2;
@@ -13,6 +13,11 @@ public class PubmedEvidence extends Evidence {
 
     private int year;
     private int idInt;
+
+    @Override
+    public int getIdInt() {
+        return idInt;
+    }
 
     /**
      * Sorts {@link PubmedEvidence} first on {@link #getReleaseYear()} (most recent first) and then by ID
