@@ -28,7 +28,7 @@ public class EntityTest {
 
         @Override
         protected String getIdPrefix() {
-            return "prefix:";
+            return "prefix";
         }
 
         @Override

@@ -90,7 +90,7 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
     }
 
     public Entity(URI uri) {
-        this.uri = uri;
+        this.uri = requireNonNull(uri);
         String uriString = this.uri.toString();
         validateUri(uriString);
         id = uriString.split(getUriPrefix())[1];
