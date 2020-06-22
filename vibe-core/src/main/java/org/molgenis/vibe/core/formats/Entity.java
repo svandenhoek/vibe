@@ -94,6 +94,9 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
         String uriString = this.uri.toString();
         validateUri(uriString);
         id = uriString.split(getUriPrefix())[1];
+
+        // Throws InvalidStringFormatException in case URI does not generate and ID that adheres to the required regex.
+        retrieveIdFromString(getFormattedId());
     }
 
     public Entity(String id, String name) {
