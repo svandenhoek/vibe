@@ -4,7 +4,7 @@ import java.net.URI;
 
 public class GeneSymbol extends Entity {
     public static final String ID_PREFIX = "hgnc";
-    private static final String ID_REGEX = "^(hgnc|HGNC):([A-Z0-9-]+)$";
+    private static final String ID_REGEX = "^(hgnc|HGNC):([a-zA-Z0-9#@/._-]+)$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://identifiers.org/hgnc.symbol/";
 

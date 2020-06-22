@@ -104,4 +104,92 @@ public class GeneSymbolTest {
     public void testEqualsIdToDifferentId() {
         Assertions.assertFalse(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:CD-456")));
     }
+
+    @Test
+    public void useValidIdWithAtInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:SAA@");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SAA@", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:SAA@", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/SAA@"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdWithAtInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/SAA@"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SAA@", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:SAA@", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/SAA@"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingOrfInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:C12orf65");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("C12orf65", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:C12orf65", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingOrfInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("C12orf65", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:C12orf65", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingSlashInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:THRA1/BTR");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("THRA1/BTR", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:THRA1/BTR", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingSlashInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("THRA1/BTR", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:THRA1/BTR", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingDotInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:GS1-600G8.3");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("GS1-600G8.3", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:GS1-600G8.3", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"), symbol.getUri())
+        );
+    }
+
+    @Test
+    public void useValidIdContainingDotInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("GS1-600G8.3", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:GS1-600G8.3", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"), symbol.getUri())
+        );
+    }
 }
