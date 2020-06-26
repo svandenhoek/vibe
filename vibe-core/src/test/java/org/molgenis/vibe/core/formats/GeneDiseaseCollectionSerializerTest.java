@@ -10,12 +10,12 @@ import org.molgenis.vibe.core.formats.*;
 import java.net.URI;
 import java.util.Arrays;
 
-public class GeneDiseaseCollectionSerializerTest {
+class GeneDiseaseCollectionSerializerTest {
     private static GeneDiseaseCollection geneDiseaseCollection;
     private static Gson gson;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         Gene[] genes = new Gene[]{
                 new Gene("ncbigene:1111111", new GeneSymbol("hgnc:AAA")),
                 new Gene("ncbigene:2222222", new GeneSymbol("hgnc:BBB"))
@@ -68,7 +68,7 @@ public class GeneDiseaseCollectionSerializerTest {
      * - pubmed evidence: year (int, descending) -> id (integer, ascending)
      */
     @Test
-    public void testSerializer() {
+    void testSerializer() {
         String actualOutput = gson.toJson(geneDiseaseCollection);
 
         // ### Json combinations arrays ordering (integer means ordered as integer, not necessarily output is integer) ###
@@ -187,7 +187,7 @@ public class GeneDiseaseCollectionSerializerTest {
      * duplicate data caused by highly the interlinked design).
      */
     @Test
-    public void testIfCustomIsSmaller() {
+    void testIfCustomIsSmaller() {
         // Gson without custom (de)serializer.
         GsonBuilder gsonBuilder = new GsonBuilder().setPrettyPrinting();
         Gson defaultJson = gsonBuilder.create();
@@ -203,7 +203,7 @@ public class GeneDiseaseCollectionSerializerTest {
      * an identical {@link GeneDiseaseCollection} is generated.
      */
     @Test
-    public void testIfObjectIsFullyEqualAfterBeingSerializedAndDeserialized() {
+    void testIfObjectIsFullyEqualAfterBeingSerializedAndDeserialized() {
         String collectionAsJson = gson.toJson(geneDiseaseCollection);
         GeneDiseaseCollection returnedCollection = gson.fromJson(collectionAsJson, GeneDiseaseCollection.class);
 

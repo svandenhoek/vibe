@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.*;
 
-public class GeneDiseaseCombinationTest {
+class GeneDiseaseCombinationTest {
     private Gene gene = new Gene("ncbigene:0", new GeneSymbol("hgnc:A"));
     private Disease disease = new Disease("umls:C0123456");
     private Gene gene2 = new Gene("ncbigene:1", new GeneSymbol("hgnc:B"));
@@ -19,7 +19,7 @@ public class GeneDiseaseCombinationTest {
     private int year2 = 2020;
 
     @Test
-    public void addingMultipleSourcesWithoutEvidence() {
+    void addingMultipleSourcesWithoutEvidence() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         geneDiseaseCombo.add(source1);
         geneDiseaseCombo.add(source1);
@@ -33,7 +33,7 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    public void addingMultipleSourcesWithEvidence() {
+    void addingMultipleSourcesWithEvidence() {
         List<PubmedEvidence> source1Evidence = Arrays.asList(
                 new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1),
                 new PubmedEvidence(URI.create("http://identifiers.org/pubmed/2"), year1)
@@ -59,7 +59,7 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    public void addingMultipleSourcesWithAndWithoutEvidence() {
+    void addingMultipleSourcesWithAndWithoutEvidence() {
         List<PubmedEvidence> source1Evidence = Arrays.asList(
                 new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)
         );
@@ -87,36 +87,36 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    public void retrieveCountsWhenNothingIsStored() {
+    void retrieveCountsWhenNothingIsStored() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(new HashMap<>(), geneDiseaseCombo.getSourcesCount());
     }
 
     @Test
-    public void retrieveSourcesWithPubmedEvidenceWhenNothingIsStored() {
+    void retrieveSourcesWithPubmedEvidenceWhenNothingIsStored() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(new HashSet<>(), geneDiseaseCombo.getSourcesWithPubmedEvidence());
     }
 
     @Test
-    public void retrieveCountForNonExistingSource() {
+    void retrieveCountForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(0, geneDiseaseCombo.getCountForSource(source1));
     }
 
     @Test
-    public void retrievePubmedEvidenceForNonExistingSource() {
+    void retrievePubmedEvidenceForNonExistingSource() {
         GeneDiseaseCombination geneDiseaseCombo = new GeneDiseaseCombination(gene, disease, score1);
         Assertions.assertEquals(null, geneDiseaseCombo.getPubmedEvidenceForSource(source1));
     }
 
     @Test
-    public void assertEqualsWhenEqualWithScore() {
+    void assertEqualsWhenEqualWithScore() {
         Assertions.assertEquals(new GeneDiseaseCombination(gene, disease, score1), new GeneDiseaseCombination(gene, disease, score1));
     }
 
     @Test
-    public void assertEqualsWhenEqualWithoutScore() {
+    void assertEqualsWhenEqualWithoutScore() {
         Assertions.assertEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene, disease));
     }
 
@@ -124,22 +124,22 @@ public class GeneDiseaseCombinationTest {
      * Equals only checks whether it is the same gene-disease combo.
      */
     @Test
-    public void assertEqualsWhenEqualWithDifferentScore() {
+    void assertEqualsWhenEqualWithDifferentScore() {
         Assertions.assertEquals(new GeneDiseaseCombination(gene, disease, score1), new GeneDiseaseCombination(gene, disease, score2));
     }
 
     @Test
-    public void assertEqualsWhenGeneDifferent() {
+    void assertEqualsWhenGeneDifferent() {
         Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene2, disease));
     }
 
     @Test
-    public void assertEqualsWhenDiseaseDifferent() {
+    void assertEqualsWhenDiseaseDifferent() {
         Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene, disease2));
     }
 
     @Test
-    public void assertEqualsWhenBothDifferent() {
+    void assertEqualsWhenBothDifferent() {
         Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene2, disease2));
     }
 
@@ -149,7 +149,7 @@ public class GeneDiseaseCombinationTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenPubmedIdDiffers() {
+    void testAllEqualsWhenPubmedIdDiffers() {
         GeneDiseaseCombination geneDiseaseCombo1 = new GeneDiseaseCombination(gene, disease, score1);
         geneDiseaseCombo1.add(source1, new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1));
 
@@ -174,7 +174,7 @@ public class GeneDiseaseCombinationTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenPubmedYearDiffers() {
+    void testAllEqualsWhenPubmedYearDiffers() {
         GeneDiseaseCombination geneDiseaseCombo1 = new GeneDiseaseCombination(gene, disease, score1);
         geneDiseaseCombo1.add(source1, new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1));
 
@@ -198,7 +198,7 @@ public class GeneDiseaseCombinationTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenScoreDiffers() {
+    void testAllEqualsWhenScoreDiffers() {
         GeneDiseaseCombination geneDiseaseCombo1 = new GeneDiseaseCombination(gene, disease, score1);
         geneDiseaseCombo1.add(source1, new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1));
 
@@ -217,7 +217,7 @@ public class GeneDiseaseCombinationTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenSourceCountDiffers() {
+    void testAllEqualsWhenSourceCountDiffers() {
         GeneDiseaseCombination geneDiseaseCombo1 = new GeneDiseaseCombination(gene, disease, score1);
         geneDiseaseCombo1.add(source1);
 
@@ -232,7 +232,7 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    public void testRetrievalYearOrderedPubmedEvidenceForSource() {
+    void testRetrievalYearOrderedPubmedEvidenceForSource() {
         List<PubmedEvidence> expectedList = new ArrayList<>();
         expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/3"), year2)); // most recent first
         expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)); // same year -> lowest number first
@@ -249,7 +249,7 @@ public class GeneDiseaseCombinationTest {
     }
 
     @Test
-    public void testRetrievalYearOrderedPubmedEvidence() {
+    void testRetrievalYearOrderedPubmedEvidence() {
         List<PubmedEvidence> expectedList = new ArrayList<>();
         expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/4"), year2)); // most recent first
         expectedList.add(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1)); // same year -> lowest number first

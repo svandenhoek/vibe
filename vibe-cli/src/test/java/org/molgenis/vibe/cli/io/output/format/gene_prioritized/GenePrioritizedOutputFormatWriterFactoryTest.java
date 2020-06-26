@@ -13,7 +13,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
-public class GenePrioritizedOutputFormatWriterFactoryTest {
+class GenePrioritizedOutputFormatWriterFactoryTest {
     private static final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
     private static final PrintStream originalOut = System.out;
 
@@ -22,7 +22,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
     private static List<Gene> priority;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         // Redirect stdout for tests.
         System.setOut(new PrintStream(outContent));
 
@@ -61,17 +61,17 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         outContent.reset();
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         System.setOut(originalOut);
     }
 
     @Test
-    public void testSimple() throws IOException {
+    void testSimple() throws IOException {
         OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.SIMPLE.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "29123,2697";
@@ -79,7 +79,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
     }
 
     @Test
-    public void testDefaultWithId() throws IOException {
+    void testDefaultWithId() throws IOException {
         OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_ID.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +
@@ -89,7 +89,7 @@ public class GenePrioritizedOutputFormatWriterFactoryTest {
     }
 
     @Test
-    public void testDefaultWithUri() throws IOException {
+    void testDefaultWithUri() throws IOException {
         OutputFormatWriter formatWriter = GenePrioritizedOutputFormatWriterFactory.REGULAR_URI.create(writer, collection, priority);
         formatWriter.run();
         String expectedOutput = "gene (NCBI)\tgene symbol (HGNC)\thighest GDA score\tdiseases (UMLS) with sources per disease" + System.lineSeparator() +

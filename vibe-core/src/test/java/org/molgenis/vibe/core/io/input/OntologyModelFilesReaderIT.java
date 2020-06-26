@@ -8,30 +8,30 @@ import org.molgenis.vibe.core.TestData;
 
 import java.nio.file.Path;
 
-public class OntologyModelFilesReaderIT {
+class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         if(reader != null) {
             reader.close();
         }
     }
 
     @Test
-    public void testValidModel() {
+    void testValidModel() {
         reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPathString());
         Assertions.assertEquals(false, reader.getModel().isEmpty());
     }
 
     @Test
-    public void testInvalidFileFormat() {
+    void testInvalidFileFormat() {
         String inputFileString = TestData.EXISTING_TSV.getFullPathString();
         Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }
 
     @Test
-    public void testInvalidFileUsingCorrectFormat() {
+    void testInvalidFileUsingCorrectFormat() {
         String inputFileString = TestData.FAKE_HPO_OWL.getFullPathString();
         Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }

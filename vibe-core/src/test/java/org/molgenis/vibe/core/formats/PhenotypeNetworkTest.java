@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 
 import java.util.*;
 
-public class PhenotypeNetworkTest {
+class PhenotypeNetworkTest {
     private static final Phenotype[] phenotypes = new Phenotype[]{
             new Phenotype("hp:0000000"),
             new Phenotype("hp:0000001"),
@@ -19,7 +19,7 @@ public class PhenotypeNetworkTest {
 
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         phenotypeNetwork = new PhenotypeNetwork(phenotypes[0]);
 
         // The network as should be created within the class itself with as source phenotypes[0].
@@ -30,7 +30,7 @@ public class PhenotypeNetworkTest {
     }
 
     @Test
-    public void testSimpleNetwork() {
+    void testSimpleNetwork() {
         addExpectedPhenotypesUsingDistance(new int[]{1,2}, 1);
         addExpectedPhenotypesUsingDistance(new int[]{3,4}, 2);
 
@@ -47,7 +47,7 @@ public class PhenotypeNetworkTest {
     }
 
     @Test
-    public void testReplacingDistance() {
+    void testReplacingDistance() {
         addExpectedPhenotypesUsingDistance(new int[]{1}, 3);
 
         phenotypeNetwork.add(phenotypes[1], 9);
@@ -58,18 +58,18 @@ public class PhenotypeNetworkTest {
     }
 
     @Test
-    public void testContainsForSourcePhenotype() {
+    void testContainsForSourcePhenotype() {
         Assertions.assertTrue(phenotypeNetwork.contains(phenotypes[0]));
     }
 
     @Test
-    public void testContainsForAddedPhenotype() {
+    void testContainsForAddedPhenotype() {
         phenotypeNetwork.add(phenotypes[1], 3);
         Assertions.assertTrue(phenotypeNetwork.contains(phenotypes[1]));
     }
 
     @Test
-    public void testContainsForNotAddedPhenotype() {
+    void testContainsForNotAddedPhenotype() {
         Assertions.assertFalse(phenotypeNetwork.contains(phenotypes[1]));
     }
 

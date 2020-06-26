@@ -19,11 +19,11 @@ import java.util.*;
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
 @Execution(ExecutionMode.SAME_THREAD)
-public class GeneDiseaseCollectionRetrievalRunnerIT {
+class GeneDiseaseCollectionRetrievalRunnerIT {
     private static GeneDiseaseCollectionRetrievalRunner runner;
 
     @Test
-    public void retrieveGeneDiseaseCollectionForHpo0008438() throws IOException {
+    void retrieveGeneDiseaseCollectionForHpo0008438() throws IOException {
         /**
          * obo:HP_0008438  a        sio:SIO_010056 ;
          *         sio:SIO_000001   ordo:Orphanet_85184 ;

@@ -10,58 +10,58 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PhenotypeTest {
+class PhenotypeTest {
     @Test
-    public void useValidIdWithLowercasePrefix() {
+    void useValidIdWithLowercasePrefix() {
         Phenotype phenotype = new Phenotype("hp:0012345");
         testIfValid(phenotype);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() {
+    void useValidIdWithUppercasePrefix() {
         Phenotype phenotype = new Phenotype("HP:0012345");
         testIfValid(phenotype);
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix1() {
+    void useValidIdWithSingleUpperCasePrefix1() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("Hp:0012345") );
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix2() {
+    void useValidIdWithSingleUpperCasePrefix2() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("hP:0012345") );
     }
 
     @Test
-    public void useValidIdWithInvalidPrefix() {
+    void useValidIdWithInvalidPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("ph:0012345") );
     }
 
     @Test
-    public void useValidIdWithoutPrefix() {
+    void useValidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("0012345") );
     }
 
     @Test
-    public void useUriAsIdInput() {
+    void useUriAsIdInput() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("http://purl.obolibrary.org/obo/HP_0012345") );
     }
 
     @Test
-    public void useValidUri() {
+    void useValidUri() {
         Phenotype phenotype = new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345"));
         testIfValid(phenotype);
     }
 
     @Test
-    public void useInvalidUri() {
+    void useInvalidUri() {
         URI uri = URI.create("http://purl.obolibrary.org/obo/id/HP_0012345");
         Assertions.assertThrows(IllegalArgumentException.class, () -> new Phenotype(uri) );
     }
 
     @Test
-    public void testSort() {
+    void testSort() {
         List<Phenotype> actualOrder = new ArrayList<>( Arrays.asList(
                 new Phenotype("hp:0000020"),
                 new Phenotype("hp:0000003"),
@@ -89,35 +89,35 @@ public class PhenotypeTest {
     }
 
     @Test
-    public void testEqualsIdToEqualId() {
+    void testEqualsIdToEqualId() {
         Assertions.assertEquals(new Phenotype("hp:0012345"), new Phenotype("hp:0012345"));
     }
 
     @Test
-    public void testEqualsUriToEqualUri() {
+    void testEqualsUriToEqualUri() {
         Assertions.assertEquals(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")),
                 new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")));
     }
 
     @Test
-    public void testEqualsIdToEqualUri() {
+    void testEqualsIdToEqualUri() {
         Assertions.assertEquals(new Phenotype("hp:0012345"),
                 new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")));
     }
 
     @Test
-    public void testEqualsIdToDifferentId() {
+    void testEqualsIdToDifferentId() {
         Assertions.assertNotEquals(new Phenotype("hp:0012345"), new Phenotype("hp:5432100"));
     }
 
     // Specific to Phenotypes as number of digits must be an exact number.
     @Test
-    public void useTooShortPhenotypeIdWithPrefix() {
+    void useTooShortPhenotypeIdWithPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("hp:0012") );
     }
 
     @Test
-    public void useTooShortPhenotypeIdWithoutPrefix() {
+    void useTooShortPhenotypeIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Phenotype("0012") );
     }
 }

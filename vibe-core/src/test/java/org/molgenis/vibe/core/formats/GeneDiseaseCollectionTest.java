@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.*;
 
-public class GeneDiseaseCollectionTest {
+class GeneDiseaseCollectionTest {
     private static GeneDiseaseCombination[] gdcs;
     private static Gene[] genes;
     private static Disease[] diseases;
     private static Source[] sources;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         genes = new Gene[]{
                 new Gene("ncbigene:1111111", new GeneSymbol("hgnc:AAA")),
                 new Gene("ncbigene:2222222", new GeneSymbol("hgnc:BBB"))
@@ -44,7 +44,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testGetByGeneOrderedByGdaScore() {
+    void testGetByGeneOrderedByGdaScore() {
         GeneDiseaseCollection collection = new GeneDiseaseCollection();
         collection.addAll(Arrays.asList(gdcs));
 
@@ -53,7 +53,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testGetByDiseaseOrderedByGdaScore() {
+    void testGetByDiseaseOrderedByGdaScore() {
         GeneDiseaseCollection collection = new GeneDiseaseCollection();
         collection.addAll(Arrays.asList(gdcs));
 
@@ -62,7 +62,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testequalsWhenequal() {
+    void testequalsWhenequal() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
@@ -73,7 +73,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testequalsWhenNotequalDueToDifference() {
+    void testequalsWhenNotequalDueToDifference() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
@@ -84,7 +84,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testequalsWhenNotequalDueToSize() {
+    void testequalsWhenNotequalDueToSize() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
@@ -100,7 +100,7 @@ public class GeneDiseaseCollectionTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenGdcHasDifferentScore() {
+    void testAllEqualsWhenGdcHasDifferentScore() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.add(new GeneDiseaseCombination(genes[0], diseases[0], 0.5));
 
@@ -119,7 +119,7 @@ public class GeneDiseaseCollectionTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenGdcHasDifferentPubmedYear() {
+    void testAllEqualsWhenGdcHasDifferentPubmedYear() {
         Double score = 0.42;
 
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();

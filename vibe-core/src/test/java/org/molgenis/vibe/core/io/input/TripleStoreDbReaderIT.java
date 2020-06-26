@@ -11,23 +11,23 @@ import org.molgenis.vibe.core.TestData;
 import java.io.IOException;
 
 @Execution(ExecutionMode.SAME_THREAD)
-public class TripleStoreDbReaderIT {
+class TripleStoreDbReaderIT {
     private static TripleStoreDbReader tdbReader;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         tdbReader = new TripleStoreDbReader(TestData.TDB.getFullPathString());
     }
 
     @AfterAll
-    public static void afterAll() {
+    static void afterAll() {
         if(tdbReader != null) {
             tdbReader.close();
         }
     }
 
     @Test
-    public void checkIfModelIsNotEmpty() throws IOException {
+    void checkIfModelIsNotEmpty() throws IOException {
         Assertions.assertEquals(false, tdbReader.getModel().isEmpty());
     }
 }

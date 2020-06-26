@@ -9,7 +9,7 @@ import org.junit.jupiter.params.provider.ValueSource;
 import java.net.URI;
 import java.util.*;
 
-public class BiologicalEntityCollectionTest {
+class BiologicalEntityCollectionTest {
     private static BiologicalEntityImpl[] array1;
     private static BiologicalEntityImpl[] array2;
     private static BiologicalEntityCombinationImpl[] combinations;
@@ -71,7 +71,7 @@ public class BiologicalEntityCollectionTest {
 
     // Preparing data.
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         array1 = new BiologicalEntityImpl[]{
                 new BiologicalEntityImpl("prefix:1"),
                 new BiologicalEntityImpl("prefix:2")
@@ -99,21 +99,21 @@ public class BiologicalEntityCollectionTest {
 
     // Tests.
     @Test
-    public void addMultipleCombinationsAndRetrieveSingleOne() {
+    void addMultipleCombinationsAndRetrieveSingleOne() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         Assertions.assertEquals(combinations[1], collection.get(combinations[1]));
     }
 
     @Test
-    public void testGetT3Ordered() {
+    void testGetT3Ordered() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         Assertions.assertEquals(Arrays.asList(combinations), collection.getT3Ordered());
     }
 
     @Test
-    public void addMultipleCombinationsAndRetrieveByT1() {
+    void addMultipleCombinationsAndRetrieveByT1() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
 
@@ -122,7 +122,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void addMultipleCombinationsAndRetrieveByT2() {
+    void addMultipleCombinationsAndRetrieveByT2() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
 
@@ -131,21 +131,21 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void retrieveByNonExistingT1() {
+    void retrieveByNonExistingT1() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         Assertions.assertEquals(null, collection.getByT1(array1[1]));
     }
 
     @Test
-    public void retrieveByNonExistingT2() {
+    void retrieveByNonExistingT2() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         Assertions.assertEquals(null, collection.getByT2(array2[1]));
     }
 
     @Test
-    public void testAddSingleCombination() {
+    void testAddSingleCombination() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
 
@@ -159,7 +159,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testRemoveSingleCombinationWithoutTriggeringRemovingEmptySet() {
+    void testRemoveSingleCombinationWithoutTriggeringRemovingEmptySet() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.remove(combinations[2]);
@@ -182,7 +182,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testRemoveSingleCombinationWithTriggeringRemovingEmptySet() {
+    void testRemoveSingleCombinationWithTriggeringRemovingEmptySet() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.remove(combinations[0]);
@@ -205,7 +205,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testAddAll() {
+    void testAddAll() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
 
@@ -227,7 +227,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void removeAll() {
+    void removeAll() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.removeAll(Arrays.asList(combinations[0],combinations[1]));
@@ -250,7 +250,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testRetainAll() {
+    void testRetainAll() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.retainAll(Arrays.asList(combinations[2]));
@@ -273,7 +273,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testClear() {
+    void testClear() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.clear();
@@ -281,20 +281,20 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testIsEmptyWhenNotYetUsed() {
+    void testIsEmptyWhenNotYetUsed() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         Assertions.assertTrue(collection.isEmpty());
     }
 
     @Test
-    public void testIsEmptyWhenNotEmpty() {
+    void testIsEmptyWhenNotEmpty() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         Assertions.assertFalse(collection.isEmpty());
     }
 
     @Test
-    public void testIsEmptyAfterClearing() {
+    void testIsEmptyAfterClearing() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         collection.clear();
@@ -302,7 +302,7 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void testAddingAlreadyExistingItem() {
+    void testAddingAlreadyExistingItem() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         boolean added1 = collection.add(combinations[0]);
         boolean added2 = collection.add(combinationDuplicate);
@@ -316,7 +316,7 @@ public class BiologicalEntityCollectionTest {
 
     @ParameterizedTest
     @ValueSource(ints = {1,2,3,4,5,6})
-    public void testSize(int number) {
+    void testSize(int number) {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         for(int i = 0; i < number; i++) {
             collection.add(combinations[i]);
@@ -325,21 +325,21 @@ public class BiologicalEntityCollectionTest {
     }
 
     @Test
-    public void containsifPresent() {
+    void containsifPresent() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         Assertions.assertTrue(collection.contains(combinations[0]));
     }
 
     @Test
-    public void containsifNotPresent() {
+    void containsifNotPresent() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.add(combinations[0]);
         Assertions.assertFalse(collection.contains(combinations[1]));
     }
 
     @Test
-    public void containsifNotPresentDueToRemoval() {
+    void containsifNotPresentDueToRemoval() {
         BiologicalEntityCollectionImpl collection = new BiologicalEntityCollectionImpl();
         collection.addAll(Arrays.asList(combinations));
         collection.remove(combinations[3]);

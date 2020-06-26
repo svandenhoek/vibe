@@ -14,7 +14,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-public class VibeOptionsTest {
+class VibeOptionsTest {
     private VibeOptions vibeOptions;
 
     private final String VALID_TDB = TestData.TDB.getFullPathString();
@@ -33,19 +33,19 @@ public class VibeOptionsTest {
     }));
 
     @BeforeEach
-    public void beforeEach() {
+    void beforeEach() {
         vibeOptions = new VibeOptions();
     }
 
     @Test
-    public void validRunModeNone() {
+    void validRunModeNone() {
         vibeOptions.setRunMode(RunMode.NONE);
 
         vibeOptions.validate();
     }
 
     @Test
-    public void validRunModeGenesForPhenotypes() throws IOException {
+    void validRunModeGenesForPhenotypes() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -57,7 +57,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingTdb() throws IOException {
+    void genesForPhenotypesMissingTdb() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
         vibeOptions.setPhenotypes(VALID_HPO_SINGLE);
@@ -69,7 +69,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingHpoOwl() throws IOException {
+    void genesForPhenotypesMissingHpoOwl() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setPhenotypes(VALID_HPO_SINGLE);
@@ -80,7 +80,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingPhenotypes() throws IOException {
+    void genesForPhenotypesMissingPhenotypes() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -91,7 +91,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingOutputWriter() throws IOException {
+    void genesForPhenotypesMissingOutputWriter() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -102,7 +102,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingGenePrioritizationOutputFormat() throws IOException {
+    void genesForPhenotypesMissingGenePrioritizationOutputFormat() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -113,7 +113,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesMissingOutputRelatedInfo() throws IOException {
+    void genesForPhenotypesMissingOutputRelatedInfo() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -123,7 +123,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void validGenesForPhenotypesWithRelatedPhenotypes() throws IOException {
+    void validGenesForPhenotypesWithRelatedPhenotypes() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -138,7 +138,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesWithRelatedPhenotypesMissingAlgorithm() throws IOException {
+    void genesForPhenotypesWithRelatedPhenotypesMissingAlgorithm() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -152,7 +152,7 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void genesForPhenotypesWithRelatedPhenotypesMissingMaxDistance() throws IOException {
+    void genesForPhenotypesWithRelatedPhenotypesMissingMaxDistance() throws IOException {
         vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         vibeOptions.setVibeTdb(VALID_TDB);
         vibeOptions.setHpoOntology(VALID_ONTOLOGY);
@@ -166,27 +166,27 @@ public class VibeOptionsTest {
     }
 
     @Test
-    public void invalidMaxDistance() {
+    void invalidMaxDistance() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> vibeOptions.setOntologyMaxDistance(INVALID_DISTANCE_NUMBER) );
     }
 
     @Test
-    public void invalidTdbDir() {
+    void invalidTdbDir() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setVibeTdb(INVALID_TDB_DIR) );
     }
 
     @Test
-    public void invalidTdbFile() {
+    void invalidTdbFile() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setVibeTdb(INVALID_TDB_FILE) );
     }
 
     @Test
-    public void invalidHpoFile() {
+    void invalidHpoFile() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setHpoOntology(INVALID_ONTOLOGY_FILE) );
     }
 
     @Test
-    public void invalidHpoDir() {
+    void invalidHpoDir() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setHpoOntology(INVALID_ONTOLOGY_DIR) );
     }
 

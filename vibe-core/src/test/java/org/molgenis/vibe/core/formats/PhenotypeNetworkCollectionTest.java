@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 import java.util.Arrays;
 import java.util.HashSet;
 
-public class PhenotypeNetworkCollectionTest {
+class PhenotypeNetworkCollectionTest {
     private static final Phenotype[] phenotypes1 = new Phenotype[]{
             new Phenotype("hp:0000000"),
             new Phenotype("hp:0000001"),
@@ -29,7 +29,7 @@ public class PhenotypeNetworkCollectionTest {
     private static PhenotypeNetwork network2;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         network1 = new PhenotypeNetwork(phenotypes1[0]);
         network1.add(Arrays.asList(phenotypes1[1], phenotypes1[2], phenotypes1[3]), 1);
         network1.add(Arrays.asList(phenotypes1[4]), 2);
@@ -40,14 +40,14 @@ public class PhenotypeNetworkCollectionTest {
     }
 
     @Test
-    public void testAdd() {
+    void testAdd() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         Assertions.assertEquals(network1, collection.getPhenotypeNetworkBySource(network1.getSource()));
     }
 
     @Test
-    public void testRetrieveAllPhenotypes() {
+    void testRetrieveAllPhenotypes() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         collection.add(network2);
@@ -55,7 +55,7 @@ public class PhenotypeNetworkCollectionTest {
     }
 
     @Test
-    public void testRemovalOfStoredNetworkThroughNetwork() {
+    void testRemovalOfStoredNetworkThroughNetwork() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         collection.add(network2);
@@ -70,7 +70,7 @@ public class PhenotypeNetworkCollectionTest {
     }
 
     @Test
-    public void testRemovalOfStoredNetworkThroughSourcePhenotype() {
+    void testRemovalOfStoredNetworkThroughSourcePhenotype() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         collection.add(network2);
@@ -85,21 +85,21 @@ public class PhenotypeNetworkCollectionTest {
     }
 
     @Test
-    public void testRemovalOfNonStoredNetworkThroughNetwork() {
+    void testRemovalOfNonStoredNetworkThroughNetwork() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         Assertions.assertFalse(collection.remove(network2));
     }
 
     @Test
-    public void testRemovalOfNonStoredNetworkThroughSourcePhenotype() {
+    void testRemovalOfNonStoredNetworkThroughSourcePhenotype() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         Assertions.assertNull(collection.remove(network2.getSource()));
     }
 
     @Test
-    public void testClear() {
+    void testClear() {
         PhenotypeNetworkCollection collection = new PhenotypeNetworkCollection();
         collection.add(network1);
         collection.clear();

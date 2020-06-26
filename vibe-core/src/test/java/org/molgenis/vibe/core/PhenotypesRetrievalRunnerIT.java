@@ -11,11 +11,11 @@ import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
 
-public class PhenotypesRetrievalRunnerIT {
+class PhenotypesRetrievalRunnerIT {
     private static PhenotypesRetrievalRunner runner;
 
     @Test
-    public void retrieveWithDistance0() {
+    void retrieveWithDistance0() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -31,7 +31,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithDistance1() {
+    void retrieveWithDistance1() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -50,7 +50,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithDistance2() {
+    void retrieveWithDistance2() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0001377"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -74,7 +74,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithDistance3With2RoutesHavingDifferentDistanceToHpo() {
+    void retrieveWithDistance3With2RoutesHavingDifferentDistanceToHpo() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0005060"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -99,7 +99,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithChildren0() {
+    void retrieveWithChildren0() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -115,7 +115,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithChildren1() {
+    void retrieveWithChildren1() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -135,7 +135,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithChildren2() {
+    void retrieveWithChildren2() {
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
 
         PhenotypeNetwork expectedNetwork1 = new PhenotypeNetwork(startPhenotypes.get(0));
@@ -158,7 +158,7 @@ public class PhenotypesRetrievalRunnerIT {
     }
 
     @Test
-    public void retrieveWithNegativeDistance() {
+    void retrieveWithNegativeDistance() {
         Path HpoOwlFullPath = TestData.HPO_OWL.getFullPath();
         PhenotypesRetrieverFactory factory = PhenotypesRetrieverFactory.CHILDREN;
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
