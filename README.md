@@ -17,22 +17,17 @@ A tool to generate prioritized genes using phenotype information.
 
 * Download [vibe .jar file][vibe_download]
 * Download and extract [TDB][tdb_download]
+* Download the [HPO.owl][hpo_owl]
 * Make sure you have [Java 8 or higher][java_download]
 * Open a terminal and run VIBE. `java -jar vibe-with-dependencies.jar -v -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ## Detailed instructions
 
-### For developers
-
-Instructions regarding building/testing the app can be found [here](./vibe-core/README.md) and how to create a TDB for the app can be found [here](./database/README.md).
-
 ### Requirements
 
 * [Java 8 or higher][java_download]
 * [A local TDB dataset][tdb_download]
-* [Human Phenotype Ontology (HPO)][hpo_owl] *
-
-\* = Only required when certain arguments are used.
+* [Human Phenotype Ontology (HPO)][hpo_owl]
 
 ### Usage
 
@@ -82,9 +77,30 @@ The `-u` option changes the output to use URI's instead of ID's for certain fiel
 
 **A:** Depending on the how much information needs to be retrieved from the TDB based on the input genes, this process may indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
 
+## For developers
+
+Below are the instructions on how to build the app. For instructions on how to create the TDB, please check [here](./database/README.md). 
+
+### Requirements
+- Apache Maven ([download][maven_download] and [install][maven_install])
+
+### Preperations
+Before building/testing, be sure the needed test resources are downloaded. This can be done by running `TestsPreprocessor.sh`. When checking out a commit that uses a different version of the test resources (as defined by the `pom.xml` properties `vibe-tdb.version` and `hpo-owl.tag`), be sure to re-run this script so that the correct resources are used for testing. 
+
+### Building executables
+
+1. Run `mvn clean install` to create all needed files.
+   - An überjar for the command-line tool can be found at `vibe-cli/target/vibe-with-dependencies-<version>.jar` .
+   - Checksums are available in the `<sub-module>/target/checksums/` folders for the following formats:
+     - MD5
+     - SHA-512
+     - SHA3-512
+
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
 [tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
+[maven_download]:https://maven.apache.org/download.cgi
+[maven_install]:https://maven.apache.org/install.html
