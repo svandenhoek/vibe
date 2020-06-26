@@ -61,7 +61,7 @@ public class GeneDiseaseCollectionDeserializer extends GeneDiseaseCollectionJson
                 }
 
                 // Adds source pubmed evidence.
-                if(pubmedEvidenceForSource.size() > 0) {
+                if(!pubmedEvidenceForSource.isEmpty()) {
                     geneDiseaseCombination.setPubmedEvidenceForSource(source, pubmedEvidenceForSource);
                 }
             }

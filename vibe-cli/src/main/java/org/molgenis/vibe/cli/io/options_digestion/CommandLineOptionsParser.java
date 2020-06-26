@@ -195,7 +195,7 @@ public abstract class CommandLineOptionsParser {
         }
 
         // Checks if any errors were created, and if so, throws IOException.
-        if(errors.size() > 0) {
+        if(!errors.isEmpty()) {
             throw new IOException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
@@ -251,7 +251,7 @@ public abstract class CommandLineOptionsParser {
         }
 
         // Generates IOException with missing arguments if any were found.
-        if( missing.size() > 0 ) {
+        if(!missing.isEmpty()) {
             throw new IOException("Missing arguments: " + StringUtils.join(missing, ", "));
         }
     }

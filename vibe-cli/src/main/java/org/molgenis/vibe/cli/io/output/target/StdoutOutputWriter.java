@@ -3,7 +3,7 @@ package org.molgenis.vibe.cli.io.output.target;
 /**
  * Writer for writing output to stdout.
  */
-public class StdoutOutputWriter extends OutputWriter {
+public class StdoutOutputWriter implements OutputWriter {
     @Override
     public String target() {
         return "stdout";

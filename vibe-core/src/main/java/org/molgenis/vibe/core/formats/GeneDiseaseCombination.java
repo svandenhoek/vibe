@@ -112,7 +112,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      */
     public Set<PubmedEvidence> getAllPubmedEvidence() {
         Set<PubmedEvidence> evidence = new HashSet<>();
-        pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        pubmedEvidence.values().forEach(evidence::addAll);
         return evidence;
     }
 
@@ -123,7 +123,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
      */
     public List<PubmedEvidence> getAllPubMedEvidenceSortedByYear() {
         List<PubmedEvidence> evidence = new ArrayList<>();
-        pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        pubmedEvidence.values().forEach(evidence::addAll);
         Collections.sort(evidence, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         return evidence;
     }

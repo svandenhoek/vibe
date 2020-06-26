@@ -126,7 +126,7 @@ public final class QueryStringGenerator {
      * @return a SPARQL VALUES usable {@link String}
      */
     private static String createValuesStringForUris(Set<? extends ResourceUri> resourceUris) {
-        if(resourceUris.size() < 1) {
+        if(resourceUris.isEmpty()) {
             throw new IllegalArgumentException("Set should at least contain 1 item.");
         }
         Iterator<? extends ResourceUri> resourceUriIterator = resourceUris.iterator();

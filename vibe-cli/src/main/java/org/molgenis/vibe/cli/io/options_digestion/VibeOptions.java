@@ -305,7 +305,7 @@ public class VibeOptions {
                     // Checks if no associated phenotypes need to be retrieved.
                 case GENES_FOR_PHENOTYPES:
                     // Check if there are any input phenotypes.
-                    if (getPhenotypes().size() == 0) {
+                    if (getPhenotypes().isEmpty()) {
                         return false;
                     }
                 default:
