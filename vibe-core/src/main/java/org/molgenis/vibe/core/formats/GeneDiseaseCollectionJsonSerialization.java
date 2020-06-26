@@ -17,17 +17,17 @@ public abstract class GeneDiseaseCollectionJsonSerialization {
 
     // Primary key for gene details.
     protected static final String GENES_KEY = COMBINATION_GENE_KEY;
-    // GENE KEY is gene.getId();
+    // GENE KEY is derived from gene.getId()
     protected static final String GENE_SYMBOL_KEY = GeneSymbol.ID_PREFIX;
 
     // Primary key for disease details.
     protected static final String DISEASES_KEY = COMBINATION_DISEASE_KEY;
-    // DISEASE KEY is disease.getId();
+    // DISEASE KEY is derived from disease.getId()
     protected static final String DISEASE_NAME_KEY = "name";
 
     // Primary key for source details.
     protected static final String SOURCES_KEY = "sources";
-    // SOURCE KEY is source.getName()
+    // SOURCE KEY is derived from source.getName()
     protected static final String SOURCE_FULL_NAME_KEY = "fullName";
     protected static final String SOURCE_URI_KEY = "uri";
     protected static final String SOURCE_LEVEL_KEY = "level";
