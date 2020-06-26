@@ -117,6 +117,9 @@ public final class QueryStringGenerator {
         GeneDiseaseCombinationType.GENE_DISEASE.getFormattedId() + GENES_FOR_PHENOTYPES[2]);
     }
 
+    private QueryStringGenerator() {
+    }
+
     /**
      * Generates query-compatible {@link String} to be used as VALUES containing 1 or more {@link URI}{@code s}.
      * @param resourceUris the {@link URI}{@code s} to be used

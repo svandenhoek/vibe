@@ -10,7 +10,7 @@ import java.util.Iterator;
 /**
  * Is able to run a SPARQL query on a {@link Model}.
  */
-public class QueryRunner implements Closeable, Iterator {
+public class QueryRunner implements Closeable, Iterator<QuerySolution> {
     /**
      * Object storing the query and model for query execution.
      */

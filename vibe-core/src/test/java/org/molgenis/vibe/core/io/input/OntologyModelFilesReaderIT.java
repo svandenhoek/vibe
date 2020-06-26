@@ -6,6 +6,8 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.core.TestData;
 
+import java.nio.file.Path;
+
 public class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;
 
@@ -24,11 +26,13 @@ public class OntologyModelFilesReaderIT {
 
     @Test
     public void testInvalidFileFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.EXISTING_TSV.getFullPathString()));
+        String inputFileString = TestData.EXISTING_TSV.getFullPathString();
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }
 
     @Test
     public void testInvalidFileUsingCorrectFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.FAKE_HPO_OWL.getFullPathString()));
+        String inputFileString = TestData.FAKE_HPO_OWL.getFullPathString();
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }
 }

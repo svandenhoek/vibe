@@ -56,7 +56,8 @@ public class GeneSymbolTest {
 
     @Test
     public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123")) );
+        URI uri = URI.create("http://identifiers.org/hgnc/AB-123");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeneSymbol(uri) );
     }
 
     @Test
@@ -87,22 +88,24 @@ public class GeneSymbolTest {
 
     @Test
     public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:AB-123")));
+        Assertions.assertEquals(new GeneSymbol("hgnc:AB-123"), new GeneSymbol("hgnc:AB-123"));
     }
 
     @Test
     public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")).equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+        Assertions.assertEquals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")),
+                new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")));
     }
 
     @Test
     public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+        Assertions.assertEquals(new GeneSymbol("hgnc:AB-123"),
+                new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")));
     }
 
     @Test
     public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:CD-456")));
+        Assertions.assertNotEquals(new GeneSymbol("hgnc:AB-123"), new GeneSymbol("hgnc:CD-456"));
     }
 
     @Test

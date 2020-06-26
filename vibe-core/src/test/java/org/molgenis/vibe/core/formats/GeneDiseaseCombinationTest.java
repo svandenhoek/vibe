@@ -112,12 +112,12 @@ public class GeneDiseaseCombinationTest {
 
     @Test
     public void assertEqualsWhenEqualWithScore() {
-        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease, score1).equals(new GeneDiseaseCombination(gene, disease, score1)));
+        Assertions.assertEquals(new GeneDiseaseCombination(gene, disease, score1), new GeneDiseaseCombination(gene, disease, score1));
     }
 
     @Test
     public void assertEqualsWhenEqualWithoutScore() {
-        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene, disease)));
+        Assertions.assertEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene, disease));
     }
 
     /**
@@ -125,22 +125,22 @@ public class GeneDiseaseCombinationTest {
      */
     @Test
     public void assertEqualsWhenEqualWithDifferentScore() {
-        Assertions.assertTrue(new GeneDiseaseCombination(gene, disease, score1).equals(new GeneDiseaseCombination(gene, disease, score2)));
+        Assertions.assertEquals(new GeneDiseaseCombination(gene, disease, score1), new GeneDiseaseCombination(gene, disease, score2));
     }
 
     @Test
     public void assertEqualsWhenGeneDifferent() {
-        Assertions.assertFalse(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene2, disease)));
+        Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene2, disease));
     }
 
     @Test
     public void assertEqualsWhenDiseaseDifferent() {
-        Assertions.assertFalse(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene, disease2)));
+        Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene, disease2));
     }
 
     @Test
     public void assertEqualsWhenBothDifferent() {
-        Assertions.assertFalse(new GeneDiseaseCombination(gene, disease).equals(new GeneDiseaseCombination(gene2, disease2)));
+        Assertions.assertNotEquals(new GeneDiseaseCombination(gene, disease), new GeneDiseaseCombination(gene2, disease2));
     }
 
     /**
@@ -161,9 +161,9 @@ public class GeneDiseaseCombinationTest {
         PubmedEvidence evidenceFromGdc2 = geneDiseaseCombo2.getPubmedEvidenceForSource(source1).iterator().next();
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(geneDiseaseCombo1.equals(geneDiseaseCombo2)),
+                () -> Assertions.assertEquals(geneDiseaseCombo1, geneDiseaseCombo2),
                 () -> Assertions.assertFalse(geneDiseaseCombo1.allFieldsEquals(geneDiseaseCombo2)),
-                () -> Assertions.assertFalse(evidenceFromGdc1.equals(evidenceFromGdc2)), // URI is identifier, so equals of PubmedEvidence is false.
+                () -> Assertions.assertNotEquals(evidenceFromGdc1, evidenceFromGdc2), // URI is identifier, so equals of PubmedEvidence is false.
                 () -> Assertions.assertFalse(evidenceFromGdc1.allFieldsEquals(evidenceFromGdc2))
         );
     }
@@ -185,9 +185,9 @@ public class GeneDiseaseCombinationTest {
         PubmedEvidence evidenceFromGdc2 = geneDiseaseCombo2.getPubmedEvidenceForSource(source1).iterator().next();
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(geneDiseaseCombo1.equals(geneDiseaseCombo2)),
+                () -> Assertions.assertEquals(geneDiseaseCombo1, geneDiseaseCombo2),
                 () -> Assertions.assertFalse(geneDiseaseCombo1.allFieldsEquals(geneDiseaseCombo2)),
-                () -> Assertions.assertTrue(evidenceFromGdc1.equals(evidenceFromGdc2)), // URI is identifier, so equals of PubmedEvidence is true.
+                () -> Assertions.assertEquals(evidenceFromGdc1, evidenceFromGdc2), // URI is identifier, so equals of PubmedEvidence is true.
                 () -> Assertions.assertFalse(evidenceFromGdc1.allFieldsEquals(evidenceFromGdc2))
         );
     }
@@ -206,7 +206,7 @@ public class GeneDiseaseCombinationTest {
         geneDiseaseCombo2.add(source1, new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1"), year1));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(geneDiseaseCombo1.equals(geneDiseaseCombo2)),
+                () -> Assertions.assertEquals(geneDiseaseCombo1, geneDiseaseCombo2),
                 () -> Assertions.assertFalse(geneDiseaseCombo1.allFieldsEquals(geneDiseaseCombo2))
         );
     }
@@ -226,7 +226,7 @@ public class GeneDiseaseCombinationTest {
         geneDiseaseCombo2.add(source1);
 
         Assertions.assertAll(
-            () -> Assertions.assertTrue(geneDiseaseCombo1.equals(geneDiseaseCombo2)),
+            () -> Assertions.assertEquals(geneDiseaseCombo1, geneDiseaseCombo2),
             () -> Assertions.assertFalse(geneDiseaseCombo1.allFieldsEquals(geneDiseaseCombo2))
         );
     }

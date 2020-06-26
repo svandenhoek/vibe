@@ -56,7 +56,8 @@ public class PubmedEvidenceTest {
 
     @Test
     public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new PubmedEvidence(URI.create("http://identifiers.org/pm/1234"), 2000) );
+        URI uri = URI.create("http://identifiers.org/pm/1234");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PubmedEvidence(uri, 2000) );
     }
 
     @Test
@@ -109,22 +110,25 @@ public class PubmedEvidenceTest {
 
     @Test
     public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence("pmid:1234", 2000)));
+        Assertions.assertEquals(new PubmedEvidence("pmid:1234", 2000), new PubmedEvidence("pmid:1234", 2000));
     }
 
     @Test
     public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000).equals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000)));
+        Assertions.assertEquals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000));
     }
 
     @Test
     public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000)));
+        Assertions.assertEquals(new PubmedEvidence("pmid:1234", 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000));
     }
 
     @Test
     public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence("pmid:5678", 2000)));
+        Assertions.assertNotEquals(new PubmedEvidence("pmid:1234", 2000),
+                new PubmedEvidence("pmid:5678", 2000));
     }
 
     @Test
@@ -133,7 +137,7 @@ public class PubmedEvidenceTest {
         PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2000);
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertEquals(pubmedEvidence1, pubmedEvidence2),
                 () -> Assertions.assertTrue(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
         );
     }
@@ -148,7 +152,7 @@ public class PubmedEvidenceTest {
         PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2020);
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertEquals(pubmedEvidence1, pubmedEvidence2),
                 () -> Assertions.assertFalse(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
         );
     }

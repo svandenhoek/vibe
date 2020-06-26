@@ -6,6 +6,7 @@ import org.molgenis.vibe.core.formats.PhenotypeNetwork;
 import org.molgenis.vibe.core.formats.PhenotypeNetworkCollection;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
+import java.nio.file.Path;
 import java.security.InvalidParameterException;
 import java.util.Arrays;
 import java.util.List;
@@ -158,12 +159,13 @@ public class PhenotypesRetrievalRunnerIT {
 
     @Test
     public void retrieveWithNegativeDistance() {
+        Path HpoOwlFullPath = TestData.HPO_OWL.getFullPath();
+        PhenotypesRetrieverFactory factory = PhenotypesRetrieverFactory.CHILDREN;
         List<Phenotype> startPhenotypes = Arrays.asList(new Phenotype("hp:0002996"));
         int invalidMaxDistance = -1;
 
         Exception exception = Assertions.assertThrows(InvalidParameterException.class, () ->
-                new PhenotypesRetrievalRunner(TestData.HPO_OWL.getFullPath(),
-                        PhenotypesRetrieverFactory.CHILDREN, startPhenotypes, invalidMaxDistance) );
+                new PhenotypesRetrievalRunner(HpoOwlFullPath, factory, startPhenotypes, invalidMaxDistance) );
         Assertions.assertEquals("maxDistance must be >= 0: " + invalidMaxDistance, exception.getMessage());
     }
 }

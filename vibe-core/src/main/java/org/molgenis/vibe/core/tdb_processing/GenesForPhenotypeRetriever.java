@@ -103,11 +103,6 @@ public class GenesForPhenotypeRetriever extends DisgenetRdfDataRetriever {
     }
 
     private <T extends Entity> T processEntityQueryOutput(T entity, Map<T, T> foundEntities) {
-        T foundEntity = foundEntities.get(entity);
-        if(foundEntity == null) {
-            foundEntities.put(entity, entity);
-            foundEntity = entity;
-        }
-        return foundEntity;
+        return foundEntities.computeIfAbsent(entity, k -> k);
     }
 }

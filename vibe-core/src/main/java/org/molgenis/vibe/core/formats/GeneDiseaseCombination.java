@@ -91,18 +91,19 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * The {@link PubmedEvidence} for the defined {@link Source}.
      * @param source
-     * @return a {@link List} ordered through {@link PubmedEvidence#releaseYearComparator} containing
+     * @return a {@link List} ordered through {@link PubmedEvidence#RELEASE_YEAR_COMPARATOR} containing
      * {@link PubmedEvidence}, or {@code null} if {@link Source} does not have any evidence
      */
     public List<PubmedEvidence> getPubmedEvidenceForSourceSortedByReleaseDate(Source source) {
+        List<PubmedEvidence> evidenceList = null;
         Set<PubmedEvidence> evidence = pubmedEvidence.get(source);
+
         if (evidence != null) {
-            List<PubmedEvidence> evidenceList = new ArrayList<>();
+            evidenceList = new ArrayList<>();
             evidenceList.addAll(evidence);
-            Collections.sort(evidenceList, PubmedEvidence.releaseYearComparator);
-            return evidenceList;
+            Collections.sort(evidenceList, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         }
-        return null;
+        return evidenceList;
     }
 
     /**
@@ -118,12 +119,12 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     /**
      * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
      * @return a {@link List} containing all the {@link PubmedEvidence} ordered through
-     * {@link PubmedEvidence#releaseYearComparator}
+     * {@link PubmedEvidence#RELEASE_YEAR_COMPARATOR}
      */
     public List<PubmedEvidence> getAllPubMedEvidenceSortedByYear() {
         List<PubmedEvidence> evidence = new ArrayList<>();
         pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
-        Collections.sort(evidence, PubmedEvidence.releaseYearComparator);
+        Collections.sort(evidence, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         return evidence;
     }
 
@@ -146,11 +147,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         add(source);
 
         // Stores PubMed evidence.
-        Set<PubmedEvidence> evidenceList = pubmedEvidence.get(source);
-        if(evidenceList == null) {
-            evidenceList = new HashSet<>();
-            pubmedEvidence.put(source, evidenceList);
-        }
+        Set<PubmedEvidence> evidenceList = pubmedEvidence.computeIfAbsent(source, k -> new HashSet<>());
         evidenceList.add(evidence);
     }
 
@@ -215,11 +212,11 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         }
 
         // Checks allFieldsEquals() for all items in pubmedEvidence.
-        for (Source source : pubmedEvidence.keySet()) {
-            List<PubmedEvidence> thisPubmedEvidences = new ArrayList<>(pubmedEvidence.get(source));
+        for (Map.Entry<Source, Set<PubmedEvidence>> sourcePubmedEvidence : pubmedEvidence.entrySet()) {
+            List<PubmedEvidence> thisPubmedEvidences = new ArrayList<>(sourcePubmedEvidence.getValue());
             Collections.sort(thisPubmedEvidences);
 
-            List<PubmedEvidence> thatPubmedEvidences = new ArrayList<>(that.pubmedEvidence.get(source));
+            List<PubmedEvidence> thatPubmedEvidences = new ArrayList<>(that.pubmedEvidence.get(sourcePubmedEvidence.getKey()));
             Collections.sort(thatPubmedEvidences);
 
             for (int i = 0; i < thisPubmedEvidences.size(); i++) {

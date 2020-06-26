@@ -56,7 +56,8 @@ public class PhenotypeTest {
 
     @Test
     public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Phenotype(URI.create("http://purl.obolibrary.org/obo/id/HP_0012345")) );
+        URI uri = URI.create("http://purl.obolibrary.org/obo/id/HP_0012345");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Phenotype(uri) );
     }
 
     @Test
@@ -89,22 +90,24 @@ public class PhenotypeTest {
 
     @Test
     public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new Phenotype("hp:0012345").equals(new Phenotype("hp:0012345")));
+        Assertions.assertEquals(new Phenotype("hp:0012345"), new Phenotype("hp:0012345"));
     }
 
     @Test
     public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")).equals(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345"))));
+        Assertions.assertEquals(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")),
+                new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")));
     }
 
     @Test
     public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new Phenotype("hp:0012345").equals(new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345"))));
+        Assertions.assertEquals(new Phenotype("hp:0012345"),
+                new Phenotype(URI.create("http://purl.obolibrary.org/obo/HP_0012345")));
     }
 
     @Test
     public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new Phenotype("hp:0012345").equals(new Phenotype("hp:5432100")));
+        Assertions.assertNotEquals(new Phenotype("hp:0012345"), new Phenotype("hp:5432100"));
     }
 
     // Specific to Phenotypes as number of digits must be an exact number.

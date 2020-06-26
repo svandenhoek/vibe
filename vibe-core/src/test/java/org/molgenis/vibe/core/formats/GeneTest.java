@@ -58,7 +58,8 @@ public class GeneTest {
 
     @Test
     public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol) );
+        URI uri = URI.create("http://identifiers.org/ncbi/1234");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Gene(uri, symbol) );
     }
 
     @Test
@@ -91,22 +92,24 @@ public class GeneTest {
 
     @Test
     public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:1234", symbol)));
+        Assertions.assertEquals(new Gene("ncbigene:1234", symbol), new Gene("ncbigene:1234", symbol));
     }
 
     @Test
     public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+        Assertions.assertEquals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol),
+                new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol));
     }
 
     @Test
     public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+        Assertions.assertEquals(new Gene("ncbigene:1234", symbol),
+                new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol));
     }
 
     @Test
     public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:5678", symbol)));
+        Assertions.assertNotEquals(new Gene("ncbigene:1234", symbol), new Gene("ncbigene:5678", symbol));
     }
 
     @Test
@@ -115,7 +118,7 @@ public class GeneTest {
         Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertEquals(gene1, gene2),
                 () -> Assertions.assertTrue(gene1.allFieldsEquals(gene2))
         );
     }
@@ -130,7 +133,7 @@ public class GeneTest {
         Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:DEF"));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertEquals(gene1, gene2),
                 () -> Assertions.assertFalse(gene1.allFieldsEquals(gene2))
         );
     }

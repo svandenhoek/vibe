@@ -69,12 +69,14 @@ public class EntityTest {
 
     @Test
     public void invalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test2.com/path/1")) );
+        URI uri = URI.create("https://test2.com/path/1");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(uri) );
     }
 
     @Test
     public void uriMissingId() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test.com/path/")) );
+        URI uri = URI.create("https://test.com/path/");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(uri) );
     }
 
     @Test
@@ -96,6 +98,7 @@ public class EntityTest {
 
     @Test
     public void testUriWithNameNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl(URI.create("https://test.com/path/0"), null) );
+        URI uri = URI.create("https://test.com/path/0");
+        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl(uri, null) );
     }
 }

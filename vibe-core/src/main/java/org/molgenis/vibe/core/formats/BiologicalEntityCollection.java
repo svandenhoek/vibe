@@ -199,9 +199,9 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         Set<BiologicalEntity> keysWithEmptySet = new HashSet<>();
 
         // Goes through all keys to see if there are any keys with an empty Set.
-        for(BiologicalEntity key:combinationsByKey.keySet()) {
-            if(combinationsByKey.get(key).isEmpty()) {
-                keysWithEmptySet.add(key);
+        for(Map.Entry<? extends BiologicalEntity, Set<T3>> combination:combinationsByKey.entrySet()) {
+            if(combination.getValue().isEmpty()) {
+                keysWithEmptySet.add(combination.getKey());
             }
         }
 

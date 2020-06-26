@@ -308,6 +308,8 @@ public class VibeOptions {
                     if (getPhenotypes().size() == 0) {
                         return false;
                     }
+                default:
+                    // No additional checks required for non-specified cases.
             }
         }
 

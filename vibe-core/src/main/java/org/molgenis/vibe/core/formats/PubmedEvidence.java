@@ -14,25 +14,22 @@ public class PubmedEvidence extends Evidence implements EntityWithIntId {
     private int year;
     private int idInt;
 
-    @Override
-    public int getIdInt() {
-        return idInt;
-    }
-
     /**
      * Sorts {@link PubmedEvidence} first on {@link #getReleaseYear()} (most recent first) and then by ID
      * (as {@code int}, lowest to highest).
      */
-    public static final Comparator<PubmedEvidence> releaseYearComparator = new Comparator<PubmedEvidence>() {
-        @Override
-        public int compare(PubmedEvidence o1, PubmedEvidence o2) {
-            int diff =  o2.year - o1.year;
-            if (diff == 0) {
-                diff = o1.idInt - o2.idInt;
-            }
-            return diff;
+    public static final Comparator<PubmedEvidence> RELEASE_YEAR_COMPARATOR = (PubmedEvidence o1, PubmedEvidence o2) -> {
+        int diff =  o2.year - o1.year;
+        if (diff == 0) {
+            diff = o1.idInt - o2.idInt;
         }
+        return diff;
     };
+
+    @Override
+    public int getIdInt() {
+        return idInt;
+    }
 
     public PubmedEvidence(String id, int year) {
         super(id);

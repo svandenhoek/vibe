@@ -69,7 +69,7 @@ public class GeneDiseaseCollectionTest {
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[1]));
 
-        Assertions.assertTrue(collection1.equals(collection2));
+        Assertions.assertEquals(collection1, collection2);
     }
 
     @Test
@@ -80,7 +80,7 @@ public class GeneDiseaseCollectionTest {
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[2]));
 
-        Assertions.assertFalse(collection1.equals(collection2));
+        Assertions.assertNotEquals(collection1, collection2);
     }
 
     @Test
@@ -91,7 +91,7 @@ public class GeneDiseaseCollectionTest {
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[1], gdcs[2]));
 
-        Assertions.assertFalse(collection1.equals(collection2));
+        Assertions.assertNotEquals(collection1, collection2);
     }
 
     /**
@@ -108,7 +108,7 @@ public class GeneDiseaseCollectionTest {
         collection2.add(new GeneDiseaseCombination(genes[0], diseases[0], 0.3));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(collection1.equals(collection2)),
+                () -> Assertions.assertEquals(collection1, collection2),
                 () -> Assertions.assertFalse(collection1.allFieldsEquals(collection2))
         );
     }
@@ -136,9 +136,9 @@ public class GeneDiseaseCollectionTest {
         PubmedEvidence evidenceFromGdc2 = collection2.getByGene(genes[0]).iterator().next().getPubmedEvidenceForSource(sources[0]).iterator().next();
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(collection1.equals(collection2)),
+                () -> Assertions.assertEquals(collection1, collection2),
                 () -> Assertions.assertFalse(collection1.allFieldsEquals(collection2)),
-                () -> Assertions.assertTrue(evidenceFromGdc1.equals(evidenceFromGdc2)), // URI is identifier, so equals of PubmedEvidence is true.
+                () -> Assertions.assertEquals(evidenceFromGdc1, evidenceFromGdc2), // URI is identifier, so equals of PubmedEvidence is true.
                 () -> Assertions.assertFalse(evidenceFromGdc1.allFieldsEquals(evidenceFromGdc2))
         );
     }

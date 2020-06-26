@@ -56,7 +56,8 @@ public class DiseaseTest {
 
     @Test
     public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Disease(URI.create("http://linkedlifedata.com/resource/umls/C0123456")) );
+        URI uri = URI.create("http://linkedlifedata.com/resource/umls/C0123456");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Disease(uri) );
     }
 
     @Test
@@ -89,22 +90,25 @@ public class DiseaseTest {
 
     @Test
     public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease("umls:C0123456")));
+        Assertions.assertEquals(new Disease("umls:C0123456"), new Disease("umls:C0123456"));
     }
 
     @Test
     public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")).equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+        Assertions.assertEquals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")),
+                new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")));
     }
 
     @Test
     public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+        Assertions.assertEquals(new Disease("umls:C0123456"),
+                new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")));
     }
 
     @Test
     public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new Disease("umls:C0123456").equals(new Disease("umls:C9874565")));
+        Assertions.assertNotEquals(new Disease("umls:C0123456"),
+                new Disease("umls:C9874565"));
     }
 
     @Test
@@ -113,7 +117,7 @@ public class DiseaseTest {
         Disease disease2 = new Disease("umls:C0123456", "a disease name");
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertEquals(disease1, disease2),
                 () -> Assertions.assertTrue(disease1.allFieldsEquals(disease2))
         );
     }
@@ -128,7 +132,7 @@ public class DiseaseTest {
         Disease disease2 = new Disease("umls:C0123456", "a different disease name");
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertEquals(disease1, disease2),
                 () -> Assertions.assertFalse(disease1.allFieldsEquals(disease2))
         );
     }
