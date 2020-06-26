@@ -95,7 +95,7 @@ public class PubmedEvidenceTest {
                 actualOrder.get(2)
         ));
 
-        Collections.sort(actualOrder, PubmedEvidence.releaseYearComparator);
+        Collections.sort(actualOrder, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         Assertions.assertEquals(expectedOrder, actualOrder);
     }
 

@@ -5,6 +5,6 @@ package org.molgenis.vibe.core.formats;
  * {@link Class#equals(Object)} (for example due to design-reasons, though validity for all fields still needs to be
  * checked in unit-tests to assess everything functions as it should).
  */
-public interface allFieldsEquals {
+public interface AllFieldsEquals {
     boolean allFieldsEquals(Object o);
 }

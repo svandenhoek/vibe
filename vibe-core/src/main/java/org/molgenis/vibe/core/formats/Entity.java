@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetrieverTester within the test code for more information.
  *
  */
-public abstract class Entity implements ResourceUri, Comparable<Entity>, allFieldsEquals {
+public abstract class Entity implements ResourceUri, Comparable<Entity>, AllFieldsEquals {
     /**
      * The entity prefix.
      * @return a {@link String} containing the prefix.

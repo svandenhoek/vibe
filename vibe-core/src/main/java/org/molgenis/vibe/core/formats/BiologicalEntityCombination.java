@@ -9,7 +9,7 @@ import java.util.Objects;
  * @param <T1> the first {@link BiologicalEntity} subclass type
  * @param <T2> the second {@link BiologicalEntity} subclass type
  */
-public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> implements allFieldsEquals {
+public abstract class BiologicalEntityCombination<T1 extends BiologicalEntity, T2 extends BiologicalEntity> implements AllFieldsEquals {
     /**
      * The first {@link BiologicalEntity} subclass object.
      */
