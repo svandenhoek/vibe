@@ -1,5 +1,6 @@
 package org.molgenis.vibe.cli;
 
+import org.apache.commons.cli.ParseException;
 import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
 import org.molgenis.vibe.cli.properties.VibePropertiesLoader;
@@ -29,7 +30,7 @@ public class VibeApplication {
                 printUnexpectedExceptionOccurred();
                 vibeOptions.toString();
             }
-        } catch (Exception e) { // Errors generated during options parsing.
+        } catch (ParseException e) { // Errors generated during options parsing.
             System.err.println(e.getLocalizedMessage());
             CommandLineOptionsParser.printHelpMessage();
         }

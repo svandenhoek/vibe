@@ -40,10 +40,10 @@ public abstract class CommandLineOptionsParser {
      * Digests the command line arguments and stores this in a newly created {@link VibeOptions} instance.
      * @param args the command line arguments
      * @return a {@link VibeOptions} that contains the information from the command line
-     * @throws IOException see {@link #digestCommandLine(CommandLine, VibeOptions)}
-     * @throws ParseException see {@link #parseCommandLine(String[])}
+     * @throws ParseException see {@link #parseCommandLine(String[])} &
+     * {@link #digestCommandLine(CommandLine, VibeOptions)}
      */
-    public static VibeOptions parse(String[] args) throws IOException, ParseException {
+    public static VibeOptions parse(String[] args) throws ParseException {
         VibeOptions vibeOptions = new VibeOptions();
         parse(args, vibeOptions);
         return vibeOptions;
@@ -53,10 +53,10 @@ public abstract class CommandLineOptionsParser {
      * Digests the command line arguments and stores this in the supplied {@link VibeOptions} instance.
      * @param args the command line arguments
      * @param vibeOptions in which the digested command line arguments should be stored
-     * @throws IOException see {@link #digestCommandLine(CommandLine, VibeOptions)}
-     * @throws ParseException see {@link #parseCommandLine(String[])}
+     * @throws ParseException see {@link #parseCommandLine(String[])} &
+     * {@link #digestCommandLine(CommandLine, VibeOptions)}
      */
-    public static void parse(String[] args, VibeOptions vibeOptions) throws IOException, ParseException {
+    public static void parse(String[] args, VibeOptions vibeOptions) throws ParseException {
         CommandLine commandLine = parseCommandLine(args);
         digestCommandLine(commandLine, vibeOptions);
     }
@@ -171,12 +171,12 @@ public abstract class CommandLineOptionsParser {
      * @param commandLine the parsed command line
      * @param vibeOptions in which the parsed command line information should be stored
      * @throws InvalidPathException if user-input which should be a file/directory could not be converted to {@link Path}
-     * @throws IOException if invalid user-input was given (often due to unreadable/missing files)
+     * @throws ParseException if errors were encountered while parsing the command line arguments
      * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
      * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
     private static void digestCommandLine(CommandLine commandLine, VibeOptions vibeOptions)
-            throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
+            throws InvalidPathException, ParseException, NumberFormatException, InvalidStringFormatException {
         // Sets RunMode.
         defineRunMode(commandLine, vibeOptions);
 
@@ -185,7 +185,7 @@ public abstract class CommandLineOptionsParser {
 
         switch (vibeOptions.getRunMode()) {
             case GENES_FOR_PHENOTYPES:
-                // Checks for missing arguments, and if so, throws IOException.
+                // Checks for missing arguments, and if so, throws ParseException.
                 checkForMissingArguments(commandLine, vibeOptions);
 
                 // Digests the databases needed be the application.
@@ -204,9 +204,9 @@ public abstract class CommandLineOptionsParser {
 
         }
 
-        // Checks if any errors were created, and if so, throws IOException.
+        // Checks if any errors were created, and if so, throws ParseException.
         if(!errors.isEmpty()) {
-            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
+            throw new ParseException(StringUtils.join(errors, System.lineSeparator()));
         }
     }
 
@@ -216,9 +216,9 @@ public abstract class CommandLineOptionsParser {
      * @param vibeOptions in which the parsed command line information should be stored
      */
     private static void defineRunMode(CommandLine commandLine, VibeOptions vibeOptions) {
-        if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
+        if (commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
             vibeOptions.setRunMode(RunMode.HELP);
-        } else if(commandLine.hasOption("v")) {
+        } else if (commandLine.hasOption("v")) {
             vibeOptions.setRunMode(RunMode.VERSION);
         } else if (commandLine.hasOption("n") || commandLine.hasOption("m")) {
             vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
@@ -232,9 +232,9 @@ public abstract class CommandLineOptionsParser {
      * arguments require other arguments check if these are present as well, etc.)
      * @param commandLine the parsed command line
      * @param vibeOptions in which the parsed command line information should be stored
-     * @return a {@link List} containing all missing arguments, or an empty {@link List} if no arguments are missing
+     * @throws ParseException if any of the expected arguments is missing
      */
-    private static void checkForMissingArguments(CommandLine commandLine, VibeOptions vibeOptions) throws IOException {
+    private static void checkForMissingArguments(CommandLine commandLine, VibeOptions vibeOptions) throws ParseException {
         // Stores the missing expected arguments.
         List<String> missing = new ArrayList<>();
 
@@ -262,9 +262,9 @@ public abstract class CommandLineOptionsParser {
             }
         }
 
-        // Generates IOException with missing arguments if any were found.
+        // Generates ParseException with missing arguments if any were found.
         if(!missing.isEmpty()) {
-            throw new IOException("Missing arguments: " + StringUtils.join(missing, ", "));
+            throw new ParseException("Missing arguments: " + StringUtils.join(missing, ", "));
         }
     }
 
