@@ -184,6 +184,11 @@ public abstract class CommandLineOptionsParser {
         List<String> errors = new ArrayList<>();
 
         switch (vibeOptions.getRunMode()) {
+            case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
+                // Digests arguments related to the HPO ontology traversal.
+                digestHpoOntologyArguments(commandLine, vibeOptions, errors);
+
+                // NO BREAK: continues!!!
             case GENES_FOR_PHENOTYPES:
                 // Checks for missing arguments, and if so, throws ParseException.
                 checkForMissingArguments(commandLine, vibeOptions);
@@ -196,9 +201,6 @@ public abstract class CommandLineOptionsParser {
 
                 // Digests output arguments (including logging/verbosity).
                 digestOutputArguments(commandLine, vibeOptions, errors);
-            case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
-                // Digests arguments related to the HPO ontology traversal.
-                digestHpoOntologyArguments(commandLine, vibeOptions, errors);
             default:
                 // For other cases (NONE, HELP, VERSION) no other arguments need to be digested.
 
