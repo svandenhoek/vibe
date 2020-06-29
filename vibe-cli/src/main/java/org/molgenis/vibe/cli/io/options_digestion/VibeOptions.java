@@ -10,7 +10,6 @@ import org.molgenis.vibe.cli.io.output.target.OutputWriter;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -301,50 +300,64 @@ public class VibeOptions {
      */
     @SuppressWarnings("java:S128")
     public boolean validate() {
-        // With RunMode.NONE there are no requirements.
-        if (!runMode.equals(RunMode.NONE)) {
-            // Check if DisGeNET data is set.
-            if (getVibeTdb() == null) {
-                return false;
-            }
-            // Check if HPO ontology data is set.
-            if (getHpoOntology() == null) {
-                return false;
-            }
-            // Check if an output file was given.
-            if (getOutputWriter() == null) {
-                return false;
-            }
-            // Checks if a gene prioritized output format factory was given.
-            if (getGenePrioritizedOutputFormatWriterFactory() == null) {
-                return false;
-            }
-            // Check config specific settings are set.
-            switch (runMode) {
-                // Additional checks if related HPOs need to be retrieved.
-                case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
-                    // Check if a factory for related HPO retrieval was set.
-                    if (getPhenotypesRetrieverFactory() == null) {
-                        return false;
-                    }
-                    // Check if a max distance for related HPO retrieval was set.
-                    if (getOntologyMaxDistance() == null) {
-                        return false;
-                    }
-                    // NO BREAK: continues!!!
-
-                    // Checks if no associated phenotypes need to be retrieved.
-                case GENES_FOR_PHENOTYPES:
-                    // Check if there are any input phenotypes.
-                    if (getPhenotypes().isEmpty()) {
-                        return false;
-                    }
-                default:
-                    // No additional checks required for non-specified cases.
-            }
+        switch (runMode) {
+            case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
+                if(!validateRelatedPhenotypesRetrieval()) return false;
+                // NO BREAK: continues!!!
+            case GENES_FOR_PHENOTYPES:
+                if(!validateGenesForPhenotype()) return false;
+            default:
+                // No checks required for non-specified cases.
         }
 
         // If nothing failed, returns true.
+        return true;
+    }
+
+    /**
+     * Checks whether variables were set that are only required for retrieving related {@link Phenotype}{@code s} for
+     * the input {@link Phenotype}{@code s}.
+     * @return {@code true} if all needed variables are set, otherwise {@code false}
+     */
+    private boolean validateRelatedPhenotypesRetrieval() {
+        // Check if a factory for related HPO retrieval was set.
+        if (getPhenotypesRetrieverFactory() == null) {
+            return false;
+        }
+        // Check if a max distance for related HPO retrieval was set.
+        if (getOntologyMaxDistance() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether variables were set that are required for retrieving a
+     * {@link org.molgenis.vibe.core.formats.GeneDiseaseCollection} from the {@code TDB} using
+     * {@link Phenotype}{@code s} as input.
+     * @return {@code true} if all needed variables are set, otherwise {@code false}
+     */
+    private boolean validateGenesForPhenotype() {
+        // Check if DisGeNET data is set.
+        if (getVibeTdb() == null) {
+            return false;
+        }
+        // Check if HPO ontology data is set.
+        if (getHpoOntology() == null) {
+            return false;
+        }
+        // Check if an output writer was given.
+        if (getOutputWriter() == null) {
+            return false;
+        }
+        // Checks if a gene prioritized output format factory was given.
+        if (getGenePrioritizedOutputFormatWriterFactory() == null) {
+            return false;
+        }
+        // Check if there are any input phenotypes.
+        if (getPhenotypes().isEmpty()) {
+            return false;
+        }
         return true;
     }
 
