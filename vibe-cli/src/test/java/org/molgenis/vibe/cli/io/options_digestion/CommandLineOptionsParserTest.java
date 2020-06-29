@@ -63,7 +63,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(HELP);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Assertions.assertEquals(RunMode.NONE, vibeOptions.getRunMode());
+        Assertions.assertEquals(RunMode.HELP, vibeOptions.getRunMode());
     }
 
     @Test
@@ -71,7 +71,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(VERSION);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Assertions.assertEquals(RunMode.NONE, vibeOptions.getRunMode());
+        Assertions.assertEquals(RunMode.VERSION, vibeOptions.getRunMode());
     }
 
     @Test
@@ -79,7 +79,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(new String[]{""});
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Assertions.assertEquals(RunMode.NONE, vibeOptions.getRunMode());
+        Assertions.assertEquals(RunMode.HELP, vibeOptions.getRunMode());
     }
 
     @Test
