@@ -3,6 +3,7 @@ package org.molgenis.vibe.cli.io.options_digestion;
 import org.apache.commons.cli.*;
 import org.apache.commons.lang3.StringUtils;
 import org.molgenis.vibe.cli.RunMode;
+import org.molgenis.vibe.cli.properties.VibeProperties;
 import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.cli.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 
@@ -70,8 +71,18 @@ public abstract class CommandLineOptionsParser {
                 .build());
 
         options.addOption(Option.builder("v")
-                .longOpt("verbose")
-                .desc("Shows text indicating the processes that are being done.")
+                .longOpt("version")
+                .desc("Shows the application version.")
+                .build());
+
+        options.addOption(Option.builder("d")
+                .longOpt("debug")
+                .desc("Shows debug information.")
+                .build());
+
+        options.addOption(Option.builder("f")
+                .longOpt("force")
+                .desc("Overwrite output file if it already exists.")
                 .build());
 
         options.addOption(Option.builder("p")
@@ -134,12 +145,16 @@ public abstract class CommandLineOptionsParser {
      * Prints the help message to stdout.
      */
     public static void printHelpMessage() {
-        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] -t <FILE> -w <FILE> [-n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
+        String cmdSyntax = "java -jar vibe-with-dependencies.jar [-h] [-v] [-d] [-f] -t <FILE> -w <FILE> [-n <NAME> -m <NUMBER>] [-o <FILE>] [-l] [-u] -p <HPO ID> [-p <HPO ID>]...";
         String helpHeader = "";
-        String helpFooter = "Molgenis VIBE";
+        String helpFooter = VibeProperties.APP_NAME.getValue() + " v" + VibeProperties.APP_VERSION.getValue();
 
         HelpFormatter formatter = new HelpFormatter();
         formatter.printHelp(80, cmdSyntax, helpHeader, options, helpFooter, false);
+    }
+
+    public static void printVersion() {
+        System.out.println(VibeProperties.APP_VERSION.getValue());
     }
 
     /**
@@ -208,6 +223,10 @@ public abstract class CommandLineOptionsParser {
     private static void defineRunMode(CommandLine commandLine, VibeOptions vibeOptions) {
         if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
             vibeOptions.setRunMode(RunMode.NONE);
+            CommandLineOptionsParser.printHelpMessage();
+        } else if(commandLine.hasOption("v")) {
+            vibeOptions.setRunMode(RunMode.NONE);
+            printVersion();
         } else if (commandLine.hasOption("n") || commandLine.hasOption("m")) {
             vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         } else {
@@ -300,7 +319,7 @@ public abstract class CommandLineOptionsParser {
      */
     private static void digestOutputArguments(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
         // Whether tool should be verbose.
-        vibeOptions.setVerbose(commandLine.hasOption("v"));
+        vibeOptions.setVerbose(commandLine.hasOption("d"));
 
         // Defines output format.
         if(commandLine.hasOption("l")) {
@@ -316,7 +335,11 @@ public abstract class CommandLineOptionsParser {
         // Defines output target.
         if(commandLine.hasOption("o")) {
             try {
-                vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
+                if(commandLine.hasOption("f")) {
+                    vibeOptions.setFileOutputWriterForced(commandLine.getOptionValue("o"));
+                } else {
+                    vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
+                }
             } catch(InvalidPathException | FileAlreadyExistsException e) {
                 errors.add(e.getMessage());
             }

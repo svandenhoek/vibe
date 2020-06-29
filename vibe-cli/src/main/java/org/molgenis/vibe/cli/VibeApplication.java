@@ -2,6 +2,7 @@ package org.molgenis.vibe.cli;
 
 import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
 import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
+import org.molgenis.vibe.cli.properties.VibePropertiesLoader;
 
 import java.io.IOException;
 
@@ -15,6 +16,10 @@ public class VibeApplication {
      */
     public static void main(String[] args) {
         try {
+            // Parses application properties.
+            // Should always be ran first (as it sets the values for the VibeProperties enum)!
+            VibePropertiesLoader.loadProperties();
+            
             // Parses user-input.
             VibeOptions vibeOptions = new VibeOptions();
             CommandLineOptionsParser.parse(args, vibeOptions);

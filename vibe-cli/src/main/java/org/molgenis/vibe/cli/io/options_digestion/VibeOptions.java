@@ -10,6 +10,7 @@ import org.molgenis.vibe.cli.io.output.target.OutputWriter;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.nio.file.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -233,9 +234,29 @@ public class VibeOptions {
      * @throws FileAlreadyExistsException if file already exists
      */
     protected void setFileOutputWriter(Path outputFile) throws FileAlreadyExistsException {
-        if(checkIfPathIsReadableFile(outputFile)) {
+        if(checkIfPathIsWritableFile(outputFile)) {
             throw new FileAlreadyExistsException(outputFile.getFileName() + " already exists.");
         }
+        this.outputWriter = new FileOutputWriter(outputFile);
+    }
+
+    /**
+     * Wrapper for {@link #setFileOutputWriterForced(Path)}.
+     * @param outputFile the file path to write the output to
+     * @throws InvalidPathException if {@code outputFile} could not be converted to {@link Path}
+     */
+    protected void setFileOutputWriterForced(String outputFile) throws InvalidPathException {
+        setFileOutputWriterForced(Paths.get(outputFile));
+    }
+
+    /**
+     * Sets the {@link OutputWriter} to a {@link FileOutputWriter}. Overrides any previously set {@link OutputWriter}.
+     * If an existing file is given, it will be overwritten.
+     * @param outputFile the file path to write the output to
+     * @see FileOutputWriter#initialize()
+     */
+    protected void setFileOutputWriterForced(Path outputFile) {
+        checkIfPathIsWritableFile(outputFile);
         this.outputWriter = new FileOutputWriter(outputFile);
     }
 
@@ -253,6 +274,15 @@ public class VibeOptions {
      */
     private boolean checkIfPathIsReadableFile(Path path) {
         return Files.isReadable(path) && Files.isRegularFile(path);
+    }
+
+    /**
+     * Checks if a given {@link Path} is an existing writable file.
+     * @param path {@link Path}
+     * @return {@code boolean} {@code true} if so, otherwise {@code false}
+     */
+    private boolean checkIfPathIsWritableFile(Path path) {
+        return Files.isWritable(path) && Files.isRegularFile(path);
     }
 
     /**
