@@ -175,6 +175,7 @@ public abstract class CommandLineOptionsParser {
      * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
      * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
+    @SuppressWarnings("java:S128")
     private static void digestCommandLine(CommandLine commandLine, VibeOptions vibeOptions)
             throws InvalidPathException, ParseException, NumberFormatException, InvalidStringFormatException {
         // Sets RunMode.

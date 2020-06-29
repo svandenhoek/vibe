@@ -299,6 +299,7 @@ public class VibeOptions {
      * user input to validate if variables are set correctly (based on the specified {@link RunMode}).
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
+    @SuppressWarnings("java:S128")
     public boolean validate() {
         // With RunMode.NONE there are no requirements.
         if (!runMode.equals(RunMode.NONE)) {
