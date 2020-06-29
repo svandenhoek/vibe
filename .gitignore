@@ -22,7 +22,7 @@
 hs_err_pid*
 
 #Java target folder
-app/target/
+*/target/
 
 # Mac custom folder attributes
 .DS_Store
@@ -30,13 +30,6 @@ app/target/
 # Ignores Intellij IDEA files.
 .IDEA/
 *.iml
-
-# Test resources which should be downloaded externally
-app/src/test/resources/hp.owl
-app/src/test/resources/tdb
-
-# Files stored in TMP dir.
-app/TMP/
 
 # Files generated for database tests.
 database/test/*.tsv
