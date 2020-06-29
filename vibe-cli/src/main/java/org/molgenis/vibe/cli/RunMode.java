@@ -1,6 +1,8 @@
 package org.molgenis.vibe.cli;
 
 import org.apache.jena.ext.com.google.common.base.Stopwatch;
+import org.molgenis.vibe.cli.io.options_digestion.CommandLineOptionsParser;
+import org.molgenis.vibe.cli.properties.VibeProperties;
 import org.molgenis.vibe.core.GeneDiseaseCollectionRetrievalRunner;
 import org.molgenis.vibe.core.PhenotypesRetrievalRunner;
 import org.molgenis.vibe.cli.io.options_digestion.VibeOptions;
@@ -19,9 +21,15 @@ import java.util.Set;
  * Describes what the application should do.
  */
 public enum RunMode {
-    NONE("none") {
+    HELP("Show help message.") {
         @Override
         protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) {
+            CommandLineOptionsParser.printHelpMessage();
+        }
+    }, VERSION("Show application version.") {
+        @Override
+        protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) {
+            System.out.println(VibeProperties.APP_VERSION.getValue());
         }
     }, GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES("Retrieves genes for input phenotypes and phenotypes associated to input phenotypes.") {
         @Override

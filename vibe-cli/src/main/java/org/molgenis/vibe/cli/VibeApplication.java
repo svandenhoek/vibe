@@ -15,11 +15,9 @@ public class VibeApplication {
      * @param args {@link String}{@code []}
      */
     public static void main(String[] args) {
+        loadPropertiesFile();
+
         try {
-            // Parses application properties.
-            // Should always be ran first (as it sets the values for the VibeProperties enum)!
-            VibePropertiesLoader.loadProperties();
-            
             // Parses user-input.
             VibeOptions vibeOptions = new VibeOptions();
             CommandLineOptionsParser.parse(args, vibeOptions);
@@ -34,6 +32,19 @@ public class VibeApplication {
         } catch (Exception e) { // Errors generated during options parsing.
             System.err.println(e.getLocalizedMessage());
             CommandLineOptionsParser.printHelpMessage();
+        }
+    }
+
+    /**
+     * Parses application properties.
+     * <b>Should always be ran first (as it sets the values for the VibeProperties enum)!</b>
+     */
+    private static void loadPropertiesFile() {
+        try {
+            VibePropertiesLoader.loadProperties();
+        } catch (IOException e) {
+            printUnexpectedExceptionOccurred();
+            e.printStackTrace();
         }
     }
 

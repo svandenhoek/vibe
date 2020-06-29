@@ -153,10 +153,6 @@ public abstract class CommandLineOptionsParser {
         formatter.printHelp(80, cmdSyntax, helpHeader, options, helpFooter, false);
     }
 
-    public static void printVersion() {
-        System.out.println(VibeProperties.APP_VERSION.getValue());
-    }
-
     /**
      * Parses the command line with the possible arguments.
      *
@@ -184,29 +180,28 @@ public abstract class CommandLineOptionsParser {
         // Sets RunMode.
         defineRunMode(commandLine, vibeOptions);
 
-        // If RunMode is NONE, stops digesting command line.
-        if(vibeOptions.getRunMode() == RunMode.NONE) {
-            return; // IMPORTANT: Does not process any other arguments from this point.
-        }
-
-        // Checks for missing arguments, and if so, throws IOException.
-        checkForMissingArguments(commandLine, vibeOptions);
-
         // Stores errors produced by the given arguments.
         List<String> errors = new ArrayList<>();
 
-        // Digests the databases needed be the application.
-        digestDatabases(commandLine, vibeOptions, errors);
+        switch (vibeOptions.getRunMode()) {
+            case GENES_FOR_PHENOTYPES:
+                // Checks for missing arguments, and if so, throws IOException.
+                checkForMissingArguments(commandLine, vibeOptions);
 
-        // Digests the input phenotypes.
-        digestInputPhenotypes(commandLine, vibeOptions, errors);
+                // Digests the databases needed be the application.
+                digestDatabases(commandLine, vibeOptions, errors);
 
-        // Digests output arguments (including logging/verbosity).
-        digestOutputArguments(commandLine, vibeOptions, errors);
+                // Digests the input phenotypes.
+                digestInputPhenotypes(commandLine, vibeOptions, errors);
 
-        // Digests arguments related to the HPO ontology traversal.
-        if(vibeOptions.getRunMode() == RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES) {
-            digestHpoOntologyArguments(commandLine, vibeOptions, errors);
+                // Digests output arguments (including logging/verbosity).
+                digestOutputArguments(commandLine, vibeOptions, errors);
+            case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
+                // Digests arguments related to the HPO ontology traversal.
+                digestHpoOntologyArguments(commandLine, vibeOptions, errors);
+            default:
+                // For other cases (NONE, HELP, VERSION) no other arguments need to be digested.
+
         }
 
         // Checks if any errors were created, and if so, throws IOException.
@@ -222,11 +217,9 @@ public abstract class CommandLineOptionsParser {
      */
     private static void defineRunMode(CommandLine commandLine, VibeOptions vibeOptions) {
         if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
-            vibeOptions.setRunMode(RunMode.NONE);
-            CommandLineOptionsParser.printHelpMessage();
+            vibeOptions.setRunMode(RunMode.HELP);
         } else if(commandLine.hasOption("v")) {
-            vibeOptions.setRunMode(RunMode.NONE);
-            printVersion();
+            vibeOptions.setRunMode(RunMode.VERSION);
         } else if (commandLine.hasOption("n") || commandLine.hasOption("m")) {
             vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         } else {
