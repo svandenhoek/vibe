@@ -181,6 +181,9 @@ public abstract class CommandLineOptionsParser {
         // Sets RunMode.
         defineRunMode(commandLine, vibeOptions);
 
+        // Checks for missing arguments, and if so, throws ParseException.
+        checkForMissingArguments(commandLine, vibeOptions);
+
         // Stores errors produced by the given arguments.
         List<String> errors = new ArrayList<>();
 
@@ -191,9 +194,6 @@ public abstract class CommandLineOptionsParser {
 
                 // NO BREAK: continues!!!
             case GENES_FOR_PHENOTYPES:
-                // Checks for missing arguments, and if so, throws ParseException.
-                checkForMissingArguments(commandLine, vibeOptions);
-
                 // Digests the databases needed be the application.
                 digestDatabases(commandLine, vibeOptions, errors);
 
@@ -203,7 +203,7 @@ public abstract class CommandLineOptionsParser {
                 // Digests output arguments (including logging/verbosity).
                 digestOutputArguments(commandLine, vibeOptions, errors);
             default:
-                // For other cases (NONE, HELP, VERSION) no other arguments need to be digested.
+                // For other cases (HELP/VERSION) no other arguments need to be digested.
 
         }
 
@@ -238,6 +238,11 @@ public abstract class CommandLineOptionsParser {
      * @throws ParseException if any of the expected arguments is missing
      */
     private static void checkForMissingArguments(CommandLine commandLine, VibeOptions vibeOptions) throws ParseException {
+        // If help message or version is requested, there are no requirements.
+        if(vibeOptions.getRunMode() == RunMode.HELP || vibeOptions.getRunMode() == RunMode.VERSION) {
+            return;
+        }
+
         // Stores the missing expected arguments.
         List<String> missing = new ArrayList<>();
 
