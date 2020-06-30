@@ -201,7 +201,7 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    public void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithoutOverwrite() {
+    void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithoutOverwrite() {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );

@@ -11,6 +11,9 @@ import java.util.Properties;
 public class VibePropertiesLoader {
     private static final String PROPERTIES_FILE_NAME = "application.properties";
 
+    private VibePropertiesLoader() {
+    }
+
     public static void loadProperties() throws IOException {
         Properties properties = new Properties();
 

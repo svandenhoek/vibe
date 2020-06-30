@@ -9,7 +9,7 @@ import java.io.IOException;
  * Note that {@link VibePropertiesLoader#loadProperties()} only needs to be run once app-wide, so any pre-loading tests
  * could cause issues if other tests elsewhere would also load the properties file due to needing values from it.
  */
-public class VibePropertiesLoaderTest {
+class VibePropertiesLoaderTest {
     @Test
     void testIfVibePropertiesSetAfterLoading() throws IOException {
         VibePropertiesLoader.loadProperties();
