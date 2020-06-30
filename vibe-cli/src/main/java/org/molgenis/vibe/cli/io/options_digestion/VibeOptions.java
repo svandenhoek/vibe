@@ -317,6 +317,8 @@ public class VibeOptions {
     /**
      * Checks whether variables were set that are only required for retrieving related {@link Phenotype}{@code s} for
      * the input {@link Phenotype}{@code s}.
+     * <br /><br />
+     * <b>IMPORTANT:</b> Requirements that are checked in {@link #validateGenesForPhenotype()} are skipped here!
      * @return {@code true} if all needed variables are set, otherwise {@code false}
      */
     private boolean validateRelatedPhenotypesRetrieval() {
