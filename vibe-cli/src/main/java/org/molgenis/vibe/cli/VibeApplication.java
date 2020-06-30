@@ -31,7 +31,6 @@ public class VibeApplication {
                 }
             } catch (ParseException e) { // Errors generated during options parsing.
                 System.err.println(e.getLocalizedMessage());
-                CommandLineOptionsParser.printHelpMessage();
             }
         }
     }
