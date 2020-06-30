@@ -9,12 +9,12 @@ import java.util.Properties;
  * class called in the app before anything else by the {@code start-class}.
  */
 public class VibePropertiesLoader {
-    private static final String propertiesFileName = "application.properties";
+    private static final String PROPERTIES_FILE_NAME = "application.properties";
 
     public static void loadProperties() throws IOException {
         Properties properties = new Properties();
 
-        try ( InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(propertiesFileName) ) {
+        try ( InputStream inputStream = Thread.currentThread().getContextClassLoader().getResourceAsStream(PROPERTIES_FILE_NAME) ) {
             // Load properties.
             properties.load(inputStream);
 
