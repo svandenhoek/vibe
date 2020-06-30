@@ -89,12 +89,42 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
     }
 
     /**
+     * The {@link PubmedEvidence} for the defined {@link Source}.
+     * @param source
+     * @return a {@link List} ordered through {@link PubmedEvidence#RELEASE_YEAR_COMPARATOR} containing
+     * {@link PubmedEvidence}, or {@code null} if {@link Source} does not have any evidence
+     */
+    public List<PubmedEvidence> getPubmedEvidenceForSourceSortedByReleaseDate(Source source) {
+        List<PubmedEvidence> evidenceList = null;
+        Set<PubmedEvidence> evidence = pubmedEvidence.get(source);
+
+        if (evidence != null) {
+            evidenceList = new ArrayList<>();
+            evidenceList.addAll(evidence);
+            Collections.sort(evidenceList, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
+        }
+        return evidenceList;
+    }
+
+    /**
      * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
      * @return a {@link Set} containing all the {@link PubmedEvidence}
      */
     public Set<PubmedEvidence> getAllPubmedEvidence() {
         Set<PubmedEvidence> evidence = new HashSet<>();
-        pubmedEvidence.values().forEach(pubmedEvidenceSubset -> evidence.addAll(pubmedEvidenceSubset));
+        pubmedEvidence.values().forEach(evidence::addAll);
+        return evidence;
+    }
+
+    /**
+     * The {@link PubmedEvidence} of all {@link Source}{@code s} combined.
+     * @return a {@link List} containing all the {@link PubmedEvidence} ordered through
+     * {@link PubmedEvidence#RELEASE_YEAR_COMPARATOR}
+     */
+    public List<PubmedEvidence> getAllPubMedEvidenceSortedByYear() {
+        List<PubmedEvidence> evidence = new ArrayList<>();
+        pubmedEvidence.values().forEach(evidence::addAll);
+        Collections.sort(evidence, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         return evidence;
     }
 
@@ -117,11 +147,7 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         add(source);
 
         // Stores PubMed evidence.
-        Set<PubmedEvidence> evidenceList = pubmedEvidence.get(source);
-        if(evidenceList == null) {
-            evidenceList = new HashSet<>();
-            pubmedEvidence.put(source, evidenceList);
-        }
+        Set<PubmedEvidence> evidenceList = pubmedEvidence.computeIfAbsent(source, k -> new HashSet<>());
         evidenceList.add(evidence);
     }
 
@@ -136,6 +162,27 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         } else {
             sourcesCount.put(source, count + 1);
         }
+    }
+
+    /**
+     * Set {@code count} for a {@link Source}. To prevent wrongly setting information,
+     * incrementing through {@link #add(Source)} is suggested instead.
+     * @param source the {@link Source} for which the count should be set
+     * @param count the new value for that {@link Source}
+     */
+    void setSourceCount(Source source, int count) {
+        sourcesCount.put(source, count);
+    }
+
+    /**
+     * Set all {@link PubmedEvidence} for {@link Source}. Note that this method does NOT increment evidence count!
+     * To prevent wrongly setting information, adding {@link PubmedEvidence} through
+     * {@link #add(Source, PubmedEvidence)} is suggested instead.
+     * @param source the {@link Source} for which the {@link PubmedEvidence} should be set
+     * @param evidence a {@link Set} containing all {@link PubmedEvidence} for that {@link Source}
+     */
+    void setPubmedEvidenceForSource(Source source, Set<PubmedEvidence> evidence) {
+        pubmedEvidence.put(source, evidence);
     }
 
     @Override
@@ -165,11 +212,11 @@ public class GeneDiseaseCombination extends BiologicalEntityCombination<Gene, Di
         }
 
         // Checks allFieldsEquals() for all items in pubmedEvidence.
-        for (Source source : pubmedEvidence.keySet()) {
-            List<PubmedEvidence> thisPubmedEvidences = new ArrayList<>(pubmedEvidence.get(source));
+        for (Map.Entry<Source, Set<PubmedEvidence>> sourcePubmedEvidence : pubmedEvidence.entrySet()) {
+            List<PubmedEvidence> thisPubmedEvidences = new ArrayList<>(sourcePubmedEvidence.getValue());
             Collections.sort(thisPubmedEvidences);
 
-            List<PubmedEvidence> thatPubmedEvidences = new ArrayList<>(that.pubmedEvidence.get(source));
+            List<PubmedEvidence> thatPubmedEvidences = new ArrayList<>(that.pubmedEvidence.get(sourcePubmedEvidence.getKey()));
             Collections.sort(thatPubmedEvidences);
 
             for (int i = 0; i < thisPubmedEvidences.size(); i++) {

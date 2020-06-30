@@ -10,57 +10,58 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class DiseaseTest {
+class DiseaseTest {
     @Test
-    public void useValidIdWithLowercasePrefix() {
+    void useValidIdWithLowercasePrefix() {
         Disease disease = new Disease("umls:C0123456");
         testIfValid(disease);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() {
+    void useValidIdWithUppercasePrefix() {
         Disease disease = new Disease("UMLS:C0123456");
         testIfValid(disease);
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix1() {
+    void useValidIdWithSingleUpperCasePrefix1() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("Umls:C0123456") );
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix2() {
+    void useValidIdWithSingleUpperCasePrefix2() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("uMls:C0123456") );
     }
 
     @Test
-    public void useValidIdWithInvalidPrefix() {
+    void useValidIdWithInvalidPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("ulms:C0123456") );
     }
 
     @Test
-    public void useValidIdWithoutPrefix() {
+    void useValidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("C0123456") );
     }
 
     @Test
-    public void useUriAsIdInput() {
+    void useUriAsIdInput() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Disease("http://linkedlifedata.com/resource/umls/id/C0123456") );
     }
 
     @Test
-    public void useValidUri() {
+    void useValidUri() {
         Disease disease = new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"));
         testIfValid(disease);
     }
 
     @Test
-    public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Disease(URI.create("http://linkedlifedata.com/resource/umls/C0123456")) );
+    void useInvalidUri() {
+        URI uri = URI.create("http://linkedlifedata.com/resource/umls/C0123456");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Disease(uri) );
     }
 
     @Test
-    public void testSort() {
+    void testSort() {
         List<Disease> actualOrder = new ArrayList<>( Arrays.asList(
                 new Disease("umls:C0000020"),
                 new Disease("umls:C0000003"),
@@ -88,32 +89,35 @@ public class DiseaseTest {
     }
 
     @Test
-    public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease("umls:C0123456")));
+    void testEqualsIdToEqualId() {
+        Assertions.assertEquals(new Disease("umls:C0123456"), new Disease("umls:C0123456"));
     }
 
     @Test
-    public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")).equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+    void testEqualsUriToEqualUri() {
+        Assertions.assertEquals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")),
+                new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")));
     }
 
     @Test
-    public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new Disease("umls:C0123456").equals(new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456"))));
+    void testEqualsIdToEqualUri() {
+        Assertions.assertEquals(new Disease("umls:C0123456"),
+                new Disease(URI.create("http://linkedlifedata.com/resource/umls/id/C0123456")));
     }
 
     @Test
-    public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new Disease("umls:C0123456").equals(new Disease("umls:C9874565")));
+    void testEqualsIdToDifferentId() {
+        Assertions.assertNotEquals(new Disease("umls:C0123456"),
+                new Disease("umls:C9874565"));
     }
 
     @Test
-    public void testAllEqualsEqual() {
+    void testAllEqualsEqual() {
         Disease disease1 = new Disease("umls:C0123456", "a disease name");
         Disease disease2 = new Disease("umls:C0123456", "a disease name");
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertEquals(disease1, disease2),
                 () -> Assertions.assertTrue(disease1.allFieldsEquals(disease2))
         );
     }
@@ -123,12 +127,12 @@ public class DiseaseTest {
      * this test ensures the custom deep equals works correctly for usage in other tests.
      */
     @Test
-    public void testAllEqualsNotEqual() {
+    void testAllEqualsNotEqual() {
         Disease disease1 = new Disease("umls:C0123456", "a disease name");
         Disease disease2 = new Disease("umls:C0123456", "a different disease name");
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(disease1.equals(disease2)),
+                () -> Assertions.assertEquals(disease1, disease2),
                 () -> Assertions.assertFalse(disease1.allFieldsEquals(disease2))
         );
     }

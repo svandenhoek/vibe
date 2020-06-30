@@ -10,59 +10,60 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GeneTest {
+class GeneTest {
     private static final GeneSymbol symbol = new GeneSymbol("hgnc:ABC");
 
     @Test
-    public void useValidIdWithLowercasePrefix() {
+    void useValidIdWithLowercasePrefix() {
         Gene gene = new Gene("ncbigene:1234", symbol);
         testIfValid(gene);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() {
+    void useValidIdWithUppercasePrefix() {
         Gene gene = new Gene("NCBIGENE:1234", symbol);
         testIfValid(gene);
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix1() {
+    void useValidIdWithSingleUpperCasePrefix1() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("Ncbigene:1234", symbol) );
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix2() {
+    void useValidIdWithSingleUpperCasePrefix2() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("nCbigene:1234", symbol) );
     }
 
     @Test
-    public void useValidIdWithInvalidPrefix() {
+    void useValidIdWithInvalidPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("ncbi:1234", symbol) );
     }
 
     @Test
-    public void useValidIdWithoutPrefix() {
+    void useValidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("1234", symbol) );
     }
 
     @Test
-    public void useUriAsIdInput() {
+    void useUriAsIdInput() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new Gene("http://identifiers.org/ncbigene/1234", symbol) );
     }
 
     @Test
-    public void useValidUri() {
+    void useValidUri() {
         Gene gene = new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol);
         testIfValid(gene);
     }
 
     @Test
-    public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new Gene(URI.create("http://identifiers.org/ncbi/1234"), symbol) );
+    void useInvalidUri() {
+        URI uri = URI.create("http://identifiers.org/ncbi/1234");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new Gene(uri, symbol) );
     }
 
     @Test
-    public void testSort() {
+    void testSort() {
         List<Gene> actualOrder = new ArrayList<>( Arrays.asList(
                 new Gene("ncbigene:20", symbol),
                 new Gene("ncbigene:3", symbol),
@@ -90,32 +91,34 @@ public class GeneTest {
     }
 
     @Test
-    public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:1234", symbol)));
+    void testEqualsIdToEqualId() {
+        Assertions.assertEquals(new Gene("ncbigene:1234", symbol), new Gene("ncbigene:1234", symbol));
     }
 
     @Test
-    public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+    void testEqualsUriToEqualUri() {
+        Assertions.assertEquals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol),
+                new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol));
     }
 
     @Test
-    public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new Gene("ncbigene:1234", symbol).equals(new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol)));
+    void testEqualsIdToEqualUri() {
+        Assertions.assertEquals(new Gene("ncbigene:1234", symbol),
+                new Gene(URI.create("http://identifiers.org/ncbigene/1234"), symbol));
     }
 
     @Test
-    public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new Gene("ncbigene:1234", symbol).equals(new Gene("ncbigene:5678", symbol)));
+    void testEqualsIdToDifferentId() {
+        Assertions.assertNotEquals(new Gene("ncbigene:1234", symbol), new Gene("ncbigene:5678", symbol));
     }
 
     @Test
-    public void testAllEqualsEqual() {
+    void testAllEqualsEqual() {
         Gene gene1 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
         Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertEquals(gene1, gene2),
                 () -> Assertions.assertTrue(gene1.allFieldsEquals(gene2))
         );
     }
@@ -125,12 +128,12 @@ public class GeneTest {
      * this test ensures the custom deep equals works correctly for usage in other tests.
      */
     @Test
-    public void testAllEqualsNotEqual() {
+    void testAllEqualsNotEqual() {
         Gene gene1 = new Gene("ncbigene:42", new GeneSymbol("hgnc:ABC"));
         Gene gene2 = new Gene("ncbigene:42", new GeneSymbol("hgnc:DEF"));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(gene1.equals(gene2)),
+                () -> Assertions.assertEquals(gene1, gene2),
                 () -> Assertions.assertFalse(gene1.allFieldsEquals(gene2))
         );
     }

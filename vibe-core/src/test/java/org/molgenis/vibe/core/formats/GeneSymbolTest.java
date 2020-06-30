@@ -10,57 +10,58 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class GeneSymbolTest {
+class GeneSymbolTest {
     @Test
-    public void useValidIdWithLowercasePrefix() {
+    void useValidIdWithLowercasePrefix() {
         GeneSymbol symbol = new GeneSymbol("hgnc:AB-123");
         testIfValid(symbol);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() {
+    void useValidIdWithUppercasePrefix() {
         GeneSymbol symbol = new GeneSymbol("HGNC:AB-123");
         testIfValid(symbol);
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix1() {
+    void useValidIdWithSingleUpperCasePrefix1() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("Hgnc:AB-123") );
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix2() {
+    void useValidIdWithSingleUpperCasePrefix2() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("hGnc:AB-123") );
     }
 
     @Test
-    public void useValidIdWithInvalidPrefix() {
+    void useValidIdWithInvalidPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("hg:AB-123") );
     }
 
     @Test
-    public void useValidIdWithoutPrefix() {
+    void useValidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("AB-123") );
     }
 
     @Test
-    public void useUriAsIdInput() {
+    void useUriAsIdInput() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new GeneSymbol("http://identifiers.org/hgnc.symbol/AB-123") );
     }
 
     @Test
-    public void useValidUri() {
+    void useValidUri() {
         GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"));
         testIfValid(symbol);
     }
 
     @Test
-    public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeneSymbol(URI.create("http://identifiers.org/hgnc/AB-123")) );
+    void useInvalidUri() {
+        URI uri = URI.create("http://identifiers.org/hgnc/AB-123");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new GeneSymbol(uri) );
     }
 
     @Test
-    public void testSort() {
+    void testSort() {
         List<GeneSymbol> actualOrder = new ArrayList<>( Arrays.asList(
                 new GeneSymbol("hgnc:KP3145"),
                 new GeneSymbol("hgnc:AB-123"),
@@ -86,22 +87,112 @@ public class GeneSymbolTest {
     }
 
     @Test
-    public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:AB-123")));
+    void testEqualsIdToEqualId() {
+        Assertions.assertEquals(new GeneSymbol("hgnc:AB-123"), new GeneSymbol("hgnc:AB-123"));
     }
 
     @Test
-    public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")).equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+    void testEqualsUriToEqualUri() {
+        Assertions.assertEquals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")),
+                new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")));
     }
 
     @Test
-    public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123"))));
+    void testEqualsIdToEqualUri() {
+        Assertions.assertEquals(new GeneSymbol("hgnc:AB-123"),
+                new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/AB-123")));
     }
 
     @Test
-    public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new GeneSymbol("hgnc:AB-123").equals(new GeneSymbol("hgnc:CD-456")));
+    void testEqualsIdToDifferentId() {
+        Assertions.assertNotEquals(new GeneSymbol("hgnc:AB-123"), new GeneSymbol("hgnc:CD-456"));
+    }
+
+    @Test
+    void useValidIdWithAtInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:SAA@");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SAA@", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:SAA@", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/SAA@"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdWithAtInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/SAA@"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("SAA@", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:SAA@", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/SAA@"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingOrfInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:C12orf65");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("C12orf65", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:C12orf65", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingOrfInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("C12orf65", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:C12orf65", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/C12orf65"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingSlashInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:THRA1/BTR");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("THRA1/BTR", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:THRA1/BTR", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingSlashInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("THRA1/BTR", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:THRA1/BTR", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/THRA1/BTR"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingDotInNameCreatedThroughId() {
+        GeneSymbol symbol = new GeneSymbol("hgnc:GS1-600G8.3");
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("GS1-600G8.3", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:GS1-600G8.3", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"), symbol.getUri())
+        );
+    }
+
+    @Test
+    void useValidIdContainingDotInNameCreatedThroughUri() {
+        GeneSymbol symbol = new GeneSymbol(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"));
+
+        Assertions.assertAll(
+                () -> Assertions.assertEquals("GS1-600G8.3", symbol.getId()),
+                () -> Assertions.assertEquals("hgnc:GS1-600G8.3", symbol.getFormattedId()),
+                () -> Assertions.assertEquals(URI.create("http://identifiers.org/hgnc.symbol/GS1-600G8.3"), symbol.getUri())
+        );
     }
 }

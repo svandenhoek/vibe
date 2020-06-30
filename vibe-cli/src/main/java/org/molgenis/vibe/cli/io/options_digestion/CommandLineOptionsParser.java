@@ -22,10 +22,13 @@ public abstract class CommandLineOptionsParser {
         createOptions();
     }
 
+    private CommandLineOptionsParser() {
+    }
+
     /**
      * Used for some formatting if a command line option has options of its own.
      */
-    private static final String argumentOptionsFormat = "|%-12s%s%n";
+    private static final String ARGUMENT_OPTIONS_FORMAT = "|%-12s%s%n";
 
     /**
      * Variable for generating & digesting the command line options.
@@ -88,8 +91,8 @@ public abstract class CommandLineOptionsParser {
         options.addOption(Option.builder("n")
                 .longOpt("ontology-algorithm")
                 .desc("The ontology algorithm to be used for related HPO retrieval:" + System.lineSeparator() +
-                        String.format(argumentOptionsFormat, "children", "Uses child algorithm.") +
-                        String.format(argumentOptionsFormat, "distance", "Uses distance algorithm."))
+                        String.format(ARGUMENT_OPTIONS_FORMAT, "children", "Uses child algorithm.") +
+                        String.format(ARGUMENT_OPTIONS_FORMAT, "distance", "Uses distance algorithm."))
                 .hasArg()
                 .argName("NAME")
                 .build());
@@ -154,15 +157,6 @@ public abstract class CommandLineOptionsParser {
     /**
      * Digests the parsed command line arguments.
      *
-     * @throws InvalidPathException if user-input which should be a file/directory could not be converted to {@link Path}
-     * @throws IOException if invalid user-input was given (often due to unreadable/missing files)
-     * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
-     * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
-     */
-
-    /**
-     * Digests the parsed command line arguments.
-     *
      * @param commandLine the parsed command line
      * @param vibeOptions in which the parsed command line information should be stored
      * @throws InvalidPathException if user-input which should be a file/directory could not be converted to {@link Path}
@@ -170,92 +164,143 @@ public abstract class CommandLineOptionsParser {
      * @throws NumberFormatException if user-input which should be an int could not be interpreted as one
      * @throws InvalidStringFormatException if user-input text does not adhere to required format (regex)
      */
-    private static void digestCommandLine(CommandLine commandLine, VibeOptions vibeOptions) throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
-        List<String> missing = new ArrayList<>();
-        List<String> errors = new ArrayList<>();
+    private static void digestCommandLine(CommandLine commandLine, VibeOptions vibeOptions)
+            throws InvalidPathException, IOException, NumberFormatException, InvalidStringFormatException {
+        // Sets RunMode.
+        defineRunMode(commandLine, vibeOptions);
 
-        // REQUIRED: n arguments > 0.
-        // OPTIONAL: Help message.
-        if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
-            vibeOptions.setRunMode(RunMode.NONE);
+        // If RunMode is NONE, stops digesting command line.
+        if(vibeOptions.getRunMode() == RunMode.NONE) {
             return; // IMPORTANT: Does not process any other arguments from this point.
         }
 
-        // Sets default RunMode.
-        vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
+        // Checks for missing arguments, and if so, throws IOException.
+        checkForMissingArguments(commandLine, vibeOptions);
 
-        // OPTIONAL: Verbose
-        if(commandLine.hasOption("v")) {
-            vibeOptions.setVerbose(true);
+        // Stores errors produced by the given arguments.
+        List<String> errors = new ArrayList<>();
+
+        // Digests the databases needed be the application.
+        digestDatabases(commandLine, vibeOptions, errors);
+
+        // Digests the input phenotypes.
+        digestInputPhenotypes(commandLine, vibeOptions, errors);
+
+        // Digests output arguments (including logging/verbosity).
+        digestOutputArguments(commandLine, vibeOptions, errors);
+
+        // Digests arguments related to the HPO ontology traversal.
+        if(vibeOptions.getRunMode() == RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES) {
+            digestHpoOntologyArguments(commandLine, vibeOptions, errors);
         }
 
-        // REQUIRED: TDB.
-        if(commandLine.hasOption("t")) {
-            try {
-                vibeOptions.setVibeTdb(commandLine.getOptionValue("t"));
-            } catch (InvalidPathException | IOException e) {
-                errors.add(e.getMessage());
-            }
+        // Checks if any errors were created, and if so, throws IOException.
+        if(!errors.isEmpty()) {
+            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
+        }
+    }
+
+    /**
+     * Using the given arguments, sets the correct {@link RunMode} in {@link VibeOptions}.
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     */
+    private static void defineRunMode(CommandLine commandLine, VibeOptions vibeOptions) {
+        if(commandLine.getOptions().length == 0 || commandLine.hasOption("h")) {
+            vibeOptions.setRunMode(RunMode.NONE);
+        } else if (commandLine.hasOption("n") || commandLine.hasOption("m")) {
+            vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
         } else {
-            missing.add("-t");
+            vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES);
         }
+    }
 
-        // REQUIRED: HPO ontology file.
-        if(commandLine.hasOption("w")) {
-            try {
-                vibeOptions.setHpoOntology(commandLine.getOptionValue("w"));
-            } catch (InvalidPathException | IOException e) {
-                errors.add(e.getMessage());
-            }
-        } else {
-            missing.add("-w");
-        }
+    /**
+     * Validates whether the given arguments adhere to the requirements (no missing required arguments, when optional
+     * arguments require other arguments check if these are present as well, etc.)
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     * @return a {@link List} containing all missing arguments, or an empty {@link List} if no arguments are missing
+     */
+    private static void checkForMissingArguments(CommandLine commandLine, VibeOptions vibeOptions) throws IOException {
+        // Stores the missing expected arguments.
+        List<String> missing = new ArrayList<>();
 
-        // OPTIONAL: HPO ontology retrieval algorithm. Both -n and -m need to be provided.
-        if(commandLine.hasOption("n") || commandLine.hasOption("m")) {
-            if (commandLine.hasOption("n") && commandLine.hasOption("m")) {
-                vibeOptions.setRunMode(RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES);
-                try {
-                    vibeOptions.setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
-                } catch (EnumConstantNotPresentException e) {
-                    errors.add(commandLine.getOptionValue("n") + " is not a valid HPO retrieval algorithm.");
-                }
-                try {
-                    vibeOptions.setOntologyMaxDistance(commandLine.getOptionValue("m"));
-                } catch (IllegalArgumentException e) {
-                    errors.add(commandLine.getOptionValue("m") + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).");
-                }
-            } else {
-                if (!commandLine.hasOption("n")) {
-                    missing.add("-n");
-                }
-                if (!commandLine.hasOption("m")) {
-                    missing.add("-m");
-                }
+        // Arguments that are always required.
+        String[] requiredArguments = new String[] {
+                "t", // TDB
+                "w", // HPO owl
+                "p", // 1 or more phenotypes
+        };
+
+        // Checks which of the always required arguments are missing.
+        for(String argument : requiredArguments) {
+            if(!commandLine.hasOption(argument)) {
+                missing.add("-" + argument);
             }
         }
 
-        // REQUIRED: Phenotypes.
-        if(commandLine.hasOption("p")) {
-            try {
-                vibeOptions.setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
-            } catch(InvalidStringFormatException e) {
-                errors.add(e.getMessage());
+        // Checks arguments specific for RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES.
+        if(vibeOptions.getRunMode() == RunMode.GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES) {
+            if (!commandLine.hasOption("n")) {
+                missing.add("-n");
             }
-        } else {
-            missing.add("-p");
+            if (!commandLine.hasOption("m")) {
+                missing.add("-m");
+            }
         }
 
-        // If given, sets output file. Otherwise writes to stdout.
-        if(commandLine.hasOption("o")) {
-            try {
-                vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
-            } catch(InvalidPathException | FileAlreadyExistsException e) {
-                errors.add(e.getMessage());
-            }
-        } else {
-            vibeOptions.setStdoutOutputWriter();
+        // Generates IOException with missing arguments if any were found.
+        if(!missing.isEmpty()) {
+            throw new IOException("Missing arguments: " + StringUtils.join(missing, ", "));
         }
+    }
+
+    /**
+     * Digests the required arguments.
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     * @param errors a {@link List} to add error messages to if any occur
+     */
+    private static void digestDatabases(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
+        // TDB.
+        try {
+            vibeOptions.setVibeTdb(commandLine.getOptionValue("t"));
+        } catch (InvalidPathException | IOException e) {
+            errors.add(e.getMessage());
+        }
+
+        // HPO ontology file.
+        try {
+            vibeOptions.setHpoOntology(commandLine.getOptionValue("w"));
+        } catch (InvalidPathException | IOException e) {
+            errors.add(e.getMessage());
+        }
+    }
+
+    /**
+     * Digests the input phenotypes to be processed.
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     * @param errors a {@link List} to add error messages to if any occur
+     */
+    private static void digestInputPhenotypes(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
+        try {
+            vibeOptions.setPhenotypes(commandLine.getOptionValues("p")); // throws InvalidStringFormatException (IllegalArgumentException)
+        } catch(InvalidStringFormatException e) {
+            errors.add(e.getMessage());
+        }
+    }
+
+    /**
+     * Digests arguments related to the output generation (output format/target), including logging/verbosity.
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     * @param errors a {@link List} to add error messages to if any occur
+     */
+    private static void digestOutputArguments(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
+        // Whether tool should be verbose.
+        vibeOptions.setVerbose(commandLine.hasOption("v"));
 
         // Defines output format.
         if(commandLine.hasOption("l")) {
@@ -266,15 +311,36 @@ public abstract class CommandLineOptionsParser {
             } else {
                 vibeOptions.setGenePrioritizedOutputFormatWriterFactory(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID);
             }
-
         }
 
-        // Processes missing and errors and throws an Exception if any errors were present.
-        if(missing.size() > 0) {
-            errors.add(0, "Missing arguments: " + StringUtils.join(missing, ", "));
+        // Defines output target.
+        if(commandLine.hasOption("o")) {
+            try {
+                vibeOptions.setFileOutputWriter(commandLine.getOptionValue("o"));
+            } catch(InvalidPathException | FileAlreadyExistsException e) {
+                errors.add(e.getMessage());
+            }
+        } else {
+            vibeOptions.setStdoutOutputWriter();
         }
-        if(errors.size() > 0) {
-            throw new IOException(StringUtils.join(errors, System.lineSeparator()));
+    }
+
+    /**
+     * Digests arguments related to the HPO ontology traversal.
+     * @param commandLine the parsed command line
+     * @param vibeOptions in which the parsed command line information should be stored
+     * @param errors a {@link List} to add error messages to if any occur
+     */
+    private static void digestHpoOntologyArguments(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
+        try {
+            vibeOptions.setPhenotypesRetrieverFactory(commandLine.getOptionValue("n"));
+        } catch (EnumConstantNotPresentException e) {
+            errors.add(commandLine.getOptionValue("n") + " is not a valid HPO retrieval algorithm.");
+        }
+        try {
+            vibeOptions.setOntologyMaxDistance(commandLine.getOptionValue("m"));
+        } catch (IllegalArgumentException e) {
+            errors.add(commandLine.getOptionValue("m") + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).");
         }
     }
 }

@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * org.molgenis.vibe.rdf_processing.GenesForPhenotypeRetrieverTester within the test code for more information.
  *
  */
-public abstract class Entity implements ResourceUri, Comparable<Entity>, allFieldsEquals {
+public abstract class Entity implements ResourceUri, Comparable<Entity>, AllFieldsEquals {
     /**
      * The entity prefix.
      * @return a {@link String} containing the prefix.
@@ -68,7 +68,7 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
      * @return the {@link Entity} ID with prefix.
      */
     public String getFormattedId() {
-        return getIdPrefix() + id;
+        return getIdPrefix() + ":" + id;
     }
 
     public String getName() {
@@ -90,10 +90,13 @@ public abstract class Entity implements ResourceUri, Comparable<Entity>, allFiel
     }
 
     public Entity(URI uri) {
-        this.uri = uri;
+        this.uri = requireNonNull(uri);
         String uriString = this.uri.toString();
         validateUri(uriString);
         id = uriString.split(getUriPrefix())[1];
+
+        // Throws InvalidStringFormatException in case URI does not generate and ID that adheres to the required regex.
+        retrieveIdFromString(getFormattedId());
     }
 
     public Entity(String id, String name) {

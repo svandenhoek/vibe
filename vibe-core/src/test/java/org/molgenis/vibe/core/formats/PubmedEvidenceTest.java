@@ -10,57 +10,58 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class PubmedEvidenceTest {
+class PubmedEvidenceTest {
     @Test
-    public void useValidIdWithLowercasePrefix() {
+    void useValidIdWithLowercasePrefix() {
         PubmedEvidence pubmedEvidence = new PubmedEvidence("pmid:1234", 2000);
         testIfValid(pubmedEvidence);
     }
 
     @Test
-    public void useValidIdWithUppercasePrefix() {
+    void useValidIdWithUppercasePrefix() {
         PubmedEvidence pubmedEvidence = new PubmedEvidence("PMID:1234", 2000);
         testIfValid(pubmedEvidence);
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix1() {
+    void useValidIdWithSingleUpperCasePrefix1() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new PubmedEvidence("Pmid:1234", 2000) );
     }
 
     @Test
-    public void useValidIdWithSingleUpperCasePrefix2() {
+    void useValidIdWithSingleUpperCasePrefix2() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new PubmedEvidence("pMid:1234", 2000) );
     }
 
     @Test
-    public void useValidIdWithInvalidPrefix() {
+    void useValidIdWithInvalidPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new PubmedEvidence("pm:1234", 2000) );
     }
 
     @Test
-    public void useValidIdWithoutPrefix() {
+    void useValidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new PubmedEvidence("1234", 2000) );
     }
 
     @Test
-    public void useUriAsIdInput() {
+    void useUriAsIdInput() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new PubmedEvidence("http://identifiers.org/pubmed/1234", 2000) );
     }
 
     @Test
-    public void useValidUri() {
+    void useValidUri() {
         PubmedEvidence pubmedEvidence = new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000);
         testIfValid(pubmedEvidence);
     }
 
     @Test
-    public void useInvalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new PubmedEvidence(URI.create("http://identifiers.org/pm/1234"), 2000) );
+    void useInvalidUri() {
+        URI uri = URI.create("http://identifiers.org/pm/1234");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new PubmedEvidence(uri, 2000) );
     }
 
     @Test
-    public void testSortId() {
+    void testSortId() {
         List<PubmedEvidence> actualOrder = new ArrayList<>( Arrays.asList(
                 new PubmedEvidence("pmid:20", 2002),
                 new PubmedEvidence("pmid:3", 2004),
@@ -80,7 +81,7 @@ public class PubmedEvidenceTest {
     }
 
     @Test
-    public void testSortYear() {
+    void testSortYear() {
         List<PubmedEvidence> actualOrder = new ArrayList<>( Arrays.asList(
                 new PubmedEvidence("pmid:20", 2002),
                 new PubmedEvidence("pmid:3", 2004),
@@ -95,7 +96,7 @@ public class PubmedEvidenceTest {
                 actualOrder.get(2)
         ));
 
-        Collections.sort(actualOrder, PubmedEvidence.releaseYearComparator);
+        Collections.sort(actualOrder, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
         Assertions.assertEquals(expectedOrder, actualOrder);
     }
 
@@ -108,32 +109,35 @@ public class PubmedEvidenceTest {
     }
 
     @Test
-    public void testEqualsIdToEqualId() {
-        Assertions.assertTrue(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence("pmid:1234", 2000)));
+    void testEqualsIdToEqualId() {
+        Assertions.assertEquals(new PubmedEvidence("pmid:1234", 2000), new PubmedEvidence("pmid:1234", 2000));
     }
 
     @Test
-    public void testEqualsUriToEqualUri() {
-        Assertions.assertTrue(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000).equals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000)));
+    void testEqualsUriToEqualUri() {
+        Assertions.assertEquals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000));
     }
 
     @Test
-    public void testEqualsIdToEqualUri() {
-        Assertions.assertTrue(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000)));
+    void testEqualsIdToEqualUri() {
+        Assertions.assertEquals(new PubmedEvidence("pmid:1234", 2000),
+                new PubmedEvidence(URI.create("http://identifiers.org/pubmed/1234"), 2000));
     }
 
     @Test
-    public void testEqualsIdToDifferentId() {
-        Assertions.assertFalse(new PubmedEvidence("pmid:1234", 2000).equals(new PubmedEvidence("pmid:5678", 2000)));
+    void testEqualsIdToDifferentId() {
+        Assertions.assertNotEquals(new PubmedEvidence("pmid:1234", 2000),
+                new PubmedEvidence("pmid:5678", 2000));
     }
 
     @Test
-    public void testAllEqualsEqual() {
+    void testAllEqualsEqual() {
         PubmedEvidence pubmedEvidence1 = new PubmedEvidence("pmid:42", 2000);
         PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2000);
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertEquals(pubmedEvidence1, pubmedEvidence2),
                 () -> Assertions.assertTrue(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
         );
     }
@@ -143,12 +147,12 @@ public class PubmedEvidenceTest {
      * this test ensures the custom deep equals works correctly for usage in other tests.
      */
     @Test
-    public void testAllEqualsNotEqual() {
+    void testAllEqualsNotEqual() {
         PubmedEvidence pubmedEvidence1 = new PubmedEvidence("pmid:42", 2000);
         PubmedEvidence pubmedEvidence2 = new PubmedEvidence("pmid:42", 2020);
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(pubmedEvidence1.equals(pubmedEvidence2)),
+                () -> Assertions.assertEquals(pubmedEvidence1, pubmedEvidence2),
                 () -> Assertions.assertFalse(pubmedEvidence1.allFieldsEquals(pubmedEvidence2))
         );
     }

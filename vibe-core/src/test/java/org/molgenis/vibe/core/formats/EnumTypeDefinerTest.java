@@ -4,34 +4,34 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
-public class EnumTypeDefinerTest {
+class EnumTypeDefinerTest {
     @Test
-    public void phenotypesRetrieverFactoryChildren() {
+    void phenotypesRetrieverFactoryChildren() {
         Assertions.assertEquals(PhenotypesRetrieverFactory.CHILDREN, EnumTypeDefiner.retrieve("children", PhenotypesRetrieverFactory.class));
     }
 
     @Test
-    public void phenotypesRetrieverFactoryDistance() {
+    void phenotypesRetrieverFactoryDistance() {
         Assertions.assertEquals(PhenotypesRetrieverFactory.DISTANCE, EnumTypeDefiner.retrieve("distance", PhenotypesRetrieverFactory.class));
     }
 
     @Test
-    public void phenotypesRetrieverFactoryNonExistent() {
+    void phenotypesRetrieverFactoryNonExistent() {
         Assertions.assertThrows(EnumConstantNotPresentException.class, () -> EnumTypeDefiner.retrieve("iDoNotExist", PhenotypesRetrieverFactory.class) );
     }
 
     @Test
-    public void enumDefinerDoubleNull() {
+    void enumDefinerDoubleNull() {
         Assertions.assertThrows(EnumConstantNotPresentException.class, () -> EnumTypeDefiner.retrieve(null, PhenotypesRetrieverFactory.class) );
     }
 
     @Test
-    public void enumDefinerNullClass() {
+    void enumDefinerNullClass() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> EnumTypeDefiner.retrieve("distance", null) );
     }
 
     @Test
-    public void enumDefinerDoubleNullId() {
+    void enumDefinerDoubleNullId() {
         Assertions.assertThrows(IllegalArgumentException.class, () -> EnumTypeDefiner.retrieve(null, null) );
     }
 }

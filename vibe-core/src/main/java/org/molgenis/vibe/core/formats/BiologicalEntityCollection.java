@@ -8,7 +8,7 @@ import java.util.*;
  * @param <T2> the second {@link BiologicalEntity} subclass type
  * @param <T3> the {@link BiologicalEntityCombination} combining {@link T1} and {@link T2}
  */
-public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2 extends BiologicalEntity, T3 extends BiologicalEntityCombination<T1,T2>> implements Collection<T3>, allFieldsEquals {
+public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2 extends BiologicalEntity, T3 extends BiologicalEntityCombination<T1,T2>> implements Collection<T3>, AllFieldsEquals {
     /**
      * All the {@link BiologicalEntityCombination}{@code s} (retrievable by themselves as key).
      */
@@ -199,9 +199,9 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         Set<BiologicalEntity> keysWithEmptySet = new HashSet<>();
 
         // Goes through all keys to see if there are any keys with an empty Set.
-        for(BiologicalEntity key:combinationsByKey.keySet()) {
-            if(combinationsByKey.get(key).isEmpty()) {
-                keysWithEmptySet.add(key);
+        for(Map.Entry<? extends BiologicalEntity, Set<T3>> combination:combinationsByKey.entrySet()) {
+            if(combination.getValue().isEmpty()) {
+                keysWithEmptySet.add(combination.getKey());
             }
         }
 

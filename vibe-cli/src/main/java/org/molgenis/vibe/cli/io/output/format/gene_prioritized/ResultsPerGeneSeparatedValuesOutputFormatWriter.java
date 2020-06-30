@@ -107,9 +107,9 @@ public abstract class ResultsPerGeneSeparatedValuesOutputFormatWriter extends Pr
 
                 // If there is evidence, writes these as well.
                 List<PubmedEvidence> pubmedEvidenceList = new ArrayList<>(gdc.getAllPubmedEvidence());
-                if(pubmedEvidenceList.size() > 0) {
+                if(!pubmedEvidenceList.isEmpty()) {
                     // Sorts the pubmed IDs.
-                    Collections.sort(pubmedEvidenceList, PubmedEvidence.releaseYearComparator);
+                    Collections.sort(pubmedEvidenceList, PubmedEvidence.RELEASE_YEAR_COMPARATOR);
                     // Merges the evidence URIs with as separator the values separator.
                     String evidence = StringUtils.join(writeEvidence(pubmedEvidenceList), valuesSeparator.toString());
                     getOutputWriter().write(keyValueSeparator + evidence);

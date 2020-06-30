@@ -124,16 +124,7 @@ public class PhenotypeNetwork {
      * are stored for that {@code distance}
      */
     private Set<Phenotype> getPhenotypesForDistance(int distance) {
-        // Tries to retrieve the HashSet for that distance.
-        Set<Phenotype> distancePhenotypes = network.get(distance);
-
-        // Adds a HashSet for that distance if not already available.
-        if(distancePhenotypes == null) {
-            distancePhenotypes = new HashSet<>();
-            network.put(distance, distancePhenotypes);
-        }
-
-        return distancePhenotypes;
+        return network.computeIfAbsent(distance, k -> new HashSet<>());
     }
 
     public boolean contains(Phenotype phenotype) {

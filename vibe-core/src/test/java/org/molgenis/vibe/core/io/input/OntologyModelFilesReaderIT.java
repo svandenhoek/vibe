@@ -6,29 +6,33 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.core.TestData;
 
-public class OntologyModelFilesReaderIT {
+import java.nio.file.Path;
+
+class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         if(reader != null) {
             reader.close();
         }
     }
 
     @Test
-    public void testValidModel() {
+    void testValidModel() {
         reader = new OntologyModelFilesReader(TestData.HPO_OWL.getFullPathString());
         Assertions.assertEquals(false, reader.getModel().isEmpty());
     }
 
     @Test
-    public void testInvalidFileFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.EXISTING_TSV.getFullPathString()));
+    void testInvalidFileFormat() {
+        String inputFileString = TestData.EXISTING_TSV.getFullPathString();
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }
 
     @Test
-    public void testInvalidFileUsingCorrectFormat() {
-        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(TestData.FAKE_HPO_OWL.getFullPathString()));
+    void testInvalidFileUsingCorrectFormat() {
+        String inputFileString = TestData.FAKE_HPO_OWL.getFullPathString();
+        Assertions.assertThrows(RiotException.class, () -> new OntologyModelFilesReader(inputFileString));
     }
 }

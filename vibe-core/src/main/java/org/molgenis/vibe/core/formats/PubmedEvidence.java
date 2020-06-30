@@ -5,8 +5,8 @@ import java.util.Comparator;
 
 import static java.util.Objects.requireNonNull;
 
-public class PubmedEvidence extends Evidence {
-    private static final String ID_PREFIX = "pmid:";
+public class PubmedEvidence extends Evidence implements EntityWithIntId {
+    public static final String ID_PREFIX = "pmid";
     private static final String ID_REGEX = "^(pmid|PMID):([0-9]+)$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://identifiers.org/pubmed/";
@@ -18,16 +18,18 @@ public class PubmedEvidence extends Evidence {
      * Sorts {@link PubmedEvidence} first on {@link #getReleaseYear()} (most recent first) and then by ID
      * (as {@code int}, lowest to highest).
      */
-    public static final Comparator<PubmedEvidence> releaseYearComparator = new Comparator<PubmedEvidence>() {
-        @Override
-        public int compare(PubmedEvidence o1, PubmedEvidence o2) {
-            int diff =  o2.year - o1.year;
-            if (diff == 0) {
-                diff = o1.idInt - o2.idInt;
-            }
-            return diff;
+    public static final Comparator<PubmedEvidence> RELEASE_YEAR_COMPARATOR = (PubmedEvidence o1, PubmedEvidence o2) -> {
+        int diff =  o2.year - o1.year;
+        if (diff == 0) {
+            diff = o1.idInt - o2.idInt;
         }
+        return diff;
     };
+
+    @Override
+    public int getIdInt() {
+        return idInt;
+    }
 
     public PubmedEvidence(String id, int year) {
         super(id);

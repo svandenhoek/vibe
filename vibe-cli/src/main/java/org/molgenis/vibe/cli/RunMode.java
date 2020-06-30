@@ -33,6 +33,18 @@ public enum RunMode {
             List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
             writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
+
+        private PhenotypeNetworkCollection retrieveAssociatedPhenotypes(VibeOptions vibeOptions, Stopwatch stopwatch) {
+            vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
+
+            resetTimer(stopwatch);
+            PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypesRetrievalRunner(
+                    vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(),
+                    vibeOptions.getPhenotypes(), vibeOptions.getOntologyMaxDistance()).call();
+            printElapsedTime(vibeOptions, stopwatch);
+
+            return phenotypeNetworkCollection;
+        }
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
         protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws Exception {
@@ -40,23 +52,11 @@ public enum RunMode {
             List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
             writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
+
+        private Set<Phenotype> retrieveInputPhenotypes(VibeOptions vibeOptions) {
+            return vibeOptions.getPhenotypes();
+        }
     };
-
-    private static PhenotypeNetworkCollection retrieveAssociatedPhenotypes(VibeOptions vibeOptions, Stopwatch stopwatch) {
-        vibeOptions.printVerbose("# " + vibeOptions.getPhenotypesRetrieverFactory().getDescription());
-
-        resetTimer(stopwatch);
-        PhenotypeNetworkCollection phenotypeNetworkCollection = new PhenotypesRetrievalRunner(
-                vibeOptions.getHpoOntology(), vibeOptions.getPhenotypesRetrieverFactory(),
-                vibeOptions.getPhenotypes(), vibeOptions.getOntologyMaxDistance()).call();
-        printElapsedTime(vibeOptions, stopwatch);
-
-        return phenotypeNetworkCollection;
-    }
-
-    private static Set<Phenotype> retrieveInputPhenotypes(VibeOptions vibeOptions) {
-        return vibeOptions.getPhenotypes();
-    }
 
     private static GeneDiseaseCollection retrieveDisgenetData(VibeOptions vibeOptions, Stopwatch stopwatch, Set<Phenotype> phenotypes) throws IOException {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");

@@ -63,7 +63,7 @@ public class MaxDistanceRetriever extends PhenotypesRetriever {
 
         // If there are any phenotypes remaining with "distance + 1", continues.
         // Note that if the max distance is reached, no phenotypes were ever added to this set.
-        if(nextPhenotypeOCs.size() > 0) {
+        if(!nextPhenotypeOCs.isEmpty()) {
             traverse(currentPhenotypeOCs, nextPhenotypeOCs, network, distance + 1);
         }
     }

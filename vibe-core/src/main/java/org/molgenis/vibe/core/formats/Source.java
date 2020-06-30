@@ -16,7 +16,7 @@ import static java.util.Objects.requireNonNull;
  * be that big, but from a design perspective these are treated as different @{@link Source}{@code s}, though in practice
  * it might be the same source (or even the same version of that source).
  */
-public class Source implements ResourceUri {
+public class Source implements ResourceUri, Comparable<Source> {
     /**
      * The name of the {@link Source}.
      */
@@ -57,14 +57,6 @@ public class Source implements ResourceUri {
     }
 
     /**
-     * Simple constructor allowing for easy comparison of collections.
-     * @param uri
-     */
-    public Source(URI uri) {
-        this.uri = requireNonNull(uri);
-    }
-
-    /**
      * A constructor for describing a source with an {@link URI} id from an RDF database.
      * @param uri
      * @param name
@@ -85,7 +77,7 @@ public class Source implements ResourceUri {
      */
     public Source(URI uri, String name, String level) throws InvalidStringFormatException {
         this.name = requireNonNull(name);
-        this.level = Level.retrieveLevelByDisgenetVoidString(level);
+        this.level = Level.retrieveLevelByString(level);
         this.uri = requireNonNull(uri);
     }
 
@@ -111,6 +103,11 @@ public class Source implements ResourceUri {
         return Objects.hash(uri);
     }
 
+    @Override
+    public int compareTo(Source o) {
+        return getFullName().compareTo(o.getFullName());
+    }
+
     /**
      * The possible {@link Source} levels.
      */
@@ -129,6 +126,10 @@ public class Source implements ResourceUri {
          */
         private String disgenetVoidUri;
 
+        public String getReadableString() {
+            return readableString;
+        }
+
         Level(String readableString, String disgenetVoidUriEnd) {
             this.readableString = readableString;
             this.disgenetVoidUri = disgenetVoidUriEnd;
@@ -140,7 +141,7 @@ public class Source implements ResourceUri {
          * @return a {@link Level} belonging to the {@code levelString}
          * @throws InvalidStringFormatException if no {@link Level} could be defined from the {@code levelString}
          */
-        public static Level retrieveLevelByDisgenetVoidString(String levelString) throws InvalidStringFormatException {
+        public static Level retrieveLevelByString(String levelString) throws InvalidStringFormatException {
             levelString = levelString.toLowerCase();
 
             for(Level level : Level.values()) {
@@ -149,7 +150,7 @@ public class Source implements ResourceUri {
                     return level;
                 }
             }
-            throw new InvalidStringFormatException("Could not generate a Source.Level from given String");
+            throw new InvalidStringFormatException("Could not generate a Source.Level from given String: " + levelString);
         }
     }
 }

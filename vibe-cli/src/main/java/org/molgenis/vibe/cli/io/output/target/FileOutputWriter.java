@@ -11,7 +11,7 @@ import static java.util.Objects.requireNonNull;
 /**
  * Writer for writing output to a file.
  */
-public class FileOutputWriter extends OutputWriter {
+public class FileOutputWriter implements OutputWriter {
     /**
      * Path to write output to.
      */

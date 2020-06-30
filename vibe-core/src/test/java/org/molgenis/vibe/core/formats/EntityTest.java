@@ -6,7 +6,7 @@ import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
 
 import java.net.URI;
 
-public class EntityTest {
+class EntityTest {
     private static final String validName = "Entity 0";
 
     private class EntityImpl extends Entity {
@@ -28,7 +28,7 @@ public class EntityTest {
 
         @Override
         protected String getIdPrefix() {
-            return "prefix:";
+            return "prefix";
         }
 
         @Override
@@ -48,54 +48,57 @@ public class EntityTest {
     }
 
     @Test
-    public void invalidIdWithoutPrefix() {
+    void invalidIdWithoutPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("a") );
     }
 
     @Test
-    public void invalidIdWithPrefix() {
+    void invalidIdWithPrefix() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("prefix:a") );
     }
 
     @Test
-    public void invalidPrefixWithValidId() {
+    void invalidPrefixWithValidId() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("invalid:1") );
     }
 
     @Test
-    public void invalidPrefixWithInValidId() {
+    void invalidPrefixWithInValidId() {
         Assertions.assertThrows(InvalidStringFormatException.class, () -> new EntityImpl("invalid:a") );
     }
 
     @Test
-    public void invalidUri() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test2.com/path/1")) );
+    void invalidUri() {
+        URI uri = URI.create("https://test2.com/path/1");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(uri) );
     }
 
     @Test
-    public void uriMissingId() {
-        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(URI.create("https://test.com/path/")) );
+    void uriMissingId() {
+        URI uri = URI.create("https://test.com/path/");
+        Assertions.assertThrows(IllegalArgumentException.class, () -> new EntityImpl(uri) );
     }
 
     @Test
-    public void testIdWithName() {
+    void testIdWithName() {
         Entity entity = new EntityImpl("prefix:0", validName);
         Assertions.assertEquals(validName, entity.getName());
     }
 
     @Test
-    public void testUriWithName() {
+    void testUriWithName() {
         Entity entity = new EntityImpl(URI.create("https://test.com/path/0"), validName);
         Assertions.assertEquals(validName, entity.getName());
     }
 
     @Test
-    public void testIdWithNameNull() {
+    void testIdWithNameNull() {
         Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl("prefix:0", null) );
     }
 
     @Test
-    public void testUriWithNameNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl(URI.create("https://test.com/path/0"), null) );
+    void testUriWithNameNull() {
+        URI uri = URI.create("https://test.com/path/0");
+        Assertions.assertThrows(NullPointerException.class, () -> new EntityImpl(uri, null) );
     }
 }

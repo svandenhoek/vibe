@@ -6,10 +6,10 @@ import org.molgenis.vibe.core.formats.*;
 
 import java.util.*;
 
-public class HighestSingleDisgenetScoreGenePrioritizerTest {
+class HighestSingleDisgenetScoreGenePrioritizerTest {
 
     @Test
-    public void testOrdering() {
+    void testOrdering() {
         Gene[] genes = new Gene[]{
                 new Gene("ncbigene:1", new GeneSymbol("hgnc:A")),
                 new Gene("ncbigene:2", new GeneSymbol("hgnc:B")),

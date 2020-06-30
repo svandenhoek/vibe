@@ -21,29 +21,29 @@ import java.util.*;
  * The license can be found on: http://www.disgenet.org/ds/DisGeNET/html/legal.html
  */
 @Execution(ExecutionMode.SAME_THREAD)
-public class QueryStringGeneratorIT {
+class QueryStringGeneratorIT {
     private static ModelReader reader;
     private QueryRunner runner;
 
     @BeforeAll
-    public static void beforeAll() throws IOException {
+    static void beforeAll() throws IOException {
         reader = new TripleStoreDbReader(TestData.TDB.getFullPathString());
     }
 
     @AfterAll
-    public static final void afterAll() throws IOException {
+    static final void afterAll() throws IOException {
         if(reader != null) {
             reader.close();
         }
     }
 
     @AfterEach
-    public void afterEach() {
+    void afterEach() {
         runner.close();
     }
 
     @Test
-    public void testSourcesUnique() {
+    void testSourcesUnique() {
         QueryString queryString = QueryStringGenerator.getSources();
         runner = new QueryRunner(reader.getModel(), queryString);
 

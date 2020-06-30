@@ -117,13 +117,16 @@ public final class QueryStringGenerator {
         GeneDiseaseCombinationType.GENE_DISEASE.getFormattedId() + GENES_FOR_PHENOTYPES[2]);
     }
 
+    private QueryStringGenerator() {
+    }
+
     /**
      * Generates query-compatible {@link String} to be used as VALUES containing 1 or more {@link URI}{@code s}.
      * @param resourceUris the {@link URI}{@code s} to be used
      * @return a SPARQL VALUES usable {@link String}
      */
     private static String createValuesStringForUris(Set<? extends ResourceUri> resourceUris) {
-        if(resourceUris.size() < 1) {
+        if(resourceUris.isEmpty()) {
             throw new IllegalArgumentException("Set should at least contain 1 item.");
         }
         Iterator<? extends ResourceUri> resourceUriIterator = resourceUris.iterator();

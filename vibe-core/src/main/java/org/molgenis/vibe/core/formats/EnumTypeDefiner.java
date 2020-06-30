@@ -29,7 +29,7 @@ public interface EnumTypeDefiner {
                     continue;
                 }
                 // Checks if input name is equal to the enum type id field. If so, returns enum type.
-                if (id.toLowerCase().equals(constant.getId().toLowerCase())) {
+                if (id.equalsIgnoreCase(constant.getId())) {
                     return constant;
                 }
             }

@@ -7,14 +7,14 @@ import org.junit.jupiter.api.Test;
 import java.net.URI;
 import java.util.*;
 
-public class GeneDiseaseCollectionTest {
+class GeneDiseaseCollectionTest {
     private static GeneDiseaseCombination[] gdcs;
     private static Gene[] genes;
     private static Disease[] diseases;
     private static Source[] sources;
 
     @BeforeAll
-    public static void beforeAll() {
+    static void beforeAll() {
         genes = new Gene[]{
                 new Gene("ncbigene:1111111", new GeneSymbol("hgnc:AAA")),
                 new Gene("ncbigene:2222222", new GeneSymbol("hgnc:BBB"))
@@ -38,13 +38,13 @@ public class GeneDiseaseCollectionTest {
         };
 
         sources = new Source[]{
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET")),
-                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"))
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/ORPHANET"), "Orphanet", Source.Level.CURATED),
+                new Source(URI.create("http://rdf.disgenet.org/v6.0.0/void/BEFREE"), "Befree", Source.Level.LITERATURE)
         };
     }
 
     @Test
-    public void testGetByGeneOrderedByGdaScore() {
+    void testGetByGeneOrderedByGdaScore() {
         GeneDiseaseCollection collection = new GeneDiseaseCollection();
         collection.addAll(Arrays.asList(gdcs));
 
@@ -53,7 +53,7 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testGetByDiseaseOrderedByGdaScore() {
+    void testGetByDiseaseOrderedByGdaScore() {
         GeneDiseaseCollection collection = new GeneDiseaseCollection();
         collection.addAll(Arrays.asList(gdcs));
 
@@ -62,36 +62,36 @@ public class GeneDiseaseCollectionTest {
     }
 
     @Test
-    public void testequalsWhenequal() {
+    void testequalsWhenequal() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[1]));
 
-        Assertions.assertTrue(collection1.equals(collection2));
+        Assertions.assertEquals(collection1, collection2);
     }
 
     @Test
-    public void testequalsWhenNotequalDueToDifference() {
+    void testequalsWhenNotequalDueToDifference() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[2]));
 
-        Assertions.assertFalse(collection1.equals(collection2));
+        Assertions.assertNotEquals(collection1, collection2);
     }
 
     @Test
-    public void testequalsWhenNotequalDueToSize() {
+    void testequalsWhenNotequalDueToSize() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.addAll(Arrays.asList(gdcs[1]));
 
         GeneDiseaseCollection collection2 = new GeneDiseaseCollection();
         collection2.addAll(Arrays.asList(gdcs[1], gdcs[2]));
 
-        Assertions.assertFalse(collection1.equals(collection2));
+        Assertions.assertNotEquals(collection1, collection2);
     }
 
     /**
@@ -100,7 +100,7 @@ public class GeneDiseaseCollectionTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenGdcHasDifferentScore() {
+    void testAllEqualsWhenGdcHasDifferentScore() {
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
         collection1.add(new GeneDiseaseCombination(genes[0], diseases[0], 0.5));
 
@@ -108,7 +108,7 @@ public class GeneDiseaseCollectionTest {
         collection2.add(new GeneDiseaseCombination(genes[0], diseases[0], 0.3));
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(collection1.equals(collection2)),
+                () -> Assertions.assertEquals(collection1, collection2),
                 () -> Assertions.assertFalse(collection1.allFieldsEquals(collection2))
         );
     }
@@ -119,7 +119,7 @@ public class GeneDiseaseCollectionTest {
      * in other tests.
      */
     @Test
-    public void testAllEqualsWhenGdcHasDifferentPubmedYear() {
+    void testAllEqualsWhenGdcHasDifferentPubmedYear() {
         Double score = 0.42;
 
         GeneDiseaseCollection collection1 = new GeneDiseaseCollection();
@@ -136,9 +136,9 @@ public class GeneDiseaseCollectionTest {
         PubmedEvidence evidenceFromGdc2 = collection2.getByGene(genes[0]).iterator().next().getPubmedEvidenceForSource(sources[0]).iterator().next();
 
         Assertions.assertAll(
-                () -> Assertions.assertTrue(collection1.equals(collection2)),
+                () -> Assertions.assertEquals(collection1, collection2),
                 () -> Assertions.assertFalse(collection1.allFieldsEquals(collection2)),
-                () -> Assertions.assertTrue(evidenceFromGdc1.equals(evidenceFromGdc2)), // URI is identifier, so equals of PubmedEvidence is true.
+                () -> Assertions.assertEquals(evidenceFromGdc1, evidenceFromGdc2), // URI is identifier, so equals of PubmedEvidence is true.
                 () -> Assertions.assertFalse(evidenceFromGdc1.allFieldsEquals(evidenceFromGdc2))
         );
     }

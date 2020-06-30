@@ -19,24 +19,31 @@ public class VibeApplication {
             VibeOptions vibeOptions = new VibeOptions();
             CommandLineOptionsParser.parse(args, vibeOptions);
 
-            // If all input input correctly parsed, runs app.
+            // If all input correctly parsed, runs app.
             if(vibeOptions.validate()) {
-                try {
-                    vibeOptions.getRunMode().run(vibeOptions);
-                } catch (IOException e) {
-                    System.err.println(e.getLocalizedMessage());
-                } catch (Exception e) { // Errors generated while running the app.
-                    printUnexpectedExceptionOccurred();
-                    e.printStackTrace();
-                }
+                executeRunMode(vibeOptions);
             } else { // Errors caused by invalid options configuration.
                 printUnexpectedExceptionOccurred();
                 vibeOptions.toString();
-
             }
         } catch (Exception e) { // Errors generated during options parsing.
             System.err.println(e.getLocalizedMessage());
             CommandLineOptionsParser.printHelpMessage();
+        }
+    }
+
+    /**
+     * Runs the selected {@link RunMode} and handles any {@link Exception} that is triggered in it.
+     * @param vibeOptions the {@link VibeOptions} as generated through {@link CommandLineOptionsParser)}
+     */
+    private static void executeRunMode(VibeOptions vibeOptions) {
+        try {
+            vibeOptions.getRunMode().run(vibeOptions);
+        } catch (IOException e) {
+            System.err.println(e.getLocalizedMessage());
+        } catch (Exception e) { // Errors generated while running the app.
+            printUnexpectedExceptionOccurred();
+            e.printStackTrace();
         }
     }
 

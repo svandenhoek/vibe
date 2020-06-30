@@ -10,8 +10,8 @@ import java.net.URI;
  * as DisGeNET converted other gene-identifiers (such as HGNC symbols) into NCBI Entrez gene identifiers
  * (<a href="http://disgenet.org/dbinfo#section41>http://disgenet.org/dbinfo#section41">source</a>) within the database.
  */
-public class Gene extends BiologicalEntity {
-    private static final String ID_PREFIX = "ncbigene:";
+public class Gene extends BiologicalEntity implements EntityWithIntId {
+    public static final String ID_PREFIX = "ncbigene";
     private static final String ID_REGEX = "^(ncbigene|NCBIGENE):([0-9]+)$";
     private static final int REGEX_ID_GROUP = 2;
     private static final String URI_PREFIX = "http://identifiers.org/ncbigene/";
@@ -28,6 +28,11 @@ public class Gene extends BiologicalEntity {
 
     public GeneSymbol getSymbol() {
         return symbol;
+    }
+
+    @Override
+    public int getIdInt() {
+        return idInt;
     }
 
     @Override
