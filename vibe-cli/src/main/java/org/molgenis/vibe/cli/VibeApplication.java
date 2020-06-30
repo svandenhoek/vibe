@@ -16,37 +16,39 @@ public class VibeApplication {
      * @param args {@link String}{@code []}
      */
     public static void main(String[] args) {
-        loadPropertiesFile();
+        if ( loadPropertiesFile() ) { // If properties file loading succeeded, continues.
+            try {
+                // Parses user-input.
+                VibeOptions vibeOptions = new VibeOptions();
+                CommandLineOptionsParser.parse(args, vibeOptions);
 
-        try {
-            // Parses user-input.
-            VibeOptions vibeOptions = new VibeOptions();
-            CommandLineOptionsParser.parse(args, vibeOptions);
-
-            // If all input correctly parsed, runs app.
-            if(vibeOptions.validate()) {
-                executeRunMode(vibeOptions);
-            } else { // Errors caused by invalid options configuration.
-                printUnexpectedExceptionOccurred();
-                vibeOptions.toString();
+                // If all input correctly parsed, runs app.
+                if (vibeOptions.validate()) {
+                    executeRunMode(vibeOptions);
+                } else { // Errors caused by invalid options configuration.
+                    printUnexpectedExceptionOccurred();
+                    vibeOptions.toString();
+                }
+            } catch (ParseException e) { // Errors generated during options parsing.
+                System.err.println(e.getLocalizedMessage());
+                CommandLineOptionsParser.printHelpMessage();
             }
-        } catch (ParseException e) { // Errors generated during options parsing.
-            System.err.println(e.getLocalizedMessage());
-            CommandLineOptionsParser.printHelpMessage();
         }
     }
 
     /**
      * Parses application properties.
      * <b>Should always be ran first (as it sets the values for the VibeProperties enum)!</b>
+     * @return {@code true} if property file was loaded, {@code false} if it failed to do so
      */
-    private static void loadPropertiesFile() {
+    private static boolean loadPropertiesFile() {
         try {
             VibePropertiesLoader.loadProperties();
         } catch (IOException e) {
-            printUnexpectedExceptionOccurred();
-            e.printStackTrace();
+            System.err.println("Failed to load properties file. Please contact the developer.");
+            return false;
         }
+        return true;
     }
 
     /**
