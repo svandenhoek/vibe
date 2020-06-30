@@ -196,6 +196,4 @@ class VibeOptionsTest {
     void invalidHpoDir() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setHpoOntology(INVALID_ONTOLOGY_DIR) );
     }
-
-
 }
