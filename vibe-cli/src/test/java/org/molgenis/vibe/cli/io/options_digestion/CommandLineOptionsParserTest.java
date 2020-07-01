@@ -13,7 +13,6 @@ import org.molgenis.vibe.cli.io.output.target.FileOutputWriter;
 import org.molgenis.vibe.cli.io.output.target.StdoutOutputWriter;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
-import java.io.IOException;
 import java.nio.file.Paths;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -21,7 +20,9 @@ import java.util.Set;
 
 class CommandLineOptionsParserTest {
     private final String[] HELP = new String[]{"-h"};
-    private final String[] VERBOSE = new String[]{"-v"};
+    private final String[] VERSION = new String[]{"-v"};
+    private final String[] DEBUG = new String[]{"-d"};
+    private final String[] FORCE_OVERWRITE = new String[]{"-f"};
     private final String[] SIMPLIFIED_OUT = new String[]{"-l"};
     private final String[] URIS_OUT = new String[]{"-u"};
 
@@ -53,28 +54,36 @@ class CommandLineOptionsParserTest {
             new Phenotype("hp:6543210")
     }));
 
-    private final String[] VALID_OUTPUT_FILE = new String[]{"-o", TestData.NON_EXISTING_FILE.getFullPathString()};
-    private final String[] INVALID_OUTPUT_FILE = new String[]{"-o", TestData.EXISTING_TSV.getFullPathString()};
+    private final String[] OUTPUT_FILE_NEW = new String[]{"-o", TestData.NON_EXISTING_FILE.getFullPathString()};
+    private final String[] OUTPUT_FILE_EXISTING = new String[]{"-o", TestData.EXISTING_TSV.getFullPathString()};
 
     @Test
-    void helpMessage() throws IOException, ParseException {
+    void helpMessage() throws ParseException {
         String[] args = stringArraysMerger(HELP);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Assertions.assertEquals(RunMode.NONE, vibeOptions.getRunMode());
+        Assertions.assertEquals(RunMode.HELP, vibeOptions.getRunMode());
     }
 
     @Test
-    void noArguments() throws IOException, ParseException {
+    void versionMessage() throws ParseException {
+        String[] args = stringArraysMerger(VERSION);
+        VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
+
+        Assertions.assertEquals(RunMode.VERSION, vibeOptions.getRunMode());
+    }
+
+    @Test
+    void noArguments() throws ParseException {
         String[] args = stringArraysMerger(new String[]{""});
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Assertions.assertEquals(RunMode.NONE, vibeOptions.getRunMode());
+        Assertions.assertEquals(RunMode.HELP, vibeOptions.getRunMode());
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFile() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+    void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFile() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -82,53 +91,53 @@ class CommandLineOptionsParserTest {
                 () -> Assertions.assertEquals(VALID_HPO_SINGLE_SET, vibeOptions.getPhenotypes()),
                 () -> Assertions.assertEquals(false, vibeOptions.isVerbose()),
                 () -> Assertions.assertEquals(FileOutputWriter.class, vibeOptions.getOutputWriter().getClass()),
-                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), vibeOptions.getOutputWriter().target()),
+                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(OUTPUT_FILE_NEW[1])).target(), vibeOptions.getOutputWriter().target()),
                 () -> Assertions.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, vibeOptions.getGenePrioritizedOutputFormatWriterFactory())
         );
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFileWithVerbose() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE, VERBOSE);
+    void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFileWithVerbose() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, DEBUG);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(RunMode.GENES_FOR_PHENOTYPES, vibeOptions.getRunMode()),
                 () -> Assertions.assertEquals(true, vibeOptions.isVerbose()),
                 () -> Assertions.assertEquals(FileOutputWriter.class, vibeOptions.getOutputWriter().getClass()),
-                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), vibeOptions.getOutputWriter().target()),
+                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(OUTPUT_FILE_NEW[1])).target(), vibeOptions.getOutputWriter().target()),
                 () -> Assertions.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, vibeOptions.getGenePrioritizedOutputFormatWriterFactory())
         );
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingUriOutputFile() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE, URIS_OUT);
+    void validSingleHpoWithoutOntologyTraversalUsingUriOutputFile() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, URIS_OUT);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(RunMode.GENES_FOR_PHENOTYPES, vibeOptions.getRunMode()),
                 () -> Assertions.assertEquals(FileOutputWriter.class, vibeOptions.getOutputWriter().getClass()),
-                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), vibeOptions.getOutputWriter().target()),
+                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(OUTPUT_FILE_NEW[1])).target(), vibeOptions.getOutputWriter().target()),
                 () -> Assertions.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_URI, vibeOptions.getGenePrioritizedOutputFormatWriterFactory())
         );
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingSimplifiedOutputFile() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE, SIMPLIFIED_OUT);
+    void validSingleHpoWithoutOntologyTraversalUsingSimplifiedOutputFile() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, SIMPLIFIED_OUT);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
                 () -> Assertions.assertEquals(RunMode.GENES_FOR_PHENOTYPES, vibeOptions.getRunMode()),
                 () -> Assertions.assertEquals(FileOutputWriter.class, vibeOptions.getOutputWriter().getClass()),
-                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(VALID_OUTPUT_FILE[1])).target(), vibeOptions.getOutputWriter().target()),
+                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(OUTPUT_FILE_NEW[1])).target(), vibeOptions.getOutputWriter().target()),
                 () -> Assertions.assertEquals(GenePrioritizedOutputFormatWriterFactory.SIMPLE, vibeOptions.getGenePrioritizedOutputFormatWriterFactory())
         );
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingStdoutOutput() throws IOException, ParseException {
+    void validSingleHpoWithoutOntologyTraversalUsingStdoutOutput() throws ParseException {
         String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
@@ -141,8 +150,8 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    void validSingleHpoWithHpoAlgorithmChildren() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+    void validSingleHpoWithHpoAlgorithmChildren() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -152,8 +161,8 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    void validSingleHpoWithHpoAlgorithmDistance() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_DISTANCE, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+    void validSingleHpoWithHpoAlgorithmDistance() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_DISTANCE, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -163,8 +172,8 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    void validTwoHpos() throws IOException, ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_MULTIPLE, VALID_OUTPUT_FILE);
+    void validTwoHpos() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_MULTIPLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertEquals(VALID_HPO_MULTIPLE_SET, vibeOptions.getPhenotypes());
@@ -177,35 +186,49 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    void validSingleHpoWithoutOntologyTraversalUsingInvalidOutputFile() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, INVALID_OUTPUT_FILE);
+    void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithOverwrite() throws ParseException {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING, FORCE_OVERWRITE);
+        VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Assertions.assertAll(
+                () -> Assertions.assertEquals(RunMode.GENES_FOR_PHENOTYPES, vibeOptions.getRunMode()),
+                () -> Assertions.assertEquals(VALID_HPO_SINGLE_SET, vibeOptions.getPhenotypes()),
+                () -> Assertions.assertEquals(false, vibeOptions.isVerbose()),
+                () -> Assertions.assertEquals(FileOutputWriter.class, vibeOptions.getOutputWriter().getClass()),
+                () -> Assertions.assertEquals(new FileOutputWriter(Paths.get(OUTPUT_FILE_EXISTING[1])).target(), vibeOptions.getOutputWriter().target()),
+                () -> Assertions.assertEquals(GenePrioritizedOutputFormatWriterFactory.REGULAR_ID, vibeOptions.getGenePrioritizedOutputFormatWriterFactory())
+        );
+    }
+
+    @Test
+    void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithoutOverwrite() {
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING);
+
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.EXISTING_TSV.getName() + " already exists.", exception.getMessage());
-
     }
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(HPO_ALGORITHM_INVALID[1] + " is not a valid HPO retrieval algorithm.", exception.getMessage());
     }
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithmDistanceNumber() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_NUMBER, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_NUMBER, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_DISTANCE_NUMBER[1] + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).", exception.getMessage());
     }
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithmDistanceString() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_STRING, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_STRING, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_DISTANCE_STRING[1] + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).", exception.getMessage());
     }
 
@@ -213,7 +236,7 @@ class CommandLineOptionsParserTest {
     void missingTdbAndHpoOntology() {
         String[] args = stringArraysMerger(VALID_HPO_SINGLE);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -t, -w", exception.getMessage());
     }
 
@@ -221,7 +244,7 @@ class CommandLineOptionsParserTest {
     void missingTdb() {
         String[] args = stringArraysMerger(VALID_HPO_SINGLE, VALID_ONTOLOGY);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -t", exception.getMessage());
     }
 
@@ -229,95 +252,95 @@ class CommandLineOptionsParserTest {
     void missingOntology() {
         String[] args = stringArraysMerger(VALID_HPO_SINGLE, VALID_TDB);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w", exception.getMessage());
     }
 
     @Test
     void noOntologyWithHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w, -m", exception.getMessage());
     }
 
     @Test
     void noOntologyWithHpoMaxDistance() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w, -n", exception.getMessage());
     }
 
     @Test
     void withOntologyAndDistanceMissingHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -n", exception.getMessage());
     }
 
     @Test
     void withOntologyAndAlgorithmMissingHpoMaxDistance() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -m", exception.getMessage());
     }
 
     @Test
     void withOntologyAlgorithmAndDistanceButNoOntologyFile() {
-        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w", exception.getMessage());
     }
 
     @Test
     void missingPhenotype() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -p", exception.getMessage());
     }
 
     @Test
     void invalidPhenotype() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, INVALID_HPO, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, INVALID_HPO, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_HPO[1] + " does not adhere the required format: ^(hp|HP):([0-9]{7})$", exception.getMessage());
     }
 
     @Test
     void invalidTdbDir() {
-        String[] args = stringArraysMerger(INVALID_TDB_DIR, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(INVALID_TDB_DIR, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_DIR.getName() + " is not a directory.", exception.getMessage());
     }
 
     @Test
     void invalidTdbFile() {
-        String[] args = stringArraysMerger(INVALID_TDB_FILE, VALID_ONTOLOGY, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(INVALID_TDB_FILE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_FILE.getName() + " is not a directory.", exception.getMessage());
     }
 
     @Test
     void invalidOntologyFile() {
-        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_FILE, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_FILE, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_FILE.getName() + " is not a readable file.", exception.getMessage());
     }
 
     @Test
     void invalidOntologyDir() {
-        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_DIR, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, VALID_OUTPUT_FILE);
+        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_DIR, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> CommandLineOptionsParser.parse(args) );
+        Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_DIR.getName() + " is not a readable file.", exception.getMessage());
     }
 

@@ -38,10 +38,17 @@ class VibeOptionsTest {
     }
 
     @Test
-    void validRunModeNone() {
-        vibeOptions.setRunMode(RunMode.NONE);
+    void validRunModeHelp() {
+        vibeOptions.setRunMode(RunMode.HELP);
 
-        vibeOptions.validate();
+        Assertions.assertTrue(vibeOptions.validate());
+    }
+
+    @Test
+    void validRunModeVersion() {
+        vibeOptions.setRunMode(RunMode.VERSION);
+
+        Assertions.assertTrue(vibeOptions.validate());
     }
 
     @Test
@@ -189,6 +196,4 @@ class VibeOptionsTest {
     void invalidHpoDir() {
         Assertions.assertThrows(IOException.class, () -> vibeOptions.setHpoOntology(INVALID_ONTOLOGY_DIR) );
     }
-
-
 }

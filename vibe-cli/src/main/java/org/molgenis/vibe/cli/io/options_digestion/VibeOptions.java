@@ -233,9 +233,29 @@ public class VibeOptions {
      * @throws FileAlreadyExistsException if file already exists
      */
     protected void setFileOutputWriter(Path outputFile) throws FileAlreadyExistsException {
-        if(checkIfPathIsReadableFile(outputFile)) {
+        if(checkIfPathIsWritableFile(outputFile)) {
             throw new FileAlreadyExistsException(outputFile.getFileName() + " already exists.");
         }
+        this.outputWriter = new FileOutputWriter(outputFile);
+    }
+
+    /**
+     * Wrapper for {@link #setFileOutputWriterForced(Path)}.
+     * @param outputFile the file path to write the output to
+     * @throws InvalidPathException if {@code outputFile} could not be converted to {@link Path}
+     */
+    protected void setFileOutputWriterForced(String outputFile) throws InvalidPathException {
+        setFileOutputWriterForced(Paths.get(outputFile));
+    }
+
+    /**
+     * Sets the {@link OutputWriter} to a {@link FileOutputWriter}. Overrides any previously set {@link OutputWriter}.
+     * If an existing file is given, it will be overwritten.
+     * @param outputFile the file path to write the output to
+     * @see FileOutputWriter#initialize()
+     */
+    protected void setFileOutputWriterForced(Path outputFile) {
+        checkIfPathIsWritableFile(outputFile);
         this.outputWriter = new FileOutputWriter(outputFile);
     }
 
@@ -256,6 +276,15 @@ public class VibeOptions {
     }
 
     /**
+     * Checks if a given {@link Path} is an existing writable file.
+     * @param path {@link Path}
+     * @return {@code boolean} {@code true} if so, otherwise {@code false}
+     */
+    private boolean checkIfPathIsWritableFile(Path path) {
+        return Files.isWritable(path) && Files.isRegularFile(path);
+    }
+
+    /**
      * Checks if a given {@link Path} is a directory.
      * @param path {@link Path}
      * @return {@code boolean} {@code true} if so, otherwise {@code false}
@@ -269,51 +298,68 @@ public class VibeOptions {
      * user input to validate if variables are set correctly (based on the specified {@link RunMode}).
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
      */
+    @SuppressWarnings("java:S128")
     public boolean validate() {
-        // With RunMode.NONE there are no requirements.
-        if (!runMode.equals(RunMode.NONE)) {
-            // Check if DisGeNET data is set.
-            if (getVibeTdb() == null) {
-                return false;
-            }
-            // Check if HPO ontology data is set.
-            if (getHpoOntology() == null) {
-                return false;
-            }
-            // Check if an output file was given.
-            if (getOutputWriter() == null) {
-                return false;
-            }
-            // Checks if a gene prioritized output format factory was given.
-            if (getGenePrioritizedOutputFormatWriterFactory() == null) {
-                return false;
-            }
-            // Check config specific settings are set.
-            switch (runMode) {
-                // Additional checks if related HPOs need to be retrieved.
-                case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
-                    // Check if a factory for related HPO retrieval was set.
-                    if (getPhenotypesRetrieverFactory() == null) {
-                        return false;
-                    }
-                    // Check if a max distance for related HPO retrieval was set.
-                    if (getOntologyMaxDistance() == null) {
-                        return false;
-                    }
-                    // NO BREAK: continues!!!
-
-                    // Checks if no associated phenotypes need to be retrieved.
-                case GENES_FOR_PHENOTYPES:
-                    // Check if there are any input phenotypes.
-                    if (getPhenotypes().isEmpty()) {
-                        return false;
-                    }
-                default:
-                    // No additional checks required for non-specified cases.
-            }
+        switch (runMode) {
+            case GENES_FOR_PHENOTYPES_WITH_ASSOCIATED_PHENOTYPES:
+                if(!validateRelatedPhenotypesRetrieval()) return false;
+                // NO BREAK: continues!!!
+            case GENES_FOR_PHENOTYPES:
+                if(!validateGenesForPhenotype()) return false;
+            default:
+                // No checks required for non-specified cases.
         }
 
         // If nothing failed, returns true.
+        return true;
+    }
+
+    /**
+     * Checks whether variables were set that are only required for retrieving related {@link Phenotype}{@code s} for
+     * the input {@link Phenotype}{@code s}.
+     * <br /><br />
+     * <b>IMPORTANT:</b> Requirements that are checked in {@link #validateGenesForPhenotype()} are skipped here!
+     * @return {@code true} if all needed variables are set, otherwise {@code false}
+     */
+    private boolean validateRelatedPhenotypesRetrieval() {
+        // Check if a factory for related HPO retrieval was set.
+        if (getPhenotypesRetrieverFactory() == null) {
+            return false;
+        }
+        // Check if a max distance for related HPO retrieval was set.
+        if (getOntologyMaxDistance() == null) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * Checks whether variables were set that are required for retrieving a
+     * {@link org.molgenis.vibe.core.formats.GeneDiseaseCollection} from the {@code TDB} using
+     * {@link Phenotype}{@code s} as input.
+     * @return {@code true} if all needed variables are set, otherwise {@code false}
+     */
+    private boolean validateGenesForPhenotype() {
+        // Check if DisGeNET data is set.
+        if (getVibeTdb() == null) {
+            return false;
+        }
+        // Check if HPO ontology data is set.
+        if (getHpoOntology() == null) {
+            return false;
+        }
+        // Check if an output writer was given.
+        if (getOutputWriter() == null) {
+            return false;
+        }
+        // Checks if a gene prioritized output format factory was given.
+        if (getGenePrioritizedOutputFormatWriterFactory() == null) {
+            return false;
+        }
+        // Check if there are any input phenotypes.
+        if (getPhenotypes().isEmpty()) {
+            return false;
+        }
         return true;
     }
 
