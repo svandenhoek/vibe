@@ -104,6 +104,9 @@ pipeline {
                                 sh(script: "vault read -field=secret.asc secret/ops/certificate/pgp/molgenis-ci > ${JENKINS_AGENT_WORKDIR}/key.asc")
                             }
                         }
+                        container('maven') {
+                            sh "mvn -q -B release:perform -Darguments=\"-q -B -DskipITs -Dmaven.test.redirectTestOutputToFile=true -Pproduction\""
+                        }
                     }
                 }
                 stage('Manually close and release on sonatype [ x.x ]') {
