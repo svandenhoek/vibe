@@ -124,14 +124,9 @@
 
     <!-- Profiles to override default configuration (can be triggered manually using "-P<id>") -->
     <profiles>
-        <!-- Trigger pgp-maven-plugin on "mvn install" when environment variable PGP_PASSPHRASE is found -->
+        <!-- Jenkins release specific configuration -->
         <profile>
-            <id>pgp_install</id>
-            <activation>
-                <property>
-                    <name>env.PGP_PASSPHRASE</name>
-                </property>
-            </activation>
+            <id>jenkins_release</id>
             <build>
                 <pluginManagement>
                     <plugins>
