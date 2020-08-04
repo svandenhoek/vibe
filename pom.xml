@@ -122,6 +122,39 @@
         </repository>
     </distributionManagement>
 
+    <!-- Profiles to override default configuration (can be triggered manually using "-P<id>") -->
+    <profiles>
+        <!-- Trigger pgp-maven-plugin on "mvn install" when environment variable PGP_PASSPHRASE is found -->
+        <profile>
+            <id>pgp_install</id>
+            <activation>
+                <property>
+                    <name>env.PGP_PASSPHRASE</name>
+                </property>
+            </activation>
+            <build>
+                <pluginManagement>
+                    <plugins>
+                        <plugin>
+                            <!-- sign in a non-interactive way -->
+                            <groupId>org.kohsuke</groupId>
+                            <artifactId>pgp-maven-plugin</artifactId>
+                            <executions>
+                                <execution>
+                                    <id>sign-artifacts</id>
+                                    <phase>install</phase> <!-- deploy -> install -->
+                                    <goals>
+                                        <goal>sign</goal>
+                                    </goals>
+                                </execution>
+                            </executions>
+                        </plugin>
+                    </plugins>
+                </pluginManagement>
+            </build>
+        </profile>
+    </profiles>
+
     <build>
         <resources>
             <resource>
