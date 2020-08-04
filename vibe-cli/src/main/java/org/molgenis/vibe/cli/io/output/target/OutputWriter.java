@@ -14,16 +14,18 @@ public interface OutputWriter {
     String target();
 
     /**
-     * Makes preparations for writing output to an output target.
+     * Makes preparations for writing output to an output target. The default is empty and should be overridden by the
+     * implementation if an {@code initialize()} step is needed before actual data is written.
      * @throws IOException
      */
-    void initialize() throws IOException;
+    default void initialize() throws IOException {}
 
     /**
-     * Closes output target.
+     * Closes output target. The default is empty and should be overridden by the implementation if a {@code close()}
+     * step is needed after the data is written (to cleanly close off the target opened during {@code initialize()}).
      * @throws IOException
      */
-    void close() throws IOException;
+    default void close() throws IOException {}
 
     /**
      * Writes single piece of information to output target.

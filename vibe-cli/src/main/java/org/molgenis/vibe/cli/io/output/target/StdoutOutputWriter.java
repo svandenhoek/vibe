@@ -10,16 +10,6 @@ public class StdoutOutputWriter implements OutputWriter {
     }
 
     @Override
-    public void initialize() {
-        // Do nothing as no initialization is needed.
-    }
-
-    @Override
-    public void close() {
-        // Do nothing as nothing needs to be closed afterwards.
-    }
-
-    @Override
     public void write(String output) {
         System.out.print(output);
     }
