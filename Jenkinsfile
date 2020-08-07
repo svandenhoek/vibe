@@ -105,7 +105,7 @@ pipeline {
                             }
                         }
                         container('maven') {
-                            sh "mvn -q -B release:perform -Darguments=\"-q -B -DskipITs -Dmaven.test.redirectTestOutputToFile=true -Pproduction\""
+                            sh "mvn -q -B release:perform -Darguments=\"-q -B -DskipTests -Dmaven.test.redirectTestOutputToFile=true -Pjenkins_release\""
                         }
                     }
                 }
