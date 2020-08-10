@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.molgenis</groupId>
         <artifactId>vibe</artifactId>
-        <version>4.0.4</version>
+        <version>4.0.5-SNAPSHOT</version>
     </parent>
     <artifactId>vibe-cli</artifactId>
     <packaging>jar</packaging>
