@@ -71,10 +71,10 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
         return ((combinationsByT2.get(t2) == null) ? null : Collections.unmodifiableSet(combinationsByT2.get(t2)));
     }
 
-    public BiologicalEntityCollection() {
+    protected BiologicalEntityCollection() {
     }
 
-    public BiologicalEntityCollection(Collection<? extends T3> combinations) {
+    protected BiologicalEntityCollection(Collection<? extends T3> combinations) {
         addAll(combinations);
     }
 
@@ -258,6 +258,6 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public int hashCode() {
-        return Objects.hash(combinationsMap);
+        return Objects.hash(combinationsMap.keySet());
     }
 }
