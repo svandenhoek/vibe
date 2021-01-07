@@ -347,13 +347,45 @@ class BiologicalEntityCollectionTest {
     }
 
     @Test
-    void hashNotEqual() {
+    void hashDifferentSize() {
         BiologicalEntityCollectionImpl collection1 = new BiologicalEntityCollectionImpl();
         collection1.add(combinations[0]);
         collection1.add(combinations[1]);
 
         BiologicalEntityCollectionImpl collection2 = new BiologicalEntityCollectionImpl();
         collection2.add(combinations[2]);
+
+        Assertions.assertNotEquals(collection1.hashCode(), collection2.hashCode());
+    }
+
+    @Test
+    void hashSameSizeDifferentContent() {
+        BiologicalEntityCollectionImpl collection1 = new BiologicalEntityCollectionImpl();
+        collection1.add(combinations[0]);
+
+        BiologicalEntityCollectionImpl collection2 = new BiologicalEntityCollectionImpl();
+        collection2.add(combinations[2]);
+
+        Assertions.assertNotEquals(collection1.hashCode(), collection2.hashCode());
+    }
+
+    @Test
+    void hashSameSizeSameContent() {
+        BiologicalEntityCollectionImpl collection1 = new BiologicalEntityCollectionImpl();
+        collection1.add(combinations[1]);
+
+        BiologicalEntityCollectionImpl collection2 = new BiologicalEntityCollectionImpl();
+        collection2.add(combinations[1]);
+
+        Assertions.assertEquals(collection1.hashCode(), collection2.hashCode());
+    }
+
+    @Test
+    void hashEmptyVersusFilled() {
+        BiologicalEntityCollectionImpl collection1 = new BiologicalEntityCollectionImpl();
+
+        BiologicalEntityCollectionImpl collection2 = new BiologicalEntityCollectionImpl();
+        collection2.add(combinations[1]);
 
         Assertions.assertNotEquals(collection1.hashCode(), collection2.hashCode());
     }
