@@ -258,6 +258,6 @@ public abstract class BiologicalEntityCollection<T1 extends BiologicalEntity, T2
 
     @Override
     public int hashCode() {
-        return Objects.hash(combinationsMap);
+        return Objects.hash(combinationsMap.keySet());
     }
 }
