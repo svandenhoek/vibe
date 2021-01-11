@@ -16,10 +16,22 @@ public enum TestData {
             return "fake_hp.owl";
         }
     },
+    TTL {
+        @Override
+        public String getName() {
+            return "vibe.ttl";
+        }
+    },
     TDB {
         @Override
         public String getName() {
             return "tdb";
+        }
+    },
+    HDT {
+        @Override
+        public String getName() {
+            return "vibe.hdt";
         }
     },
     EXISTING_TSV {

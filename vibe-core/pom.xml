@@ -105,6 +105,18 @@
             <type>pom</type>
         </dependency>
 
+        <dependency>
+            <groupId>org.rdfhdt</groupId>
+            <artifactId>hdt-java-core</artifactId>
+            <version>${rdfhdt.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.rdfhdt</groupId>
+            <artifactId>hdt-jena</artifactId>
+            <version>${rdfhdt.version}</version>
+        </dependency>
+
+
         <!-- test dependencies -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
