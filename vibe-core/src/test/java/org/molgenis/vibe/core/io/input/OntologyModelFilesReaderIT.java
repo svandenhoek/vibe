@@ -6,8 +6,6 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.molgenis.vibe.core.TestData;
 
-import java.nio.file.Path;
-
 class OntologyModelFilesReaderIT {
     private OntologyModelFilesReader reader;
 
