@@ -4,8 +4,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.core.TestData;
+import org.molgenis.vibe.core.io.input.HdtFileReader;
 import org.molgenis.vibe.core.io.input.ModelReader;
-import org.molgenis.vibe.core.io.input.TripleStoreDbReader;
 import org.molgenis.vibe.core.database_processing.QueryRunner;
 
 import java.io.IOException;
@@ -27,7 +27,7 @@ class QueryStringGeneratorIT {
 
     @BeforeAll
     static void beforeAll() throws IOException {
-        reader = new TripleStoreDbReader(TestData.TDB.getFullPathString());
+        reader = new HdtFileReader(TestData.HDT.getFullPathString());
     }
 
     @AfterAll

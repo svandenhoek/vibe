@@ -10,10 +10,10 @@ public enum TestData {
             return "hp.owl";
         }
     },
-    TDB {
+    HDT {
         @Override
         public String getName() {
-            return "tdb";
+            return "vibe-3.1.0.hdt";
         }
     },
     NON_EXISTING_FILE {

@@ -9,6 +9,10 @@ import org.rdfhdt.hdtjena.HDTGraph;
 import java.io.IOException;
 import java.nio.file.Path;
 
+/**
+ * Reader for a HDT file. Note that when the HDT file is stored in a read-only directory, a
+ * {@link java.io.FileNotFoundException} will be thrown when no index file is present.
+ */
 public class HdtFileReader implements ModelReader {
     /**
      * The model that is created from the HDT file.

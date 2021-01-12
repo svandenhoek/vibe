@@ -37,7 +37,7 @@ public final class QueryStringGenerator {
             "PREFIX obo: <http://purl.obolibrary.org/obo/>\n" ;
 
     /**
-     * Custom prefixes (as also used in custom TDB).
+     * Custom prefixes (as also used in custom database).
      */
     private static final String PREFIXES_CUSTOM = "PREFIX umls: <http://linkedlifedata.com/resource/umls/id/> # DisGeNET\n" +
             "PREFIX ncbigene: <http://identifiers.org/ncbigene/> # DisGeNET\n" +
