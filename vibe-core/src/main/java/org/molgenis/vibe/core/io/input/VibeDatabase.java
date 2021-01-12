@@ -49,6 +49,9 @@ public class VibeDatabase {
                     }
                 }
                 break;
+            default:
+                throw new IllegalArgumentException("Chosen ModelReaderFactory option is currently not supported as" +
+                        " vibe database.");
         }
     }
 }
