@@ -4,7 +4,7 @@ import org.molgenis.vibe.core.formats.GeneDiseaseCollection;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.core.io.input.ModelReader;
 import org.molgenis.vibe.core.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.core.tdb_processing.GenesForPhenotypeRetriever;
+import org.molgenis.vibe.core.database_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
 import java.nio.file.Path;

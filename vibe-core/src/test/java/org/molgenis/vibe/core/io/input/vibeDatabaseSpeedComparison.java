@@ -9,7 +9,7 @@ import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.core.TestData;
 import org.molgenis.vibe.core.formats.Phenotype;
-import org.molgenis.vibe.core.tdb_processing.GenesForPhenotypeRetriever;
+import org.molgenis.vibe.core.database_processing.GenesForPhenotypeRetriever;
 
 import java.io.IOException;
 import java.util.Arrays;

@@ -1,4 +1,4 @@
-package org.molgenis.vibe.core.tdb_processing.query_string_creation;
+package org.molgenis.vibe.core.database_processing.query_string_creation;
 
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
@@ -6,7 +6,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.core.TestData;
 import org.molgenis.vibe.core.io.input.ModelReader;
 import org.molgenis.vibe.core.io.input.TripleStoreDbReader;
-import org.molgenis.vibe.core.tdb_processing.QueryRunner;
+import org.molgenis.vibe.core.database_processing.QueryRunner;
 
 import java.io.IOException;
 import java.util.*;

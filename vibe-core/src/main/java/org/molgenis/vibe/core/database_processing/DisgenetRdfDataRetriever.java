@@ -1,11 +1,11 @@
-package org.molgenis.vibe.core.tdb_processing;
+package org.molgenis.vibe.core.database_processing;
 
 import static java.util.Objects.requireNonNull;
 
 import org.apache.jena.query.QuerySolution;
 import org.molgenis.vibe.core.formats.Source;
 import org.molgenis.vibe.core.io.input.ModelReader;
-import org.molgenis.vibe.core.tdb_processing.query_string_creation.QueryStringGenerator;
+import org.molgenis.vibe.core.database_processing.query_string_creation.QueryStringGenerator;
 
 import java.io.IOException;
 import java.net.URI;
