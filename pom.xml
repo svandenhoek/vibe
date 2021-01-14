@@ -45,10 +45,10 @@
     </issueManagement>
 
     <properties>
-        <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
-        <vibe-tdb.version>3.1.0</vibe-tdb.version>
-        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tar.gz</vibe-tdb.archive>
-        <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
+        <!-- vibe database information (requirement: vibe-database.version <= project.version) -->
+        <vibe-database.version>3.1.0</vibe-database.version>
+        <vibe-database.archive>vibe-${vibe-database.version}-hdt.tar.gz</vibe-database.archive>
+        <vibe-database.download>https://molgenis.org/downloads/vibe/${vibe-database.archive}</vibe-database.download>
 
         <!-- used hpo.owl github tag -->
         <hpo-owl.tag>v2019-11-08</hpo-owl.tag>
