@@ -31,7 +31,7 @@ public enum TestData {
     HDT {
         @Override
         public String getName() {
-            return "vibe.hdt";
+            return "hdt/vibe.hdt";
         }
     },
     EXISTING_TSV {

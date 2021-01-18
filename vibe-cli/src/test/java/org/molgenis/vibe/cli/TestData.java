@@ -13,7 +13,7 @@ public enum TestData {
     HDT {
         @Override
         public String getName() {
-            return "vibe.hdt";
+            return "hdt/vibe.hdt";
         }
     },
     NON_EXISTING_FILE {

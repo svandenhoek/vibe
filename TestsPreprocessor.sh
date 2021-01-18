@@ -1,22 +1,27 @@
 #!/usr/bin/env bash
 
 echo "# Retrieving information from pom.xml"
-readonly TDB_ARCHIVE=$(mvn -q help:evaluate -Dexpression=vibe-tdb.archive -DforceStdout)
-readonly TDB_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=vibe-tdb.download -DforceStdout)
+readonly HDT_ARCHIVE=$(mvn -q help:evaluate -Dexpression=vibe-database.archive -DforceStdout)
+readonly HDT_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=vibe-database.download -DforceStdout)
 readonly HPO_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=hpo-owl.download -DforceStdout)
 
 cd shared_testdata
 
 echo "# Removing old data"
-rm -rf tdb
+rm -rf tdb # Removes deprecated TDB if still present.
+rm -rf hdt
 rm -f hp.owl
 
 echo "# Downloading data"
-curl -L -O ${TDB_DOWNLOAD} -O ${HPO_DOWNLOAD}
+curl -L -O ${HDT_DOWNLOAD} -O ${HPO_DOWNLOAD}
 
 echo "# Preparing data for unit-tests"
-tar -xzvf ${TDB_ARCHIVE}
-mv ${TDB_ARCHIVE%.tar.gz} tdb
-rm ${TDB_ARCHIVE}
+tar -xzvf ${HDT_ARCHIVE}
+mv ${HDT_ARCHIVE%.tar.gz} hdt
+cd hdt
+mv ${HDT_ARCHIVE%-hdt.tar.gz}.hdt vibe.hdt
+mv ${HDT_ARCHIVE%-hdt.tar.gz}.hdt.index.v1-1 vibe.hdt.index.v1-1
+cd ../
+rm ${HDT_ARCHIVE}
 
 cd ../
