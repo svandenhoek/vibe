@@ -312,7 +312,7 @@ addVersionInformationToDatabaseDir() {
       ${SOURCES_DIR}/sio-release.owl >> ${FINAL_INFO_FILE}
     ls -l ${SOURCES_DIR} | gawk 'match($0, /disgenetv[0-9.]+-rdf-(v[0-9.]+)-dump\.tgz/, arr) {print "DisGeNET " arr[1]}' \
      >> ${FINAL_INFO_FILE}
-    printf "DisGeNET v5.0.0" >> ${FINAL_INFO_FILE} # For the literature HPO-DISEASE associations
+    printf "DisGeNET v5.0.0 (pda.ttl, phenotype.ttl & void.ttl only)" >> ${FINAL_INFO_FILE} # For the literature HPO-DISEASE associations
 }
 
 createArchive() {
