@@ -22,6 +22,24 @@ public enum TestData {
             return "shared/hdt/vibe.hdt";
         }
     },
+    FAKE_HDT_WITH_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-with-index/fake.hdt";
+        }
+    },
+    FAKE_HDT_WITHOUT_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-without-index/fake.hdt";
+        }
+    },
+    FAKE_HDT_INDEX_ONLY_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-index-only/fake.hdt.index.v1-1";
+        }
+    },
     EXISTING_TSV {
         @Override
         public String getName() {
