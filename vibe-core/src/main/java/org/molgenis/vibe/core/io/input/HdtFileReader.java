@@ -36,13 +36,13 @@ public class HdtFileReader implements ModelReader {
 
     @Override
     public void close() {
+        model.close();
+        graph.close();
         try {
             hdt.close();
         } catch (IOException e) {
             System.err.println("An error occurred while trying to close the HDT.");
         }
-        graph.close();
-        model.close();
     }
 
     public HdtFileReader(Path file) throws IOException {
