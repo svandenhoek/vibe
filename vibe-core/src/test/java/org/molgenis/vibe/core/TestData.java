@@ -7,37 +7,37 @@ public enum TestData {
     HPO_OWL {
         @Override
         public String getName() {
-            return "hp.owl";
+            return "shared/hp.owl";
         }
     },
     FAKE_HPO_OWL {
         @Override
         public String getName() {
-            return "fake_hp.owl";
+            return "shared/fake_hp.owl";
         }
     },
     TTL {
         @Override
         public String getName() {
-            return "vibe.ttl";
+            return "shared/vibe.ttl";
         }
     },
     TDB {
         @Override
         public String getName() {
-            return "tdb";
+            return "shared/tdb";
         }
     },
     HDT {
         @Override
         public String getName() {
-            return "hdt/vibe.hdt";
+            return "shared/hdt/vibe.hdt";
         }
     },
     EXISTING_TSV {
         @Override
         public String getName() {
-            return "output.tsv";
+            return "shared/output.tsv";
         }
     };
 

@@ -5,7 +5,7 @@ readonly HDT_ARCHIVE=$(mvn -q help:evaluate -Dexpression=vibe-database.archive -
 readonly HDT_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=vibe-database.download -DforceStdout)
 readonly HPO_DOWNLOAD=$(mvn -q help:evaluate -Dexpression=hpo-owl.download -DforceStdout)
 
-cd shared_testdata
+cd shared_testdata/shared
 
 echo "# Removing old data"
 rm -rf tdb # Removes deprecated TDB if still present.
@@ -24,4 +24,4 @@ mv ${HDT_ARCHIVE%-hdt.tar.gz}.hdt.index.v1-1 vibe.hdt.index.v1-1
 cd ../
 rm ${HDT_ARCHIVE}
 
-cd ../
+cd ../../

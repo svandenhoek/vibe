@@ -98,6 +98,10 @@ Before building/testing, be sure the needed test resources are downloaded. This 
      - SHA-512
      - SHA3-512
 
+### Notes
+
+- The different modules partly use the same resources. To not create duplicate data, these are stored in the `shared_resources/shared` folder. When adding new test resources to a module, ensure that there is no `src/test/resources/shared` directory.
+
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
 [tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz
