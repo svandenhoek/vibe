@@ -205,7 +205,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.EXISTING_TSV.getName() + " already exists.", exception.getMessage());
+        Assertions.assertEquals(TestData.EXISTING_TSV.getName().split("/")[1] + " already exists.", exception.getMessage());
     }
 
     @Test
@@ -317,7 +317,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(INVALID_DATABASE_DIR, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.NON_EXISTING_DIR.getName() + " is not a readable file.", exception.getMessage());
+        Assertions.assertEquals("Invalid database. Please check if " + TestData.NON_EXISTING_DIR.getName() + " is a readable .hdt file.", exception.getMessage());
     }
 
     @Test
@@ -325,7 +325,7 @@ class CommandLineOptionsParserTest {
         String[] args = stringArraysMerger(INVALID_DATABASE_FILE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.NON_EXISTING_FILE.getName() + " is not a readable file.", exception.getMessage());
+        Assertions.assertEquals("Invalid database. Please check if " + TestData.NON_EXISTING_FILE.getName() + " is a readable .hdt file.", exception.getMessage());
     }
 
     @Test
