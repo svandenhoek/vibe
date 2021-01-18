@@ -27,11 +27,6 @@ public class VibeDatabase {
 
     private void validate() throws IOException {
         switch (modelReaderFactory) {
-            case TDB:
-                if( !(Files.isDirectory(dbPath) && Files.isReadable(dbPath)) ) {
-                    throw new IOException("Not a valid TDB.");
-                }
-                break;
             case HDT:
                 // Checks if it is a readable HDT file.
                 if(!(Files.isRegularFile(dbPath) &&

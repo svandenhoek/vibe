@@ -16,18 +16,6 @@ public enum TestData {
             return "shared/fake_hp.owl";
         }
     },
-    TTL {
-        @Override
-        public String getName() {
-            return "shared/vibe.ttl";
-        }
-    },
-    TDB {
-        @Override
-        public String getName() {
-            return "shared/tdb";
-        }
-    },
     HDT {
         @Override
         public String getName() {
