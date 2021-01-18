@@ -32,7 +32,7 @@ public class VibeDatabase {
                 if(!(Files.isRegularFile(dbPath) &&
                         Files.isReadable(dbPath) &&
                         dbPath.toString().toLowerCase().endsWith(".hdt"))) {
-                    throw new IOException("Invalid database. Please check if it is a readable .hdt file.");
+                    throw new IOException("Invalid database. Please check if " + dbPath.getFileName() + " is a readable .hdt file.");
                 }
 
                 // If directory is not writable, pre-made index file is required.
