@@ -101,6 +101,7 @@ Before building/testing, be sure the needed test resources are downloaded. This 
 ### Notes
 
 - The different modules partly use the same resources. To not create duplicate data, these are stored in the `shared_resources/shared` folder. When adding new test resources to a module, ensure that there is no `src/test/resources/shared` directory.
+- In case tests fail on Jenkins due to Jenkins-specific reasons (f.e. due to requiring to change a file permission of a test resource), the JUnit tag `skipOnJenkins` can be used so that these test still occur when building locally.
 
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
