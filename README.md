@@ -16,7 +16,7 @@ A tool to generate prioritized genes using phenotype information.
 ## Quickstart
 
 * Download [vibe .jar file][vibe_download]
-* Download and extract [TDB][tdb_download]
+* Download and extract [HDT][hdt_download]
 * Download the [HPO.owl][hpo_owl]
 * Make sure you have [Java 8 or higher][java_download]
 * Open a terminal and run VIBE. `java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -o results.tsv -p HP:0002996 -p HP:0001377`
@@ -26,7 +26,7 @@ A tool to generate prioritized genes using phenotype information.
 ### Requirements
 
 * [Java 8 or higher][java_download]
-* [A local TDB dataset][tdb_download]
+* [A local HDT dataset][hdt_download]
 * [Human Phenotype Ontology (HPO)][hpo_owl]
 
 ### Usage
@@ -73,21 +73,15 @@ Alternatively, the option `-l` can be added when running the tool. If this is do
 
 The `-u` option changes the output to use URI's instead of ID's for certain fields. As this strongly increases the output size, in general it is not advised to use this option.
 
-## F.A.Q.
-
-**Q:** It takes forever to retrieve information from the TDB.
-
-**A:** Depending on the how much information needs to be retrieved from the TDB based on the input genes, this process may indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
-
 ## For developers
 
-Below are the instructions on how to build the app. For instructions on how to create the TDB, please check [here](./database/README.md). 
+Below are the instructions on how to build the app. For instructions on how to create the HDT, please check [here](./database/README.md). 
 
 ### Requirements
 - Apache Maven ([download][maven_download] and [install][maven_install])
 
 ### Preperations
-Before building/testing, be sure the needed test resources are downloaded. This can be done by running `TestsPreprocessor.sh`. When checking out a commit that uses a different version of the test resources (as defined by the `pom.xml` properties `vibe-tdb.version` and `hpo-owl.tag`), be sure to re-run this script so that the correct resources are used for testing. 
+Before building/testing, be sure the needed test resources are downloaded. This can be done by running `TestsPreprocessor.sh`. When checking out a commit that uses a different version of the test resources (as defined by the `pom.xml` properties `vibe-database.version` and `hpo-owl.tag`), be sure to re-run this script so that the correct resources are used for testing. 
 
 ### Building executables
 
@@ -105,7 +99,7 @@ Before building/testing, be sure the needed test resources are downloaded. This 
 
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
-[tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz
+[hdt_download]: http://molgenis.org/downloads/vibe/vibe-5.0.0-hdt.tar.gz
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
