@@ -13,6 +13,24 @@ import java.nio.file.Paths;
  * Certain tests fail on Jenkins, probably caused by issues setting file/dir permissions.
  */
 public class VibeDatabaseTest {
+    /**
+     * Simple test to verify no Exception occurs.
+     */
+    @Test
+    void testWritableDirWithIndex() throws IOException {
+        Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
+        new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+    }
+
+    /**
+     * Simple test to verify no Exception occurs.
+     */
+    @Test
+    void testWritableDirWithoutIndex() throws IOException {
+        Path hdtFile = TestData.FAKE_HDT_WITHOUT_INDEX.getFullPath();
+        new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+    }
+
     @Test
     @Tag("skipOnJenkins")
     void testUnreadableHdtInWritableDir() {
@@ -45,6 +63,9 @@ public class VibeDatabaseTest {
         }
     }
 
+    /**
+     * Simple test to verify no Exception occurs.
+     */
     @Test
     @Tag("skipOnJenkins")
     void testReadonlyDirWithIndex() throws IOException {
