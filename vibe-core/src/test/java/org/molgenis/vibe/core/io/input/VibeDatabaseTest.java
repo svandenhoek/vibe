@@ -1,6 +1,5 @@
 package org.molgenis.vibe.core.io.input;
 
-import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Tag;
 import org.junit.jupiter.api.Test;
@@ -11,56 +10,72 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 
 /**
- * These test fail on Jenkins, probably caused by issues setting file/dir permissions.
+ * Certain tests fail on Jenkins, probably caused by issues setting file/dir permissions.
  */
-@Tag("skipOnJenkins")
 public class VibeDatabaseTest {
-    @AfterEach
-    void afterEach() {
-        TestData.FAKE_HDT_WITH_INDEX.getFullPath().getParent().toFile().setWritable(true);
-        TestData.FAKE_HDT_WITH_INDEX.getFullPath().toFile().setReadable(true);
-
-        TestData.FAKE_HDT_WITHOUT_INDEX.getFullPath().getParent().toFile().setWritable(true);
-    }
-
     @Test
-    void testUnreadableHdtInWritableDir() throws IOException {
+    @Tag("skipOnJenkins")
+    void testUnreadableHdtInWritableDir() {
         Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
-        hdtFile.toFile().setReadable(false);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT) );
-        Assertions.assertEquals("Invalid database. Please check if " + hdtFile.getFileName() + " is a readable .hdt file.", exception.getMessage());
+        try {
+            hdtFile.toFile().setReadable(false);
+
+            Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
+            Assertions.assertEquals("Invalid database. Please check if " + hdtFile.getFileName() + " is a readable .hdt file.", exception.getMessage());
+        } finally { // Reset any permission changes made.
+            hdtFile.toFile().setReadable(true);
+        }
     }
 
     @Test
-    void testUnreadableHdtInUnwritableDir() throws IOException {
+    @Tag("skipOnJenkins")
+    void testUnreadableHdtInUnwritableDir() {
         Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
-        hdtFile.toFile().setReadable(false);
-        hdtFile.getParent().toFile().setWritable(false);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT) );
-        Assertions.assertEquals("Invalid database. Please check if " + hdtFile.getFileName() + " is a readable .hdt file.", exception.getMessage());
+        try {
+            hdtFile.toFile().setReadable(false);
+            hdtFile.getParent().toFile().setWritable(false);
+
+            Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
+            Assertions.assertEquals("Invalid database. Please check if " + hdtFile.getFileName() + " is a readable .hdt file.", exception.getMessage());
+        } finally { // Reset any permission changes made.
+            hdtFile.toFile().setReadable(true);
+            hdtFile.getParent().toFile().setWritable(true);
+        }
     }
 
     @Test
+    @Tag("skipOnJenkins")
     void testReadonlyDirWithIndex() throws IOException {
         Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
-        hdtFile.getParent().toFile().setWritable(false);
 
-        new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+        try {
+            hdtFile.getParent().toFile().setWritable(false);
+
+            new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+        } finally { // Reset any permission changes made.
+            hdtFile.getParent().toFile().setWritable(true);
+        }
     }
 
     @Test
-    void testReadonlyDirWithoutIndex() throws IOException {
+    @Tag("skipOnJenkins")
+    void testReadonlyDirWithoutIndex() {
         Path hdtFile = TestData.FAKE_HDT_WITHOUT_INDEX.getFullPath();
-        hdtFile.getParent().toFile().setWritable(false);
 
-        Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT) );
-        Assertions.assertEquals("Read-only directories require pre-made index file.", exception.getMessage());
+        try {
+            hdtFile.getParent().toFile().setWritable(false);
+
+            Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
+            Assertions.assertEquals("Read-only directories require pre-made index file.", exception.getMessage());
+        } finally { // Reset any permission changes made.
+            hdtFile.getParent().toFile().setWritable(true);
+        }
     }
 
     @Test
-    void testOnlyIndexFileGivenAsInput() throws IOException {
+    void testOnlyIndexFileGivenAsInput() {
         Path hdtFile = TestData.FAKE_HDT_INDEX_ONLY_INDEX.getFullPath();
 
         Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT) );
@@ -68,7 +83,7 @@ public class VibeDatabaseTest {
     }
 
     @Test
-    void testOnlyIndexFileButNonExistingHdtGivenAsInput() throws IOException {
+    void testOnlyIndexFileButNonExistingHdtGivenAsInput() {
         Path hdtFile = Paths.get(TestData.FAKE_HDT_INDEX_ONLY_INDEX.getFullPath().getParent().toString() + "/fake.hdt");
 
         Exception exception = Assertions.assertThrows(IOException.class, () -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT) );
