@@ -13,22 +13,16 @@ import java.nio.file.Paths;
  * Certain tests fail on Jenkins, probably caused by issues setting file/dir permissions.
  */
 class VibeDatabaseTest {
-    /**
-     * Simple test to verify no Exception occurs.
-     */
     @Test
-    void testWritableDirWithIndex() throws IOException {
+    void testWritableDirWithIndex() {
         Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
-        new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+        Assertions.assertDoesNotThrow(() -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
     }
 
-    /**
-     * Simple test to verify no Exception occurs.
-     */
     @Test
-    void testWritableDirWithoutIndex() throws IOException {
+    void testWritableDirWithoutIndex() {
         Path hdtFile = TestData.FAKE_HDT_WITHOUT_INDEX.getFullPath();
-        new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+        Assertions.assertDoesNotThrow(() -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
     }
 
     @Test
@@ -63,18 +57,15 @@ class VibeDatabaseTest {
         }
     }
 
-    /**
-     * Simple test to verify no Exception occurs.
-     */
     @Test
     @Tag("skipOnJenkins")
-    void testReadonlyDirWithIndex() throws IOException {
+    void testReadonlyDirWithIndex() {
         Path hdtFile = TestData.FAKE_HDT_WITH_INDEX.getFullPath();
 
         try {
             hdtFile.getParent().toFile().setWritable(false);
 
-            new VibeDatabase(hdtFile, ModelReaderFactory.HDT);
+            Assertions.assertDoesNotThrow(() -> new VibeDatabase(hdtFile, ModelReaderFactory.HDT));
         } finally { // Reset any permission changes made.
             hdtFile.getParent().toFile().setWritable(true);
         }
