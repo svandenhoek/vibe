@@ -19,7 +19,7 @@ A tool to generate prioritized genes using phenotype information.
 * Download and extract [TDB][tdb_download]
 * Download the [HPO.owl][hpo_owl]
 * Make sure you have [Java 8 or higher][java_download]
-* Open a terminal and run VIBE. `java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+* Open a terminal and run VIBE. `java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ## Detailed instructions
 
@@ -39,19 +39,19 @@ A tool to generate prioritized genes using phenotype information.
 
 Using only the user-defined phenotypes:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ---
 
 Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 1:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -w hp.owl -n distance -m 1 -o results.tsv -p HP:0002996`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -w hp.owl -n distance -m 1 -o results.tsv -p HP:0002996`
 
 ---
 
 Using the user-defined phenotypes and their (grand)children with a maximum distance of 2:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -w hp.owl -n children -m 2 -o results.tsv -p HP:0002996`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -w hp.owl -n children -m 2 -o results.tsv -p HP:0002996`
 
 ### Output format
 
