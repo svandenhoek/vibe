@@ -284,15 +284,6 @@ public class VibeOptions {
     }
 
     /**
-     * Checks if a given {@link Path} is a directory.
-     * @param path {@link Path}
-     * @return {@code boolean} {@code true} if so, otherwise {@code false}
-     */
-    private boolean checkIfPathIsDir(Path path) {
-        return Files.isDirectory(path);
-    }
-
-    /**
      * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
      * user input to validate if variables are set correctly (based on the specified {@link RunMode}).
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not

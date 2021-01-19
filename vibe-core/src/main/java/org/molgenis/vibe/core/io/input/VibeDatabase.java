@@ -26,27 +26,26 @@ public class VibeDatabase {
     }
 
     private void validate() throws IOException {
-        switch (modelReaderFactory) {
-            case HDT:
-                // Checks if it is a readable HDT file.
-                if(!(Files.isRegularFile(dbPath) &&
-                        Files.isReadable(dbPath) &&
-                        dbPath.toString().toLowerCase().endsWith(".hdt"))) {
-                    throw new IOException("Invalid database. Please check if " + dbPath.getFileName() + " is a readable .hdt file.");
-                }
+        if(modelReaderFactory.equals(ModelReaderFactory.HDT)) {
+            // Checks if it is a readable HDT file.
+            if (!(Files.isRegularFile(dbPath) &&
+                    Files.isReadable(dbPath) &&
+                    dbPath.toString().toLowerCase().endsWith(".hdt"))) {
+                throw new IOException("Invalid database. Please check if " + dbPath.getFileName() +
+                        " is a readable .hdt file.");
+            }
 
-                // If directory is not writable, pre-made index file is required.
-                if(!Files.isWritable(dbPath.getParent())) {
-                    // Name is index file belonging to HDT database file.
-                    Path indexFile = Paths.get(dbPath.toString() + ".index.v1-1");
-                    if(!(Files.isRegularFile(indexFile) && Files.isReadable(indexFile))) {
-                        throw new IOException("Read-only directories require pre-made index file.");
-                    }
+            // If directory is not writable, pre-made index file is required.
+            if (!Files.isWritable(dbPath.getParent())) {
+                // Name is index file belonging to HDT database file.
+                Path indexFile = Paths.get(dbPath.toString() + ".index.v1-1");
+                if (!(Files.isRegularFile(indexFile) && Files.isReadable(indexFile))) {
+                    throw new IOException("Read-only directories require pre-made index file.");
                 }
-                break;
-            default:
-                throw new IllegalArgumentException("Chosen ModelReaderFactory option is currently not supported as" +
-                        " vibe database.");
+            }
+        } else {
+            throw new IllegalArgumentException("Chosen ModelReaderFactory option is currently not supported as vibe " +
+                    "database.");
         }
     }
 }

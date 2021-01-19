@@ -31,7 +31,7 @@ public abstract class DisgenetRdfDataRetriever {
         return sources;
     }
 
-    public DisgenetRdfDataRetriever(ModelReader modelReader) {
+    protected DisgenetRdfDataRetriever(ModelReader modelReader) {
         this.modelReader = requireNonNull(modelReader);
     }
 
