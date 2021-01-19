@@ -16,10 +16,15 @@ Description: Runs preparations for unit testing.
 Arguments:
 -h	--help			Shows this help message.
 -or	--original		Path to directory containing the complete TDB.
--op	--optimized		Path to directory containing the optimized TDB.
+-op	--optimized		Path to directory containing the optimized HDT.
 
 IMPORTANT:  Requires Apache Jena TDB Command-line Utilities to be configured.
             See https://jena.apache.org/documentation/tools/#setting-up-your-environment for more information.
+
+            Requires hdt-java to be configured.
+            See https://github.com/rdfhdt/hdt-java#compiling for compiling and add it to your class path in .bashrc:
+                export HDTJAVA_HOME=/path/to/hdt-java-package-<version>
+                export PATH=$PATH:$HDTJAVA_HOME/bin
 "
 
 # Base path (to script).
@@ -45,7 +50,7 @@ digestCommandLine() {
 			shift # value
 			;;
 			-op|--optimized)
-			readonly TDB_optimized="$2"
+			readonly HDT_optimized="$2"
 			shift # argument
 			shift # value
 			;;
@@ -66,13 +71,13 @@ digestCommandLine() {
 	if [[ ! ${TDB_original+isset} == isset ]]; then errcho "Missing required argument: -or/--original <DIR>\n\n$USAGE"; exit 1; fi
 
 	# Checks if variable is set. -> http://wiki.bash-hackers.org/syntax/pe#use_an_alternate_value
-	if [[ ! ${TDB_optimized+isset} == isset ]]; then errcho "Missing required argument: -op/--optimized <DIR>\n\n$USAGE"; exit 1; fi
+	if [[ ! ${HDT_optimized+isset} == isset ]]; then errcho "Missing required argument: -op/--optimized <FILE>\n\n$USAGE"; exit 1; fi
 
 	# Checks if given argument is an existing directory.
 	if [ ! -d "$TDB_original" ]; then errcho "Path to original TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
 
 	# Checks if given argument is an existing directory.
-	if [ ! -d "$TDB_optimized" ]; then errcho "Path to optimized TDB is not an existing directory.\n\n$USAGE"; exit 1; fi
+	if [ ! -f "$HDT_optimized" ]; then errcho "Path to optimized HDT file is not a readable file.\n\n$USAGE"; exit 1; fi
 }
 
 runTests() {
@@ -82,9 +87,10 @@ runTests() {
 
 	# Runs queries.
 	echo "### Running original TDB/query."
-	tdbquery --time --results=TSV --loc="$TDB_original" --query="sparql_queries/tdb_comparison/original_tdb/genes_for_hpo.rq" 1>"test/genes_for_hpo-original.tsv"
+	tdbquery --time --results=CSV --loc="$TDB_original" --query="sparql_queries/tdb_comparison/original_tdb/genes_for_hpo.rq" 1>"test/genes_for_hpo-original.tsv"
 	echo "### Running optimized TDB/query."
-	tdbquery --time --results=TSV --loc="$TDB_optimized" --query="sparql_queries/tdb_comparison/optimized_tdb/genes_for_hpo.rq" 1>"test/genes_for_hpo-optimized.tsv"
+  QUERY=$(cat "sparql_queries/tdb_comparison/optimized_tdb/genes_for_hpo.rq")
+  hdtsparql.sh ${HDT_optimized} "${QUERY}" 1>"test/genes_for_hpo-optimized.tsv"
 
 	# Compare shasums.
 	echo "### Validating if optimized TDB/query output files are equal to their original counterparts."
