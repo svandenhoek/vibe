@@ -12,7 +12,7 @@ import java.nio.file.Paths;
 /**
  * Certain tests fail on Jenkins, probably caused by issues setting file/dir permissions.
  */
-public class VibeDatabaseTest {
+class VibeDatabaseTest {
     /**
      * Simple test to verify no Exception occurs.
      */

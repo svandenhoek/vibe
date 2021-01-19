@@ -8,7 +8,7 @@ import org.molgenis.vibe.core.TestData;
 
 import java.io.IOException;
 
-public class HdtFileReaderIT {
+class HdtFileReaderIT {
     private static HdtFileReader reader;
 
     @BeforeAll
