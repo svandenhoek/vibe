@@ -39,7 +39,7 @@ A tool to generate prioritized genes using phenotype information.
 
 Using only the user-defined phenotypes:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+`java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -w hp.owl -p HP:0002996 -p HP:0001377`
 
 ---
 
