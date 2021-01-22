@@ -35,7 +35,7 @@ public enum RunMode {
         @Override
         protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws IOException {
             PhenotypeNetworkCollection phenotypeNetworkCollection = retrieveAssociatedPhenotypes(vibeOptions, stopwatch);
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(vibeOptions, stopwatch, phenotypeNetworkCollection.getPhenotypes());
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDatasetOutput(vibeOptions, stopwatch, phenotypeNetworkCollection.getPhenotypes());
             List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
             writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
@@ -54,7 +54,7 @@ public enum RunMode {
     }, GENES_FOR_PHENOTYPES("Retrieves genes for input phenotypes.") {
         @Override
         protected void runMode(VibeOptions vibeOptions, Stopwatch stopwatch) throws Exception {
-            GeneDiseaseCollection geneDiseaseCollection = retrieveDisgenetData(vibeOptions, stopwatch, retrieveInputPhenotypes(vibeOptions));
+            GeneDiseaseCollection geneDiseaseCollection = retrieveDatasetOutput(vibeOptions, stopwatch, retrieveInputPhenotypes(vibeOptions));
             List<Gene> genePriority = orderGenes(vibeOptions, stopwatch, geneDiseaseCollection);
             writePrioritizedGenesOutput(vibeOptions, stopwatch, geneDiseaseCollection, genePriority);
         }
@@ -64,12 +64,12 @@ public enum RunMode {
         }
     };
 
-    private static GeneDiseaseCollection retrieveDisgenetData(VibeOptions vibeOptions, Stopwatch stopwatch, Set<Phenotype> phenotypes) throws IOException {
+    private static GeneDiseaseCollection retrieveDatasetOutput(VibeOptions vibeOptions, Stopwatch stopwatch, Set<Phenotype> phenotypes) throws IOException {
         vibeOptions.printVerbose("# Retrieving data from main dataset.");
 
         resetTimer(stopwatch);
         GeneDiseaseCollection geneDiseaseCollection = new GeneDiseaseCollectionRetrievalRunner(
-                vibeOptions.getVibeTdb(), phenotypes).call();
+                vibeOptions.getVibeDatabase(), phenotypes).call();
         printElapsedTime(vibeOptions, stopwatch);
 
         return geneDiseaseCollection;

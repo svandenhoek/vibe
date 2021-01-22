@@ -116,10 +116,10 @@ public abstract class CommandLineOptionsParser {
                 .build());
 
         options.addOption(Option.builder("t")
-                .longOpt("tdb")
-                .desc("The directory containing the DisGeNET RDF model as a Apache Jena TDB.")
+                .longOpt("hdt")
+                .desc("The HDT file containing the vibe database.")
                 .hasArg()
-                .argName("DIR")
+                .argName("FILE")
                 .build());
 
         options.addOption(Option.builder("o")
@@ -248,7 +248,7 @@ public abstract class CommandLineOptionsParser {
 
         // Arguments that are always required.
         String[] requiredArguments = new String[] {
-                "t", // TDB
+                "t", // database
                 "w", // HPO owl
                 "p", // 1 or more phenotypes
         };
@@ -283,9 +283,9 @@ public abstract class CommandLineOptionsParser {
      * @param errors a {@link List} to add error messages to if any occur
      */
     private static void digestDatabases(CommandLine commandLine, VibeOptions vibeOptions, List<String> errors) {
-        // TDB.
+        // Main database.
         try {
-            vibeOptions.setVibeTdb(commandLine.getOptionValue("t"));
+            vibeOptions.setVibeDatabase(commandLine.getOptionValue("t"));
         } catch (InvalidPathException | IOException e) {
             errors.add(e.getMessage());
         }

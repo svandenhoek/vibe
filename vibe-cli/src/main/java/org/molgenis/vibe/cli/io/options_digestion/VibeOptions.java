@@ -7,6 +7,8 @@ import org.molgenis.vibe.core.exceptions.InvalidStringFormatException;
 import org.molgenis.vibe.core.formats.Phenotype;
 import org.molgenis.vibe.cli.io.output.format.gene_prioritized.GenePrioritizedOutputFormatWriterFactory;
 import org.molgenis.vibe.cli.io.output.target.OutputWriter;
+import org.molgenis.vibe.core.io.input.ModelReaderFactory;
+import org.molgenis.vibe.core.io.input.VibeDatabase;
 import org.molgenis.vibe.core.ontology_processing.PhenotypesRetrieverFactory;
 
 import java.io.IOException;
@@ -35,9 +37,9 @@ public class VibeOptions {
     private Path hpoOntology;
 
     /**
-     * Path to the directory storing the vibe TDB database.
+     * The vibe main database.
      */
-    private Path vibeTdb;
+    private VibeDatabase vibeDatabase;
 
     /**
      * The phenotype(s) to be used within the application.
@@ -103,20 +105,17 @@ public class VibeOptions {
         }
     }
 
-    public Path getVibeTdb() {
-        return vibeTdb;
+    public VibeDatabase getVibeDatabase() {
+        return vibeDatabase;
     }
 
-    void setVibeTdb(String vibeTdb) throws IOException {
-        setVibeTdb(Paths.get(vibeTdb));
+    void setVibeDatabase(String databasePath) throws IOException {
+        setVibeDatabase(Paths.get(databasePath));
     }
 
-    void setVibeTdb(Path vibeTdb) throws IOException {
-        if(checkIfPathIsDir(vibeTdb)) {
-            this.vibeTdb = vibeTdb;
-        } else {
-            throw new IOException(vibeTdb.getFileName() + " is not a directory.");
-        }
+    void setVibeDatabase(Path databasePath) throws IOException {
+        // VibeDatabase uses its own internal checks for whether the data is accessible.
+        this.vibeDatabase = new VibeDatabase(databasePath, ModelReaderFactory.HDT);
     }
 
     public Set<Phenotype> getPhenotypes() {
@@ -285,15 +284,6 @@ public class VibeOptions {
     }
 
     /**
-     * Checks if a given {@link Path} is a directory.
-     * @param path {@link Path}
-     * @return {@code boolean} {@code true} if so, otherwise {@code false}
-     */
-    private boolean checkIfPathIsDir(Path path) {
-        return Files.isDirectory(path);
-    }
-
-    /**
      * Checks whether the set variables adhere to the selected {@link RunMode}. Can be used after processing of
      * user input to validate if variables are set correctly (based on the specified {@link RunMode}).
      * @return {@code true} if available variables adhere to {@link RunMode}, {@code false} if not
@@ -335,13 +325,13 @@ public class VibeOptions {
 
     /**
      * Checks whether variables were set that are required for retrieving a
-     * {@link org.molgenis.vibe.core.formats.GeneDiseaseCollection} from the {@code TDB} using
+     * {@link org.molgenis.vibe.core.formats.GeneDiseaseCollection} from the database using
      * {@link Phenotype}{@code s} as input.
      * @return {@code true} if all needed variables are set, otherwise {@code false}
      */
     private boolean validateGenesForPhenotype() {
-        // Check if DisGeNET data is set.
-        if (getVibeTdb() == null) {
+        // Check if vibe database is set.
+        if (getVibeDatabase() == null) {
             return false;
         }
         // Check if HPO ontology data is set.
@@ -369,7 +359,7 @@ public class VibeOptions {
                 "runMode=" + runMode +
                 ", verbose=" + verbose +
                 ", hpoOntology=" + hpoOntology +
-                ", vibeTdb=" + vibeTdb +
+                ", vibeDatabase=" + vibeDatabase +
                 ", phenotypes=" + phenotypes +
                 ", phenotypesRetrieverFactory=" + phenotypesRetrieverFactory +
                 ", ontologyMaxDistance=" + ontologyMaxDistance +
