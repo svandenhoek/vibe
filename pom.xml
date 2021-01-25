@@ -4,7 +4,7 @@
 
     <groupId>org.molgenis</groupId>
     <artifactId>vibe</artifactId>
-    <version>4.1.0-SNAPSHOT</version>
+    <version>5.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <!-- More Project Information -->
@@ -45,10 +45,10 @@
     </issueManagement>
 
     <properties>
-        <!-- vibe TDB information (requirement: vibe-tdb.version <= project.version) -->
-        <vibe-tdb.version>3.1.0</vibe-tdb.version>
-        <vibe-tdb.archive>vibe-${vibe-tdb.version}-tdb.tar.gz</vibe-tdb.archive>
-        <vibe-tdb.download>https://molgenis.org/downloads/vibe/${vibe-tdb.archive}</vibe-tdb.download>
+        <!-- vibe database information (requirement: vibe-database.version <= project.version) -->
+        <vibe-database.version>5.0.0</vibe-database.version>
+        <vibe-database.archive>vibe-${vibe-database.version}-hdt.tar.gz</vibe-database.archive>
+        <vibe-database.download>https://molgenis.org/downloads/vibe/${vibe-database.archive}</vibe-database.download>
 
         <!-- used hpo.owl github tag -->
         <hpo-owl.tag>v2019-11-08</hpo-owl.tag>
@@ -106,6 +106,7 @@
         <!-- dependency versions -->
         <slf4j-nop.version>1.7.29</slf4j-nop.version>
         <apache-jena-libs.version>3.13.1</apache-jena-libs.version>
+        <rdfhdt.version>2.1.2</rdfhdt.version>
         <commons-cli.version>1.4</commons-cli.version>
         <junit-jupiter.version>5.6.0</junit-jupiter.version>
         <mockito.version>1.10.19</mockito.version>

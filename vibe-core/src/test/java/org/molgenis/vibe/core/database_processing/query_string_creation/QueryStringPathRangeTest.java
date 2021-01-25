@@ -1,4 +1,4 @@
-package org.molgenis.vibe.core.tdb_processing.query_string_creation;
+package org.molgenis.vibe.core.database_processing.query_string_creation;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;

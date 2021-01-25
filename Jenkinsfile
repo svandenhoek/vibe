@@ -37,7 +37,7 @@ pipeline {
             steps {
                 container('maven') {
                     sh "sh TestsPreprocessor.sh"
-                    sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
+                    sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -DexcludedGroups='skipOnJenkins' -T4"
                 }
             }
             post {
@@ -61,7 +61,7 @@ pipeline {
                 milestone 1
                 container('maven') {
                     sh "sh TestsPreprocessor.sh"
-                    sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
+                    sh "mvn clean install -Dmaven.test.redirectTestOutputToFile=true -DexcludedGroups='skipOnJenkins' -T4"
                 }
             }
             post {
@@ -81,7 +81,7 @@ pipeline {
                     steps {
                         container('maven') {
                             sh "sh TestsPreprocessor.sh"
-                            sh "mvn -q -B clean install -Dmaven.test.redirectTestOutputToFile=true -T4"
+                            sh "mvn -q -B clean install -Dmaven.test.redirectTestOutputToFile=true -DexcludedGroups='skipOnJenkins' -T4"
                             sh "mvn -q -B sonar:sonar -Dsonar.login=${SONAR_TOKEN} -Dsonar.branch.name=${BRANCH_NAME} -Dsonar.ws.timeout=120"
                         }
                     }

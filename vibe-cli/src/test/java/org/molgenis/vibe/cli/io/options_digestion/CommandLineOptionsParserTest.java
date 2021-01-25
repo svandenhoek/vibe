@@ -26,9 +26,9 @@ class CommandLineOptionsParserTest {
     private final String[] SIMPLIFIED_OUT = new String[]{"-l"};
     private final String[] URIS_OUT = new String[]{"-u"};
 
-    private final String[] VALID_TDB = new String[]{"-t", TestData.TDB.getFullPathString()};
-    private final String[] INVALID_TDB_DIR = new String[]{"-t", TestData.NON_EXISTING_DIR.getFullPathString()};
-    private final String[] INVALID_TDB_FILE = new String[]{"-t", TestData.NON_EXISTING_FILE.getFullPathString()};
+    private final String[] VALID_DATABASE = new String[]{"-t", TestData.HDT.getFullPathString()};
+    private final String[] INVALID_DATABASE_DIR = new String[]{"-t", TestData.NON_EXISTING_DIR.getFullPathString()};
+    private final String[] INVALID_DATABASE_FILE = new String[]{"-t", TestData.NON_EXISTING_FILE.getFullPathString()};
 
     private final String[] VALID_ONTOLOGY = new String[]{"-w", TestData.HPO_OWL.getFullPathString()};
     private final String[] INVALID_ONTOLOGY_FILE = new String[]{"-w", TestData.NON_EXISTING_FILE.getFullPathString()};
@@ -83,7 +83,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFile() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -98,7 +98,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingDefaultOutputFileWithVerbose() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, DEBUG);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, DEBUG);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -112,7 +112,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingUriOutputFile() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, URIS_OUT);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, URIS_OUT);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -125,7 +125,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingSimplifiedOutputFile() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, SIMPLIFIED_OUT);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW, SIMPLIFIED_OUT);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -138,7 +138,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingStdoutOutput() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -151,7 +151,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithHpoAlgorithmChildren() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -162,7 +162,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithHpoAlgorithmDistance() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_DISTANCE, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_DISTANCE, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -173,7 +173,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validTwoHpos() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_MULTIPLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_MULTIPLE, OUTPUT_FILE_NEW);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertEquals(VALID_HPO_MULTIPLE_SET, vibeOptions.getPhenotypes());
@@ -187,7 +187,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithOverwrite() throws ParseException {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING, FORCE_OVERWRITE);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING, FORCE_OVERWRITE);
         VibeOptions vibeOptions = CommandLineOptionsParser.parse(args);
 
         Assertions.assertAll(
@@ -202,15 +202,15 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithoutOntologyTraversalUsingExstingOutputFileWithoutOverwrite() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_EXISTING);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.EXISTING_TSV.getName() + " already exists.", exception.getMessage());
+        Assertions.assertEquals(TestData.EXISTING_TSV.getName().split("/")[1] + " already exists.", exception.getMessage());
     }
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_INVALID, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(HPO_ALGORITHM_INVALID[1] + " is not a valid HPO retrieval algorithm.", exception.getMessage());
@@ -218,7 +218,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithmDistanceNumber() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_NUMBER, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_NUMBER, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_DISTANCE_NUMBER[1] + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).", exception.getMessage());
@@ -226,14 +226,14 @@ class CommandLineOptionsParserTest {
 
     @Test
     void validSingleHpoWithInvalidHpoAlgorithmDistanceString() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_STRING, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, INVALID_DISTANCE_STRING, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_DISTANCE_STRING[1] + " is not a valid HPO retrieval algorithm distance (must be a number >= 0).", exception.getMessage());
     }
 
     @Test
-    void missingTdbAndHpoOntology() {
+    void missingDatabaseAndHpoOntology() {
         String[] args = stringArraysMerger(VALID_HPO_SINGLE);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
@@ -241,7 +241,7 @@ class CommandLineOptionsParserTest {
     }
 
     @Test
-    void missingTdb() {
+    void missingDatabase() {
         String[] args = stringArraysMerger(VALID_HPO_SINGLE, VALID_ONTOLOGY);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
@@ -250,7 +250,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void missingOntology() {
-        String[] args = stringArraysMerger(VALID_HPO_SINGLE, VALID_TDB);
+        String[] args = stringArraysMerger(VALID_HPO_SINGLE, VALID_DATABASE);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w", exception.getMessage());
@@ -258,7 +258,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void noOntologyWithHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w, -m", exception.getMessage());
@@ -266,7 +266,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void noOntologyWithHpoMaxDistance() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w, -n", exception.getMessage());
@@ -274,7 +274,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void withOntologyAndDistanceMissingHpoAlgorithm() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -n", exception.getMessage());
@@ -282,7 +282,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void withOntologyAndAlgorithmMissingHpoMaxDistance() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, HPO_ALGORITHM_CHILDREN, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -m", exception.getMessage());
@@ -290,7 +290,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void withOntologyAlgorithmAndDistanceButNoOntologyFile() {
-        String[] args = stringArraysMerger(VALID_TDB, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -w", exception.getMessage());
@@ -298,7 +298,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void missingPhenotype() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals("Missing arguments: -p", exception.getMessage());
@@ -306,31 +306,31 @@ class CommandLineOptionsParserTest {
 
     @Test
     void invalidPhenotype() {
-        String[] args = stringArraysMerger(VALID_TDB, VALID_ONTOLOGY, INVALID_HPO, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, VALID_ONTOLOGY, INVALID_HPO, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(INVALID_HPO[1] + " does not adhere the required format: ^(hp|HP):([0-9]{7})$", exception.getMessage());
     }
 
     @Test
-    void invalidTdbDir() {
-        String[] args = stringArraysMerger(INVALID_TDB_DIR, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+    void invalidDatabaseDir() {
+        String[] args = stringArraysMerger(INVALID_DATABASE_DIR, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.NON_EXISTING_DIR.getName() + " is not a directory.", exception.getMessage());
+        Assertions.assertEquals("Invalid database. Please check if " + TestData.NON_EXISTING_DIR.getName() + " is a readable .hdt file.", exception.getMessage());
     }
 
     @Test
-    void invalidTdbFile() {
-        String[] args = stringArraysMerger(INVALID_TDB_FILE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+    void invalidDatabaseFile() {
+        String[] args = stringArraysMerger(INVALID_DATABASE_FILE, VALID_ONTOLOGY, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
-        Assertions.assertEquals(TestData.NON_EXISTING_FILE.getName() + " is not a directory.", exception.getMessage());
+        Assertions.assertEquals("Invalid database. Please check if " + TestData.NON_EXISTING_FILE.getName() + " is a readable .hdt file.", exception.getMessage());
     }
 
     @Test
     void invalidOntologyFile() {
-        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_FILE, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, INVALID_ONTOLOGY_FILE, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_FILE.getName() + " is not a readable file.", exception.getMessage());
@@ -338,7 +338,7 @@ class CommandLineOptionsParserTest {
 
     @Test
     void invalidOntologyDir() {
-        String[] args = stringArraysMerger(VALID_TDB, INVALID_ONTOLOGY_DIR, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
+        String[] args = stringArraysMerger(VALID_DATABASE, INVALID_ONTOLOGY_DIR, HPO_ALGORITHM_CHILDREN, VALID_DISTANCE, VALID_HPO_SINGLE, OUTPUT_FILE_NEW);
 
         Exception exception = Assertions.assertThrows(ParseException.class, () -> CommandLineOptionsParser.parse(args) );
         Assertions.assertEquals(TestData.NON_EXISTING_DIR.getName() + " is not a readable file.", exception.getMessage());

@@ -7,13 +7,13 @@ public enum TestData {
     HPO_OWL {
         @Override
         public String getName() {
-            return "hp.owl";
+            return "shared/hp.owl";
         }
     },
-    TDB {
+    HDT {
         @Override
         public String getName() {
-            return "tdb";
+            return "shared/hdt/vibe.hdt";
         }
     },
     NON_EXISTING_FILE {
@@ -31,7 +31,7 @@ public enum TestData {
     EXISTING_TSV {
         @Override
         public String getName() {
-            return "output.tsv";
+            return "shared/output.tsv";
         }
     };
 

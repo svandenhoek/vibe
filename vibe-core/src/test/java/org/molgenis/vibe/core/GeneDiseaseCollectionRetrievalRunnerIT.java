@@ -4,6 +4,8 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.molgenis.vibe.core.formats.*;
+import org.molgenis.vibe.core.io.input.ModelReaderFactory;
+import org.molgenis.vibe.core.io.input.VibeDatabase;
 
 import java.io.IOException;
 import java.net.URI;
@@ -124,7 +126,9 @@ class GeneDiseaseCollectionRetrievalRunnerIT {
         expectedCollection.addAll(Arrays.asList(geneDiseaseCombinations));
 
         runner = new GeneDiseaseCollectionRetrievalRunner(
-                TestData.TDB.getFullPath(), new HashSet<>(Arrays.asList(new Phenotype("hp:0008438"))));
+                new VibeDatabase(TestData.HDT.getFullPath(), ModelReaderFactory.HDT),
+                new HashSet<>(Arrays.asList(new Phenotype("hp:0008438")))
+        );
         GeneDiseaseCollection actualCollection = runner.call();
 
         Assertions.assertAll(

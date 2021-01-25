@@ -7,25 +7,43 @@ public enum TestData {
     HPO_OWL {
         @Override
         public String getName() {
-            return "hp.owl";
+            return "shared/hp.owl";
         }
     },
     FAKE_HPO_OWL {
         @Override
         public String getName() {
-            return "fake_hp.owl";
+            return "shared/fake_hp.owl";
         }
     },
-    TDB {
+    HDT {
         @Override
         public String getName() {
-            return "tdb";
+            return "shared/hdt/vibe.hdt";
+        }
+    },
+    FAKE_HDT_WITH_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-with-index/fake.hdt";
+        }
+    },
+    FAKE_HDT_WITHOUT_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-without-index/fake.hdt";
+        }
+    },
+    FAKE_HDT_INDEX_ONLY_INDEX {
+        @Override
+        public String getName() {
+            return "fake-hdt-index-only/fake.hdt.index.v1-1";
         }
     },
     EXISTING_TSV {
         @Override
         public String getName() {
-            return "output.tsv";
+            return "shared/output.tsv";
         }
     };
 

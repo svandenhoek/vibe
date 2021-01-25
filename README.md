@@ -16,17 +16,17 @@ A tool to generate prioritized genes using phenotype information.
 ## Quickstart
 
 * Download [vibe .jar file][vibe_download]
-* Download and extract [TDB][tdb_download]
+* Download and extract [HDT][hdt_download]
 * Download the [HPO.owl][hpo_owl]
 * Make sure you have [Java 8 or higher][java_download]
-* Open a terminal and run VIBE. `java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -p HP:0002996 -p HP:0001377`
+* Open a terminal and run VIBE. `java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ## Detailed instructions
 
 ### Requirements
 
 * [Java 8 or higher][java_download]
-* [A local TDB dataset][tdb_download]
+* [A local HDT dataset][hdt_download]
 * [Human Phenotype Ontology (HPO)][hpo_owl]
 
 ### Usage
@@ -39,19 +39,19 @@ A tool to generate prioritized genes using phenotype information.
 
 Using only the user-defined phenotypes:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -o results.tsv -w hp.owl -p HP:0002996 -p HP:0001377`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -w hp.owl -o results.tsv -p HP:0002996 -p HP:0001377`
 
 ---
 
 Using the user-defined phenotypes and phenotypes that are related to them with a maximum distance of 1:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -w hp.owl -n distance -m 1 -o results.tsv -p HP:0002996`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -w hp.owl -n distance -m 1 -o results.tsv -p HP:0002996`
 
 ---
 
 Using the user-defined phenotypes and their (grand)children with a maximum distance of 2:
 
-`java -jar vibe-with-dependencies.jar -d -t TDB/ -w hp.owl -n children -m 2 -o results.tsv -p HP:0002996`
+`java -jar vibe-with-dependencies-<version>.jar -d -t vibe-<db-version>.hdt -w hp.owl -n children -m 2 -o results.tsv -p HP:0002996`
 
 ### Output format
 
@@ -73,21 +73,15 @@ Alternatively, the option `-l` can be added when running the tool. If this is do
 
 The `-u` option changes the output to use URI's instead of ID's for certain fields. As this strongly increases the output size, in general it is not advised to use this option.
 
-## F.A.Q.
-
-**Q:** It takes forever to retrieve information from the TDB.
-
-**A:** Depending on the how much information needs to be retrieved from the TDB based on the input genes, this process may indeed take a while. However, there are ways to speed up this process. Examples include using an SSD instead HDD and [using a 64-bit JVM](https://jena.apache.org/documentation/tdb/architecture.html#caching-on-32-and-64-bit-java-systems).
-
 ## For developers
 
-Below are the instructions on how to build the app. For instructions on how to create the TDB, please check [here](./database/README.md). 
+Below are the instructions on how to build the app. For instructions on how to create the HDT, please check [here](./database/README.md). 
 
 ### Requirements
 - Apache Maven ([download][maven_download] and [install][maven_install])
 
 ### Preperations
-Before building/testing, be sure the needed test resources are downloaded. This can be done by running `TestsPreprocessor.sh`. When checking out a commit that uses a different version of the test resources (as defined by the `pom.xml` properties `vibe-tdb.version` and `hpo-owl.tag`), be sure to re-run this script so that the correct resources are used for testing. 
+Before building/testing, be sure the needed test resources are downloaded. This can be done by running `TestsPreprocessor.sh`. When checking out a commit that uses a different version of the test resources (as defined by the `pom.xml` properties `vibe-database.version` and `hpo-owl.tag`), be sure to re-run this script so that the correct resources are used for testing. 
 
 ### Building executables
 
@@ -98,9 +92,14 @@ Before building/testing, be sure the needed test resources are downloaded. This 
      - SHA-512
      - SHA3-512
 
+### Notes
+
+- The different modules partly use the same resources. To not create duplicate data, these are stored in the `shared_resources/shared` folder. When adding new test resources to a module, ensure that there is no `src/test/resources/shared` directory.
+- In case tests fail on Jenkins due to Jenkins-specific reasons (f.e. due to requiring to change a file permission of a test resource), the JUnit tag `skipOnJenkins` can be used so that these test still occur when building locally.
+
 [vibe_download]: https://github.com/molgenis/vibe/releases/latest
 [java_download]:https://www.java.com/download
-[tdb_download]: http://molgenis.org/downloads/vibe/vibe-3.1.0-tdb.tar.gz
+[hdt_download]: http://molgenis.org/downloads/vibe/vibe-5.0.0-hdt.tar.gz
 [jena_download]:https://jena.apache.org/download/index.cgi
 [jena_configure]: https://jena.apache.org/documentation/tools/#setting-up-your-environment
 [hpo_owl]:http://purl.obolibrary.org/obo/hp.owl
