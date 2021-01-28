@@ -28,7 +28,7 @@ import static org.mockito.Mockito.when;
  * will not be shown correctly.
  */
 @ExtendWith(MockitoExtension.class)
-public class RunModeIT {
+class RunModeIT {
     @Mock private VibeOptions mockedVibeOptions;
 
     // Define stdout information.
