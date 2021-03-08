@@ -6,7 +6,7 @@ A tool to generate prioritized genes using phenotype information.
 
 ## Web app
 
-* Available at: http://molgenis.org/vibe
+* Available at: https://vibe.molgeniscloud.org/
 * Source code: https://github.com/molgenis/molgenis-app-vibe
 
 ## Benchmark
