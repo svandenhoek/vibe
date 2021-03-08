@@ -33,7 +33,7 @@ The easiest way to install GAWK on MacOS is through a package manager such as [M
 
 ## Windows users
 
-Currently there isn't a bat script that offers automated database creation. Please use the already created database as available on the molgenis download server (see the [main README](../README.md#quickstart).
+Currently there isn't a bat script that offers automated database creation. Please use the already created database as available on the molgenis download server (see the [main README](../README.md#quickstart)).
 
 ## Updating the database
 
